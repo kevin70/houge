@@ -23,10 +23,13 @@ jobs:
       - run:
           name: Build Project
           command: ./gradlew jar
+
+      - run:
+          name: Test Project
+          command: ./gradlew test
       - run:
           name: Jacoco Test Report
           command: ./gradlew jacocoTestReport
-
       - run:
           name: Save test results
           command: |
