@@ -14,7 +14,7 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-      - run: gradle dependencies
+      - run: chmod +x gradlew && ./gradlew dependencies
       - save_cache:
           paths:
             - ~/.gradle
@@ -22,9 +22,7 @@ jobs:
 
       - run:
           name: Build Project
-          command: |
-            chmod +x gradlew
-            ./gradlew build
+          command: ./gradlew build
       - run:
           name: Jacoco Test Report
           command: ./gradlew jacocoTestReport
