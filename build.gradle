@@ -1,0 +1,142 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.hierynomus.license" version "0.15.0"
+    id "me.champeau.gradle.jmh" version "0.5.0"
+    id "checkstyle"
+}
+
+apply plugin: "java"
+apply plugin: "jacoco"
+apply plugin: "application"
+
+sourceCompatibility = "11"
+targetCompatibility = "11"
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+
+//tasks.withType(JavaCompile) {
+//    options.encoding = "UTF-8"
+//}
+
+test {
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+license {
+    header = rootProject.file("LICENSE")
+    headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.classLoader.getResource("headers/Apache-2.0").toURI()
+    skipExistingHeaders = true
+    ext {
+        year = "2019-2020"
+        author = "the original author or authors"
+    }
+}
+
+checkstyle {
+    toolVersion "8.30"
+    configFile = project.file("config/checkstyle/google_checks.xml")
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("io.projectreactor:reactor-bom:Dysprosium-SR5")
+        mavenBom("org.apache.logging.log4j:log4j-bom:2.13.0")
+        mavenBom("com.google.inject:guice-bom:4.2.2")
+        mavenBom("io.micrometer:micrometer-bom:1.3.5")
+        mavenBom("io.rsocket:rsocket-bom:1.0.0-RC6")
+        mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR2")
+        mavenBom("com.fasterxml.jackson:jackson-bom:2.10.2.20200130")
+
+        mavenBom("org.junit:junit-bom:5.6.0")
+    }
+
+    dependencies {
+        dependency("org.projectlombok:lombok:1.18.12")
+        dependencySet("io.jsonwebtoken:0.11.0") {
+            entry("jjwt-impl")
+            entry("jjwt-jackson")
+        }
+        dependency("org.ow2.asm:asm:7.3.1")
+        dependency("cglib:cglib:3.3.0")
+        dependency("com.google.guava:guava:28.2-jre")
+        dependency("com.github.ben-manes.caffeine:caffeine:2.8.1")
+        dependency("com.typesafe:config:1.4.0")
+        dependency("io.lettuce:lettuce-core:5.2.2.RELEASE")
+
+        dependencySet("org.openjdk.jmh:1.23") {
+            entry("jmh-core")
+            entry("jmh-generator-annprocess")
+        }
+    }
+}
+
+dependencies {
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    implementation("com.typesafe:config")
+    implementation("com.google.inject:guice")
+    implementation("io.micrometer:micrometer-core")
+    implementation("com.github.ben-manes.caffeine:caffeine")
+    // implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
+    implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
+
+    // Cluster
+    implementation("io.lettuce:lettuce-core")
+
+    // Log
+    implementation("org.apache.logging.log4j:log4j-core")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
+
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-impl")
+    implementation("io.jsonwebtoken:jjwt-jackson")
+
+    // DB
+    implementation("io.r2dbc:r2dbc-postgresql")
+
+    implementation("net.bytebuddy:byte-buddy:1.10.8")
+
+    // Test
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+
+    testImplementation("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.assertj:assertj-core:3.11.1")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("io.micrometer:micrometer-test")
+    testImplementation("org.mockito:mockito-core:3.3.0")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.5")
+
+    jmh "org.openjdk.jmh:jmh-core"
+    jmh "org.openjdk.jmh:jmh-generator-annprocess"
+}
+
+application {
+    mainClassName = "io.zhudy.xim.main.Main"
+}
