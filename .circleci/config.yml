@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: Build Project
-          command: ./gradlew build
+          command: ./gradlew jar
       - run:
           name: Jacoco Test Report
           command: ./gradlew jacocoTestReport
