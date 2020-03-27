@@ -3,24 +3,28 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:11
+    working_directory: ~/repo
     environment:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     steps:
+      - checkout
+      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-            - v1-gradle-cache-{{ checksum "build.gradle" }}
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: gradle dependencies
       - save_cache:
           paths:
-            - ~/.gradle/wrapper
-          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
       - run:
           name: Build Project
-          command: ./gradlew build
+          command: |
+            chmod +x gradlew
+            ./gradlew build
       - run:
           name: Jacoco Test Report
           command: ./gradlew jacocoTestReport
