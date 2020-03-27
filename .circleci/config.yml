@@ -1,0 +1,40 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+    steps:
+      - restore_cache:
+          keys:
+            - v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - v1-gradle-cache-{{ checksum "build.gradle" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Build Project
+          command: ./gradlew build
+      - run:
+          name: Jacoco Test Report
+          command: ./gradlew jacocoTestReport
+      # ========== 代码格式校验
+      - run:
+          name: Checkstyle Main
+          command: ./gradlew checkstyleMain
+      - run:
+          name: Checkstyle Test
+          command: ./gradlew checkstyleTest
+      - run:
+          name: Checkstyle Jmh
+          command: ./gradlew checkstyleJmh
+      # ========== 代码格式校验
+      - run:
+          name: Shadow Jar
+          command: ./gradlew shadowJar
