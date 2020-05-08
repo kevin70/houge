@@ -21,11 +21,11 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - run:
-          name: Build Project
+          name: Building Project
           command: ./gradlew jar
 
       - run:
-          name: Test Project
+          name: Testing Project
           command: ./gradlew test
       - run:
           name: Jacoco Test Report
