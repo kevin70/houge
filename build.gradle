@@ -4,6 +4,7 @@ plugins {
     id "com.github.hierynomus.license" version "0.15.0"
     id "me.champeau.gradle.jmh" version "0.5.0"
     id "checkstyle"
+    id "com.github.spotbugs" version "4.0.8"
 }
 
 apply plugin: "java"
@@ -54,6 +55,10 @@ tasks.withType(Checkstyle) {
         xml.enabled = true
         html.enabled = true
     }
+}
+
+spotbugs {
+    toolVersion = "4.0.8"
 }
 
 repositories {
@@ -133,6 +138,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:3.3.0")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.5")
 
+    spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1")
     jmh "org.openjdk.jmh:jmh-core"
     jmh "org.openjdk.jmh:jmh-generator-annprocess"
 }
