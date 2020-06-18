@@ -21,11 +21,9 @@ jobs:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-
       - run:
           name: Building Project
           command: ./gradlew jar
-
       - run:
           name: Testing Project
           command: ./gradlew test
@@ -42,7 +40,6 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
-
       # ========== 代码格式校验
       - run:
           name: Checkstyle Main
@@ -54,11 +51,9 @@ jobs:
           name: Checkstyle Jmh
           command: ./gradlew checkstyleJmh
       # ========== 代码格式校验
-      -
       - run:
           name: Shadow Jar
           command: ./gradlew shadowJar
-
       # ========== 上传代码覆盖报告
       - codecov/upload:
           file: build/jacoco/test.exec
