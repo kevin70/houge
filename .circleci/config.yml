@@ -56,5 +56,5 @@ jobs:
           command: ./gradlew shadowJar
       # ========== 上传代码覆盖报告
       - codecov/upload:
-          file: build/jacoco/test.exec
+          file: build/reports/jacoco/test/jacocoTestReport.xml
       # ========== 上传代码覆盖报告
