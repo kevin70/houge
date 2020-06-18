@@ -18,8 +18,8 @@ import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.SessionIdGenerator;
 import io.zhudy.xim.session.SessionManager;
 import io.zhudy.xim.session.impl.DefaultSession;
+import java.io.DataInput;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.BiFunction;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -147,16 +147,22 @@ public class ImSocketHandler
   }
 
   private Mono<Void> handleFrame(
-      final Session session, WebsocketOutbound out, final WebSocketFrame frame) {
+      final Session session, final WebsocketOutbound out, final WebSocketFrame frame) {
     if (!(frame instanceof BinaryWebSocketFrame || frame instanceof TextWebSocketFrame)) {
       // FIXME 非 Packet 类型抛出异常
     }
 
     try {
-      var content = frame.content();
-      InputStream bbis = new ByteBufInputStream(content);
-      var packet = PacketHelper.MAPPER.readValue(bbis, Packet.class);
-      return packetRouter.apply(session, Mono.just(packet));
+      final var content = frame.content();
+      final DataInput input = new ByteBufInputStream(content);
+      final var packet = PacketHelper.MAPPER.readValue(input, Packet.class);
+      return packetRouter
+          .apply(session, Mono.just(packet))
+          .onErrorResume(
+              (e) -> {
+                log.error("处理消息错误 -> {}", packet, e);
+                return out.sendClose();
+              });
     } catch (IOException e) {
       // FIXME 这里需要处理异常
       e.printStackTrace();
