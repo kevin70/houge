@@ -1,6 +1,10 @@
 package io.zhudy.xim;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/**
+ * 当前 XIM 应用的版本号.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 public class XimVersion {
 
   /**
