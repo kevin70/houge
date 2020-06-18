@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  codecov: codecov/codecov@1.1.0
 jobs:
   build:
     docker:
@@ -52,6 +54,12 @@ jobs:
           name: Checkstyle Jmh
           command: ./gradlew checkstyleJmh
       # ========== 代码格式校验
+      -
       - run:
           name: Shadow Jar
           command: ./gradlew shadowJar
+
+      # ========== 上传代码覆盖报告
+      - codecov/upload:
+          file: build/jacoco/test.exec
+      # ========== 上传代码覆盖报告
