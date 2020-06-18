@@ -16,16 +16,8 @@ targetCompatibility = "11"
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-//tasks.withType(JavaCompile) {
-//    options.encoding = "UTF-8"
-//}
-
 test {
     useJUnitPlatform()
-}
-
-jacoco {
-    toolVersion = "0.8.5"
 }
 
 jacocoTestReport {
@@ -46,7 +38,7 @@ license {
 }
 
 checkstyle {
-    toolVersion "8.30"
+    toolVersion "8.33"
     configFile = project.file("config/checkstyle/google_checks.xml")
 }
 
@@ -57,8 +49,12 @@ tasks.withType(Checkstyle) {
     }
 }
 
-spotbugs {
-    toolVersion = "4.0.8"
+spotbugsMain {
+    reports {
+        html {
+            enabled = true
+        }
+    }
 }
 
 repositories {
@@ -68,30 +64,28 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom("io.projectreactor:reactor-bom:Dysprosium-SR5")
+        mavenBom("io.projectreactor:reactor-bom:Dysprosium-SR8")
         mavenBom("org.apache.logging.log4j:log4j-bom:2.13.0")
-        mavenBom("com.google.inject:guice-bom:4.2.2")
-        mavenBom("io.micrometer:micrometer-bom:1.3.5")
-        mavenBom("io.rsocket:rsocket-bom:1.0.0-RC6")
-        mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR2")
-        mavenBom("com.fasterxml.jackson:jackson-bom:2.10.2.20200130")
-
-        mavenBom("org.junit:junit-bom:5.6.0")
+        mavenBom("com.google.inject:guice-bom:4.2.3")
+        mavenBom("io.micrometer:micrometer-bom:1.5.1")
+        mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR5")
+        mavenBom("com.fasterxml.jackson:jackson-bom:2.11.0")
+        mavenBom("org.junit:junit-bom:5.6.2")
     }
 
     dependencies {
         dependency("org.projectlombok:lombok:1.18.12")
-        dependencySet("io.jsonwebtoken:0.11.0") {
+        dependencySet("io.jsonwebtoken:0.11.2") {
             entry("jjwt-impl")
             entry("jjwt-jackson")
         }
         dependency("org.ow2.asm:asm:7.3.1")
         dependency("cglib:cglib:3.3.0")
-        dependency("com.google.guava:guava:28.2-jre")
-        dependency("com.github.ben-manes.caffeine:caffeine:2.8.1")
+        dependency("com.google.guava:guava:29.0-jre")
+        dependency("com.github.ben-manes.caffeine:caffeine:2.8.4")
         dependency("com.typesafe:config:1.4.0")
-        dependency("io.lettuce:lettuce-core:5.2.2.RELEASE")
-
+        dependency("io.lettuce:lettuce-core:5.3.1.RELEASE")
+        dependency("com.github.stefanbirkner:system-lambda:1.0.0")
         dependencySet("org.openjdk.jmh:1.23") {
             entry("jmh-core")
             entry("jmh-generator-annprocess")
@@ -132,15 +126,16 @@ dependencies {
 
     testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("org.assertj:assertj-core:3.11.1")
+    testImplementation("com.github.stefanbirkner:system-lambda")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("io.micrometer:micrometer-test")
+    testImplementation("org.assertj:assertj-core:3.11.1")
     testImplementation("org.mockito:mockito-core:3.3.0")
     testImplementation("org.powermock:powermock-api-mockito2:2.0.5")
 
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1")
-    jmh "org.openjdk.jmh:jmh-core"
-    jmh "org.openjdk.jmh:jmh-generator-annprocess"
+    jmh("org.openjdk.jmh:jmh-core")
+    jmh("org.openjdk.jmh:jmh-generator-annprocess")
 }
 
 application {
