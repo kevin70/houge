@@ -1,6 +1,7 @@
 package io.zhudy.xim.packet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.zhudy.xim.helper.PacketHelper;
 import org.junit.jupiter.api.Test;
 
 public class PacketHelperTests {

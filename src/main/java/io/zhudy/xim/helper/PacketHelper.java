@@ -1,10 +1,12 @@
-package io.zhudy.xim.packet;
+package io.zhudy.xim.helper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+import io.zhudy.xim.packet.Namespaces;
+import io.zhudy.xim.packet.PrivateMsgPacket;
 
 /**
  * Packet 工具类.

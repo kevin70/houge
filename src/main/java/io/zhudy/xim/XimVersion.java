@@ -5,7 +5,7 @@ package io.zhudy.xim;
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-public class XimVersion {
+public final class XimVersion {
 
   /**
    * 返回 xim 版本号. 如果未找到则返回 {@code dev}.

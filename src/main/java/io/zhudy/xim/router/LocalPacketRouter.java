@@ -32,59 +32,73 @@ public class LocalPacketRouter implements PacketRouter {
   }
 
   @Override
-  public Mono<Void> apply(Session session, Mono<Packet> packetMono) {
+  public Mono<Void> route(Mono<Packet> packetMono) {
     return packetMono.flatMap(
         packet -> {
-          log.debug("uid: {} handle packet [packet={}]", session.uid(), packet);
+          log.debug("handle packet [packet={}]", packet);
 
           if (packet instanceof PrivateMsgPacket) {
-            return handlePrivateMsg(session, (PrivateMsgPacket) packet);
+            return handlePrivateMsg((PrivateMsgPacket) packet);
           }
           if (packet instanceof GroupMsgPacket) {
-            return handleGroupMsg(session, (GroupMsgPacket) packet);
+            return handleGroupMsg((GroupMsgPacket) packet);
           }
           if (packet instanceof GroupSubPacket) {
-            return handleGroupSub(session, (GroupSubPacket) packet);
+            return handleGroupSub((GroupSubPacket) packet);
           }
           if (packet instanceof GroupUnsubPacket) {
-            return handleGroupUnsub(session, (GroupUnsubPacket) packet);
+            return handleGroupUnsub((GroupUnsubPacket) packet);
           }
 
-          log.error(
-              "uid: {} Not found packet handler [ns={}, class={}, packet={}]",
-              session.uid(),
-              packet.getNs(),
-              packet.getClass(),
-              packet);
+          log.error("Not found packet handler [ns={}, packet={}]", packet.getNs(), packet);
           var e =
               new BizCodeException(BizCodes.C404, "Not found packet handler")
                   .addContextValue("ns", packet.getNs())
-                  .addContextValue("packetClass", packet.getClass())
-                  .addContextValue("uid", session.uid());
+                  .addContextValue("packet", packet);
           return Mono.error(e);
         });
   }
 
-  protected Mono<Void> handlePrivateMsg(Session session, PrivateMsgPacket packet) {
+  protected Mono<Void> handlePrivateMsg(final PrivateMsgPacket packet) {
     return sessionManager
         .findByUid(packet.getTo())
-        .flatMap(
-            toSession -> {
-              //
-              return toSession.sendPacket(packet);
-            })
+        .flatMap(session -> session.sendPacket(packet))
         .then();
   }
 
-  protected Mono<Void> handleGroupMsg(Session session, GroupMsgPacket packet) {
-    return Mono.empty();
+  protected Mono<Void> handleGroupMsg(final GroupMsgPacket packet) {
+    var sessions =
+        Packet.GROUP_ID_ALL.equals(packet.getTo())
+            ? sessionManager.all()
+            : sessionGroupManager.findByGroupId(packet.getTo());
+    return sessions.parallel().flatMap(session -> session.sendPacket(packet)).then();
   }
 
-  protected Mono<Void> handleGroupSub(Session session, GroupSubPacket packet) {
-    return Mono.empty();
+  protected Mono<Void> handleGroupSub(final GroupSubPacket packet) {
+    return Mono.subscriberContext()
+        .flatMap(
+            context -> {
+              if (!context.hasKey(Session.class)) {
+                log.error("Not found session in context, packet={}", packet);
+                throw new BizCodeException(BizCodes.C404, "Not found session in context");
+              }
+
+              final var session = context.get(Session.class);
+              return sessionGroupManager.subGroups(session, packet.getGroupIds());
+            });
   }
 
-  protected Mono<Void> handleGroupUnsub(Session session, GroupUnsubPacket packet) {
-    return Mono.empty();
+  protected Mono<Void> handleGroupUnsub(final GroupUnsubPacket packet) {
+    return Mono.subscriberContext()
+        .flatMap(
+            context -> {
+              if (!context.hasKey(Session.class)) {
+                log.error("Not found session in context, packet={}", packet);
+                throw new BizCodeException(BizCodes.C404, "Not found session in context");
+              }
+
+              final var session = context.get(Session.class);
+              return sessionGroupManager.unsubGroups(session, packet.getGroupIds());
+            });
   }
 }

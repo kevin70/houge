@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.Packet;
-import io.zhudy.xim.packet.PacketHelper;
+import io.zhudy.xim.helper.PacketHelper;
 import io.zhudy.xim.session.Session;
 import java.io.IOException;
 import java.io.OutputStream;

@@ -12,7 +12,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.AuthService;
 import io.zhudy.xim.packet.Packet;
-import io.zhudy.xim.packet.PacketHelper;
+import io.zhudy.xim.helper.PacketHelper;
 import io.zhudy.xim.router.PacketRouter;
 import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.SessionIdGenerator;

@@ -30,11 +30,11 @@ public final class Namespaces {
    *
    * @see GroupSubPacket
    */
-  public static final String GROUP_SUBSCRIBE = "group.subscribe";
+  public static final String GROUP_SUBSCRIBE = "group.sub";
   /**
    * 取消订阅群组消息.
    *
    * @see GroupUnsubPacket
    */
-  public static final String GROUP_UNSUBSCRIBE = "group.unsubscribe";
+  public static final String GROUP_UNSUBSCRIBE = "group.unsub";
 }

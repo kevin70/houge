@@ -18,6 +18,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonPropertyOrder("ns")
 public interface Packet {
 
+  /** 全局消息分组 ID. */
+  String GROUP_ID_ALL = "all";
+
   /**
    * 命名空间.
    *
