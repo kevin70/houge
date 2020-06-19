@@ -2,6 +2,7 @@ package io.zhudy.xim.server;
 
 import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -11,8 +12,8 @@ import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.AuthService;
-import io.zhudy.xim.packet.Packet;
 import io.zhudy.xim.helper.PacketHelper;
+import io.zhudy.xim.packet.Packet;
 import io.zhudy.xim.router.PacketRouter;
 import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.SessionIdGenerator;
@@ -30,6 +31,7 @@ import reactor.netty.channel.AbortedException;
 import reactor.netty.http.HttpInfos;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
+import reactor.util.context.Context;
 
 @Log4j2
 public class ImSocketHandler
@@ -153,13 +155,16 @@ public class ImSocketHandler
     }
 
     try {
+
       final var content = frame.content();
       final DataInput input = new ByteBufInputStream(content);
       final var packet = PacketHelper.MAPPER.readValue(input, Packet.class);
+
       return packetRouter
-          .apply(session, Mono.just(packet))
+          .route(Mono.just(packet))
+          .subscriberContext(Context.of(Session.class, session, ByteBuf.class, packet))
           .onErrorResume(
-              (e) -> {
+              e -> {
                 log.error("处理消息错误 -> {}", packet, e);
                 return out.sendClose();
               });
