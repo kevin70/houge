@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
+import io.zhudy.xim.packet.GroupMsgPacket;
+import io.zhudy.xim.packet.GroupSubPacket;
+import io.zhudy.xim.packet.GroupUnsubPacket;
 import io.zhudy.xim.packet.Namespaces;
 import io.zhudy.xim.packet.PrivateMsgPacket;
 
@@ -32,5 +35,8 @@ public class PacketHelper {
 
     // 注册 Packet 子类以解析实际的包体
     MAPPER.registerSubtypes(new NamedType(PrivateMsgPacket.class, Namespaces.PRIVATE_MSG));
+    MAPPER.registerSubtypes(new NamedType(GroupMsgPacket.class, Namespaces.GROUP_MSG));
+    MAPPER.registerSubtypes(new NamedType(GroupSubPacket.class, Namespaces.GROUP_SUBSCRIBE));
+    MAPPER.registerSubtypes(new NamedType(GroupUnsubPacket.class, Namespaces.GROUP_UNSUBSCRIBE));
   }
 }
