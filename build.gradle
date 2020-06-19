@@ -87,6 +87,7 @@ dependencyManagement {
         dependency("io.lettuce:lettuce-core:5.3.1.RELEASE")
         dependency("org.assertj:assertj-core:3.11.1")
         dependency("org.mockito:mockito-core:3.3.0")
+        dependency("org.powermock:powermock-api-mockito2:2.0.7")
         dependency("com.github.stefanbirkner:system-lambda:1.0.0")
         dependencySet("org.openjdk.jmh:1.23") {
             entry("jmh-core")
@@ -121,6 +122,7 @@ dependencies {
     testImplementation("io.micrometer:micrometer-test")
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.mockito:mockito-core")
+    testImplementation("org.powermock:powermock-api-mockito2")
 
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1")
 
