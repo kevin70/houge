@@ -74,7 +74,7 @@ public class DefaultSessionManager implements SessionManager {
                             .doOnNext(set -> set.add(s));
                       })
                   .then()
-                  // 将所有 add 操作放置在同一个线程中执行， 避免使用额外的 Lock
+                  // 将所有 add/remove 操作放置在同一个线程中执行， 避免使用额外的 Lock
                   .subscribeOn(Schedulers.single())
                   .publishOn(Schedulers.parallel());
             });
@@ -95,7 +95,7 @@ public class DefaultSessionManager implements SessionManager {
 
     final var p =
         Mono.defer(s)
-            // 将所有 remove 操作放置在同一个线程中执行， 避免使用额外的 Lock
+            // 将所有 add/remove 操作放置在同一个线程中执行， 避免使用额外的 Lock
             .subscribeOn(Schedulers.single())
             .publishOn(Schedulers.parallel());
 
