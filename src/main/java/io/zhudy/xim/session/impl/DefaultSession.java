@@ -103,7 +103,7 @@ public final class DefaultSession implements Session {
                 throw new RuntimeException("序列化 Packet 失败", e);
               }
             })
-        .transform(this::send)
+        .flatMap(this::send)
         .then();
   }
 
