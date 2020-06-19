@@ -85,6 +85,8 @@ dependencyManagement {
         dependency("com.github.ben-manes.caffeine:caffeine:2.8.4")
         dependency("com.typesafe:config:1.4.0")
         dependency("io.lettuce:lettuce-core:5.3.1.RELEASE")
+        dependency("org.assertj:assertj-core:3.11.1")
+        dependency("org.mockito:mockito-core:3.3.0")
         dependency("com.github.stefanbirkner:system-lambda:1.0.0")
         dependencySet("org.openjdk.jmh:1.23") {
             entry("jmh-core")
@@ -96,44 +98,32 @@ dependencyManagement {
 dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-
-    implementation("com.typesafe:config")
-    implementation("com.google.inject:guice")
-    implementation("io.micrometer:micrometer-core")
-    implementation("com.github.ben-manes.caffeine:caffeine")
-    // implementation("com.fasterxml.jackson.module:jackson-module-parameter-names")
-    implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
-
-    // Cluster
-    implementation("io.lettuce:lettuce-core")
-
-    // Log
     implementation("org.apache.logging.log4j:log4j-core")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl")
 
-    // JWT
+    implementation("com.typesafe:config")
+    implementation("com.google.inject:guice")
+    implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
+    implementation("io.lettuce:lettuce-core")
     implementation("io.jsonwebtoken:jjwt-impl")
     implementation("io.jsonwebtoken:jjwt-jackson")
-
-    // DB
     implementation("io.r2dbc:r2dbc-postgresql")
-
-    implementation("net.bytebuddy:byte-buddy:1.10.8")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     // Test
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
-
     testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("com.github.stefanbirkner:system-lambda")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("io.micrometer:micrometer-test")
-    testImplementation("org.assertj:assertj-core:3.11.1")
-    testImplementation("org.mockito:mockito-core:3.3.0")
-    testImplementation("org.powermock:powermock-api-mockito2:2.0.5")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
 
     spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1")
+
     jmh("org.openjdk.jmh:jmh-core")
     jmh("org.openjdk.jmh:jmh-generator-annprocess")
 }
