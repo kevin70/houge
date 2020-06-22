@@ -28,12 +28,16 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
   private final AsyncCache<String, Set<Session>> groupSessions = Caffeine.newBuilder().buildAsync();
   private final Set<SessionGroupListener> sessionGroupListeners;
 
-  /** */
+  /** 创建一个没有 {@link SessionGroupEvent} 监听事件的会话组管理. */
   public DefaultSessionGroupManager() {
     this(Collections.EMPTY_SET);
   }
 
-  /** @param sessionGroupListeners */
+  /**
+   * 创建一个带有 {@link SessionGroupEvent} 监听事件的会话组管理.
+   *
+   * @param sessionGroupListeners 监听器
+   */
   @Inject
   public DefaultSessionGroupManager(
       @Named(SESSION_GROUP_LISTENER_NAME_FOR_IOC) Set<SessionGroupListener> sessionGroupListeners) {
