@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
+@FunctionalInterface
 public interface SessionGroupListener {
 
   /**
@@ -15,5 +16,5 @@ public interface SessionGroupListener {
    * @param groupId
    * @return
    */
-  Mono<Void> handle(Session session, SessionGroupEvent event, String groupId);
+  Mono<Void> apply(Session session, SessionGroupEvent event, String groupId);
 }

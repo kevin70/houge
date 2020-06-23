@@ -113,7 +113,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
         .flatMap(
             listener ->
                 listener
-                    .handle(session, event, groupId)
+                    .apply(session, event, groupId)
                     .doOnError(
                         e -> {
                           // 记录监听器处理异常日志
