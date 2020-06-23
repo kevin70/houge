@@ -3,12 +3,14 @@ package io.zhudy.xim.session.impl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.zhudy.xim.auth.AuthContext;
-import io.zhudy.xim.packet.Packet;
 import io.zhudy.xim.helper.PacketHelper;
+import io.zhudy.xim.packet.Packet;
 import io.zhudy.xim.session.Session;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
@@ -31,6 +33,7 @@ public final class DefaultSession implements Session {
   final WebsocketInbound inbound;
   final WebsocketOutbound outbound;
   final AuthContext authContext;
+  final Set<String> subGroupIds;
 
   private final MonoProcessor<Void> closeProcessor = MonoProcessor.create();
   private final AtomicBoolean closed = new AtomicBoolean(false);
@@ -61,6 +64,7 @@ public final class DefaultSession implements Session {
 
     // 连接关闭
     this.inbound.withConnection(conn -> conn.onDispose().subscribe(closeProcessor));
+    this.subGroupIds = new LinkedHashSet<>();
   }
 
   @Override
@@ -81,6 +85,11 @@ public final class DefaultSession implements Session {
   @Override
   public boolean isClosed() {
     return closed.get();
+  }
+
+  @Override
+  public Set<String> subGroupIds() {
+    return subGroupIds;
   }
 
   @Override

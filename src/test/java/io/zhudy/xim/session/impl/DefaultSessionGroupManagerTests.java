@@ -35,6 +35,7 @@ class DefaultSessionGroupManagerTests {
       var sessions = groupSessions.synchronous().getIfPresent(groupId);
       assertThat(sessions).contains(session);
     }
+    assertThat(session.subGroupIds()).containsSequence(groupIds);
   }
 
   @Test
@@ -53,6 +54,7 @@ class DefaultSessionGroupManagerTests {
       var sessions = groupSessions.synchronous().getIfPresent(groupId);
       assertThat(sessions).contains(session).hasSize(1);
     }
+    assertThat(session.subGroupIds()).containsSequence(groupIds);
   }
 
   @Test
@@ -71,6 +73,7 @@ class DefaultSessionGroupManagerTests {
       var sessions = groupSessions.synchronous().getIfPresent(groupId);
       assertThat(sessions).isNull();
     }
+    assertThat(session.subGroupIds()).isEmpty();
   }
 
   @Test

@@ -3,6 +3,8 @@ package io.zhudy.xim.session;
 import io.netty.buffer.ByteBuf;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.Packet;
+import java.util.Collections;
+import java.util.Set;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -56,6 +58,15 @@ public interface Session {
    */
   default boolean isClosed() {
     return true;
+  }
+
+  /**
+   * 已订阅群组消息的 IDs.
+   *
+   * @return 订阅群组 IDs
+   */
+  default Set<String> subGroupIds() {
+    return Collections.emptySet();
   }
 
   /**

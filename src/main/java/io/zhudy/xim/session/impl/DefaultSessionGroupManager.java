@@ -51,7 +51,12 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
             groupId -> {
               var p =
                   Mono.fromFuture(groupSessions.get(groupId, key -> new HashSet<>()))
-                      .map(set -> set.add(session));
+                      .map(
+                          set -> {
+                            // 添加进会话订阅组中
+                            session.subGroupIds().add(groupId);
+                            return set.add(session);
+                          });
               return notify(session, SessionGroupEvent.GROUP_SUB_BEFORE, groupId)
                   .then(p)
                   .then(notify(session, SessionGroupEvent.GROUP_SUB_AFTER, groupId));
@@ -76,6 +81,9 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
                       .doOnNext(
                           set -> {
                             set.remove(session);
+                            // 从会话订阅组中删除
+                            session.subGroupIds().remove(groupId);
+
                             // 如果 group 中没有 session 则从缓存中删除
                             if (set.isEmpty()) {
                               groupSessions.synchronous().invalidate(groupId);
