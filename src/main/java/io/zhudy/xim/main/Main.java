@@ -47,14 +47,17 @@ public class Main implements Runnable {
 
   private void registerShutdownHook(final Runnable callback) {
     final var latch = new CountDownLatch(1);
-    final var t =
-        new Thread(
-            () -> {
-              callback.run();
-              latch.countDown();
-            },
-            "xim-shutdown");
-    Runtime.getRuntime().addShutdownHook(t);
+    final Runnable r =
+        () -> {
+          try {
+            callback.run();
+          } catch (Throwable e) {
+            e.printStackTrace();
+          } finally {
+            latch.countDown();
+          }
+        };
+    Runtime.getRuntime().addShutdownHook(new Thread(r, "xim-shutdown"));
 
     try {
       latch.await();
