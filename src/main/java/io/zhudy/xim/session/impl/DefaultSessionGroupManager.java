@@ -126,6 +126,6 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
                               e);
                         })
                     .onErrorResume(RuntimeException.class, e -> Mono.empty()))
-        .last();
+        .then();
   }
 }
