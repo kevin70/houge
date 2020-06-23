@@ -57,9 +57,9 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
                   .then(notify(session, SessionGroupEvent.GROUP_SUB_AFTER, groupId));
             })
         .then()
-        // 将所有 subGroups 操作放置在同一个线程中执行， 避免使用额外的 Lock
+        // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行， 避免使用额外的 Lock
         .subscribeOn(Schedulers.single())
-        .subscribeOn(Schedulers.parallel());
+        .publishOn(Schedulers.parallel());
   }
 
   @Override
@@ -87,7 +87,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
                   .then(notify(session, SessionGroupEvent.GROUP_UNSUB_AFTER, groupId));
             })
         .then()
-        // 将所有 unsubGroups 操作放置在同一个线程中执行， 避免使用额外的 Lock
+        // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行， 避免使用额外的 Lock
         .subscribeOn(Schedulers.single())
         .publishOn(Schedulers.parallel());
   }
