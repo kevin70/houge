@@ -4,10 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import io.zhudy.xim.session.Session;
+import io.zhudy.xim.session.SessionGroupEvent;
+import io.zhudy.xim.session.SessionGroupListener;
 import io.zhudy.xim.session.TestSession;
+import java.util.ArrayList;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 /** @author Kevin Zou (kevinz@weghst.com) */
@@ -92,5 +98,68 @@ class DefaultSessionGroupManagerTests {
     var dsgm = new DefaultSessionGroupManager();
     var p = dsgm.findByGroupId("group1");
     StepVerifier.create(p).verifyComplete();
+  }
+
+  @Nested
+  class SessionGroupListenerTests {
+
+    @Test
+    void groupSubEvent() {
+      var gid = "group1";
+      var eventValues = new ArrayList<ImmutableTriple>();
+      SessionGroupListener listener =
+          (session, event, groupId) -> {
+            eventValues.add(ImmutableTriple.of(session, event, groupId));
+            return Mono.empty();
+          };
+
+      var session = new TestSession();
+      var groupIds = Set.of(gid);
+      var dsgm = new DefaultSessionGroupManager(Set.of(listener));
+      var p = dsgm.subGroups(session, groupIds);
+      StepVerifier.create(p).verifyComplete();
+
+      assertThat(eventValues.get(0))
+          .as("group sub before")
+          .hasFieldOrPropertyWithValue("left", session)
+          .hasFieldOrPropertyWithValue("middle", SessionGroupEvent.GROUP_SUB_BEFORE)
+          .hasFieldOrPropertyWithValue("right", gid);
+      assertThat(eventValues.get(1))
+          .as("group sub after")
+          .hasFieldOrPropertyWithValue("left", session)
+          .hasFieldOrPropertyWithValue("middle", SessionGroupEvent.GROUP_SUB_AFTER)
+          .hasFieldOrPropertyWithValue("right", gid);
+    }
+
+    @Test
+    void groupUnsubEvent() {
+      var gid = "group1";
+      var eventValues = new ArrayList<ImmutableTriple>();
+      SessionGroupListener listener =
+          (session, event, groupId) -> {
+            if (event == SessionGroupEvent.GROUP_UNSUB_BEFORE
+                || event == SessionGroupEvent.GROUP_UNSUB_AFTER) {
+              eventValues.add(ImmutableTriple.of(session, event, groupId));
+            }
+            return Mono.empty();
+          };
+
+      var session = new TestSession();
+      var groupIds = Set.of(gid);
+      var dsgm = new DefaultSessionGroupManager(Set.of(listener));
+      var p = dsgm.subGroups(session, groupIds).thenMany(dsgm.unsubGroups(session, groupIds));
+      StepVerifier.create(p).verifyComplete();
+
+      assertThat(eventValues.get(0))
+          .as("group unsub before")
+          .hasFieldOrPropertyWithValue("left", session)
+          .hasFieldOrPropertyWithValue("middle", SessionGroupEvent.GROUP_UNSUB_BEFORE)
+          .hasFieldOrPropertyWithValue("right", gid);
+      assertThat(eventValues.get(1))
+          .as("group unsub after")
+          .hasFieldOrPropertyWithValue("left", session)
+          .hasFieldOrPropertyWithValue("middle", SessionGroupEvent.GROUP_UNSUB_AFTER)
+          .hasFieldOrPropertyWithValue("right", gid);
+    }
   }
 }
