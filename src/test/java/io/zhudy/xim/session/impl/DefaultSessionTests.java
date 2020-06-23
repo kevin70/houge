@@ -56,10 +56,9 @@ class DefaultSessionTests {
 
   @BeforeEach
   void before() {
-    var addr = disposableServer.address();
     websocketClientConn =
         HttpClient.create()
-            .baseUrl("ws://" + addr.getHostString() + ":" + addr.getPort())
+            .baseUrl("ws://" + disposableServer.host() + ":" + disposableServer.port())
             .websocket()
             .uri("/im")
             .connect()
