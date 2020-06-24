@@ -11,10 +11,12 @@ import reactor.core.publisher.Mono;
 public interface SessionGroupListener {
 
   /**
-   * @param session
-   * @param event
-   * @param groupId
-   * @return
+   * 事件处理.
+   *
+   * @param session 会话信息
+   * @param event 事件类型
+   * @param groupId 分组 ID
+   * @return {@link Mono#empty()}
    */
   Mono<Void> apply(Session session, SessionGroupEvent event, String groupId);
 }
