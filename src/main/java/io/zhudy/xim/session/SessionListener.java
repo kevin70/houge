@@ -10,9 +10,9 @@ import reactor.core.publisher.Mono;
 public interface SessionListener {
 
   /**
-   * @param session
-   * @param event
-   * @return
+   * @param session 会话信息
+   * @param event 事件类型
+   * @return {@link Mono#empty()}
    */
   Mono<Void> handle(Session session, SessionEvent event);
 }
