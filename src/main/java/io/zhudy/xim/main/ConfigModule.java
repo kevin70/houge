@@ -1,16 +1,14 @@
 /**
  * Copyright 2019-2020 the original author or authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package io.zhudy.xim.main;
@@ -25,6 +23,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
 import com.typesafe.config.ConfigFactory;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import lombok.extern.log4j.Log4j2;
 
@@ -84,7 +83,7 @@ public class ConfigModule extends AbstractModule {
           .forEach(
               e -> {
                 String v = (String) e.getValue().unwrapped();
-                var sk = Keys.hmacShaKeyFor(v.getBytes());
+                var sk = Keys.hmacShaKeyFor(v.getBytes(StandardCharsets.UTF_8));
                 mapBinder.addBinding(e.getKey()).toInstance(sk);
               });
     }

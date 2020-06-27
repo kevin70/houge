@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.ErrorPacket;
+import java.security.SecureRandom;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
@@ -87,7 +88,7 @@ class DefaultSessionTests {
 
   @Test
   void newSession() {
-    var sessionId = ThreadLocalRandom.current().nextLong();
+    var sessionId = new SecureRandom().nextLong();
     var authContext = AuthContext.NONE_AUTH_CONTEXT;
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 
@@ -104,7 +105,7 @@ class DefaultSessionTests {
 
   @Test
   void sendPacket() throws InterruptedException {
-    var sessionId = ThreadLocalRandom.current().nextLong();
+    var sessionId = new SecureRandom().nextLong();
     var authContext = AuthContext.NONE_AUTH_CONTEXT;
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 
@@ -119,7 +120,7 @@ class DefaultSessionTests {
 
   @Test
   void closeSession() throws InterruptedException {
-    var sessionId = ThreadLocalRandom.current().nextLong();
+    var sessionId = new SecureRandom().nextLong();
     var authContext = AuthContext.NONE_AUTH_CONTEXT;
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 
@@ -130,7 +131,7 @@ class DefaultSessionTests {
 
     // 关闭会话
     session.close().then(session.close()).subscribe();
-    cdl.await(5, TimeUnit.SECONDS);
+    assertThat(cdl.await(5, TimeUnit.SECONDS)).isTrue();
 
     assertThat(cdl.getCount()).as("onClose() count").isEqualTo(0);
     assertThat(session.isClosed()).as("isClosed()").isEqualTo(true);

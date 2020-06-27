@@ -26,6 +26,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import io.jsonwebtoken.security.Keys;
 import io.zhudy.xim.BizCodeException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Clock;
 import java.time.Duration;
@@ -43,11 +44,11 @@ class JwsAuthServiceTests {
   Key testSecret =
       Keys.hmacShaKeyFor(
           "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764"
-              .getBytes());
+              .getBytes(StandardCharsets.UTF_8));
   Key illegalSecret =
       Keys.hmacShaKeyFor(
           "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764-illegal-secret"
-              .getBytes());
+              .getBytes(StandardCharsets.UTF_8));
   SigningKeyResolver signingKeyResolver = new DefaultSigningKeyResolver(Map.of(kid, testSecret));
 
   @Test

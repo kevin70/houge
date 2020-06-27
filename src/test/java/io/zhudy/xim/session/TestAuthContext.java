@@ -16,13 +16,14 @@
 package io.zhudy.xim.session;
 
 import io.zhudy.xim.auth.AuthContext;
+import java.security.SecureRandom;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 
 /** @author Kevin Zou (kevinz@weghst.com) */
 public class TestAuthContext implements AuthContext {
 
-  final String uid = Long.toHexString(ThreadLocalRandom.current().nextLong());
+  final String uid = Long.toHexString(new SecureRandom().nextLong());
 
   @Override
   public String uid() {

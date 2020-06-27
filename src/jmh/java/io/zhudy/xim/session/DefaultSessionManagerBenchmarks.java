@@ -18,6 +18,8 @@ package io.zhudy.xim.session;
 import io.netty.buffer.ByteBuf;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.session.impl.DefaultSessionManager;
+import java.security.SecureRandom;
+import java.util.Random;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -35,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class DefaultSessionManagerBenchmarks {
 
   private SessionManager sessionManager;
-  private ThreadLocalRandom sessionIdRan = ThreadLocalRandom.current();
+  private Random sessionIdRan = new SecureRandom();
 
   private class BenchSession implements Session {
 

@@ -25,6 +25,7 @@ import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.TestAuthContext;
 import io.zhudy.xim.session.TestSession;
+import java.security.SecureRandom;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
@@ -119,7 +120,7 @@ class DefaultSessionManagerTests {
   @Test
   void removeByUid() {
     var dsm = new DefaultSessionManager();
-    var uid = Long.toHexString(ThreadLocalRandom.current().nextLong());
+    var uid = Long.toHexString(new SecureRandom().nextLong());
     var session =
         new TestSession() {
           @Override
@@ -130,10 +131,9 @@ class DefaultSessionManagerTests {
                 return uid;
               }
 
-              @Nonnull
               @Override
               public String token() {
-                return null;
+                return "test";
               }
             };
           }
@@ -151,7 +151,7 @@ class DefaultSessionManagerTests {
   @Test
   void removeByUidNoExistsSession() {
     var dsm = new DefaultSessionManager();
-    var uid = Long.toHexString(ThreadLocalRandom.current().nextLong());
+    var uid = Long.toHexString(new SecureRandom().nextLong());
     var p = dsm.removeByUid(uid);
     StepVerifier.create(p).expectComplete().verify();
   }

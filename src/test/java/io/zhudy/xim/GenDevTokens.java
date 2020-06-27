@@ -21,6 +21,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import io.jsonwebtoken.security.Keys;
 import io.zhudy.xim.auth.impl.DefaultSigningKeyResolver;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,8 @@ class GenDevTokens {
   Key testSecret =
       Keys.hmacShaKeyFor(
           "48991ed9387952211883afc2392fc5332239993e8184a42888bf4123e78cd572cc18292d81d9578af50eb6ccd66c78bb71f7a6bd28a7b8b14ce7801ab75b1278"
-              .getBytes());
-  SigningKeyResolver signingKeyResolver = new DefaultSigningKeyResolver(Map.of(kid, testSecret));
+              .getBytes(StandardCharsets.UTF_8));
+//  SigningKeyResolver signingKeyResolver = new DefaultSigningKeyResolver(Map.of(kid, testSecret));
 
   @Test
   void genTokens() {

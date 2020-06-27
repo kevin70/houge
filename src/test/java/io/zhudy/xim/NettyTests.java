@@ -33,7 +33,7 @@ public class NettyTests {
     ByteBufUtil.writeUtf8(buf2, " world!");
 
     buf1.writeBytes(buf2);
-    buf1.writeBytes("HELLO".getBytes());
+    buf1.writeBytes("HELLO".getBytes(StandardCharsets.UTF_8));
 
     var t = buf1.readCharSequence(2, StandardCharsets.UTF_8);
     System.out.println(t);

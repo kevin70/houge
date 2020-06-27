@@ -182,9 +182,11 @@ public class DefaultSessionManager implements SessionManager {
       var syncCache = uidSessions.synchronous();
       var uid = session.uid();
       var set = syncCache.getIfPresent(uid);
-      set.remove(session);
-      if (set.isEmpty()) {
-        syncCache.invalidate(uid);
+      if (set != null) {
+        set.remove(session);
+        if (set.isEmpty()) {
+          syncCache.invalidate(uid);
+        }
       }
     }
   }
