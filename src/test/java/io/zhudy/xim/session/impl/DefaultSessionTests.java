@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019-2020 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ import io.zhudy.xim.packet.ErrorPacket;
 import java.security.SecureRandom;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -40,9 +39,9 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 /** @author Kevin Zou (kevinz@weghst.com) */
 class DefaultSessionTests {
 
-  volatile static DisposableServer disposableServer;
-  volatile static WebsocketInbound inbound;
-  volatile static WebsocketOutbound outbound;
+  static volatile DisposableServer disposableServer;
+  static volatile WebsocketInbound inbound;
+  static volatile WebsocketOutbound outbound;
 
   Connection websocketClientConn;
 
