@@ -31,6 +31,9 @@ license {
     header = rootProject.file("LICENSE")
     headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.classLoader.getResource("headers/Apache-2.0").toURI()
     skipExistingHeaders = true
+    mapping {
+        java = "SLASHSTAR_STYLE"
+    }
     ext {
         year = "2019-2020"
         author = "the original author or authors"
