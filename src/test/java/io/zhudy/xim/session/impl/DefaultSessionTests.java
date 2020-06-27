@@ -40,9 +40,9 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 /** @author Kevin Zou (kevinz@weghst.com) */
 class DefaultSessionTests {
 
-  static DisposableServer disposableServer;
-  static WebsocketInbound inbound;
-  static WebsocketOutbound outbound;
+  volatile static DisposableServer disposableServer;
+  volatile static WebsocketInbound inbound;
+  volatile static WebsocketOutbound outbound;
 
   Connection websocketClientConn;
 
