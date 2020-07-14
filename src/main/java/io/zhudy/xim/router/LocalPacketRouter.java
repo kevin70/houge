@@ -95,7 +95,8 @@ public class LocalPacketRouter implements PacketRouter {
             context -> {
               if (!context.hasKey(Session.class)) {
                 log.error("Not found session in context, packet={}", packet);
-                throw new BizCodeException(BizCodes.C404, "Not found session in context");
+                return Mono.error(
+                    new BizCodeException(BizCodes.C404, "Not found session in context"));
               }
 
               final var session = context.get(Session.class);
@@ -109,7 +110,8 @@ public class LocalPacketRouter implements PacketRouter {
             context -> {
               if (!context.hasKey(Session.class)) {
                 log.error("Not found session in context, packet={}", packet);
-                throw new BizCodeException(BizCodes.C404, "Not found session in context");
+                return Mono.error(
+                    new BizCodeException(BizCodes.C404, "Not found session in context"));
               }
 
               final var session = context.get(Session.class);
