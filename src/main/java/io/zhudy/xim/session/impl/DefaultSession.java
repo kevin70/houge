@@ -32,6 +32,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoProcessor;
+import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 
@@ -133,7 +134,9 @@ public final class DefaultSession implements Session {
 
   @Override
   public Mono<Void> send(Publisher<ByteBuf> buf) {
-    return outbound.send(buf).then();
+    var processor = MonoProcessor.<Void>create();
+    outbound.send(buf).neverComplete().subscribeOn(Schedulers.parallel()).subscribe(processor);
+    return processor;
   }
 
   @Override
