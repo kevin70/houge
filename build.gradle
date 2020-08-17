@@ -1,10 +1,10 @@
 plugins {
-    id "io.spring.dependency-management" version "1.0.9.RELEASE"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
-    id "com.github.hierynomus.license" version "0.15.0"
-    id "me.champeau.gradle.jmh" version "0.5.0"
-    id "checkstyle"
-    id "com.github.spotbugs" version "4.4.3"
+  id "io.spring.dependency-management" version "1.0.9.RELEASE"
+  id "com.github.johnrengelman.shadow" version "5.2.0"
+  id "com.github.hierynomus.license" version "0.15.0"
+  id "me.champeau.gradle.jmh" version "0.5.0"
+  id "checkstyle"
+  id "com.github.spotbugs" version "4.4.3"
 }
 
 apply plugin: "java"
@@ -17,129 +17,126 @@ targetCompatibility = "11"
 [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
+  reports {
+    xml.enabled = true
+    html.enabled = true
+  }
 }
 
 license {
-    header = rootProject.file("LICENSE")
-    headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.classLoader.getResource("headers/Apache-2.0").toURI()
-    skipExistingHeaders = true
-    mapping {
-        java = "SLASHSTAR_STYLE"
-    }
-    ext {
-        year = "2019-2020"
-        author = "the original author or authors"
-    }
+  header = rootProject.file("LICENSE")
+  headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.classLoader.getResource("headers/Apache-2.0").toURI()
+  skipExistingHeaders = true
+  mapping {
+    java = "SLASHSTAR_STYLE"
+  }
+  ext {
+    year = "2019-2020"
+    author = "the original author or authors"
+  }
 }
 
 checkstyle {
-    toolVersion "8.33"
-    configFile = project.file("config/checkstyle/google_checks.xml")
+  toolVersion "8.33"
+  configFile = project.file("config/checkstyle/google_checks.xml")
 }
 
 tasks.withType(Checkstyle) {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
+  reports {
+    xml.enabled = true
+    html.enabled = true
+  }
 }
 
 spotbugs {
-    toolVersion = "4.0.6"
+  toolVersion = "4.0.6"
 }
 
 tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
-    reports {
-        html {
-            enabled = true
-        }
+  reports {
+    html {
+      enabled = true
     }
+  }
 }
 
 repositories {
-    mavenLocal()
-    maven {
-        url "https://repo.spring.io/milestone"
-    }
-    mavenCentral()
+  mavenLocal()
+  mavenCentral()
 }
 
 dependencyManagement {
-    imports {
-        mavenBom("io.projectreactor:reactor-bom:Dysprosium-SR10")
-        mavenBom("org.apache.logging.log4j:log4j-bom:2.13.0")
-        mavenBom("com.google.inject:guice-bom:4.2.3")
-        mavenBom("io.micrometer:micrometer-bom:1.5.1")
-        mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR5")
-        mavenBom("com.fasterxml.jackson:jackson-bom:2.11.0")
-        mavenBom("org.junit:junit-bom:5.6.2")
-    }
+  imports {
+    mavenBom("io.projectreactor:reactor-bom:Dysprosium-SR10")
+    mavenBom("org.apache.logging.log4j:log4j-bom:2.13.0")
+    mavenBom("com.google.inject:guice-bom:4.2.3")
+    mavenBom("io.micrometer:micrometer-bom:1.5.1")
+    mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR5")
+    mavenBom("com.fasterxml.jackson:jackson-bom:2.11.0")
+    mavenBom("org.junit:junit-bom:5.6.2")
+  }
 
-    dependencies {
-        dependency("org.projectlombok:lombok:1.18.12")
-        dependencySet("io.jsonwebtoken:0.11.2") {
-            entry("jjwt-impl")
-            entry("jjwt-jackson")
-        }
-        dependency("org.ow2.asm:asm:7.3.1")
-        dependency("cglib:cglib:3.3.0")
-        dependency("com.google.guava:guava:29.0-jre")
-        dependency("com.github.ben-manes.caffeine:caffeine:2.8.4")
-        dependency("com.typesafe:config:1.4.0")
-        dependency("io.lettuce:lettuce-core:5.3.1.RELEASE")
-        dependency("org.assertj:assertj-core:3.11.1")
-        dependency("org.mockito:mockito-core:3.3.0")
-        dependency("org.powermock:powermock-api-mockito2:2.0.7")
-        dependency("com.github.stefanbirkner:system-lambda:1.0.0")
-        dependencySet("org.openjdk.jmh:1.23") {
-            entry("jmh-core")
-            entry("jmh-generator-annprocess")
-        }
+  dependencies {
+    dependency("org.projectlombok:lombok:1.18.12")
+    dependencySet("io.jsonwebtoken:0.11.2") {
+      entry("jjwt-impl")
+      entry("jjwt-jackson")
     }
+    dependency("org.ow2.asm:asm:7.3.1")
+    dependency("cglib:cglib:3.3.0")
+    dependency("com.google.guava:guava:29.0-jre")
+    dependency("com.github.ben-manes.caffeine:caffeine:2.8.4")
+    dependency("com.typesafe:config:1.4.0")
+    dependency("io.lettuce:lettuce-core:5.3.1.RELEASE")
+    dependency("org.assertj:assertj-core:3.11.1")
+    dependency("org.mockito:mockito-core:3.3.0")
+    dependency("org.powermock:powermock-api-mockito2:2.0.7")
+    dependency("com.github.stefanbirkner:system-lambda:1.0.0")
+    dependencySet("org.openjdk.jmh:1.23") {
+      entry("jmh-core")
+      entry("jmh-generator-annprocess")
+    }
+  }
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    implementation("org.apache.logging.log4j:log4j-core")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
+  compileOnly("org.projectlombok:lombok")
+  annotationProcessor("org.projectlombok:lombok")
+  implementation("org.apache.logging.log4j:log4j-core")
+  implementation("org.apache.logging.log4j:log4j-slf4j-impl")
 
-    implementation("com.typesafe:config")
-    implementation("com.google.inject:guice")
-    implementation("com.github.ben-manes.caffeine:caffeine")
-    implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
-    implementation("io.lettuce:lettuce-core")
-    implementation("io.jsonwebtoken:jjwt-impl")
-    implementation("io.jsonwebtoken:jjwt-jackson")
-    implementation("io.r2dbc:r2dbc-postgresql")
-    implementation("io.micrometer:micrometer-registry-prometheus")
+  implementation("com.typesafe:config")
+  implementation("com.google.inject:guice")
+  implementation("com.github.ben-manes.caffeine:caffeine")
+  implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
+  implementation("io.lettuce:lettuce-core")
+  implementation("io.jsonwebtoken:jjwt-impl")
+  implementation("io.jsonwebtoken:jjwt-jackson")
+  implementation("io.r2dbc:r2dbc-postgresql")
+  implementation("io.micrometer:micrometer-registry-prometheus")
 
-    // Test
-    testCompileOnly("org.projectlombok:lombok")
-    testAnnotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
-    testImplementation("com.github.stefanbirkner:system-lambda")
-    testImplementation("io.projectreactor:reactor-test")
-    testImplementation("io.micrometer:micrometer-test")
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.mockito:mockito-core")
-    testImplementation("org.powermock:powermock-api-mockito2")
+  // Test
+  testCompileOnly("org.projectlombok:lombok")
+  testAnnotationProcessor("org.projectlombok:lombok")
+  testImplementation("org.junit.platform:junit-platform-launcher")
+  testImplementation("org.junit.jupiter:junit-jupiter-engine")
+  testImplementation("com.github.stefanbirkner:system-lambda")
+  testImplementation("io.projectreactor:reactor-test")
+  testImplementation("io.micrometer:micrometer-test")
+  testImplementation("org.assertj:assertj-core")
+  testImplementation("org.mockito:mockito-core")
+  testImplementation("org.powermock:powermock-api-mockito2")
 
-    spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1")
+  spotbugsPlugins("com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1")
 
-    jmh("org.openjdk.jmh:jmh-core")
-    jmh("org.openjdk.jmh:jmh-generator-annprocess")
+  jmh("org.openjdk.jmh:jmh-core")
+  jmh("org.openjdk.jmh:jmh-generator-annprocess")
 }
 
 application {
-    mainClassName = "io.zhudy.xim.main.Main"
+  mainClassName = "io.zhudy.xim.main.Main"
 }
