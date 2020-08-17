@@ -66,9 +66,14 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
 
 repositories {
   mavenLocal()
-  maven {
-    url = "https://maven.aliyun.com/nexus/content/groups/public/"
+
+  def aliyunEnabled = System.getenv("GITHUB_ACTIONS") == null
+  if (aliyunEnabled) {
+    maven {
+      url = "https://maven.aliyun.com/nexus/content/groups/public/"
+    }
   }
+
   mavenCentral()
 }
 
