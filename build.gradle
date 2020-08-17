@@ -84,7 +84,7 @@ dependencyManagement {
     mavenBom("com.google.inject:guice-bom:4.2.3")
     mavenBom("io.micrometer:micrometer-bom:1.5.1")
     mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR5")
-    mavenBom("com.fasterxml.jackson:jackson-bom:2.11.0")
+    mavenBom("com.fasterxml.jackson:jackson-bom:2.11.2")
     mavenBom("org.junit:junit-bom:5.6.2")
   }
 
