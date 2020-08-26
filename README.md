@@ -59,6 +59,29 @@ IM 服务器
 | `extra_args` | `string` | 扩展参数 |
 
 ### 订阅群组消息
+```json
+{
+  "ns": "group.sub",
+  "group_ids": ["group id-1", "group id-2"]
+}
+```
+
+| 属性名称 | 数据类型 | 描述 |
+| --- | --- | --- |
+| `ns` | `string` | 命名空间，固定取值 `group.sub` |
+| `group_ids` | `array[string]` | 群组 ID 列表 |
+
 ### 取消订阅群组消息
+```json
+{
+  "ns": "group.unsub",
+  "group_ids": ["group id-1", "group id-2"]
+}
+```
+
+| 属性名称 | 数据类型 | 描述 |
+| --- | --- | --- |
+| `ns` | `string` | 命名空间，固定取值 `group.unsub` |
+| `group_ids` | `array[string]` | 群组 ID 列表 |
 
 ### 群聊
