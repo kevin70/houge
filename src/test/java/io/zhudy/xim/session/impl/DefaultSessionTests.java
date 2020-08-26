@@ -21,13 +21,10 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.ErrorPacket;
 import java.security.SecureRandom;
-import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.netty.Connection;
@@ -37,35 +34,39 @@ import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/**
+ * {@link DefaultSession} 单元测试.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 class DefaultSessionTests {
 
   private volatile DisposableServer disposableServer;
   private volatile WebsocketInbound inbound;
   private volatile WebsocketOutbound outbound;
-  private volatile Connection websocketClientConn;
+  private volatile Connection webSocketClient;
 
   @BeforeEach
   void before() {
     disposableServer =
-      HttpServer.create()
-        .port(0)
-        .route(
-          routes -> {
-            routes.ws(
-              "/im",
-              (inbound, outbound) -> {
-                this.inbound = inbound;
-                this.outbound = outbound;
-                return outbound.neverComplete();
-              });
-          })
-        .wiretap(true)
-        .bindNow();
+        HttpServer.create()
+            .port(0)
+            .route(
+                routes -> {
+                  routes.ws(
+                      "/im",
+                      (inbound, outbound) -> {
+                        this.inbound = inbound;
+                        this.outbound = outbound;
+                        return outbound.neverComplete();
+                      });
+                })
+            .wiretap(true)
+            .bindNow();
 
-    websocketClientConn =
-      HttpClient.create()
-        .baseUrl("ws://" + disposableServer.host() + ":" + disposableServer.port())
+    webSocketClient =
+        HttpClient.create()
+            .baseUrl("ws://" + disposableServer.host() + ":" + disposableServer.port())
             .websocket()
             .uri("/im")
             .connect()
@@ -75,8 +76,7 @@ class DefaultSessionTests {
   @AfterEach
   void after() {
     disposableServer.disposeNow();
-    websocketClientConn.disposeNow();
-    System.out.println("After---------------" + Thread.currentThread().getName());
+    webSocketClient.disposeNow();
   }
 
   @Test
@@ -103,9 +103,8 @@ class DefaultSessionTests {
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 
     var queue = new LinkedBlockingQueue<>();
-    websocketClientConn.inbound().receiveObject().doOnNext(o -> queue.offer(o)).subscribe();
+    webSocketClient.inbound().receiveObject().doOnNext(o -> queue.offer(o)).subscribe();
 
-    System.out.println("sendPacket---------------" + Thread.currentThread().getName());
     session.sendPacket(new ErrorPacket("test message", "test message")).subscribe();
 
     var o = queue.poll(5, TimeUnit.SECONDS);
