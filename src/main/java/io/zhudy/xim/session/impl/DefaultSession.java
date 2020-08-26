@@ -15,8 +15,8 @@
  */
 package io.zhudy.xim.session.impl;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.helper.PacketHelper;
 import io.zhudy.xim.packet.Packet;
@@ -29,10 +29,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoProcessor;
-import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 
@@ -110,7 +108,7 @@ public final class DefaultSession implements Session {
 
   @Override
   public Mono<Void> sendPacket(Publisher<Packet> packet) {
-    return Flux.from(packet)
+    return Mono.from(packet)
         .map(
             p -> {
               try {
@@ -133,10 +131,8 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public Mono<Void> send(Publisher<ByteBuf> buf) {
-    var processor = MonoProcessor.<Void>create();
-    outbound.send(buf).neverComplete().subscribeOn(Schedulers.parallel()).subscribe(processor);
-    return processor;
+  public Mono<Void> send(Publisher<TextWebSocketFrame> frame) {
+    return outbound.sendObject(frame).neverComplete();
   }
 
   @Override

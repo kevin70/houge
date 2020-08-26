@@ -16,6 +16,7 @@
 package io.zhudy.xim.session;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.Packet;
 import java.util.Collections;
@@ -111,16 +112,16 @@ public interface Session {
    * @return Mono
    */
   default Mono<Void> send(ByteBuf buf) {
-    return send(Mono.just(buf));
+    return send(Mono.just(new TextWebSocketFrame(buf)));
   }
 
   /**
    * 向客户端发送数据.
    *
-   * @param buf 数据
+   * @param frame 数据
    * @return Mono
    */
-  default Mono<Void> send(Publisher<ByteBuf> buf) {
+  default Mono<Void> send(Publisher<TextWebSocketFrame> frame) {
     return Mono.empty();
   }
 
