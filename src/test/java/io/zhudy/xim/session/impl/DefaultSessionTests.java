@@ -40,41 +40,32 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 /** @author Kevin Zou (kevinz@weghst.com) */
 class DefaultSessionTests {
 
-  static volatile DisposableServer disposableServer;
-  static volatile WebsocketInbound inbound;
-  static volatile WebsocketOutbound outbound;
-
-  Connection websocketClientConn;
-
-  @BeforeAll
-  static void beforeAll() {
-    disposableServer =
-        HttpServer.create()
-            .port(0)
-            .route(
-                routes -> {
-                  routes.ws(
-                      "/im",
-                      (inbound, outbound) -> {
-                        DefaultSessionTests.inbound = inbound;
-                        DefaultSessionTests.outbound = outbound;
-                        return outbound.neverComplete();
-                      });
-                })
-            .wiretap(true)
-            .bindNow();
-  }
-
-  @AfterAll
-  static void afterAll() {
-    disposableServer.disposeNow();
-  }
+  private volatile DisposableServer disposableServer;
+  private volatile WebsocketInbound inbound;
+  private volatile WebsocketOutbound outbound;
+  private volatile Connection websocketClientConn;
 
   @BeforeEach
   void before() {
+    disposableServer =
+      HttpServer.create()
+        .port(0)
+        .route(
+          routes -> {
+            routes.ws(
+              "/im",
+              (inbound, outbound) -> {
+                this.inbound = inbound;
+                this.outbound = outbound;
+                return outbound.neverComplete();
+              });
+          })
+        .wiretap(true)
+        .bindNow();
+
     websocketClientConn =
-        HttpClient.create()
-            .baseUrl("ws://" + disposableServer.host() + ":" + disposableServer.port())
+      HttpClient.create()
+        .baseUrl("ws://" + disposableServer.host() + ":" + disposableServer.port())
             .websocket()
             .uri("/im")
             .connect()
@@ -83,6 +74,7 @@ class DefaultSessionTests {
 
   @AfterEach
   void after() {
+    disposableServer.disposeNow();
     websocketClientConn.disposeNow();
     System.out.println("After---------------" + Thread.currentThread().getName());
   }
