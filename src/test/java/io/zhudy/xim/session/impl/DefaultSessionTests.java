@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.ErrorPacket;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +84,7 @@ class DefaultSessionTests {
   @AfterEach
   void after() {
     websocketClientConn.disposeNow();
+    System.out.println("After---------------" + Thread.currentThread().getName());
   }
 
   @Test
@@ -111,7 +113,10 @@ class DefaultSessionTests {
     var queue = new LinkedBlockingQueue<>();
     websocketClientConn.inbound().receiveObject().doOnNext(o -> queue.offer(o)).subscribe();
 
-    session.sendPacket(new ErrorPacket("test message", "test message")).subscribe();
+    System.out.println("sendPacket" + Thread.currentThread().getName());
+    session
+        .sendPacket(new ErrorPacket("test message", "test message"))
+        .block(Duration.ofSeconds(5));
 
     var o = queue.poll(5, TimeUnit.SECONDS);
     assertThat(o).isInstanceOf(WebSocketFrame.class);
