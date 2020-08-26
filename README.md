@@ -6,6 +6,7 @@ IM 服务器
 - IntelliJ IDEA
     - [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
     - [Google Java Format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+    - [SonarLint](https://www.sonarlint.org/intellij)
 - Redis
 
 ### Google Java Format 配置
