@@ -100,7 +100,7 @@ class DefaultSessionTests {
         .hasFieldOrPropertyWithValue("authContext", AuthContext.NONE_AUTH_CONTEXT);
 
     assertThat(session.sessionId()).as("sessionId()").isEqualTo(sessionId);
-    assertThat(session.isClosed()).as("isClosed()").isEqualTo(false);
+    assertThat(session.isClosed()).as("isClosed()").isFalse();
     assertThat(session.isAnonymous()).as("isAnonymous()").isEqualTo(authContext.isAnonymous());
   }
 
@@ -135,12 +135,12 @@ class DefaultSessionTests {
     session.close().then(session.close()).subscribe();
     assertThat(cdl.await(5, TimeUnit.SECONDS)).isTrue();
 
-    assertThat(cdl.getCount()).as("onClose() count").isEqualTo(0);
-    assertThat(session.isClosed()).as("isClosed()").isEqualTo(true);
+    assertThat(cdl.getCount()).as("onClose() count").isZero();
+    assertThat(session.isClosed()).as("isClosed()").isTrue();
     outbound.withConnection(
         connection -> {
           // 判断会话连接是否关闭
-          assertThat(connection.channel().isActive()).isEqualTo(false);
+          assertThat(connection.channel().isActive()).isFalse();
         });
   }
 }
