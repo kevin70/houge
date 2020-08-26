@@ -25,9 +25,16 @@ import reactor.core.publisher.Mono;
 public interface AuthService {
 
   /**
+   * 返回是否启用匿名认证.
+   *
+   * @return 是否启用匿名认证
+   */
+  Mono<Boolean> anonymousEnabled();
+
+  /**
    * 用户认证.
    *
-   * @param token 请求令牌
+   * @param token 认证令牌
    * @return 认证上下文
    */
   Mono<AuthContext> authorize(String token);

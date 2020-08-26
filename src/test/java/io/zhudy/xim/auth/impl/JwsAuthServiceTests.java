@@ -19,6 +19,7 @@ import static io.zhudy.xim.BizCodes.C3300;
 import static io.zhudy.xim.BizCodes.C3301;
 import static io.zhudy.xim.BizCodes.C3302;
 import static io.zhudy.xim.BizCodes.C3305;
+import static io.zhudy.xim.BizCodes.C401;
 
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
@@ -26,6 +27,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import io.jsonwebtoken.security.Keys;
 import io.zhudy.xim.BizCodeException;
+import io.zhudy.xim.auth.AuthContext;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Clock;
@@ -34,10 +36,17 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import reactor.test.StepVerifier;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/**
+ * {@link JwsAuthService} 单元测试.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 class JwsAuthServiceTests {
 
   String kid = "test";
@@ -51,6 +60,13 @@ class JwsAuthServiceTests {
               .getBytes(StandardCharsets.UTF_8));
   SigningKeyResolver signingKeyResolver = new DefaultSigningKeyResolver(Map.of(kid, testSecret));
 
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void anonymousEnabled(boolean v) {
+    JwsAuthService authService = new JwsAuthService(v, signingKeyResolver);
+    StepVerifier.create(authService.anonymousEnabled()).expectNext(v).verifyComplete();
+  }
+
   @Test
   void authorize() {
     var token =
@@ -60,7 +76,7 @@ class JwsAuthServiceTests {
             .setId("test")
             .compact();
 
-    JwsAuthService authService = new JwsAuthService(signingKeyResolver);
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
     var p = authService.authorize(token);
     StepVerifier.create(p)
         .expectNextMatches(ac -> "test".equals(ac.uid()) && token.equals(ac.token()))
@@ -68,8 +84,25 @@ class JwsAuthServiceTests {
   }
 
   @Test
+  @DisplayName("匿名认证")
+  void anonymousAuth() {
+    JwsAuthService authService = new JwsAuthService(true, signingKeyResolver);
+    var p = authService.authorize(null);
+    StepVerifier.create(p).expectNext(AuthContext.NONE_AUTH_CONTEXT).verifyComplete();
+  }
+
+  @Test
+  void nullToken() {
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
+    var p = authService.authorize(null);
+    StepVerifier.create(p)
+        .expectErrorMatches(e -> C401 == ((BizCodeException) e).getBizCode())
+        .verify();
+  }
+
+  @Test
   void illegalToken() {
-    JwsAuthService authService = new JwsAuthService(signingKeyResolver);
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
     var p = authService.authorize("illegal token");
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3300 == ((BizCodeException) e).getBizCode())
@@ -87,7 +120,7 @@ class JwsAuthServiceTests {
             .setExpiration(Date.from(exp))
             .compact();
 
-    JwsAuthService authService = new JwsAuthService(signingKeyResolver);
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
     var p = authService.authorize(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3301 == ((BizCodeException) e).getBizCode())
@@ -105,7 +138,7 @@ class JwsAuthServiceTests {
             .setNotBefore(Date.from(nbf))
             .compact();
 
-    JwsAuthService authService = new JwsAuthService(signingKeyResolver);
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
     var p = authService.authorize(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3302 == ((BizCodeException) e).getBizCode())
@@ -121,7 +154,7 @@ class JwsAuthServiceTests {
             .setId("test")
             .compact();
 
-    JwsAuthService authService = new JwsAuthService(signingKeyResolver);
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
     var p = authService.authorize(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())
@@ -137,7 +170,7 @@ class JwsAuthServiceTests {
             .setId("test")
             .compact();
 
-    JwsAuthService authService = new JwsAuthService(signingKeyResolver);
+    JwsAuthService authService = new JwsAuthService(false, signingKeyResolver);
     var p = authService.authorize(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())

@@ -56,8 +56,6 @@ public class ImSocketHandler
   private static final int IDLE_TIMEOUT_SECS = 90;
   /** 认证令牌在 query 参数中的名称. */
   private static final String ACCESS_TOKEN_QUERY_NAME = "access_token";
-  /** 是否启动匿名访问. */
-  private final boolean enabledAnonymous;
   /** 认证服务. */
   private final AuthService authService;
   /** 会话管理器. */
@@ -70,7 +68,6 @@ public class ImSocketHandler
   /**
    * 构建聊天消息处理器.
    *
-   * @param enabledAnonymous 是否启用匿名会话
    * @param authService 认证服务
    * @param sessionManager 会话管理
    * @param sessionIdGenerator 会话 ID 生成器
@@ -78,12 +75,10 @@ public class ImSocketHandler
    */
   @Inject
   public ImSocketHandler(
-      @Named(IM_SERVER_ENABLED_ANONYMOUS) boolean enabledAnonymous,
       AuthService authService,
       SessionManager sessionManager,
       SessionIdGenerator sessionIdGenerator,
       PacketRouter packetRouter) {
-    this.enabledAnonymous = enabledAnonymous;
     this.authService = authService;
     this.sessionManager = sessionManager;
     this.sessionIdGenerator = sessionIdGenerator;
@@ -98,25 +93,9 @@ public class ImSocketHandler
     final Channel channel = connVal[0].channel();
 
     // 认证
-    final Mono<AuthContext> authMono;
     final var accessToken = getAccessToken(in);
-    if (accessToken == null || accessToken.isBlank()) {
-      // 未开启匿名认证直接关闭连接
-      if (!enabledAnonymous) {
-        log.debug(
-            "channelId: {} > Not found \"access_token\" parameter in query string", channel.id());
-        return out.sendClose(
-            WebSocketCloseStatus.NORMAL_CLOSURE.code(),
-            "Unauthorized - Not found \"access_token\" parameter in query string");
-      } else {
-        authMono = Mono.just(AuthContext.NONE_AUTH_CONTEXT);
-      }
-    } else {
-      log.debug("channelId: {} > authenticate token {}", channel.id(), accessToken);
-      authMono = authService.authorize(accessToken);
-    }
-
-    return authMono
+    return authService
+        .authorize(accessToken)
         .flatMap(
             authContext -> {
               // 将会话添加至会话管理器

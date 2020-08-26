@@ -41,7 +41,7 @@ license {
 }
 
 checkstyle {
-  toolVersion "8.33"
+  toolVersion = "8.33"
   configFile = project.file("config/checkstyle/google_checks.xml")
 }
 

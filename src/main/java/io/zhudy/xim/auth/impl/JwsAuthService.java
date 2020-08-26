@@ -19,6 +19,8 @@ import static io.zhudy.xim.BizCodes.C3300;
 import static io.zhudy.xim.BizCodes.C3301;
 import static io.zhudy.xim.BizCodes.C3302;
 import static io.zhudy.xim.BizCodes.C3305;
+import static io.zhudy.xim.BizCodes.C401;
+import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
@@ -30,6 +32,7 @@ import io.zhudy.xim.BizCodeException;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.AuthService;
 import javax.inject.Inject;
+import javax.inject.Named;
 import reactor.core.publisher.Mono;
 
 /**
@@ -40,14 +43,31 @@ import reactor.core.publisher.Mono;
 public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
+  private final boolean anonymousEnabled;
 
   @Inject
-  public JwsAuthService(SigningKeyResolver keyResolver) {
+  public JwsAuthService(
+      @Named(IM_SERVER_ENABLED_ANONYMOUS) boolean anonymousEnabled,
+      SigningKeyResolver keyResolver) {
+    this.anonymousEnabled = anonymousEnabled;
     jwtParser = Jwts.parserBuilder().setSigningKeyResolver(keyResolver).build();
   }
 
   @Override
+  public Mono<Boolean> anonymousEnabled() {
+    return Mono.just(anonymousEnabled);
+  }
+
+  @Override
   public Mono<AuthContext> authorize(String token) {
+    if (token == null || token.isEmpty()) {
+      if (anonymousEnabled) {
+        return Mono.just(AuthContext.NONE_AUTH_CONTEXT);
+      } else {
+        return Mono.error(new BizCodeException(C401, "缺少访问令牌"));
+      }
+    }
+
     return Mono.create(
         sink -> {
           try {
