@@ -15,3 +15,27 @@ IM 服务器
 4. 选择项目根目录下 `config/intellij-java-google-style.xml` 文件
 5. 确保选择 GoogleStyle 作为当前方案
 
+## 消息协议
+### 文本消息
+```json
+{
+  "ns": "private.msg",
+  "from": "from user id",
+  "to": "to user id",
+  "content": "Hello World!"
+}
+```
+
+---
+
+| 属性名称 | 描述 |
+| --- | --- |
+| `ns`| 命名空间，固定取值 `private.msg` |
+| `from` | 发送者用户 ID |
+| `to` | 接收者用户 ID |
+| `content` | 消息内容 |
+
+### 订阅群组消息
+### 取消订阅群组消息
+
+### 群聊
