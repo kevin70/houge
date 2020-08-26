@@ -15,17 +15,13 @@
  */
 package io.zhudy.xim.server;
 
-import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.AuthService;
 import io.zhudy.xim.helper.PacketHelper;
 import io.zhudy.xim.packet.Packet;
@@ -38,7 +34,6 @@ import java.io.DataInput;
 import java.io.IOException;
 import java.util.function.BiFunction;
 import javax.inject.Inject;
-import javax.inject.Named;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.Connection;
@@ -48,6 +43,7 @@ import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
 
+/** IM 消息处理器。 */
 @Log4j2
 public class ImSocketHandler
     implements BiFunction<WebsocketInbound, WebsocketOutbound, Mono<Void>> {
