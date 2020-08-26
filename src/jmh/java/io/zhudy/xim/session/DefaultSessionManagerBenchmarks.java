@@ -15,20 +15,25 @@
  */
 package io.zhudy.xim.session;
 
-import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.session.impl.DefaultSessionManager;
 import java.security.SecureRandom;
 import java.util.Random;
-import org.openjdk.jmh.annotations.*;
+import java.util.concurrent.TimeUnit;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
-
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 /** @author Kevin Zou (kevinz@weghst.com) */
 @BenchmarkMode(Mode.Throughput)
@@ -59,8 +64,8 @@ public class DefaultSessionManagerBenchmarks {
     }
 
     @Override
-    public Mono<Void> send(ByteBuf buf) {
-      return Mono.empty();
+    public Mono<Void> send(Publisher<TextWebSocketFrame> buf) {
+      return null;
     }
 
     @Override
