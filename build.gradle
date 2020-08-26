@@ -103,7 +103,7 @@ dependencyManagement {
     dependency("org.assertj:assertj-core:3.11.1")
     dependency("org.mockito:mockito-core:3.3.0")
     dependency("org.powermock:powermock-api-mockito2:2.0.7")
-    dependency("com.github.stefanbirkner:system-lambda:1.0.0")
+    dependency("com.github.stefanbirkner:system-lambda:1.1.0")
     dependencySet("org.openjdk.jmh:1.23") {
       entry("jmh-core")
       entry("jmh-generator-annprocess")
