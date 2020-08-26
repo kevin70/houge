@@ -29,8 +29,8 @@ public class GroupMsgPacket implements Packet {
   String from;
   /** 接收消息者. */
   String to;
-  /** 消息文本. */
-  String text;
+  /** 消息内容. */
+  String content;
   /** 消息扩展参数. */
   String extraArgs;
 
