@@ -64,7 +64,7 @@ public class DefaultSessionManagerBenchmarks {
     }
 
     @Override
-    public Mono<Void> send(Publisher<TextWebSocketFrame> buf) {
+    public Mono<Void> send(Publisher<TextWebSocketFrame> frame) {
       return null;
     }
 
