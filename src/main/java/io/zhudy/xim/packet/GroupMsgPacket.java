@@ -23,7 +23,7 @@ import lombok.Value;
  * @author Kevin Zou (kevinz@weghst.com)
  */
 @Value
-public class GroupMsgPacket implements Packet {
+public class GroupMsgPacket implements MsgPacket {
 
   /** 发送消息者. */
   String from;

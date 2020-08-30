@@ -24,7 +24,7 @@ import lombok.Value;
  * @author Kevin Zou (kevinz@weghst.com)
  */
 @Value
-public class GroupUnsubPacket implements OpsPacket {
+public class GroupUnsubPacket implements Packet {
 
   /** 取消订阅群组的 IDs. */
   Set<String> groupIds;

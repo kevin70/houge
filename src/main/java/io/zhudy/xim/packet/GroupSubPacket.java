@@ -24,7 +24,7 @@ import lombok.Value;
  * @author Kevin Zou (kevinz@weghst.com)
  */
 @Value
-public class GroupSubPacket implements OpsPacket {
+public class GroupSubPacket implements Packet {
 
   /** 订阅群组的 IDs. */
   Set<String> groupIds;

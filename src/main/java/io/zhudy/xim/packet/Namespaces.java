@@ -29,6 +29,14 @@ public final class Namespaces {
    */
   public static final String ERROR = "error";
   /**
+   * 心跳消息.
+   *
+   * <p>浏览器对于 WebSocket 的 ping/pong 消息支持各不相同，单独提供一个 ping 协议消息。
+   *
+   * <p>由客户端发起确保连接的可用性。
+   */
+  public static final String PING = "ping";
+  /**
    * 私人聊天消息.
    *
    * @see PrivateMsgPacket
@@ -40,6 +48,9 @@ public final class Namespaces {
    * @see GroupMsgPacket
    */
   public static final String GROUP_MSG = "group.msg";
+
+  // ================================== 操作类消息 ==================================//
+
   /**
    * 订阅群组消息.
    *
@@ -52,4 +63,6 @@ public final class Namespaces {
    * @see GroupUnsubPacket
    */
   public static final String GROUP_UNSUBSCRIBE = "group.unsub";
+
+  // ================================== 操作类消息 ==================================//
 }

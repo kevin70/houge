@@ -16,10 +16,23 @@
 package io.zhudy.xim.packet;
 
 /**
- * 操作 {@link Packet}.
- *
- * <p>所有实现 {@code OpsPacket} 类型的 Packet 都不需要集群路由.
+ * 消息 Packet.
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-public interface OpsPacket extends Packet {}
+public interface MsgPacket extends Packet {
+
+  /**
+   * 消息发送者.
+   *
+   * @return 发送者
+   */
+  String getFrom();
+
+  /**
+   * 消息接收者.
+   *
+   * @return 接收者
+   */
+  String getTo();
+}

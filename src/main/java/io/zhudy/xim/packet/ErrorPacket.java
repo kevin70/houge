@@ -23,7 +23,7 @@ import lombok.Value;
  * @author Kevin Zou (kevinz@weghst.com)
  */
 @Value
-public class ErrorPacket implements OpsPacket {
+public class ErrorPacket implements Packet {
 
   /** 错误信息描述. */
   String message;
