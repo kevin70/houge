@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
  * @author Kevin Zou (kevinz@weghst.com)
  */
 @FunctionalInterface
-public interface MsgRouter {
+public interface MessageRouter {
 
   /**
    * 路由消息.

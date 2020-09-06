@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-public class BasisMsgRouter implements MsgRouter {
+public class BasisMessageRouter implements MessageRouter {
 
   @Override
   public Mono<Void> route(MsgPacket packet) {
