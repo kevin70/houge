@@ -93,7 +93,7 @@
 ### 图片消息
 ```json
 {
-  "ns": "private.msg",
+  "ns": "group.msg",
   "from": "from user id",
   "to": "to group id",
   "kind": 2,
