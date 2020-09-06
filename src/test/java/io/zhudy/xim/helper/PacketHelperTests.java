@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zhudy.xim.packet;
+package io.zhudy.xim.helper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.zhudy.xim.helper.PacketHelper;
+import io.zhudy.xim.packet.Packet;
 import org.junit.jupiter.api.Test;
 
 public class PacketHelperTests {
@@ -24,7 +24,7 @@ public class PacketHelperTests {
   @Test
   public void descMessagePacket() throws JsonProcessingException {
     var json2 =
-        "{\"ns\":\"private.msg\",\"from\":\"abc\",\"to\":\"test\",\"text\":\"Hello World!\" }";
+        "{\"ns\":\"private.msg\",\"from\":\"abc\",\"to\":\"test\",\"content\":\"Hello World!\" }";
 
     for (int i = 0; i < 1; i++) {
       var o = PacketHelper.MAPPER.readValue(json2, Packet.class);
