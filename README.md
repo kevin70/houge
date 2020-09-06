@@ -1,4 +1,6 @@
 # Xim
+[We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
+
 致力于打造是一个**免费安全可靠**的企业级 IM 解决方案。
 
 ## 目标
@@ -31,3 +33,6 @@
 5. 确保选择 GoogleStyle 作为当前方案
 
 ## [消息协议](docs/design/message_protocol.md)
+
+
+Xim 的实现离不开源社区的支持，感恩为开源做出贡献的人。
