@@ -32,7 +32,8 @@
 4. 选择项目根目录下 `config/intellij-java-google-style.xml` 文件
 5. 确保选择 GoogleStyle 作为当前方案
 
-## [消息协议](docs/design/message_protocol.md)
+## 文档
+- [消息协议](docs/design/message_protocol.md)
 
-
+## 感谢
 Xim 的实现离不开源社区的支持，感恩为开源做出贡献的人。
