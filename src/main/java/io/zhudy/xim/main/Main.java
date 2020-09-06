@@ -66,7 +66,7 @@ public class Main implements Runnable {
         () -> {
           try {
             callback.run();
-          } catch (Throwable e) {
+          } catch (Exception e) {
             log.error("XIM 服务停止失败", e);
           } finally {
             latch.countDown();
@@ -77,7 +77,8 @@ public class Main implements Runnable {
     try {
       latch.await();
     } catch (InterruptedException e) {
-      throw new IllegalStateException(e);
+      log.warn("Interrupted!", e);
+      Thread.currentThread().interrupt();
     }
   }
 
