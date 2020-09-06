@@ -107,7 +107,6 @@ dependencies {
   implementation("com.typesafe:config")
   implementation("com.google.inject:guice")
   implementation("com.github.ben-manes.caffeine:caffeine")
-  implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
   implementation("io.lettuce:lettuce-core")
   implementation("io.jsonwebtoken:jjwt-impl")
   implementation("io.jsonwebtoken:jjwt-jackson")

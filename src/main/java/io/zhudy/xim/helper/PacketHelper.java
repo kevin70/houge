@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import io.zhudy.xim.packet.GroupMsgPacket;
 import io.zhudy.xim.packet.GroupSubPacket;
 import io.zhudy.xim.packet.GroupUnsubPacket;
@@ -43,8 +42,6 @@ public class PacketHelper {
   public static final ObjectMapper MAPPER = new ObjectMapper();
 
   static {
-    MAPPER.registerModules(new AfterburnerModule());
-
     MAPPER.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     MAPPER.setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
 
