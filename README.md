@@ -33,6 +33,7 @@
 5. 确保选择 GoogleStyle 作为当前方案
 
 ## 文档
+- [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
 
 ## 感谢
