@@ -15,6 +15,8 @@
  */
 package io.zhudy.xim.session.impl;
 
+import static java.util.Objects.requireNonNull;
+
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
@@ -65,6 +67,10 @@ public final class DefaultSession implements Session {
       WebsocketInbound inbound,
       WebsocketOutbound outbound,
       AuthContext authContext) {
+    requireNonNull(inbound, "inbound 不能为 null");
+    requireNonNull(outbound, "outbound 不能为 null");
+    requireNonNull(authContext, "authContext 不能为 null");
+
     this.sessionId = sessionId;
     this.inbound = inbound;
     this.outbound = outbound;
