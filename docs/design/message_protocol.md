@@ -12,14 +12,14 @@
 }
 ```
 
-| 属性名称 | 数据类型 | 描述 |
-| --- | --- | --- |
-| `ns` | `string` | 命名空间，固定取值 `private.msg` |
-| `from` | `string` | 发送者用户 ID |
-| `to` | `string` |接收者用户 ID |
-| `kind` | `int32` | 内容类型，固定取值 `1` |
-| `content` | `string` | 消息内容 |
-| `extra_args` | `string` | 扩展参数 |
+| 属性名称 | 数据类型 | 必选 | 描述 |
+| --- | --- | --- | --- |
+| `ns` | `string` | Y | 命名空间，固定取值 `private.msg` |
+| `from` | `string` | Y | 发送者用户 ID |
+| `to` | `string` |Y | 接收者用户 ID |
+| `kind` | `int32` | Y | 内容类型，固定取值 `1` |
+| `content` | `string` | Y | 消息内容 |
+| `extra_args` | `string` | N | 扩展参数 |
 
 ### 图片消息
 ```json
@@ -33,15 +33,15 @@
 }
 ```
 
-| 属性名称 | 数据类型 | 描述 |
-| --- | --- | --- |
-| `ns` | `string` | 命名空间，固定取值 `private.msg` |
-| `from` | `string` | 发送者用户 ID |
-| `to` | `string` |接收者用户 ID |
-| `kind` | `int32` | 内容类型，固定取值 `2` |
-| `image_url` | `string` | 图片 URL |
-| `content` | `string` | 图片缩略图 **BASE64** 编码 |
-| `extra_args` | `string` | 扩展参数 |
+| 属性名称 | 数据类型 | 必选 | 描述 |
+| --- | --- | --- | --- |
+| `ns` | `string` | Y | 命名空间，固定取值 `private.msg` |
+| `from` | `string` | Y | 发送者用户 ID |
+| `to` | `string` | Y | 接收者用户 ID |
+| `kind` | `int32` | Y | 内容类型，固定取值 `2` |
+| `image_url` | `string` | Y | 图片 URL |
+| `content` | `string` | Y | 图片缩略图 **BASE64** 编码 |
+| `extra_args` | `string` | N | 扩展参数 |
 
 ## 群组
 ### 订阅群组消息
@@ -81,14 +81,14 @@
 }
 ```
 
-| 属性名称 | 数据类型 | 描述 |
-| --- | --- | --- |
-| `ns` | `string` | 命名空间，固定取值 `group.msg` |
-| `from` | `string` | 发送者用户 ID |
-| `to` | `string` |接收者用户 ID |
-| `kind` | `int32` | 内容类型，固定取值 `1` |
-| `content` | `string` | 消息内容 |
-| `extra_args` | `string` | 扩展参数 |
+| 属性名称 | 数据类型 | 必选 | 描述 |
+| --- | --- | --- | --- |
+| `ns` | `string` | Y | 命名空间，固定取值 `group.msg` |
+| `from` | `string` | Y | 发送者用户 ID |
+| `to` | `string` |Y | 接收者用户 ID |
+| `kind` | `int32` | Y | 内容类型，固定取值 `1` |
+| `content` | `string` | Y | 消息内容 |
+| `extra_args` | `string` | N | 扩展参数 |
 
 ### 图片消息
 ```json
@@ -102,12 +102,28 @@
 }
 ```
 
-| 属性名称 | 数据类型 | 描述 |
-| --- | --- | --- |
-| `ns` | `string` | 命名空间，固定取值 `group.msg` |
-| `from` | `string` | 发送者用户 ID |
-| `to` | `string` |接收者用户 ID |
-| `kind` | `int32` | 内容类型，固定取值 `2` |
-| `image_url` | `string` | 图片 URL |
-| `content` | `string` | 图片缩略图 **BASE64** 编码 |
-| `extra_args` | `string` | 扩展参数 |
+| 属性名称 | 数据类型 | 必选 | 描述 |
+| --- | --- | --- | --- |
+| `ns` | `string` | Y | 命名空间，固定取值 `group.msg` |
+| `from` | `string` | Y | 发送者用户 ID |
+| `to` | `string` | Y | 接收者用户 ID |
+| `kind` | `int32` | Y | 内容类型，固定取值 `2` |
+| `image_url` | `string` | Y | 图片 URL |
+| `content` | `string` | Y | 图片缩略图 **BASE64** 编码 |
+| `extra_args` | `string` | N | 扩展参数 |
+
+## 错误响应
+```json
+{
+  "ns": "error",
+  "code": 500,
+  "message": "错误描述",
+  "details": "any"
+}
+```
+| 属性名称 | 数据类型 | 必选 | 描述 |
+| --- | --- | --- | --- |
+| `ns` | `string` | Y | 命名空间，固定取值 `error` |
+| `code` | `int32` | Y | 业务错误码 |
+| `message` | `string` | Y | 错误描述 |
+| `details` | `any` | N | 详细错误描述，复合数据类型 |
