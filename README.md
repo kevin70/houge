@@ -38,3 +38,9 @@
 
 ## 感谢
 Xim 的实现离不开源社区的支持，感恩为开源做出贡献的人。
+
+## 捐赠
+如果您觉得 Xim 做得不错，对您有实际的帮助，请支持我们更好的维护项目。
+
+![Alipay](docs/images/alipay_qrcode.png)
+![Wechat](docs/images/wechat_qrcode.png)
