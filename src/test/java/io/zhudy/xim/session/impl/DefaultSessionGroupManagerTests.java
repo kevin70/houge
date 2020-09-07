@@ -50,7 +50,7 @@ class DefaultSessionGroupManagerTests {
       var sessions = groupSessions.synchronous().getIfPresent(groupId);
       assertThat(sessions).contains(session);
     }
-    assertThat(session.subGroupIds()).containsSequence(groupIds);
+    assertThat(session.subGroupIds()).containsAll(groupIds);
   }
 
   @Test
