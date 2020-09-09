@@ -33,6 +33,7 @@ import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoProcessor;
+import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 
@@ -153,6 +154,23 @@ public final class DefaultSession implements Session {
   @Override
   public Mono<Void> onClose() {
     return closeProcessor;
+  }
+
+  @Override
+  public String toString() {
+    HttpServerRequest request = (HttpServerRequest) inbound;
+    return new StringBuilder()
+        .append("Session{")
+        .append("sessionId=")
+        .append(sessionId)
+        .append(", ")
+        .append("uid=")
+        .append(uid)
+        .append(", ")
+        .append("clientIp=")
+        .append(request.remoteAddress().getAddress().getHostAddress())
+        .append("}")
+        .toString();
   }
 
   @Override
