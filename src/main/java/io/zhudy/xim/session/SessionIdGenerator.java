@@ -27,5 +27,5 @@ public interface SessionIdGenerator {
    *
    * @return 会话 ID
    */
-  long nextId();
+  String nextId();
 }

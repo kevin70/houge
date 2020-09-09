@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.ErrorPacket;
-import java.security.SecureRandom;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -81,7 +81,7 @@ class DefaultSessionTests {
 
   @Test
   void newSession() {
-    var sessionId = new SecureRandom().nextLong();
+    var sessionId = UUID.randomUUID().toString();
     var authContext = AuthContext.NONE_AUTH_CONTEXT;
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 
@@ -98,7 +98,7 @@ class DefaultSessionTests {
 
   @Test
   void sendPacket() throws InterruptedException {
-    var sessionId = new SecureRandom().nextLong();
+    var sessionId = UUID.randomUUID().toString();
     var authContext = AuthContext.NONE_AUTH_CONTEXT;
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 
@@ -113,7 +113,7 @@ class DefaultSessionTests {
 
   @Test
   void closeSession() throws InterruptedException {
-    var sessionId = new SecureRandom().nextLong();
+    var sessionId = UUID.randomUUID().toString();
     var authContext = AuthContext.NONE_AUTH_CONTEXT;
     var session = new DefaultSession(sessionId, inbound, outbound, authContext);
 

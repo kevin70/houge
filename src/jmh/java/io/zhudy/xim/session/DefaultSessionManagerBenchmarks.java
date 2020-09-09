@@ -49,8 +49,8 @@ public class DefaultSessionManagerBenchmarks {
     private final long sessionId = sessionIdRan.nextLong();
 
     @Override
-    public long sessionId() {
-      return sessionId;
+    public String sessionId() {
+      return String.valueOf(sessionId);
     }
 
     @Override

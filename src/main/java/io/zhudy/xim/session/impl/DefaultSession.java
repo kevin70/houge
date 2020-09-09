@@ -45,7 +45,7 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 @Log4j2
 public final class DefaultSession implements Session {
 
-  final long sessionId;
+  final String sessionId;
   final String uid;
   final WebsocketInbound inbound;
   final WebsocketOutbound outbound;
@@ -64,7 +64,7 @@ public final class DefaultSession implements Session {
    * @param authContext 认证上下文
    */
   public DefaultSession(
-      long sessionId,
+      String sessionId,
       WebsocketInbound inbound,
       WebsocketOutbound outbound,
       AuthContext authContext) {
@@ -78,7 +78,7 @@ public final class DefaultSession implements Session {
     this.authContext = authContext;
 
     if (authContext.isAnonymous()) {
-      this.uid = Long.toHexString(this.sessionId);
+      this.uid = sessionId;
     } else {
       this.uid = authContext.uid();
     }
@@ -89,7 +89,7 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public long sessionId() {
+  public String sessionId() {
     return sessionId;
   }
 

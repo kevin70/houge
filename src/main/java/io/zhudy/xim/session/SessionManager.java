@@ -48,7 +48,7 @@ public interface SessionManager {
    * @param sessionId 会话 ID
    * @return 已经移除的会话
    */
-  Mono<Session> removeById(long sessionId);
+  Mono<Session> removeById(String sessionId);
 
   /**
    * 根据用户认证 ID 移除会话.
@@ -64,7 +64,7 @@ public interface SessionManager {
    * @param sessionId 会话 ID
    * @return 会话
    */
-  Mono<Session> findById(long sessionId);
+  Mono<Session> findById(String sessionId);
 
   /**
    * 根据用户认证 ID 查询会话.

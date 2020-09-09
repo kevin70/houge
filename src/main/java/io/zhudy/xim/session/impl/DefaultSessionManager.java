@@ -49,7 +49,7 @@ public class DefaultSessionManager implements SessionManager {
   // Session 记数器
   private final Counter sessionCounter = Metrics.counter("xim.session.counter");
   // 所有的 Session
-  private final AsyncCache<Long, Session> sessions = Caffeine.newBuilder().buildAsync();
+  private final AsyncCache<String, Session> sessions = Caffeine.newBuilder().buildAsync();
   // 所有用户的 Session
   private final AsyncCache<String, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
 
@@ -120,7 +120,7 @@ public class DefaultSessionManager implements SessionManager {
   }
 
   @Override
-  public Mono<Session> removeById(long sessionId) {
+  public Mono<Session> removeById(String sessionId) {
     return findById(sessionId).flatMap(s -> this.remove(s).thenReturn(s));
   }
 
@@ -132,7 +132,7 @@ public class DefaultSessionManager implements SessionManager {
         .filter(list -> !list.isEmpty())
         .flatMapMany(
             list -> {
-              var sessionIds = new ArrayList<Long>(list.size());
+              var sessionIds = new ArrayList<String>(list.size());
               for (Session session : list) {
                 sessionIds.add(session.sessionId());
               }
@@ -149,7 +149,7 @@ public class DefaultSessionManager implements SessionManager {
   }
 
   @Override
-  public Mono<Session> findById(long sessionId) {
+  public Mono<Session> findById(String sessionId) {
     return Mono.defer(
         () -> {
           var cf = sessions.getIfPresent(sessionId);

@@ -29,9 +29,9 @@ public class DefaultSessionIdGenerator implements SessionIdGenerator {
   private final AtomicInteger seq = new AtomicInteger();
 
   @Override
-  public long nextId() {
+  public String nextId() {
     seq.compareAndSet(Integer.MAX_VALUE, 0);
     long t = Clock.systemDefaultZone().instant().getEpochSecond();
-    return (t << 32) | seq.incrementAndGet();
+    return String.valueOf((t << 32) | seq.incrementAndGet());
   }
 }

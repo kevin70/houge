@@ -26,8 +26,6 @@ import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.TestAuthContext;
 import io.zhudy.xim.session.TestSession;
 import java.security.SecureRandom;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.annotation.Nonnull;
 import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
 import reactor.test.StepVerifier;
@@ -56,7 +54,7 @@ class DefaultSessionManagerTests {
     var session2 =
         new TestSession() {
           @Override
-          public long sessionId() {
+          public String sessionId() {
             return session1.sessionId();
           }
         };

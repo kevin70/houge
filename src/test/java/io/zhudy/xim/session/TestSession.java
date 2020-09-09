@@ -18,7 +18,6 @@ package io.zhudy.xim.session;
 import java.security.SecureRandom;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 测试专用的 Session.
@@ -31,8 +30,8 @@ public class TestSession implements Session {
   private final Set<String> subGroupIds = new LinkedHashSet<>();
 
   @Override
-  public long sessionId() {
-    return sessionId;
+  public String sessionId() {
+    return String.valueOf(sessionId);
   }
 
   @Override

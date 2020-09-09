@@ -38,7 +38,7 @@ public interface Session {
    *
    * @return
    */
-  long sessionId();
+  String sessionId();
 
   /**
    * 返回认证用户 ID.
