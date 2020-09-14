@@ -25,10 +25,12 @@ import io.jsonwebtoken.SigningKeyResolver;
 import io.zhudy.xim.auth.AuthService;
 import io.zhudy.xim.auth.impl.DefaultSigningKeyResolver;
 import io.zhudy.xim.auth.impl.JwsAuthService;
-import io.zhudy.xim.router.LocalPacketRouter;
-import io.zhudy.xim.router.PacketRouter;
+import io.zhudy.xim.router.BasisMessageRouter;
+import io.zhudy.xim.router.MessageRouter;
+import io.zhudy.xim.server.BasisPacketHandler;
 import io.zhudy.xim.server.ImServer;
 import io.zhudy.xim.server.ImSocketHandler;
+import io.zhudy.xim.server.PacketHandler;
 import io.zhudy.xim.session.SessionGroupListener;
 import io.zhudy.xim.session.SessionGroupManager;
 import io.zhudy.xim.session.SessionIdGenerator;
@@ -71,7 +73,7 @@ public class ImModule extends AbstractModule {
           binder(), SessionGroupListener.class, named(SESSION_GROUP_LISTENER_NAME_FOR_IOC));
     }
 
-    // Packet
-    bind(PacketRouter.class).to(LocalPacketRouter.class).in(Singleton.class);
+    bind(PacketHandler.class).to(BasisPacketHandler.class).in(Singleton.class);
+    bind(MessageRouter.class).to(BasisMessageRouter.class).in(Singleton.class);
   }
 }

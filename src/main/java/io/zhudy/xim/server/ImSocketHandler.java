@@ -22,11 +22,13 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.zhudy.xim.BizCodeException;
 import io.zhudy.xim.auth.AuthService;
 import io.zhudy.xim.helper.PacketHelper;
+import io.zhudy.xim.packet.ErrorPacket;
 import io.zhudy.xim.packet.Packet;
-import io.zhudy.xim.router.PacketRouter;
 import io.zhudy.xim.session.Session;
+import io.zhudy.xim.session.SessionGroupManager;
 import io.zhudy.xim.session.SessionIdGenerator;
 import io.zhudy.xim.session.SessionManager;
 import io.zhudy.xim.session.impl.DefaultSession;
@@ -36,6 +38,7 @@ import java.util.function.BiFunction;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.netty.Connection;
 import reactor.netty.channel.AbortedException;
 import reactor.netty.http.HttpInfos;
@@ -43,7 +46,11 @@ import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
 
-/** IM 消息处理器。 */
+/**
+ * IM 消息处理器.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 @Log4j2
 public class ImSocketHandler
     implements BiFunction<WebsocketInbound, WebsocketOutbound, Mono<Void>> {
@@ -54,31 +61,36 @@ public class ImSocketHandler
   private static final String ACCESS_TOKEN_QUERY_NAME = "access_token";
   /** 认证服务. */
   private final AuthService authService;
-  /** 会话管理器. */
+  /** 会话管理器器. */
   private final SessionManager sessionManager;
+  /** 会话群组管理器. */
+  private final SessionGroupManager sessionGroupManager;
   /** 会话 ID 生成器. */
   private final SessionIdGenerator sessionIdGenerator;
-  /** Packet 路由器. */
-  private final PacketRouter packetRouter;
+  /** Packet 处理器. */
+  private final PacketHandler packetHandler;
 
   /**
    * 构建聊天消息处理器.
    *
    * @param authService 认证服务
-   * @param sessionManager 会话管理
+   * @param sessionManager 会话管理器
+   * @param sessionGroupManager 会话群组管理器
    * @param sessionIdGenerator 会话 ID 生成器
-   * @param packetRouter {@link Packet} 路由器
+   * @param packetHandler Packet 处理器
    */
   @Inject
   public ImSocketHandler(
       AuthService authService,
       SessionManager sessionManager,
+      SessionGroupManager sessionGroupManager,
       SessionIdGenerator sessionIdGenerator,
-      PacketRouter packetRouter) {
+      PacketHandler packetHandler) {
     this.authService = authService;
     this.sessionManager = sessionManager;
+    this.sessionGroupManager = sessionGroupManager;
     this.sessionIdGenerator = sessionIdGenerator;
-    this.packetRouter = packetRouter;
+    this.packetHandler = packetHandler;
   }
 
   @Override
@@ -96,11 +108,26 @@ public class ImSocketHandler
             authContext -> {
               // 将会话添加至会话管理器
               var session = new DefaultSession(sessionIdGenerator.nextId(), in, out, authContext);
+
               log.info(
-                  "channelId: {} > session add to session manager [sessionId={}, uid={}]",
-                  channel.id(),
-                  session.sessionId(),
-                  session.uid());
+                "channelId: {} > session add to session manager [sessionId={}, uid={}]",
+                channel.id(),
+                session.sessionId(),
+                session.uid());
+
+              // 会话清理
+              session
+                  .onClose()
+                  .doFinally(
+                      signalType -> {
+                        log.debug("会话关闭 session={}, signalType", session, signalType);
+                        sessionManager
+                            .remove(session)
+                            .then(sessionGroupManager.unsubGroups(session, session.subGroupIds()))
+                            .subscribe();
+                      })
+                  .subscribeOn(Schedulers.boundedElastic())
+                  .subscribe();
               return sessionManager.add(session).thenReturn(session);
             })
         .flatMap(
@@ -121,18 +148,16 @@ public class ImSocketHandler
                 return;
               }
 
-              System.out.println("on error");
-              log.error("", e);
+              // 业务逻辑异常处理
+              if (e instanceof BizCodeException) {
+                log.debug("业务异常 session={}", session, e);
+              }
             })
         .doOnTerminate(
             () -> {
               // 连接终止、清理
-              System.out.println("on terminate");
-            })
-        .doOnComplete(
-            () -> {
-              //
-              System.out.println("on complete");
+              log.debug("会话终止 session={}", session);
+              session.close().subscribe();
             })
         .flatMap(frame -> handleFrame(session, out, frame))
         .subscribe();
@@ -141,28 +166,27 @@ public class ImSocketHandler
   private Mono<Void> handleFrame(
       final Session session, final WebsocketOutbound out, final WebSocketFrame frame) {
     if (!(frame instanceof BinaryWebSocketFrame || frame instanceof TextWebSocketFrame)) {
-      // FIXME 非 Packet 类型抛出异常
+      var ep = new ErrorPacket("不支持 的 ws frame 类型", "当前仅支持 binary/text frame 类型");
+      return session.sendPacket(ep).then(session.close());
     }
 
+    // 解析包内容
+    final ByteBuf content = frame.content();
+    final DataInput input = new ByteBufInputStream(content);
+    final Packet packet;
     try {
-
-      final var content = frame.content();
-      final DataInput input = new ByteBufInputStream(content);
-      final var packet = PacketHelper.MAPPER.readValue(input, Packet.class);
-
-      return packetRouter
-          .route(Mono.just(packet))
-          .subscriberContext(Context.of(Session.class, session, ByteBuf.class, packet))
-          .onErrorResume(
-              e -> {
-                log.error("处理消息错误 -> {}", packet, e);
-                return out.sendClose();
-              });
+      packet = PacketHelper.MAPPER.readValue(input, Packet.class);
     } catch (IOException e) {
-      // FIXME 这里需要处理异常
-      e.printStackTrace();
+      // JSON 解析失败
+      log.warn("JSON 解析失败 session={}", e);
+      var ep = new ErrorPacket("解析请求包错误", null);
+      return session.sendPacket(ep).then(session.close());
     }
-    return Mono.empty();
+
+    // 包处理
+    return packetHandler
+        .handle(packet, session)
+        .subscriberContext(Context.of(ByteBuf.class, packet));
   }
 
   private String getAccessToken(WebsocketInbound in) {

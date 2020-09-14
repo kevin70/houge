@@ -16,6 +16,11 @@
 package io.zhudy.xim.router;
 
 import io.zhudy.xim.packet.MsgPacket;
+import io.zhudy.xim.packet.Packet;
+import io.zhudy.xim.packet.PrivateMsgPacket;
+import io.zhudy.xim.session.SessionGroupManager;
+import io.zhudy.xim.session.SessionManager;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 
 /**
@@ -25,8 +30,36 @@ import reactor.core.publisher.Mono;
  */
 public class BasisMessageRouter implements MessageRouter {
 
+  private final SessionManager sessionManager;
+  private final SessionGroupManager sessionGroupManager;
+
+  @Inject
+  public BasisMessageRouter(
+      SessionManager sessionManager, SessionGroupManager sessionGroupManager) {
+    this.sessionManager = sessionManager;
+    this.sessionGroupManager = sessionGroupManager;
+  }
+
   @Override
-  public Mono<Void> route(MsgPacket packet) {
-    return null;
+  public Mono<Void> route(final MsgPacket packet) {
+    if (packet instanceof PrivateMsgPacket) {
+      return handlePrivateMsg(packet);
+    }
+    return handleGroupMsg(packet);
+  }
+
+  protected Mono<Void> handlePrivateMsg(final MsgPacket packet) {
+    return sessionManager
+        .findByUid(packet.getTo())
+        .flatMap(session -> session.sendPacket(packet))
+        .then();
+  }
+
+  protected Mono<Void> handleGroupMsg(final MsgPacket packet) {
+    var sessions =
+        Packet.GROUP_ID_ALL.equals(packet.getTo())
+            ? sessionManager.all()
+            : sessionGroupManager.findByGroupId(packet.getTo());
+    return sessions.parallel().flatMap(session -> session.sendPacket(packet)).then();
   }
 }
