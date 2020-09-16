@@ -91,6 +91,8 @@ dependencyManagement {
     dependency("org.mockito:mockito-core:3.3.0")
     dependency("org.powermock:powermock-api-mockito2:2.0.7")
     dependency("com.github.stefanbirkner:system-lambda:1.1.0")
+
+    dependency("org.openjdk.jol:jol-core:0.13")
     dependencySet("org.openjdk.jmh:1.23") {
       entry("jmh-core")
       entry("jmh-generator-annprocess")
@@ -116,6 +118,7 @@ dependencies {
   // Test
   testCompileOnly("org.projectlombok:lombok")
   testAnnotationProcessor("org.projectlombok:lombok")
+  testImplementation("org.openjdk.jol:jol-core")
   testImplementation("org.junit.platform:junit-platform-launcher")
   testImplementation("org.junit.jupiter:junit-jupiter-engine")
   testImplementation("com.github.stefanbirkner:system-lambda")
