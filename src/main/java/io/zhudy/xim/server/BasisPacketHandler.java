@@ -60,13 +60,13 @@ public class BasisPacketHandler implements PacketHandler {
       case Namespaces.PRIVATE_MSG:
         {
           PrivateMsgPacket p = (PrivateMsgPacket) packet;
-          rs = handlePrivateMsg(p, session).then(messageRouter.route(p));
+          rs = handlePrivateMsg(p, session);
           break;
         }
       case Namespaces.GROUP_MSG:
         {
           GroupMsgPacket p = (GroupMsgPacket) packet;
-          rs = handleGroupMsg(p, session).then(messageRouter.route(p));
+          rs = handleGroupMsg(p, session);
           break;
         }
       case Namespaces.GROUP_SUBSCRIBE:

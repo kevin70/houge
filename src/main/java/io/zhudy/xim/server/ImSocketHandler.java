@@ -15,6 +15,7 @@
  */
 package io.zhudy.xim.server;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.Channel;
@@ -32,10 +33,6 @@ import io.zhudy.xim.session.SessionGroupManager;
 import io.zhudy.xim.session.SessionIdGenerator;
 import io.zhudy.xim.session.SessionManager;
 import io.zhudy.xim.session.impl.DefaultSession;
-import java.io.DataInput;
-import java.io.IOException;
-import java.util.function.BiFunction;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -45,6 +42,11 @@ import reactor.netty.http.HttpInfos;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
+
+import javax.inject.Inject;
+import java.io.DataInput;
+import java.io.IOException;
+import java.util.function.BiFunction;
 
 /**
  * IM 消息处理器.
@@ -110,10 +112,10 @@ public class ImSocketHandler
               var session = new DefaultSession(sessionIdGenerator.nextId(), in, out, authContext);
 
               log.info(
-                "channelId: {} > session add to session manager [sessionId={}, uid={}]",
-                channel.id(),
-                session.sessionId(),
-                session.uid());
+                  "channelId: {} > session add to session manager [sessionId={}, uid={}]",
+                  channel.id(),
+                  session.sessionId(),
+                  session.uid());
 
               // 会话清理
               session
@@ -156,8 +158,10 @@ public class ImSocketHandler
         .doOnTerminate(
             () -> {
               // 连接终止、清理
-              log.debug("会话终止 session={}", session);
-              session.close().subscribe();
+              if (!session.isClosed()) {
+                log.debug("会话终止 session={}", session);
+                session.close().subscribe();
+              }
             })
         .flatMap(frame -> handleFrame(session, out, frame))
         .subscribe();
@@ -176,6 +180,9 @@ public class ImSocketHandler
     final Packet packet;
     try {
       packet = PacketHelper.MAPPER.readValue(input, Packet.class);
+    } catch (UnrecognizedPropertyException e) {
+      var ep = new ErrorPacket("未知的属性", e.getPropertyName());
+      return session.sendPacket(ep).then(session.close());
     } catch (IOException e) {
       // JSON 解析失败
       log.warn("JSON 解析失败 session={}", e);
