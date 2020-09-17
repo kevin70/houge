@@ -23,6 +23,8 @@ import io.zhudy.xim.session.SessionManager;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 /**
  * 基础的消息路由器.
  *
@@ -60,6 +62,10 @@ public class BasisMessageRouter implements MessageRouter {
         Packet.GROUP_ID_ALL.equals(packet.getTo())
             ? sessionManager.all()
             : sessionGroupManager.findByGroupId(packet.getTo());
-    return sessions.parallel().flatMap(session -> session.sendPacket(packet)).then();
+    return sessions
+        .parallel()
+        .filter(session -> !Objects.equals(packet.getFrom(), session.uid()))
+        .flatMap(session -> session.sendPacket(packet))
+        .then();
   }
 }
