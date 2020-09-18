@@ -123,7 +123,6 @@ class BizCodeExceptionTests {
     var message = "custome message";
     var e = new BizCodeException(BizCodes.C0, message);
     var formattedMessage = e.toString();
-    assertThat(formattedMessage).isNotBlank();
-    assertThat(formattedMessage).isEqualTo(e.getMessage());
+    assertThat(formattedMessage).isNotBlank().isEqualTo(e.getMessage());
   }
 }

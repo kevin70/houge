@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 public final class BizCodeException extends RuntimeException {
 
   private final BizCode bizCode;
-  private List<ContextValue> contextValues = Collections.emptyList();
+  private final List<ContextValue> contextValues = Collections.emptyList();
 
   /**
    * 使用业务错误码构建异常.
