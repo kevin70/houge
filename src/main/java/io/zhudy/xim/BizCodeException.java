@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 public final class BizCodeException extends RuntimeException {
 
   private final BizCode bizCode;
-  private final List<ContextValue> contextValues = Collections.emptyList();
+  private List<ContextValue> contextValues;
 
   /**
    * 使用业务错误码构建异常.
@@ -103,7 +103,10 @@ public final class BizCodeException extends RuntimeException {
    * @return 错误上下文属性
    */
   public List<ContextValue> getContextEntries() {
-    return contextValues;
+    if (this.contextValues == null) {
+      return Collections.emptyList();
+    }
+    return this.contextValues;
   }
 
   /**
@@ -136,7 +139,7 @@ public final class BizCodeException extends RuntimeException {
   }
 
   private List<ContextValue> contextValues0() {
-    if (contextValues == Collections.<ContextValue>emptyList()) {
+    if (this.contextValues == null) {
       this.contextValues = new ArrayList<>();
     }
     return this.contextValues;
