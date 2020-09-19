@@ -15,21 +15,25 @@
  */
 package io.zhudy.xim;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * {@link BizCodeException} 单元测试.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 class BizCodeExceptionTests {
 
   @Test
-  public void t1() {
+  void t1() {
     var e = new BizCodeException(BizCodes.C0);
     assertThat(e.getBizCode()).isEqualTo(BizCodes.C0);
   }
 
   @Test
-  public void t2() {
+  void t2() {
     var message = "custom message";
     var e = new BizCodeException(BizCodes.C0, message);
     assertThat(e.getBizCode()).isEqualTo(BizCodes.C0);
@@ -37,7 +41,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t3() {
+  void t3() {
     var cause = new IllegalArgumentException();
     var e = new BizCodeException(BizCodes.C0, cause);
     assertThat(e.getBizCode()).isEqualTo(BizCodes.C0);
@@ -45,7 +49,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t4() {
+  void t4() {
     var message = "custom message";
     var cause = new IllegalArgumentException();
     var e = new BizCodeException(BizCodes.C0, message, cause);
@@ -55,7 +59,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t5() {
+  void t5() {
     var e =
         new BizCodeException(BizCodes.C0)
             .addContextValue("label 1", "value 1")
@@ -76,7 +80,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t6() {
+  void t6() {
     var e =
         new BizCodeException(BizCodes.C0)
             .addContextValue("label 1", "value 1")
@@ -86,7 +90,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t7() {
+  void t7() {
     var message = "custome message";
     var e =
         new BizCodeException(BizCodes.C0, message)
@@ -98,7 +102,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t8() {
+  void t8() {
     var message = "custome message";
     var e =
         new BizCodeException(BizCodes.C0, message)
@@ -119,7 +123,7 @@ class BizCodeExceptionTests {
   }
 
   @Test
-  public void t9() {
+  void t9() {
     var message = "custome message";
     var e = new BizCodeException(BizCodes.C0, message);
     var formattedMessage = e.toString();

@@ -22,6 +22,10 @@ package io.zhudy.xim;
  */
 public final class XimVersion {
 
+  private XimVersion() {
+    throw new IllegalStateException("Utility class");
+  }
+
   /**
    * 返回 xim 版本号. 如果未找到则返回 {@code dev}.
    *

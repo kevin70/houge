@@ -45,7 +45,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
 
   /** 创建一个没有 {@link SessionGroupEvent} 监听事件的会话组管理. */
   public DefaultSessionGroupManager() {
-    this(Collections.EMPTY_SET);
+    this(Collections.emptySet());
   }
 
   /**

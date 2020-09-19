@@ -119,7 +119,7 @@ class DefaultSessionGroupManagerTests {
   }
 
   @Nested
-  static class SessionGroupListenerTests {
+  class SessionGroupListenerTests {
 
     @Test
     void groupSubEvent() {

@@ -85,7 +85,7 @@ public class DefaultSessionManagerBenchmarks {
   }
 
   @Benchmark
-  public void measureAdd$Remove() {
+  public void measureAddAndRemove() {
     var session = new BenchSession();
     sessionManager.add(session).then(sessionManager.remove(session)).block();
   }

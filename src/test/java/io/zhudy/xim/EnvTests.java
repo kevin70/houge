@@ -15,24 +15,28 @@
  */
 package io.zhudy.xim;
 
+import org.junit.jupiter.api.Test;
+
 import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import org.junit.jupiter.api.Test;
-
-/** @author Kevin Zou (kevinz@weghst.com) */
-public class EnvTests {
+/**
+ * {@link Env} 单元测试.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
+class EnvTests {
 
   @Test
-  public void defaultEnv() {
+  void defaultEnv() {
     assertThat(Env.current()).isEqualTo(Env.INTEGRATION_TEST);
     assertThat(Env.current()).isEqualTo(Env.INTEGRATION_TEST);
   }
 
   @Test
-  public void defaultEnvProd() throws Exception {
+  void defaultEnvProd() throws Exception {
     restoreSystemProperties(
         () -> {
           System.clearProperty("xim.env");
@@ -41,7 +45,7 @@ public class EnvTests {
   }
 
   @Test
-  public void illegalEnv() throws Exception {
+  void illegalEnv() throws Exception {
     restoreSystemProperties(
         () -> {
           System.setProperty("xim.env", "illegal");
@@ -50,7 +54,7 @@ public class EnvTests {
   }
 
   @Test
-  public void fromSystemEnv() throws Exception {
+  void fromSystemEnv() throws Exception {
     restoreSystemProperties(
         () -> {
           System.setProperty("xim.env", Env.TEST.name());
@@ -59,7 +63,7 @@ public class EnvTests {
   }
 
   @Test
-  public void ignoreCase() throws Exception {
+  void ignoreCase() throws Exception {
     restoreSystemProperties(
         () -> {
           System.setProperty("xim.env", "pRod");
@@ -68,7 +72,7 @@ public class EnvTests {
   }
 
   @Test
-  public void fromEnvironmentVariable() throws Exception {
+  void fromEnvironmentVariable() throws Exception {
     withEnvironmentVariable("XIM_ENV", "test")
         .execute(() -> assertThat(Env.getEnv()).isEqualTo(Env.TEST));
   }

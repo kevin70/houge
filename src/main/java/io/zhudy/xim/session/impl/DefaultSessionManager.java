@@ -15,8 +15,6 @@
  */
 package io.zhudy.xim.session.impl;
 
-import static io.zhudy.xim.BizCodes.C3500;
-
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.micrometer.core.instrument.Counter;
@@ -26,17 +24,20 @@ import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.SessionEvent;
 import io.zhudy.xim.session.SessionListener;
 import io.zhudy.xim.session.SessionManager;
+import lombok.extern.log4j.Log4j2;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.inject.Inject;
-import javax.inject.Named;
-import lombok.extern.log4j.Log4j2;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
+
+import static io.zhudy.xim.BizCodes.C3500;
 
 /**
  * Session 管理器.
@@ -57,7 +58,7 @@ public class DefaultSessionManager implements SessionManager {
   private final Set<SessionListener> sessionListeners;
 
   public DefaultSessionManager() {
-    this(Collections.EMPTY_SET);
+    this(Collections.emptySet());
   }
 
   @Inject
@@ -70,29 +71,28 @@ public class DefaultSessionManager implements SessionManager {
   public Mono<Void> add(Session session) {
     final var p =
         Mono.defer(
-            () -> {
-              // 将 Session 加入缓存
-              return Mono.fromFuture(sessions.get(session.sessionId(), k -> session))
-                  .doOnNext(
-                      existsSession -> {
-                        if (existsSession != session) {
-                          throw new BizCodeException(C3500)
-                              .addContextValue("sessionId", session.sessionId());
-                        }
-                        sessionCounter.increment();
-                      })
-                  .filter(s -> !s.isAnonymous())
-                  .flatMap(
-                      s -> {
-                        var ac = s.authContext();
-                        return Mono.fromFuture(uidSessions.get(ac.uid(), k -> new HashSet<>()))
-                            .doOnNext(set -> set.add(s));
-                      })
-                  .then()
-                  // 将所有 add/remove 操作放置在同一个线程中执行， 避免使用额外的 Lock
-                  .subscribeOn(Schedulers.single())
-                  .publishOn(Schedulers.parallel());
-            });
+            () ->
+                // 将 Session 加入缓存
+                Mono.fromFuture(sessions.get(session.sessionId(), k -> session))
+                    .doOnNext(
+                        existsSession -> {
+                          if (existsSession != session) {
+                            throw new BizCodeException(C3500)
+                                .addContextValue("sessionId", session.sessionId());
+                          }
+                          sessionCounter.increment();
+                        })
+                    .filter(s -> !s.isAnonymous())
+                    .flatMap(
+                        s -> {
+                          var ac = s.authContext();
+                          return Mono.fromFuture(uidSessions.get(ac.uid(), k -> new HashSet<>()))
+                              .doOnNext(set -> set.add(s));
+                        })
+                    .then()
+                    // 将所有 add/remove 操作放置在同一个线程中执行， 避免使用额外的 Lock
+                    .subscribeOn(Schedulers.single())
+                    .publishOn(Schedulers.parallel()));
 
     return notify(session, SessionEvent.SM_ADD_BEFORE)
         .then(p)
@@ -202,15 +202,14 @@ public class DefaultSessionManager implements SessionManager {
                 listener
                     .handle(session, event)
                     .doOnError(
-                        e -> {
-                          // 记录监听器处理异常日志
-                          log.error(
-                              "监听器处理异常 [event={}, session={}, listener={}]",
-                              event,
-                              session,
-                              listener,
-                              e);
-                        })
+                        e ->
+                            // 记录监听器处理异常日志
+                            log.error(
+                                "监听器处理异常 [event={}, session={}, listener={}]",
+                                event,
+                                session,
+                                listener,
+                                e))
                     .onErrorResume(RuntimeException.class, e -> Mono.empty()))
         .last();
   }
