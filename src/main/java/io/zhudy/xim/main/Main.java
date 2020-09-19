@@ -19,9 +19,9 @@ import com.google.inject.Guice;
 import com.google.inject.Stage;
 import io.zhudy.xim.Env;
 import io.zhudy.xim.server.ImServer;
-import java.util.concurrent.CountDownLatch;
 import lombok.extern.log4j.Log4j2;
-import reactor.core.publisher.Hooks;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * XIM 应用程序入口.
@@ -33,8 +33,6 @@ public class Main implements Runnable {
 
   @Override
   public void run() {
-    Hooks.onOperatorDebug();
-
     final var env = Env.current();
     final var stage = env == Env.PROD ? Stage.PRODUCTION : Stage.DEVELOPMENT;
     log.info("正在启动 XIM 服务, 当前 [env={}, stage={}]", env, stage);
