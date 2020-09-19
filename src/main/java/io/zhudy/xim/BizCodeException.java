@@ -16,8 +16,8 @@
 package io.zhudy.xim;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,8 +27,8 @@ import java.util.List;
  */
 public final class BizCodeException extends RuntimeException {
 
-  private final transient BizCode bizCode;
-  private transient List<ContextValue> contextValues;
+  final transient BizCode bizCode;
+  final transient List<ContextValue> contextValues = new LinkedList<>();
 
   /**
    * 使用业务错误码构建异常.
@@ -93,9 +93,6 @@ public final class BizCodeException extends RuntimeException {
    * @return 当前实例
    */
   public BizCodeException addContextValue(@Nonnull final String label, Object value) {
-    if (this.contextValues == null) {
-      this.contextValues = new ArrayList<>();
-    }
     this.contextValues.add(new ContextValue(label, value));
     return this;
   }
@@ -106,10 +103,7 @@ public final class BizCodeException extends RuntimeException {
    * @return 错误上下文属性
    */
   public List<ContextValue> getContextEntries() {
-    if (this.contextValues == null) {
-      return Collections.emptyList();
-    }
-    return this.contextValues;
+    return Collections.unmodifiableList(contextValues);
   }
 
   /**
