@@ -89,7 +89,7 @@ dependencyManagement {
     dependency("io.lettuce:lettuce-core:5.3.4.RELEASE")
     dependency("org.assertj:assertj-core:3.11.1")
     dependency("org.mockito:mockito-core:3.3.0")
-    dependency("org.powermock:powermock-api-mockito2:2.0.7")
+    dependency("org.powermock:powermock-reflect:2.0.7")
     dependency("com.github.stefanbirkner:system-lambda:1.1.0")
     dependencySet("org.mockito:3.5.11") {
       entry("mockito-core")
@@ -130,7 +130,7 @@ dependencies {
   testImplementation("org.assertj:assertj-core")
   testImplementation("org.mockito:mockito-core")
   testImplementation("org.mockito:mockito-inline")
-  testImplementation("org.powermock:powermock-api-mockito2")
+  testImplementation("org.powermock:powermock-reflect")
 
   jmh("org.openjdk.jmh:jmh-core")
   jmh("org.openjdk.jmh:jmh-generator-annprocess")
