@@ -15,10 +15,10 @@
  */
 package io.zhudy.xim;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 
 /**
  * 业务增强异常.
@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
  */
 public final class BizCodeException extends RuntimeException {
 
-  private final BizCode bizCode;
-  private List<ContextValue> contextValues;
+  private final transient BizCode bizCode;
+  private transient List<ContextValue> contextValues;
 
   /**
    * 使用业务错误码构建异常.
@@ -93,7 +93,10 @@ public final class BizCodeException extends RuntimeException {
    * @return 当前实例
    */
   public BizCodeException addContextValue(@Nonnull final String label, Object value) {
-    contextValues0().add(new ContextValue(label, value));
+    if (this.contextValues == null) {
+      this.contextValues = new ArrayList<>();
+    }
+    this.contextValues.add(new ContextValue(label, value));
     return this;
   }
 
@@ -136,13 +139,6 @@ public final class BizCodeException extends RuntimeException {
   @Override
   public String toString() {
     return getFormattedMessage(super.getMessage());
-  }
-
-  private List<ContextValue> contextValues0() {
-    if (this.contextValues == null) {
-      this.contextValues = new ArrayList<>();
-    }
-    return this.contextValues;
   }
 
   private String getFormattedMessage(final String baseMessage) {
