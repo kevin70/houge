@@ -15,11 +15,7 @@
  */
 package io.zhudy.xim.server;
 
-import static io.zhudy.xim.ConfigKeys.IM_SERVER_ADDR;
-
 import com.google.common.net.HostAndPort;
-import javax.inject.Inject;
-import javax.inject.Named;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -29,15 +25,24 @@ import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.WebsocketServerSpec;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import static io.zhudy.xim.ConfigKeys.IM_SERVER_ADDR;
+
+/**
+ * IM 服务器.
+ *
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 @Log4j2
 public class ImServer {
 
   public static final String VERSION_HTTP_PATH = "/version";
   public static final String IM_WS_PATH = "/im";
 
-  private final ImSocketHandler imSocketHandler;
   private final HostAndPort hap;
-
+  private final ImSocketHandler imSocketHandler;
   private DisposableServer disposableServer;
 
   @Inject
@@ -57,10 +62,7 @@ public class ImServer {
                 routes -> {
                   routes.get("/info", this::info);
                   // IM Socket 注册
-                  routes.ws(
-                      IM_WS_PATH,
-                      imSocketHandler,
-                      WebsocketServerSpec.builder().handlePing(true).build());
+                  routes.ws(IM_WS_PATH, imSocketHandler, WebsocketServerSpec.builder().build());
                 })
             .bindNow();
     log.info("IM Server started at - {}", hap);
@@ -71,7 +73,7 @@ public class ImServer {
     if (disposableServer != null) {
       disposableServer.disposeNow();
     }
-    log.info("IM Server stopped");
+    log.info("IM Server stopped - {}", hap);
   }
 
   // FIXME 后面完善

@@ -35,7 +35,8 @@ class GenDevTokens {
       Keys.hmacShaKeyFor(
           "48991ed9387952211883afc2392fc5332239993e8184a42888bf4123e78cd572cc18292d81d9578af50eb6ccd66c78bb71f7a6bd28a7b8b14ce7801ab75b1278"
               .getBytes(StandardCharsets.UTF_8));
-//  SigningKeyResolver signingKeyResolver = new DefaultSigningKeyResolver(Map.of(kid, testSecret));
+  //  SigningKeyResolver signingKeyResolver = new DefaultSigningKeyResolver(Map.of(kid,
+  // testSecret));
 
   @Test
   void genTokens() {

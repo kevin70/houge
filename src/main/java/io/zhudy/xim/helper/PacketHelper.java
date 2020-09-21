@@ -49,7 +49,8 @@ public final class PacketHelper {
     OBJECT_MAPPER.registerSubtypes(new NamedType(PrivateMsgPacket.class, Namespaces.PRIVATE_MSG));
     OBJECT_MAPPER.registerSubtypes(new NamedType(GroupMsgPacket.class, Namespaces.GROUP_MSG));
     OBJECT_MAPPER.registerSubtypes(new NamedType(GroupSubPacket.class, Namespaces.GROUP_SUBSCRIBE));
-    OBJECT_MAPPER.registerSubtypes(new NamedType(GroupUnsubPacket.class, Namespaces.GROUP_UNSUBSCRIBE));
+    OBJECT_MAPPER.registerSubtypes(
+        new NamedType(GroupUnsubPacket.class, Namespaces.GROUP_UNSUBSCRIBE));
   }
 
   /**
