@@ -17,9 +17,11 @@ package io.zhudy.xim.session;
 
 /**
  * Session 事件.
+ *
  * @see SessionListener
  * @see SessionManager
- * @author Kevin Zou (kevinz@weghst.com) */
+ * @author Kevin Zou (kevinz@weghst.com)
+ */
 public enum SessionEvent {
   /** 添加成功之前. */
   SM_ADD_BEFORE,
