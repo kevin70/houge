@@ -15,25 +15,18 @@
  */
 package io.zhudy.xim.auth.impl;
 
-import static io.zhudy.xim.BizCodes.C3300;
-import static io.zhudy.xim.BizCodes.C3301;
-import static io.zhudy.xim.BizCodes.C3302;
-import static io.zhudy.xim.BizCodes.C3305;
-import static io.zhudy.xim.BizCodes.C401;
-import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
-
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.PrematureJwtException;
-import io.jsonwebtoken.SigningKeyResolver;
+import io.jsonwebtoken.*;
 import io.zhudy.xim.BizCodeException;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.AuthService;
+import io.zhudy.xim.auth.NoneAuthContext;
+import reactor.core.publisher.Mono;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-import reactor.core.publisher.Mono;
+
+import static io.zhudy.xim.BizCodes.*;
+import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
 
 /**
  * <a href="https://tools.ietf.org/html/rfc7515">JWS</a> 用户认证服务实现.
@@ -62,7 +55,7 @@ public class JwsAuthService implements AuthService {
   public Mono<AuthContext> authorize(String token) {
     if (token == null || token.isEmpty()) {
       if (anonymousEnabled) {
-        return Mono.just(AuthContext.NONE_AUTH_CONTEXT);
+        return Mono.just(NoneAuthContext.INSTANCE);
       } else {
         return Mono.error(new BizCodeException(C401, "缺少访问令牌"));
       }

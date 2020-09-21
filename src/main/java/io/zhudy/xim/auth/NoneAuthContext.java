@@ -15,35 +15,34 @@
  */
 package io.zhudy.xim.auth;
 
-import javax.annotation.Nonnull;
-
 /**
- * 认证的上下文信息.
+ * 未认证的默认用户上下文.
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-public interface AuthContext {
+public class NoneAuthContext implements AuthContext {
 
-  /**
-   * 返回用户 ID.
-   *
-   * @return 用户 ID
-   */
-  @Nonnull
-  String uid();
+  /** 默认全局唯一实例. */
+  public static final AuthContext INSTANCE = new NoneAuthContext();
 
-  /**
-   * 返回认证令牌.
-   *
-   * @return 认证令牌
-   */
-  @Nonnull
-  String token();
+  private NoneAuthContext() {
+    if (INSTANCE != null) {
+      throw new IllegalStateException("无法创建 NoneAuthContext 实例");
+    }
+  }
 
-  /**
-   * 是否为匿名认证.
-   *
-   * @return true 是匿名认证
-   */
-  boolean isAnonymous();
+  @Override
+  public String uid() {
+    throw new IllegalStateException("匿名访问");
+  }
+
+  @Override
+  public String token() {
+    throw new IllegalStateException("匿名访问");
+  }
+
+  @Override
+  public boolean isAnonymous() {
+    return true;
+  }
 }

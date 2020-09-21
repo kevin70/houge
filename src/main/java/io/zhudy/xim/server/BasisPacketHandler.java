@@ -39,6 +39,8 @@ import reactor.core.publisher.Mono;
 @Log4j2
 public class BasisPacketHandler implements PacketHandler {
 
+  // TODO 后期修改
+  @SuppressWarnings("unused")
   private final SessionManager sessionManager;
   private final SessionGroupManager sessionGroupManager;
   private final MessageRouter messageRouter;

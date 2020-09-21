@@ -19,10 +19,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.packet.Packet;
-import java.util.Collections;
-import java.util.Set;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
 
 /**
  * IM 会话信息.
@@ -36,7 +36,7 @@ public interface Session {
    *
    * <p>实现需要保证会话 ID 在当前应用中的唯一.
    *
-   * @return
+   * @return 会话 ID
    */
   String sessionId();
 
@@ -50,13 +50,11 @@ public interface Session {
   String uid();
 
   /**
-   * 会话认证的上下文信息. 未认证则返回 {@link AuthContext#NONE_AUTH_CONTEXT}.
+   * 会话认证的上下文信息. 未认证则返回 {@link io.zhudy.xim.auth.NoneAuthContext#INSTANCE}.
    *
    * @return 会话认证的上下文信息
    */
-  default AuthContext authContext() {
-    return AuthContext.NONE_AUTH_CONTEXT;
-  }
+  AuthContext authContext();
 
   /**
    * 是否为匿名认证.
@@ -72,18 +70,14 @@ public interface Session {
    *
    * @return true 会话已关闭
    */
-  default boolean isClosed() {
-    return true;
-  }
+  boolean isClosed();
 
   /**
    * 已订阅群组消息的 IDs.
    *
    * @return 订阅群组 IDs
    */
-  default Set<String> subGroupIds() {
-    return Collections.emptySet();
-  }
+  Set<String> subGroupIds();
 
   /**
    * 向客户端发送数据.
