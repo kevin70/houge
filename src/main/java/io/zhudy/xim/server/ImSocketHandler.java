@@ -57,8 +57,6 @@ import java.util.function.BiFunction;
 public class ImSocketHandler
     implements BiFunction<WebsocketInbound, WebsocketOutbound, Mono<Void>> {
 
-  /** 会话闲置时间. */
-  private static final int IDLE_TIMEOUT_SECS = 90;
   /** 认证令牌在 query 参数中的名称. */
   private static final String ACCESS_TOKEN_QUERY_NAME = "access_token";
   /** 认证服务. */
