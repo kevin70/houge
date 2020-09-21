@@ -4,6 +4,7 @@ plugins {
   id "com.github.hierynomus.license" version "0.15.0"
   id "me.champeau.gradle.jmh" version "0.5.0"
   id "checkstyle"
+  id "net.ltgt.errorprone" version "1.2.1"
 }
 
 apply plugin: "java"
@@ -100,6 +101,7 @@ dependencyManagement {
       entry("jmh-core")
       entry("jmh-generator-annprocess")
     }
+    dependency("com.google.errorprone:error_prone_core:2.4.0")
   }
 }
 
@@ -134,6 +136,8 @@ dependencies {
 
   jmh("org.openjdk.jmh:jmh-core")
   jmh("org.openjdk.jmh:jmh-generator-annprocess")
+
+  errorprone("com.google.errorprone:error_prone_core")
 }
 
 application {
