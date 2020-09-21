@@ -19,11 +19,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import io.zhudy.xim.packet.GroupMsgPacket;
-import io.zhudy.xim.packet.GroupSubPacket;
-import io.zhudy.xim.packet.GroupUnsubPacket;
-import io.zhudy.xim.packet.Namespaces;
-import io.zhudy.xim.packet.PrivateMsgPacket;
+import io.zhudy.xim.packet.*;
 
 /**
  * Packet 工具类.
@@ -32,23 +28,38 @@ import io.zhudy.xim.packet.PrivateMsgPacket;
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-public class PacketHelper {
+public final class PacketHelper {
+
+  private PacketHelper() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
    * Packet JSON 序列化与反序列化实例.
    *
    * <p>注意: <b>该对象经过特殊的配置, 序列化与反序列化非 {@code Packet} 对象时无法保证其正确性.</b>
    */
-  public static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   static {
-    MAPPER.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-    MAPPER.setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
+    OBJECT_MAPPER.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+    OBJECT_MAPPER.setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
 
     // 注册 Packet 子类以解析实际的包体
-    MAPPER.registerSubtypes(new NamedType(PrivateMsgPacket.class, Namespaces.PRIVATE_MSG));
-    MAPPER.registerSubtypes(new NamedType(GroupMsgPacket.class, Namespaces.GROUP_MSG));
-    MAPPER.registerSubtypes(new NamedType(GroupSubPacket.class, Namespaces.GROUP_SUBSCRIBE));
-    MAPPER.registerSubtypes(new NamedType(GroupUnsubPacket.class, Namespaces.GROUP_UNSUBSCRIBE));
+    OBJECT_MAPPER.registerSubtypes(new NamedType(PrivateMsgPacket.class, Namespaces.PRIVATE_MSG));
+    OBJECT_MAPPER.registerSubtypes(new NamedType(GroupMsgPacket.class, Namespaces.GROUP_MSG));
+    OBJECT_MAPPER.registerSubtypes(new NamedType(GroupSubPacket.class, Namespaces.GROUP_SUBSCRIBE));
+    OBJECT_MAPPER.registerSubtypes(new NamedType(GroupUnsubPacket.class, Namespaces.GROUP_UNSUBSCRIBE));
+  }
+
+  /**
+   * 返回 {@link ObjectMapper} 对象.
+   *
+   * <p>该方法返回的实例用于序列化、反序列化 {@link io.zhudy.xim.packet.Packet} JSON 对象.
+   *
+   * @return {@link ObjectMapper}
+   */
+  public static ObjectMapper getObjectMapper() {
+    return OBJECT_MAPPER;
   }
 }

@@ -16,20 +16,39 @@
 package io.zhudy.xim.helper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zhudy.xim.packet.Packet;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-public class PacketHelperTests {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class PacketHelperTests {
 
   @Test
-  public void descMessagePacket() throws JsonProcessingException {
+  void descMessagePacket() throws JsonProcessingException {
     var json2 =
         "{\"ns\":\"private.msg\",\"from\":\"abc\",\"to\":\"test\",\"content\":\"Hello World!\" }";
 
     for (int i = 0; i < 1; i++) {
-      var o = PacketHelper.MAPPER.readValue(json2, Packet.class);
+      var o = PacketHelper.getObjectMapper().readValue(json2, Packet.class);
       System.out.println(o);
-      System.out.println(PacketHelper.MAPPER.writeValueAsString(o));
+      System.out.println(PacketHelper.getObjectMapper().writeValueAsString(o));
+    }
+  }
+
+  @Test
+  void getObjectMapper() {
+    var objectMapper = PacketHelper.getObjectMapper();
+    assertThat(objectMapper).isNotNull();
+  }
+
+  @Test
+  void getMockObjectMapper() {
+    var objectMapper = Mockito.spy(ObjectMapper.class);
+    try (var mockedStatic = Mockito.mockStatic(PacketHelper.class)) {
+      mockedStatic.when(PacketHelper::getObjectMapper).thenReturn(objectMapper);
+      assertThat(PacketHelper.getObjectMapper()).isEqualTo(objectMapper);
     }
   }
 }

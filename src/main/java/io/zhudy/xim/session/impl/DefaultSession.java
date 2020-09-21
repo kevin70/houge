@@ -122,7 +122,7 @@ public final class DefaultSession implements Session {
               try {
                 var buf = outbound.alloc().buffer();
                 OutputStream bbos = new ByteBufOutputStream(buf);
-                PacketHelper.MAPPER.writeValue(bbos, p);
+                PacketHelper.getObjectMapper().writeValue(bbos, p);
                 return buf;
               } catch (IOException e) {
                 log.error(

@@ -179,7 +179,7 @@ public class ImSocketHandler
     final DataInput input = new ByteBufInputStream(content);
     final Packet packet;
     try {
-      packet = PacketHelper.MAPPER.readValue(input, Packet.class);
+      packet = PacketHelper.getObjectMapper().readValue(input, Packet.class);
     } catch (UnrecognizedPropertyException e) {
       var ep = new ErrorPacket("未知的属性", e.getPropertyName());
       return session.sendPacket(ep).then(session.close());
