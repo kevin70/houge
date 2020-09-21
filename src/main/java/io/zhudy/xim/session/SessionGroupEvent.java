@@ -16,6 +16,10 @@
 package io.zhudy.xim.session;
 
 /**
+ * Session 订阅取消订阅群组事件.
+ *
+ * @see SessionGroupListener
+ * @see SessionGroupManager
  * @author Kevin Zou (kevinz@weghst.com)
  */
 public enum SessionGroupEvent {
