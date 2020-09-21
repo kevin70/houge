@@ -16,13 +16,10 @@
 package io.zhudy.xim.server;
 
 import com.google.common.net.HostAndPort;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.log4j.Log4j2;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
-import reactor.netty.http.server.HttpServerRequest;
-import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.WebsocketServerSpec;
 
 import javax.inject.Inject;
@@ -38,17 +35,23 @@ import static io.zhudy.xim.ConfigKeys.IM_SERVER_ADDR;
 @Log4j2
 public class ImServer {
 
-  public static final String VERSION_HTTP_PATH = "/version";
+  private static final int IDLE_TIMEOUT_SECS = 90;
+
   public static final String IM_WS_PATH = "/im";
 
   private final HostAndPort hap;
   private final ImSocketHandler imSocketHandler;
+  private final RestHandler restHandler;
   private DisposableServer disposableServer;
 
   @Inject
-  public ImServer(@Named(IM_SERVER_ADDR) HostAndPort hap, ImSocketHandler imSocketHandler) {
+  public ImServer(
+      @Named(IM_SERVER_ADDR) HostAndPort hap,
+      ImSocketHandler imSocketHandler,
+      RestHandler restHandler) {
     this.hap = hap;
     this.imSocketHandler = imSocketHandler;
+    this.restHandler = restHandler;
   }
 
   /** 启动 IM 服务. */
@@ -58,10 +61,20 @@ public class ImServer {
             .host(hap.getHost())
             .port(hap.getPort())
             .wiretap(true)
+            .tcpConfiguration(
+                tcpServer -> {
+                  var sb = tcpServer.configure();
+                  sb.childHandler(
+                      new IdleStateHandler(
+                          IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS));
+                  return tcpServer;
+                })
             .route(
                 routes -> {
-                  routes.get("/info", this::info);
-                  // IM Socket 注册
+                  // 注册 REST 服务
+                  this.restHandler.registerService(routes);
+
+                  // 注册 IM Socket
                   routes.ws(IM_WS_PATH, imSocketHandler, WebsocketServerSpec.builder().build());
                 })
             .bindNow();
@@ -74,13 +87,5 @@ public class ImServer {
       disposableServer.disposeNow();
     }
     log.info("IM Server stopped - {}", hap);
-  }
-
-  // FIXME 后面完善
-  private Publisher<Void> info(HttpServerRequest request, HttpServerResponse response) {
-    return response
-        .header("content-type", "application/json")
-        .sendHeaders()
-        .sendString(Mono.just("{\"xim_version\": \"1.0.0\"}"));
   }
 }
