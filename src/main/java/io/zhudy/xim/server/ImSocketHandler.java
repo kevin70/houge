@@ -132,13 +132,12 @@ public class ImSocketHandler
             })
         .flatMap(
             session -> {
-              receiveFrames(in, out, session);
+              receiveFrames(in, session);
               return out.neverComplete();
             });
   }
 
-  private void receiveFrames(
-      final WebsocketInbound in, final WebsocketOutbound out, final Session session) {
+  private void receiveFrames(final WebsocketInbound in, final Session session) {
     in.aggregateFrames()
         .receiveFrames()
         .doOnError(
@@ -161,12 +160,11 @@ public class ImSocketHandler
                 session.close().subscribe();
               }
             })
-        .flatMap(frame -> handleFrame(session, out, frame))
+        .flatMap(frame -> handleFrame(session, frame))
         .subscribe();
   }
 
-  private Mono<Void> handleFrame(
-      final Session session, final WebsocketOutbound out, final WebSocketFrame frame) {
+  private Mono<Void> handleFrame(final Session session, final WebSocketFrame frame) {
     if (!(frame instanceof BinaryWebSocketFrame || frame instanceof TextWebSocketFrame)) {
       var ep = new ErrorPacket("不支持 的 ws frame 类型", "当前仅支持 binary/text frame 类型");
       return session.sendPacket(ep).then(session.close());
