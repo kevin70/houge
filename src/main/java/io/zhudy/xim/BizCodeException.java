@@ -28,7 +28,7 @@ import java.util.List;
 public final class BizCodeException extends RuntimeException {
 
   private final transient BizCode bizCode;
-  private final transient ContextEntity contextEntity = new ContextEntity();
+  private final transient List<ContextValue> contextEntries = new ArrayList<>();
 
   /**
    * 使用业务错误码构建异常.
@@ -93,7 +93,7 @@ public final class BizCodeException extends RuntimeException {
    * @return 当前实例
    */
   public BizCodeException addContextValue(@Nonnull final String label, Object value) {
-    this.contextEntity.addContextValue(label, value);
+    contextEntries.add(new ContextValue(label, value));
     return this;
   }
 
@@ -103,7 +103,7 @@ public final class BizCodeException extends RuntimeException {
    * @return 错误上下文属性
    */
   public List<ContextValue> getContextEntries() {
-    return contextEntity.getContextValues();
+    return Collections.unmodifiableList(contextEntries);
   }
 
   /**
@@ -148,12 +148,11 @@ public final class BizCodeException extends RuntimeException {
         .append(this.bizCode.getMessage())
         .append(']');
 
-    var contextValues = contextEntity.getContextValues();
-    if (!contextValues.isEmpty()) {
+    if (!contextEntries.isEmpty()) {
       builder.append("\nContext:\n");
 
       int i = 0;
-      for (final ContextValue cv : contextValues) {
+      for (final ContextValue cv : contextEntries) {
         builder.append("\t[");
         builder.append(++i);
         builder.append(':');
@@ -174,25 +173,6 @@ public final class BizCodeException extends RuntimeException {
       builder.append("---------------------------------");
     }
     return builder.toString();
-  }
-
-  private static class ContextEntity {
-
-    List<ContextValue> contextValues;
-
-    List<ContextValue> getContextValues() {
-      if (contextValues == null) {
-        return Collections.emptyList();
-      }
-      return Collections.unmodifiableList(contextValues);
-    }
-
-    void addContextValue(String label, Object value) {
-      if (contextValues == null) {
-        contextValues = new ArrayList<>();
-      }
-      contextValues.add(new ContextValue(label, value));
-    }
   }
 
   /** 错误上下文属性. */
