@@ -101,7 +101,7 @@ dependencyManagement {
       entry("jmh-core")
       entry("jmh-generator-annprocess")
     }
-    dependency("com.google.errorprone:error_prone_core:2.4.0")
+    dependency("com.google.errorprone:error_prone_core:+")
   }
 }
 
