@@ -15,19 +15,19 @@
  */
 package io.zhudy.xim.auth.impl;
 
-import static io.zhudy.xim.BizCodes.C3300;
-import static io.zhudy.xim.BizCodes.C3301;
-import static io.zhudy.xim.BizCodes.C3302;
-import static io.zhudy.xim.BizCodes.C3305;
-import static io.zhudy.xim.BizCodes.C401;
-
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import io.jsonwebtoken.security.Keys;
 import io.zhudy.xim.BizCodeException;
-import io.zhudy.xim.auth.AuthContext;
+import io.zhudy.xim.auth.NoneAuthContext;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import reactor.test.StepVerifier;
+
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Clock;
@@ -36,11 +36,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import reactor.test.StepVerifier;
+
+import static io.zhudy.xim.BizCodes.*;
 
 /**
  * {@link JwsAuthService} 单元测试.
@@ -88,7 +85,7 @@ class JwsAuthServiceTests {
   void anonymousAuth() {
     JwsAuthService authService = new JwsAuthService(true, signingKeyResolver);
     var p = authService.authorize(null);
-    StepVerifier.create(p).expectNext(AuthContext.NONE_AUTH_CONTEXT).verifyComplete();
+    StepVerifier.create(p).expectNext(NoneAuthContext.INSTANCE).verifyComplete();
   }
 
   @Test

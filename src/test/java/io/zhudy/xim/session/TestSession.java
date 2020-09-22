@@ -15,6 +15,9 @@
  */
 package io.zhudy.xim.session;
 
+import io.zhudy.xim.auth.AuthContext;
+import io.zhudy.xim.auth.NoneAuthContext;
+
 import java.security.SecureRandom;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -40,6 +43,16 @@ public class TestSession implements Session {
       return Long.toHexString(sessionId);
     }
     return authContext().uid();
+  }
+
+  @Override
+  public AuthContext authContext() {
+    return NoneAuthContext.INSTANCE;
+  }
+
+  @Override
+  public boolean isClosed() {
+    return false;
   }
 
   @Override

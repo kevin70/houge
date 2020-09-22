@@ -15,9 +15,6 @@
  */
 package io.zhudy.xim.session.impl;
 
-import static io.zhudy.xim.BizCodes.C3500;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Cache;
 import io.zhudy.xim.TestUtils;
@@ -25,10 +22,14 @@ import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.TestAuthContext;
 import io.zhudy.xim.session.TestSession;
-import java.security.SecureRandom;
 import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
 import reactor.test.StepVerifier;
+
+import java.security.SecureRandom;
+
+import static io.zhudy.xim.BizCodes.C3500;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /** @author Kevin Zou (kevinz@weghst.com) */
 class DefaultSessionManagerTests {
@@ -132,6 +133,11 @@ class DefaultSessionManagerTests {
               @Override
               public String token() {
                 return "test";
+              }
+
+              @Override
+              public boolean isAnonymous() {
+                return false;
               }
             };
           }
