@@ -15,9 +15,9 @@
  */
 package io.zhudy.xim;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * {@link BizCodeException} 单元测试.

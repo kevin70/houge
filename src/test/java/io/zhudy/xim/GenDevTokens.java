@@ -18,13 +18,10 @@ package io.zhudy.xim;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SigningKeyResolver;
 import io.jsonwebtoken.security.Keys;
-import io.zhudy.xim.auth.impl.DefaultSigningKeyResolver;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** @author Kevin Zou (kevinz@weghst.com) */

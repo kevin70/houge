@@ -15,17 +15,16 @@
  */
 package io.zhudy.xim.server;
 
+import static io.zhudy.xim.ConfigKeys.IM_SERVER_ADDR;
+
 import com.google.common.net.HostAndPort;
 import io.netty.handler.timeout.IdleStateHandler;
+import javax.inject.Inject;
+import javax.inject.Named;
 import lombok.extern.log4j.Log4j2;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.WebsocketServerSpec;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import static io.zhudy.xim.ConfigKeys.IM_SERVER_ADDR;
 
 /**
  * IM 服务器.

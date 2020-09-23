@@ -17,7 +17,6 @@ package io.zhudy.xim.session;
 
 import io.zhudy.xim.auth.AuthContext;
 import java.security.SecureRandom;
-import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 
 /** @author Kevin Zou (kevinz@weghst.com) */

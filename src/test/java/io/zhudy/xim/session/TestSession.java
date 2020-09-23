@@ -17,7 +17,6 @@ package io.zhudy.xim.session;
 
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.NoneAuthContext;
-
 import java.security.SecureRandom;
 import java.util.LinkedHashSet;
 import java.util.Set;

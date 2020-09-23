@@ -19,7 +19,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import io.zhudy.xim.packet.*;
+import io.zhudy.xim.packet.GroupMsgPacket;
+import io.zhudy.xim.packet.GroupSubPacket;
+import io.zhudy.xim.packet.GroupUnsubPacket;
+import io.zhudy.xim.packet.Namespaces;
+import io.zhudy.xim.packet.PrivateMsgPacket;
 
 /**
  * Packet 工具类.

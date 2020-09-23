@@ -20,10 +20,9 @@ import io.zhudy.xim.packet.Packet;
 import io.zhudy.xim.packet.PrivateMsgPacket;
 import io.zhudy.xim.session.SessionGroupManager;
 import io.zhudy.xim.session.SessionManager;
+import java.util.Objects;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
-
-import java.util.Objects;
 
 /**
  * 基础的消息路由器.

@@ -15,18 +15,26 @@
  */
 package io.zhudy.xim.auth.impl;
 
-import io.jsonwebtoken.*;
+import static io.zhudy.xim.BizCodes.C3300;
+import static io.zhudy.xim.BizCodes.C3301;
+import static io.zhudy.xim.BizCodes.C3302;
+import static io.zhudy.xim.BizCodes.C3305;
+import static io.zhudy.xim.BizCodes.C401;
+import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.PrematureJwtException;
+import io.jsonwebtoken.SigningKeyResolver;
 import io.zhudy.xim.BizCodeException;
 import io.zhudy.xim.auth.AuthContext;
 import io.zhudy.xim.auth.AuthService;
 import io.zhudy.xim.auth.NoneAuthContext;
-import reactor.core.publisher.Mono;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import static io.zhudy.xim.BizCodes.*;
-import static io.zhudy.xim.ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS;
+import reactor.core.publisher.Mono;
 
 /**
  * <a href="https://tools.ietf.org/html/rfc7515">JWS</a> 用户认证服务实现.

@@ -15,9 +15,15 @@
  */
 package io.zhudy.xim.session.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.zhudy.xim.auth.NoneAuthContext;
 import io.zhudy.xim.packet.ErrorPacket;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,13 +33,6 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
-
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * {@link DefaultSession} 单元测试.

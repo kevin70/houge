@@ -15,13 +15,13 @@
  */
 package io.zhudy.xim.helper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zhudy.xim.packet.Packet;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class PacketHelperTests {
 

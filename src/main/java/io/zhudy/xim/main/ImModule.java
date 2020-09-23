@@ -15,6 +15,10 @@
  */
 package io.zhudy.xim.main;
 
+import static com.google.inject.name.Names.named;
+import static io.zhudy.xim.session.SessionGroupManager.SESSION_GROUP_LISTENER_NAME_FOR_IOC;
+import static io.zhudy.xim.session.SessionManager.SESSION_LISTENER_NAME_FOR_IOC;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import io.jsonwebtoken.SigningKeyResolver;
@@ -23,17 +27,20 @@ import io.zhudy.xim.auth.impl.DefaultSigningKeyResolver;
 import io.zhudy.xim.auth.impl.JwsAuthService;
 import io.zhudy.xim.router.BasisMessageRouter;
 import io.zhudy.xim.router.MessageRouter;
-import io.zhudy.xim.server.*;
-import io.zhudy.xim.session.*;
+import io.zhudy.xim.server.BasisPacketHandler;
+import io.zhudy.xim.server.ImServer;
+import io.zhudy.xim.server.ImSocketHandler;
+import io.zhudy.xim.server.PacketHandler;
+import io.zhudy.xim.server.RestHandler;
+import io.zhudy.xim.session.SessionGroupListener;
+import io.zhudy.xim.session.SessionGroupManager;
+import io.zhudy.xim.session.SessionIdGenerator;
+import io.zhudy.xim.session.SessionListener;
+import io.zhudy.xim.session.SessionManager;
 import io.zhudy.xim.session.impl.DefaultSessionGroupManager;
 import io.zhudy.xim.session.impl.DefaultSessionIdGenerator;
 import io.zhudy.xim.session.impl.DefaultSessionManager;
-
 import javax.inject.Singleton;
-
-import static com.google.inject.name.Names.named;
-import static io.zhudy.xim.session.SessionGroupManager.SESSION_GROUP_LISTENER_NAME_FOR_IOC;
-import static io.zhudy.xim.session.SessionManager.SESSION_LISTENER_NAME_FOR_IOC;
 
 /**
  * Guice IM 模块.

@@ -19,9 +19,8 @@ import com.google.inject.Guice;
 import com.google.inject.Stage;
 import io.zhudy.xim.Env;
 import io.zhudy.xim.server.ImServer;
-import lombok.extern.log4j.Log4j2;
-
 import java.util.concurrent.CountDownLatch;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * XIM 应用程序入口.

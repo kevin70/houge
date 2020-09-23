@@ -15,12 +15,12 @@
  */
 package io.zhudy.xim;
 
-import org.junit.jupiter.api.Test;
-
 import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * {@link Env} 单元测试.

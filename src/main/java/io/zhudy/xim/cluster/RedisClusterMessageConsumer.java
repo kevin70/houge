@@ -15,15 +15,14 @@
  */
 package io.zhudy.xim.cluster;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
-import lombok.extern.log4j.Log4j2;
-
 import javax.inject.Inject;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Redis 集群消息消费者.

@@ -15,11 +15,10 @@
  */
 package io.zhudy.xim.util;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.charset.StandardCharsets;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 /**
  * {@link ByteUtils} 单元测试.
