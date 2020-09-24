@@ -15,14 +15,14 @@
  */
 package io.zhudy.xim.packet;
 
-import lombok.Value;
+import lombok.Data;
 
 /**
  * 私人消息.
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-@Value
+@Data
 public class PrivateMsgPacket implements MsgPacket {
 
   /** 发送消息者. */
