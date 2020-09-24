@@ -101,7 +101,6 @@ dependencyManagement {
       entry("jmh-core")
       entry("jmh-generator-annprocess")
     }
-    dependency("com.google.errorprone:error_prone_core:+")
   }
 }
 
@@ -136,8 +135,6 @@ dependencies {
 
   jmh("org.openjdk.jmh:jmh-core")
   jmh("org.openjdk.jmh:jmh-generator-annprocess")
-
-  errorprone("com.google.errorprone:error_prone_core")
 }
 
 application {
