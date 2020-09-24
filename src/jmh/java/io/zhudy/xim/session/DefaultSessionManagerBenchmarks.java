@@ -17,9 +17,11 @@ package io.zhudy.xim.session;
 
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.zhudy.xim.auth.AuthContext;
+import io.zhudy.xim.auth.NoneAuthContext;
 import io.zhudy.xim.session.impl.DefaultSessionManager;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -60,7 +62,17 @@ public class DefaultSessionManagerBenchmarks {
 
     @Override
     public AuthContext authContext() {
-      return AuthContext.NONE_AUTH_CONTEXT;
+      return NoneAuthContext.INSTANCE;
+    }
+
+    @Override
+    public boolean isClosed() {
+      return false;
+    }
+
+    @Override
+    public Set<String> subGroupIds() {
+      return null;
     }
 
     @Override
