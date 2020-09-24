@@ -21,8 +21,14 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.zhudy.xim.helper.PacketHelper;
+import io.zhudy.xim.packet.MsgPacket;
+import io.zhudy.xim.packet.Packet;
+import io.zhudy.xim.router.MessageRouter;
+import java.io.IOException;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * Redis 集群消息消费者.
@@ -32,6 +38,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class RedisClusterMessageConsumer implements ClusterMessageConsumer {
 
+  private final MessageRouter messageRouter;
   private final RedisClient redisClient;
 
   private volatile StatefulRedisPubSubConnection<byte[], byte[]> redisSubConnection;
@@ -39,8 +46,9 @@ public class RedisClusterMessageConsumer implements ClusterMessageConsumer {
   private volatile boolean stopped;
 
   @Inject
-  public RedisClusterMessageConsumer(RedisClient redisClient) {
+  public RedisClusterMessageConsumer(RedisClient redisClient, MessageRouter messageRouter) {
     this.redisClient = redisClient;
+    this.messageRouter = messageRouter;
   }
 
   @Override
@@ -61,29 +69,36 @@ public class RedisClusterMessageConsumer implements ClusterMessageConsumer {
         new RedisPubSubAdapter<>() {
 
           @Override
-          public void message(byte[] channel, byte[] message) {
-            final var channelStr = new String(channel, UTF_8);
+          public void message(byte[] channelBytes, byte[] message) {
+            var channel = new String(channelBytes, UTF_8);
             ChannelType channelType = null;
             for (ChannelType ct : ChannelType.values()) {
-              if (channelStr.startsWith(channelType.getPrefix())) {
+              if (channel.startsWith(ct.getPrefix())) {
                 channelType = ct;
               }
             }
 
             if (channelType == null) {
-              log.error(
-                  "未找到的集群消息通道类型 [channel={}, message={}]", channelStr, new String(message, UTF_8));
+              log.error("未找到的集群消息通道类型 channel={}, message={}", channel, new String(message, UTF_8));
               return;
             }
 
-            final var toId = channelStr.substring(channelType.getPrefix().length());
-            if (channelType == ChannelType.PRIVATE) {
-              // 个人聊天消息
-            } else if (channelType == ChannelType.GROUP) {
-              // 群组聊天消息
-            } else if (channelType == ChannelType.SYSTEM) {
-              // 系统消息
+            Packet packet;
+            try {
+              packet = PacketHelper.getObjectMapper().readValue(message, Packet.class);
+            } catch (IOException e) {
+              log.error("解析集群消息失败 channel={}, message={}", channel, new String(message, UTF_8));
+              return;
             }
+
+            log.debug("集群消息路由 channel={}, packet={}", channel, packet);
+            messageRouter
+                .route((MsgPacket) packet)
+                .doOnSuccess(unused -> log.debug("集群消息路由成功 channel={}, packet={}", channel, packet))
+                .doOnError(e -> log.error("集群消息处理失败 channel={}, packet={}", channel, packet, e))
+                .publishOn(Schedulers.parallel())
+                .subscribeOn(Schedulers.parallel())
+                .subscribe();
           }
         });
 
