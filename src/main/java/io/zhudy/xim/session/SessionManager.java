@@ -25,8 +25,21 @@ import reactor.core.publisher.Mono;
  */
 public interface SessionManager {
 
-  /** */
-  String SESSION_LISTENER_NAME_FOR_IOC = "session.listeners";
+  /**
+   * 注册会话监听器.
+   *
+   * @param sessionListener 会话监听器
+   * @return 如果返回 true 则表示注册成功
+   */
+  boolean registerListener(SessionListener sessionListener);
+
+  /**
+   * 取消注册会话监听器.
+   *
+   * @param sessionListener 会话监听器
+   * @return 如果返回 true 则表示取消成功
+   */
+  boolean unregisterListener(SessionListener sessionListener);
 
   /**
    * 添加会话.

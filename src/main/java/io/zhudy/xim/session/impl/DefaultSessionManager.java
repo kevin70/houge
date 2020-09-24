@@ -27,12 +27,10 @@ import io.zhudy.xim.session.SessionEvent;
 import io.zhudy.xim.session.SessionListener;
 import io.zhudy.xim.session.SessionManager;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.inject.Inject;
-import javax.inject.Named;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -46,6 +44,9 @@ import reactor.core.scheduler.Schedulers;
 @Log4j2
 public class DefaultSessionManager implements SessionManager {
 
+  // 会话监听器
+  private final Set<SessionListener> sessionListeners = new LinkedHashSet<>();
+
   // Session 记数器
   private final Counter sessionCounter = Metrics.counter("xim.session.counter");
   // 所有的 Session
@@ -53,17 +54,14 @@ public class DefaultSessionManager implements SessionManager {
   // 所有用户的 Session
   private final AsyncCache<String, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
 
-  /** */
-  private final Set<SessionListener> sessionListeners;
-
-  public DefaultSessionManager() {
-    this(Collections.emptySet());
+  @Override
+  public boolean registerListener(SessionListener sessionListener) {
+    return sessionListeners.add(sessionListener);
   }
 
-  @Inject
-  public DefaultSessionManager(
-      @Named(SESSION_LISTENER_NAME_FOR_IOC) Set<SessionListener> sessionListeners) {
-    this.sessionListeners = sessionListeners;
+  @Override
+  public boolean unregisterListener(SessionListener sessionListener) {
+    return sessionListeners.remove(sessionListener);
   }
 
   @Override

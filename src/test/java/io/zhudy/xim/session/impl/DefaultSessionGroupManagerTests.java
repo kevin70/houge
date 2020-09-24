@@ -133,7 +133,9 @@ class DefaultSessionGroupManagerTests {
 
       var session = new TestSession();
       var groupIds = Set.of(gid);
-      var dsgm = new DefaultSessionGroupManager(Set.of(listener));
+      var dsgm = new DefaultSessionGroupManager();
+      dsgm.registerListener(listener);
+
       var p = dsgm.subGroups(session, groupIds);
       StepVerifier.create(p).verifyComplete();
 
@@ -164,7 +166,9 @@ class DefaultSessionGroupManagerTests {
 
       var session = new TestSession();
       var groupIds = Set.of(gid);
-      var dsgm = new DefaultSessionGroupManager(Set.of(listener));
+      var dsgm = new DefaultSessionGroupManager();
+      dsgm.registerListener(listener);
+
       var p = dsgm.subGroups(session, groupIds).thenMany(dsgm.unsubGroups(session, groupIds));
       StepVerifier.create(p).verifyComplete();
 

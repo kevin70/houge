@@ -21,11 +21,9 @@ import io.zhudy.xim.session.Session;
 import io.zhudy.xim.session.SessionGroupEvent;
 import io.zhudy.xim.session.SessionGroupListener;
 import io.zhudy.xim.session.SessionGroupManager;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,24 +37,19 @@ import reactor.core.scheduler.Schedulers;
 @Log4j2
 public class DefaultSessionGroupManager implements SessionGroupManager {
 
+  private final Set<SessionGroupListener> sessionGroupListeners = new LinkedHashSet<>();
+
   // 缓存组 Session
   private final AsyncCache<String, Set<Session>> groupSessions = Caffeine.newBuilder().buildAsync();
-  private final Set<SessionGroupListener> sessionGroupListeners;
 
-  /** 创建一个没有 {@link SessionGroupEvent} 监听事件的会话组管理. */
-  public DefaultSessionGroupManager() {
-    this(Collections.emptySet());
+  @Override
+  public boolean registerListener(SessionGroupListener sessionGroupListener) {
+    return sessionGroupListeners.add(sessionGroupListener);
   }
 
-  /**
-   * 创建一个带有 {@link SessionGroupEvent} 监听事件的会话组管理.
-   *
-   * @param sessionGroupListeners 监听器
-   */
-  @Inject
-  public DefaultSessionGroupManager(
-      @Named(SESSION_GROUP_LISTENER_NAME_FOR_IOC) Set<SessionGroupListener> sessionGroupListeners) {
-    this.sessionGroupListeners = sessionGroupListeners;
+  @Override
+  public boolean unregisterListener(SessionGroupListener sessionGroupListener) {
+    return sessionGroupListeners.remove(sessionGroupListener);
   }
 
   @Override
