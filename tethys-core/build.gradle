@@ -1,0 +1,9 @@
+dependencies {
+  implementation(project(":tethys-api"))
+  implementation("com.typesafe:config")
+  implementation("com.google.inject:guice")
+  implementation("com.github.ben-manes.caffeine:caffeine")
+  implementation("io.lettuce:lettuce-core")
+  implementation("io.jsonwebtoken:jjwt-impl")
+  implementation("io.jsonwebtoken:jjwt-jackson")
+}

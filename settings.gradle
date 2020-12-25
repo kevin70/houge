@@ -1,1 +1,8 @@
 rootProject.name = "xim"
+
+include ":tethys-api"
+include ":tethys-core"
+include ":tethys-storage"
+
+include ":tethys-rest-server"
+include ":tethys-ws-server"

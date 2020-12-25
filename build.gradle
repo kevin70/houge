@@ -6,139 +6,97 @@ plugins {
   id "checkstyle"
 }
 
-apply plugin: "java"
-apply plugin: "jacoco"
-apply plugin: "application"
+allprojects {
 
-sourceCompatibility = "11"
-targetCompatibility = "11"
+  apply plugin: "java"
+  apply plugin: "jacoco"
+  apply plugin: "checkstyle"
+  apply plugin: "io.spring.dependency-management"
+  apply plugin: "com.github.johnrengelman.shadow"
+  apply plugin: "me.champeau.gradle.jmh"
 
-[compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
+  sourceCompatibility = "11"
+  targetCompatibility = "11"
 
-test {
-  useJUnitPlatform()
-}
+  [compileJava, compileTestJava, javadoc]*.options*.encoding = "UTF-8"
 
-jacocoTestReport {
-  reports {
-    xml.enabled = true
-    html.enabled = true
+  test {
+    useJUnitPlatform()
   }
-}
 
-license {
-  header = rootProject.file("LICENSE")
-  headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.classLoader.getResource("headers/Apache-2.0").toURI()
-  skipExistingHeaders = true
-  mapping {
-    java = "SLASHSTAR_STYLE"
-  }
-  ext {
-    year = "2019-2020"
-    author = "the original author or authors"
-  }
-}
-
-checkstyle {
-  toolVersion = "8.33"
-  configFile = project.file("config/checkstyle/google_checks.xml")
-}
-
-tasks.withType(Checkstyle) {
-  reports {
-    xml.enabled = true
-    html.enabled = true
-  }
-}
-
-repositories {
-  mavenLocal()
-
-  def aliyunEnabled = System.getenv("GITHUB_ACTIONS") == null
-  if (aliyunEnabled) {
-    maven {
-      url = "https://maven.aliyun.com/nexus/content/groups/public/"
+  jacocoTestReport {
+    reports {
+      xml.enabled = true
+      html.enabled = true
     }
   }
 
-  mavenCentral()
-}
+  license {
+    header = rootProject.file("LICENSE")
+    headerURI = com.hierynomus.gradle.license.LicenseBasePlugin.classLoader.getResource("headers/Apache-2.0").toURI()
+    skipExistingHeaders = true
+    mapping {
+      java = "SLASHSTAR_STYLE"
+    }
+    ext {
+      year = "2019-2020"
+      author = "the original author or authors"
+    }
+  }
 
-dependencyManagement {
-  imports {
-    mavenBom("io.projectreactor:reactor-bom:Dysprosium-SR11")
-    mavenBom("org.apache.logging.log4j:log4j-bom:2.13.3")
-    mavenBom("com.google.inject:guice-bom:5.0.0-BETA-1")
-    mavenBom("io.micrometer:micrometer-bom:1.5.1")
-    mavenBom("io.r2dbc:r2dbc-bom:Arabba-SR8")
-    mavenBom("com.fasterxml.jackson:jackson-bom:2.11.2")
-    mavenBom("org.junit:junit-bom:5.6.2")
-    mavenBom("org.testcontainers:testcontainers-bom:1.14.3")
+  checkstyle {
+    toolVersion = "8.33"
+    configFile = project.file("config/checkstyle/google_checks.xml")
+  }
+
+  tasks.withType(Checkstyle) {
+    reports {
+      xml.enabled = true
+      html.enabled = true
+    }
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom("top.yein.chaos:chaos-bom:1.0-SNAPSHOT")
+    }
   }
 
   dependencies {
-    dependency("org.projectlombok:lombok:1.18.12")
-    dependencySet("io.jsonwebtoken:0.11.2") {
-      entry("jjwt-impl")
-      entry("jjwt-jackson")
-    }
-    dependency("org.ow2.asm:asm:7.3.1")
-    dependency("cglib:cglib:3.3.0")
-    dependency("com.google.guava:guava:29.0-jre")
-    dependency("com.github.ben-manes.caffeine:caffeine:2.8.4")
-    dependency("com.typesafe:config:1.4.0")
-    dependency("io.lettuce:lettuce-core:5.3.4.RELEASE")
-    dependency("org.assertj:assertj-core:3.11.1")
-    dependency("org.mockito:mockito-core:3.3.0")
-    dependency("org.powermock:powermock-reflect:2.0.7")
-    dependency("com.github.stefanbirkner:system-lambda:1.1.0")
-    dependencySet("org.mockito:3.5.11") {
-      entry("mockito-core")
-      entry("mockito-inline")
-    }
-    dependency("org.openjdk.jol:jol-core:0.13")
-    dependencySet("org.openjdk.jmh:1.23") {
-      entry("jmh-core")
-      entry("jmh-generator-annprocess")
-    }
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    implementation("org.apache.logging.log4j:log4j-core")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+    // Test
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.openjdk.jol:jol-core")
+    testImplementation("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("com.github.stefanbirkner:system-lambda")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("io.micrometer:micrometer-test")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-inline")
+    testImplementation("org.powermock:powermock-reflect")
+    testImplementation("org.testcontainers:testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+
+    jmh("org.openjdk.jmh:jmh-core")
+    jmh("org.openjdk.jmh:jmh-generator-annprocess")
   }
-}
 
-dependencies {
-  compileOnly("org.projectlombok:lombok")
-  annotationProcessor("org.projectlombok:lombok")
-  implementation("org.apache.logging.log4j:log4j-core")
-  implementation("org.apache.logging.log4j:log4j-slf4j-impl")
+  repositories {
+    mavenLocal()
 
-  implementation("com.typesafe:config")
-  implementation("com.google.inject:guice")
-  implementation("com.github.ben-manes.caffeine:caffeine")
-  implementation("io.lettuce:lettuce-core")
-  implementation("io.jsonwebtoken:jjwt-impl")
-  implementation("io.jsonwebtoken:jjwt-jackson")
-  implementation("io.r2dbc:r2dbc-postgresql")
-  implementation("io.micrometer:micrometer-registry-prometheus")
-
-  // Test
-  testCompileOnly("org.projectlombok:lombok")
-  testAnnotationProcessor("org.projectlombok:lombok")
-  testImplementation("org.openjdk.jol:jol-core")
-  testImplementation("org.junit.platform:junit-platform-launcher")
-  testImplementation("org.junit.jupiter:junit-jupiter-engine")
-  testImplementation("com.github.stefanbirkner:system-lambda")
-  testImplementation("io.projectreactor:reactor-test")
-  testImplementation("io.micrometer:micrometer-test")
-  testImplementation("org.assertj:assertj-core")
-  testImplementation("org.mockito:mockito-core")
-  testImplementation("org.mockito:mockito-inline")
-  testImplementation("org.powermock:powermock-reflect")
-  testImplementation("org.testcontainers:testcontainers")
-  testImplementation("org.testcontainers:junit-jupiter")
-
-  jmh("org.openjdk.jmh:jmh-core")
-  jmh("org.openjdk.jmh:jmh-generator-annprocess")
-}
-
-application {
-  mainClassName = "io.zhudy.xim.main.Main"
+    def aliyunEnabled = System.getenv("GITHUB_ACTIONS") == null
+    if (aliyunEnabled) {
+      maven { url = "https://maven.aliyun.com/nexus/content/groups/public/" }
+    }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
+    mavenCentral()
+  }
 }
