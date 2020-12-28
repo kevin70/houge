@@ -16,7 +16,6 @@
 package top.yein.tethys.session;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.util.Set;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -105,16 +104,8 @@ public interface Session {
    * @return Mono
    */
   default Mono<Void> send(ByteBuf buf) {
-    return send(Mono.just(new TextWebSocketFrame(buf)));
-  }
-
-  /**
-   * 向客户端发送数据.
-   *
-   * @param frame 数据
-   * @return Mono
-   */
-  default Mono<Void> send(Publisher<TextWebSocketFrame> frame) {
+//    return send(Mono.just(new TextWebSocketFrame(buf)));
+    // FIXME
     return Mono.empty();
   }
 

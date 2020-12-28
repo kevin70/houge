@@ -15,9 +15,9 @@
  */
 package top.yein.tethys.core.session;
 
-import io.zhudy.xim.session.SessionIdGenerator;
 import java.time.Clock;
 import java.util.concurrent.atomic.AtomicInteger;
+import top.yein.tethys.session.SessionIdGenerator;
 
 /**
  * 默认会话 ID 生成器实现.

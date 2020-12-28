@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.session;
+package top.yein.tethys.core;
 
-import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCode;
+import top.yein.chaos.biz.BizCodeException;
 
-/**
- * Session 事件接口.
- *
- * @author Kevin Zou (kevinz@weghst.com)
- */
-@FunctionalInterface
-public interface SessionListener {
+/** @author Kevin Zou (kevinz@weghst.com) */
+public class TestUtils {
 
   /**
-   * @param session 会话信息
-   * @param event 事件类型
-   * @return {@link Mono#empty()}
+   * @param e
+   * @param expect
+   * @return
    */
-  Mono<Void> handle(Session session, SessionEvent event);
+  public static boolean test(Throwable e, BizCode expect) {
+    if (e instanceof BizCodeException) {
+      BizCodeException a = (BizCodeException) e;
+      return a.getBizCode() == expect;
+    }
+    return false;
+  }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zhudy.xim.server;
+package top.yein.tethys.im.server;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.netty.buffer.ByteBuf;
@@ -23,15 +23,6 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.zhudy.xim.auth.AuthService;
-import io.zhudy.xim.helper.PacketHelper;
-import io.zhudy.xim.packet.ErrorPacket;
-import io.zhudy.xim.packet.Packet;
-import io.zhudy.xim.session.Session;
-import io.zhudy.xim.session.SessionGroupManager;
-import io.zhudy.xim.session.SessionIdGenerator;
-import io.zhudy.xim.session.SessionManager;
-import io.zhudy.xim.session.impl.DefaultSession;
 import java.io.DataInput;
 import java.io.IOException;
 import java.util.function.BiFunction;
@@ -45,6 +36,13 @@ import reactor.netty.http.HttpInfos;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
+import top.yein.tethys.auth.AuthService;
+import top.yein.tethys.core.session.DefaultSession;
+import top.yein.tethys.packet.ErrorPacket;
+import top.yein.tethys.packet.Packet;
+import top.yein.tethys.session.SessionGroupManager;
+import top.yein.tethys.session.SessionIdGenerator;
+import top.yein.tethys.session.SessionManager;
 
 /**
  * IM 消息处理器.

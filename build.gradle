@@ -1,14 +1,25 @@
+buildscript {
+  dependencies {
+    // https://github.com/fabric8io-images/run-java-sh
+    // run-java.sh 是Java应用程序的通用启动脚本，特别是为从容器中运行而精心编制的。
+    classpath("io.fabric8:run-java-sh:1.3.8")
+  }
+}
+
 plugins {
   id "io.spring.dependency-management" version "1.0.9.RELEASE"
   id "com.github.johnrengelman.shadow" version "5.2.0"
   id "com.github.hierynomus.license" version "0.15.0"
   id "me.champeau.gradle.jmh" version "0.5.0"
-  id "checkstyle"
+  id "org.flywaydb.flyway" version "7.3.1"
+  id "com.novoda.build-properties" version "0.4.1"
+  id "org.hidetake.ssh" version "2.10.1"
 }
 
 allprojects {
 
   apply plugin: "java"
+  apply plugin: "java-library"
   apply plugin: "jacoco"
   apply plugin: "checkstyle"
   apply plugin: "io.spring.dependency-management"
@@ -65,9 +76,11 @@ allprojects {
   dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    implementation("org.apache.logging.log4j:log4j-core")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
-    implementation("io.micrometer:micrometer-registry-prometheus")
+    compileOnly("com.google.code.findbugs:jsr305")
+    api("org.apache.logging.log4j:log4j-api")
+
+//    implementation("org.apache.logging.log4j:log4j-core")
+//    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
 
     // Test
     testCompileOnly("org.projectlombok:lombok")

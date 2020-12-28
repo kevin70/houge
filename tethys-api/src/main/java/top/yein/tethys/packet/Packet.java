@@ -29,8 +29,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "ns")
-@JsonPropertyOrder("ns")
+    property = "@ns")
+@JsonPropertyOrder("@ns")
 public interface Packet {
 
   /** 全局消息分组 ID. */
@@ -42,6 +42,6 @@ public interface Packet {
    * @return 命名空间
    * @see Namespaces
    */
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @JsonProperty("@ns")
   String getNs();
 }

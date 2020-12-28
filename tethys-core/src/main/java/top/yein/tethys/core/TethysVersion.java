@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.session;
-
-import reactor.core.publisher.Mono;
+package top.yein.tethys.core;
 
 /**
- * Session 事件接口.
+ * 当前应用的版本号.
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-@FunctionalInterface
-public interface SessionListener {
+public final class TethysVersion {
+
+  private TethysVersion() {
+    throw new IllegalStateException("Utility class");
+  }
 
   /**
-   * @param session 会话信息
-   * @param event 事件类型
-   * @return {@link Mono#empty()}
+   * 返回应用版本号.
+   *
+   * <p>如果未找到则返回 {@code unknown}.
+   *
+   * @return 版本号
    */
-  Mono<Void> handle(Session session, SessionEvent event);
+  public static String version() {
+    var v = TethysVersion.class.getPackage().getImplementationVersion();
+    if (v != null) {
+      return v;
+    }
+    return "unknown";
+  }
 }

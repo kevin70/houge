@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.session;
+package top.yein.tethys.core.session;
 
-import reactor.core.publisher.Mono;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Session 事件接口.
- *
- * @author Kevin Zou (kevinz@weghst.com)
- */
-@FunctionalInterface
-public interface SessionListener {
+import org.junit.jupiter.api.Test;
 
-  /**
-   * @param session 会话信息
-   * @param event 事件类型
-   * @return {@link Mono#empty()}
-   */
-  Mono<Void> handle(Session session, SessionEvent event);
+/** @author Kevin Zou (kevinz@weghst.com) */
+class DefaultSessionIdGeneratorTests {
+
+  @Test
+  void nextId() {
+    var dsig = new DefaultSessionIdGenerator();
+    var sessionId = dsig.nextId();
+    assertThat(sessionId).isNotEmpty();
+  }
 }

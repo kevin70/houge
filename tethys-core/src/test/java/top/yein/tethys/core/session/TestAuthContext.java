@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.session;
+package top.yein.tethys.core.session;
 
-import reactor.core.publisher.Mono;
+import java.security.SecureRandom;
+import javax.annotation.Nonnull;
+import top.yein.tethys.auth.AuthContext;
 
-/**
- * Session 事件接口.
- *
- * @author Kevin Zou (kevinz@weghst.com)
- */
-@FunctionalInterface
-public interface SessionListener {
+/** @author Kevin Zou (kevinz@weghst.com) */
+public class TestAuthContext implements AuthContext {
 
-  /**
-   * @param session 会话信息
-   * @param event 事件类型
-   * @return {@link Mono#empty()}
-   */
-  Mono<Void> handle(Session session, SessionEvent event);
+  final String uid = Long.toHexString(new SecureRandom().nextLong());
+
+  @Override
+  public String uid() {
+    return uid;
+  }
+
+  @Nonnull
+  @Override
+  public String token() {
+    return uid;
+  }
+
+  @Override
+  public boolean isAnonymous() {
+    return false;
+  }
 }

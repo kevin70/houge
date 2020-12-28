@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zhudy.xim.server;
+package top.yein.tethys.im.server;
 
-import io.zhudy.xim.BizCodes;
-import io.zhudy.xim.packet.GroupMsgPacket;
-import io.zhudy.xim.packet.GroupSubPacket;
-import io.zhudy.xim.packet.GroupUnsubPacket;
-import io.zhudy.xim.packet.Namespaces;
-import io.zhudy.xim.packet.Packet;
-import io.zhudy.xim.packet.PrivateMsgPacket;
-import io.zhudy.xim.router.MessageRouter;
-import io.zhudy.xim.session.Session;
-import io.zhudy.xim.session.SessionGroupManager;
-import io.zhudy.xim.session.SessionManager;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.session.SessionGroupManager;
+import top.yein.tethys.session.SessionManager;
 
 /**
  * 基础的 Packet 逻辑处理器.

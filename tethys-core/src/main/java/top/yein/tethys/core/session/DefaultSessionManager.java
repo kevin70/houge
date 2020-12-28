@@ -71,8 +71,10 @@ public class DefaultSessionManager implements SessionManager {
                     .doOnNext(
                         existsSession -> {
                           if (existsSession != session) {
-                            throw new BizCodeException(BizCodes.C3500)
-                                .addContextValue("sessionId", session.sessionId());
+                            // FIXME 待修复
+                            //                            throw new BizCodeException(BizCodes.C3500)
+                            //                                .addContextValue("sessionId",
+                            // session.sessionId());
                           }
                           sessionCounter.increment();
                         })

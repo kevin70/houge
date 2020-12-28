@@ -18,12 +18,6 @@ package top.yein.tethys.core.session;
 import static java.util.Objects.requireNonNull;
 
 import io.netty.buffer.ByteBufOutputStream;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.zhudy.xim.auth.AuthContext;
-import io.zhudy.xim.helper.PacketHelper;
-import io.zhudy.xim.packet.Packet;
-import io.zhudy.xim.session.Session;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -36,6 +30,9 @@ import reactor.core.publisher.MonoProcessor;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
+import top.yein.tethys.auth.AuthContext;
+import top.yein.tethys.packet.Packet;
+import top.yein.tethys.session.Session;
 
 /**
  * 默认会话实现.
@@ -118,28 +115,23 @@ public final class DefaultSession implements Session {
     return Mono.from(packet)
         .map(
             p -> {
-              try {
-                var buf = outbound.alloc().buffer();
-                OutputStream bbos = new ByteBufOutputStream(buf);
-                PacketHelper.getObjectMapper().writeValue(bbos, p);
-                return buf;
-              } catch (IOException e) {
-                log.error(
-                    "序列化 Packet 失败 [sessionId={}, uid={}]\nPacket:\n{}",
-                    this.sessionId,
-                    this.uid(),
-                    p,
-                    e);
-                throw new RuntimeException("序列化 Packet 失败", e);
-              }
+              //              try {
+              var buf = outbound.alloc().buffer();
+              OutputStream bbos = new ByteBufOutputStream(buf);
+              //                PacketHelper.getObjectMapper().writeValue(bbos, p);
+              return buf;
+              //              } catch (IOException e) {
+              //                log.error(
+              //                    "序列化 Packet 失败 [sessionId={}, uid={}]\nPacket:\n{}",
+              //                    this.sessionId,
+              //                    this.uid(),
+              //                    p,
+              //                    e);
+              //                throw new RuntimeException("序列化 Packet 失败", e);
+              //              }
             })
         .flatMap(this::send)
         .then();
-  }
-
-  @Override
-  public Mono<Void> send(Publisher<TextWebSocketFrame> frame) {
-    return outbound.sendObject(frame).then();
   }
 
   @Override

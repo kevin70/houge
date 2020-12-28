@@ -1,5 +1,0 @@
-apply plugin: "application"
-
-dependencies {
-  implementation("io.projectreactor:reactor-core")
-}

@@ -33,5 +33,5 @@ public interface SessionGroupListener {
    * @param groupId 分组 ID
    * @return {@link Mono#empty()}
    */
-  Mono<Void> apply(Session session, SessionGroupEvent event, String groupId);
+  Mono<Void> handle(Session session, SessionGroupEvent event, String groupId);
 }

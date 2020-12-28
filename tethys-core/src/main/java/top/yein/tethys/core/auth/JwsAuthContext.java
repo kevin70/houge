@@ -13,22 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.session;
+package top.yein.tethys.core.auth;
 
-import reactor.core.publisher.Mono;
+import io.jsonwebtoken.Claims;
+import javax.annotation.Nonnull;
+import top.yein.tethys.auth.AuthContext;
 
 /**
- * Session 事件接口.
+ * JWS 认证上下文实现.
  *
  * @author Kevin Zou (kevinz@weghst.com)
  */
-@FunctionalInterface
-public interface SessionListener {
+class JwsAuthContext implements AuthContext {
 
-  /**
-   * @param session 会话信息
-   * @param event 事件类型
-   * @return {@link Mono#empty()}
-   */
-  Mono<Void> handle(Session session, SessionEvent event);
+  private final Claims claims;
+  private final String token;
+
+  JwsAuthContext(String token, Claims claims) {
+    this.token = token;
+    this.claims = claims;
+  }
+
+  @Override
+  public String uid() {
+    return claims.getId();
+  }
+
+  @Nonnull
+  @Override
+  public String token() {
+    return token;
+  }
+
+  @Override
+  public boolean isAnonymous() {
+    return false;
+  }
 }
