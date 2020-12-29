@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.zhudy.xim;
+package top.yein.tethys.im.server;
+
+import javax.annotation.Nonnull;
+import reactor.core.publisher.Mono;
+import top.yein.tethys.packet.Packet;
+import top.yein.tethys.session.Session;
 
 /**
- * 业务错误码接口.
+ * 消息处理器.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
-public interface BizCode {
+@FunctionalInterface
+public interface PacketHandler {
 
   /**
-   * 业务错误码.
+   * 消息包处理器.
    *
-   * @return 错误码
+   * @param session 发送者会话
+   * @param packet 消息包
+   * @return RS
    */
-  int getCode();
-
-  /**
-   * 业务错误码描述.
-   *
-   * @return 错误码描述
-   */
-  String getMessage();
+  @Nonnull
+  Mono<Void> handle(@Nonnull Session session, @Nonnull Packet packet);
 }
