@@ -24,7 +24,7 @@ import reactor.netty.http.server.HttpServerRoutes;
 /**
  * RESTFul 接口处理器.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public class RestHandler {
 

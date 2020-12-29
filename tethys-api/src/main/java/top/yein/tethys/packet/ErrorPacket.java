@@ -20,7 +20,7 @@ import lombok.Value;
 /**
  * 错误消息.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @Value
 public class ErrorPacket implements Packet {
@@ -32,6 +32,6 @@ public class ErrorPacket implements Packet {
 
   @Override
   public String getNs() {
-    return Namespaces.ERROR;
+    return Namespaces.NS_ERROR;
   }
 }

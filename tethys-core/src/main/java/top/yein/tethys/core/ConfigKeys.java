@@ -18,7 +18,7 @@ package top.yein.tethys.core;
 /**
  * 应用配置键名称定义.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public final class ConfigKeys {
 

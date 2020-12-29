@@ -20,33 +20,40 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
-import io.jsonwebtoken.SigningKeyResolver;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.security.Key;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import javax.inject.Inject;
-import javax.inject.Named;
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.auth.NoneAuthContext;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.core.ConfigKeys;
 
 /**
  * <a href="https://tools.ietf.org/html/rfc7515">JWS</a> 用户认证服务实现.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
+@Log4j2
 public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
   private final boolean anonymousEnabled;
+  private final Map<String, Key> jwtSecrets;
 
   @Inject
-  public JwsAuthService(
-      @Named(ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS) boolean anonymousEnabled,
-      SigningKeyResolver keyResolver) {
+  public JwsAuthService(boolean anonymousEnabled, Map<String, Key> jwtSecrets) {
     this.anonymousEnabled = anonymousEnabled;
-    jwtParser = Jwts.parserBuilder().setSigningKeyResolver(keyResolver).build();
+    this.jwtParser =
+        Jwts.parserBuilder()
+            .setSigningKeyResolver(new DefaultSigningKeyResolver(jwtSecrets))
+            .build();
+    this.jwtSecrets = jwtSecrets;
   }
 
   @Override
@@ -80,5 +87,24 @@ public class JwsAuthService implements AuthService {
             sink.error(new BizCodeException(BizCodes.C3305, e.getMessage()));
           }
         });
+  }
+
+  @Override
+  public Mono<String> generateToken(long uid) {
+    var keys = new ArrayList<>(jwtSecrets.entrySet());
+    Collections.shuffle(keys);
+
+    var entry = keys.get(0);
+    Map<String, Object> header = Jwts.jwsHeader().setKeyId(entry.getKey());
+    var claims = Jwts.claims().setId(String.valueOf(uid));
+    var token =
+        Jwts.builder()
+            .signWith(entry.getValue(), SignatureAlgorithm.HS512)
+            .setHeader(header)
+            .setClaims(claims)
+            .compact();
+
+    log.info("生成访问令牌 [uid={}, access_token={}]", uid, token);
+    return Mono.just(token);
   }
 }

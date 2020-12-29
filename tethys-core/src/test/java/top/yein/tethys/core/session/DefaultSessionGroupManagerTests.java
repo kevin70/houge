@@ -30,7 +30,7 @@ import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupEvent;
 import top.yein.tethys.session.SessionGroupListener;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/** @author KK (kzou227@qq.com) */
 class DefaultSessionGroupManagerTests {
 
   @Test

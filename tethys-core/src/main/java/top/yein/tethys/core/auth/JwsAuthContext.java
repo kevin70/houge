@@ -22,21 +22,23 @@ import top.yein.tethys.auth.AuthContext;
 /**
  * JWS 认证上下文实现.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 class JwsAuthContext implements AuthContext {
 
-  private final Claims claims;
   private final String token;
+  private final Claims claims;
+  private final long uid;
 
   JwsAuthContext(String token, Claims claims) {
     this.token = token;
     this.claims = claims;
+    this.uid = Long.parseLong(claims.getId());
   }
 
   @Override
-  public String uid() {
-    return claims.getId();
+  public long uid() {
+    return uid;
   }
 
   @Nonnull

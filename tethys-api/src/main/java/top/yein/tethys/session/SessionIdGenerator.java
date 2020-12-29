@@ -18,7 +18,7 @@ package top.yein.tethys.session;
 /**
  * 会话 ID 生成器.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public interface SessionIdGenerator {
 

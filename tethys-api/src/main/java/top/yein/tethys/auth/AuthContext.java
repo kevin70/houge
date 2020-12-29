@@ -20,17 +20,19 @@ import javax.annotation.Nonnull;
 /**
  * 认证的上下文信息.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public interface AuthContext {
 
   /**
    * 返回用户 ID.
    *
+   * <p>匿名访问用户 ID 为 0.
+   *
    * @return 用户 ID
    */
   @Nonnull
-  String uid();
+  long uid();
 
   /**
    * 返回认证令牌.

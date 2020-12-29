@@ -20,12 +20,9 @@ import top.yein.chaos.biz.BizCode;
 /**
  * 业务错误码定义.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public enum BizCodes implements BizCode {
-  C0("未知错误"),
-  C401("认证失败"),
-  C404("未找到"),
 
   // ---------------------------------------------------------------------//
   // 3300 - 3350 >> 会话 TOKEN 相关的错误码

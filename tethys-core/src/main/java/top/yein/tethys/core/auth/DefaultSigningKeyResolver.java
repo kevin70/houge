@@ -21,22 +21,17 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import java.security.Key;
 import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Named;
-import top.yein.tethys.core.ConfigKeys;
 
 /**
  * JWT Key 查找实现.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
-public class DefaultSigningKeyResolver implements SigningKeyResolver {
+class DefaultSigningKeyResolver implements SigningKeyResolver {
 
   private final Map<String, Key> jwtSecrets;
 
-  @Inject
-  public DefaultSigningKeyResolver(
-      @Named(ConfigKeys.IM_SERVER_AUTH_JWT_SECRETS) Map<String, Key> jwtSecrets) {
+  DefaultSigningKeyResolver(Map<String, Key> jwtSecrets) {
     this.jwtSecrets = jwtSecrets;
   }
 

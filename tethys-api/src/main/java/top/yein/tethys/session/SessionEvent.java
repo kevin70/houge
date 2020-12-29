@@ -20,7 +20,7 @@ package top.yein.tethys.session;
  *
  * @see SessionListener
  * @see SessionManager
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public enum SessionEvent {
   /** 添加成功之前. */

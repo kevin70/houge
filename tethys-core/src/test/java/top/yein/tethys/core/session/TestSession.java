@@ -25,7 +25,7 @@ import top.yein.tethys.session.Session;
 /**
  * 测试专用的 Session.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public class TestSession implements Session {
 
@@ -38,9 +38,9 @@ public class TestSession implements Session {
   }
 
   @Override
-  public String uid() {
+  public long uid() {
     if (isAnonymous()) {
-      return Long.toHexString(sessionId);
+      return sessionId;
     }
     return authContext().uid();
   }

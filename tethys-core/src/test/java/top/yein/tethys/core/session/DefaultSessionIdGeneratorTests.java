@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/** @author KK (kzou227@qq.com) */
 class DefaultSessionIdGeneratorTests {
 
   @Test

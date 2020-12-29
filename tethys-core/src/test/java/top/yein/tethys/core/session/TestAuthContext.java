@@ -19,20 +19,20 @@ import java.security.SecureRandom;
 import javax.annotation.Nonnull;
 import top.yein.tethys.auth.AuthContext;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/** @author KK (kzou227@qq.com) */
 public class TestAuthContext implements AuthContext {
 
-  final String uid = Long.toHexString(new SecureRandom().nextLong());
+  final long uid = new SecureRandom().nextLong();
 
   @Override
-  public String uid() {
+  public long uid() {
     return uid;
   }
 
   @Nonnull
   @Override
   public String token() {
-    return uid;
+    return Long.toHexString(uid);
   }
 
   @Override

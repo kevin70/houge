@@ -25,21 +25,21 @@ import org.junit.jupiter.api.Test;
 /**
  * {@link Env} 单元测试.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 class EnvTests {
 
   @Test
   void defaultEnv() {
-    assertThat(Env.current()).isEqualTo(Env.INTEGRATION_TEST);
-    assertThat(Env.current()).isEqualTo(Env.INTEGRATION_TEST);
+    assertThat(Env.current()).isEqualTo(Env.PROD);
+    assertThat(Env.current()).isEqualTo(Env.PROD);
   }
 
   @Test
   void defaultEnvProd() throws Exception {
     restoreSystemProperties(
         () -> {
-          System.clearProperty("xim.env");
+          System.clearProperty(Env.SYSTEM_PROP_VAR_NAME);
           assertThat(Env.getEnv()).isEqualTo(Env.PROD);
         });
   }
@@ -48,7 +48,7 @@ class EnvTests {
   void illegalEnv() throws Exception {
     restoreSystemProperties(
         () -> {
-          System.setProperty("xim.env", "illegal");
+          System.setProperty(Env.SYSTEM_PROP_VAR_NAME, "illegal");
           assertThatIllegalArgumentException().isThrownBy(() -> Env.getEnv());
         });
   }
@@ -57,7 +57,7 @@ class EnvTests {
   void fromSystemEnv() throws Exception {
     restoreSystemProperties(
         () -> {
-          System.setProperty("xim.env", Env.TEST.name());
+          System.setProperty(Env.SYSTEM_PROP_VAR_NAME, Env.TEST.name());
           assertThat(Env.getEnv()).isEqualTo(Env.TEST);
         });
   }
@@ -66,14 +66,14 @@ class EnvTests {
   void ignoreCase() throws Exception {
     restoreSystemProperties(
         () -> {
-          System.setProperty("xim.env", "pRod");
+          System.setProperty(Env.SYSTEM_PROP_VAR_NAME, "pRod");
           assertThat(Env.getEnv()).isEqualTo(Env.PROD);
         });
   }
 
   @Test
   void fromEnvironmentVariable() throws Exception {
-    withEnvironmentVariable("XIM_ENV", "test")
+    withEnvironmentVariable(Env.SYSTEM_ENV_VAR_NAME, "test")
         .execute(() -> assertThat(Env.getEnv()).isEqualTo(Env.TEST));
   }
 }

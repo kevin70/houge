@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 /**
  * Session 事件接口.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @FunctionalInterface
 public interface SessionListener {

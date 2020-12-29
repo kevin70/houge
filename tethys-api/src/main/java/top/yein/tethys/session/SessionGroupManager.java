@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 /**
  * 群组会话管理.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public interface SessionGroupManager {
 

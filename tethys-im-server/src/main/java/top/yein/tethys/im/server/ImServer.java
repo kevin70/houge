@@ -15,57 +15,60 @@
  */
 package top.yein.tethys.im.server;
 
-import static top.yein.tethys.core.ConfigKeys.IM_SERVER_ADDR;
-
 import com.google.common.net.HostAndPort;
 import io.netty.handler.timeout.IdleStateHandler;
 import javax.inject.Inject;
-import javax.inject.Named;
 import lombok.extern.log4j.Log4j2;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.WebsocketServerSpec;
+import top.yein.tethys.core.Env;
+import top.yein.tethys.core.netty.HttpExceptionHandler;
+import top.yein.tethys.core.resource.TokenResource;
 
 /**
- * IM 服务器.
+ * IM Server.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class ImServer {
+public final class ImServer {
 
   private static final int IDLE_TIMEOUT_SECS = 90;
-
   public static final String IM_WS_PATH = "/im";
 
-  private final HostAndPort hap;
-  private final ImSocketHandler imSocketHandler;
+  private final String addr;
+  private final WebsocketHandler websocketHandler;
   private final RestHandler restHandler;
   private DisposableServer disposableServer;
 
+  /**
+   * @param addr
+   * @param websocketHandler
+   * @param restHandler
+   */
   @Inject
-  public ImServer(
-      @Named(IM_SERVER_ADDR) HostAndPort hap,
-      ImSocketHandler imSocketHandler,
-      RestHandler restHandler) {
-    this.hap = hap;
-    this.imSocketHandler = imSocketHandler;
+  public ImServer(String addr, WebsocketHandler websocketHandler, RestHandler restHandler) {
+    this.addr = addr;
+    this.websocketHandler = websocketHandler;
     this.restHandler = restHandler;
   }
 
   /** 启动 IM 服务. */
   public void start() {
+    var hap = HostAndPort.fromString(addr);
     this.disposableServer =
         HttpServer.create()
             .host(hap.getHost())
             .port(hap.getPort())
-            .wiretap(true)
+            .wiretap(Env.current() != Env.PROD)
             .tcpConfiguration(
                 tcpServer -> {
                   var sb = tcpServer.configure();
                   sb.childHandler(
-                      new IdleStateHandler(
-                          IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS));
+                          new IdleStateHandler(
+                              IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS))
+                      .childHandler(new HttpExceptionHandler());
                   return tcpServer;
                 })
             .route(
@@ -73,11 +76,16 @@ public class ImServer {
                   // 注册 REST 服务
                   this.restHandler.registerService(routes);
 
-                  // 注册 IM Socket
-                  routes.ws(IM_WS_PATH, imSocketHandler, WebsocketServerSpec.builder().build());
+                  var tokenResource = new TokenResource(null);
+                  routes.get("/token", tokenResource::generateToken);
+                  // Websocket 处理器
+                  routes.ws(
+                      IM_WS_PATH,
+                      websocketHandler::handle,
+                      WebsocketServerSpec.builder().handlePing(false).build());
                 })
             .bindNow();
-    log.info("IM Server started at - {}", hap);
+    log.info("IM Server 启动完成 - {}", hap);
   }
 
   /** 停止 IM 服务. */
@@ -85,6 +93,6 @@ public class ImServer {
     if (disposableServer != null) {
       disposableServer.disposeNow();
     }
-    log.info("IM Server stopped - {}", hap);
+    log.info("IM Server 停止完成 - {}", addr);
   }
 }

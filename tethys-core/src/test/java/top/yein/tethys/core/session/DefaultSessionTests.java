@@ -37,7 +37,7 @@ import top.yein.tethys.packet.ErrorPacket;
 /**
  * {@link DefaultSession} 单元测试.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 class DefaultSessionTests {
 

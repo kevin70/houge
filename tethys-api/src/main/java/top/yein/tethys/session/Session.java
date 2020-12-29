@@ -25,7 +25,7 @@ import top.yein.tethys.packet.Packet;
 /**
  * IM 会话信息.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public interface Session {
 
@@ -45,7 +45,7 @@ public interface Session {
    *
    * @return 用户 ID
    */
-  String uid();
+  long uid();
 
   /**
    * 会话认证的上下文信息. 未认证则返回 {@link io.zhudy.xim.auth.NoneAuthContext#INSTANCE}.
@@ -104,7 +104,7 @@ public interface Session {
    * @return Mono
    */
   default Mono<Void> send(ByteBuf buf) {
-//    return send(Mono.just(new TextWebSocketFrame(buf)));
+    //    return send(Mono.just(new TextWebSocketFrame(buf)));
     // FIXME
     return Mono.empty();
   }

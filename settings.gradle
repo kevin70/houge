@@ -2,7 +2,7 @@ rootProject.name = "xim"
 
 include ":tethys-api"
 include ":tethys-core"
+include ":tethys-common"
 include ":tethys-storage"
-
 include ":tethys-im-server"
 include ":tethys-rest-server"

@@ -18,22 +18,22 @@ package top.yein.tethys.auth;
 /**
  * 未认证的默认用户上下文.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public class NoneAuthContext implements AuthContext {
 
-  /** 默认全局唯一实例. */
+  /** 默认全局唯一的匿名访问实例. */
   public static final AuthContext INSTANCE = new NoneAuthContext();
 
   private NoneAuthContext() {
     if (INSTANCE != null) {
-      throw new IllegalStateException("无法创建 NoneAuthContext 实例");
+      throw new IllegalStateException("无法创建实例，使用 NonAuthContext.INSTANCE 静态变量默认实例");
     }
   }
 
   @Override
-  public String uid() {
-    throw new IllegalStateException("匿名访问");
+  public long uid() {
+    return 0;
   }
 
   @Override

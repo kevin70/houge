@@ -36,7 +36,7 @@ import top.yein.tethys.session.SessionManager;
 /**
  * Session 管理器.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @Log4j2
 public class DefaultSessionManager implements SessionManager {
@@ -49,7 +49,7 @@ public class DefaultSessionManager implements SessionManager {
   // 所有的 Session
   private final AsyncCache<String, Session> sessions = Caffeine.newBuilder().buildAsync();
   // 所有用户的 Session
-  private final AsyncCache<String, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
+  private final AsyncCache<Long, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
 
   @Override
   public boolean registerListener(SessionListener sessionListener) {
@@ -121,7 +121,7 @@ public class DefaultSessionManager implements SessionManager {
   }
 
   @Override
-  public Flux<Session> removeByUid(String uid) {
+  public Flux<Session> removeByUid(long uid) {
     return findByUid(uid)
         .distinct()
         .collectList()
@@ -157,7 +157,7 @@ public class DefaultSessionManager implements SessionManager {
   }
 
   @Override
-  public Flux<Session> findByUid(String uid) {
+  public Flux<Session> findByUid(long uid) {
     return Flux.defer(
         () -> {
           var cf = uidSessions.getIfPresent(uid);

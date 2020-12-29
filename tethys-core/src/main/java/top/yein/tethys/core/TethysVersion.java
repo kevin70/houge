@@ -18,7 +18,7 @@ package top.yein.tethys.core;
 /**
  * 当前应用的版本号.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public final class TethysVersion {
 

@@ -18,7 +18,7 @@ package top.yein.tethys.core;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/** @author KK (kzou227@qq.com) */
 public class TestUtils {
 
   /**

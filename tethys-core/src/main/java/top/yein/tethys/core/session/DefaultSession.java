@@ -37,13 +37,13 @@ import top.yein.tethys.session.Session;
 /**
  * 默认会话实现.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @Log4j2
 public final class DefaultSession implements Session {
 
   final String sessionId;
-  final String uid;
+  final long uid;
   final WebsocketInbound inbound;
   final WebsocketOutbound outbound;
   final AuthContext authContext;
@@ -74,10 +74,10 @@ public final class DefaultSession implements Session {
     this.outbound = outbound;
     this.authContext = authContext;
 
-    if (authContext.isAnonymous()) {
-      this.uid = sessionId;
-    } else {
+    if (!authContext.isAnonymous()) {
       this.uid = authContext.uid();
+    } else {
+      this.uid = -1;
     }
 
     // 连接关闭
@@ -91,7 +91,7 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public String uid() {
+  public long uid() {
     return uid;
   }
 

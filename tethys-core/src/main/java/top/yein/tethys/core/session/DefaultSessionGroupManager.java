@@ -32,13 +32,12 @@ import top.yein.tethys.session.SessionGroupManager;
 /**
  * Group Session 管理器.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @Log4j2
 public class DefaultSessionGroupManager implements SessionGroupManager {
 
   private final Set<SessionGroupListener> sessionGroupListeners = new LinkedHashSet<>();
-
   // 缓存组 Session
   private final AsyncCache<String, Set<Session>> groupSessions = Caffeine.newBuilder().buildAsync();
 
@@ -54,6 +53,10 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
 
   @Override
   public Mono<Void> subGroups(Session session, Set<String> groupIds) {
+    if (groupIds == null || groupIds.isEmpty()) {
+      return Mono.empty();
+    }
+
     return Flux.fromIterable(groupIds)
         .flatMapSequential(
             groupId -> {
@@ -77,6 +80,10 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
 
   @Override
   public Mono<Void> unsubGroups(Session session, Set<String> groupIds) {
+    if (groupIds == null || groupIds.isEmpty()) {
+      return Mono.empty();
+    }
+
     return Flux.fromIterable(groupIds)
         .flatMapSequential(
             groupId -> {

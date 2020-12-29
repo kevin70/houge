@@ -20,7 +20,7 @@ import java.util.Arrays;
 /**
  * 系统运行环境枚举定义.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public enum Env {
 

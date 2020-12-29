@@ -22,7 +22,7 @@ import top.yein.tethys.session.SessionIdGenerator;
 /**
  * 默认会话 ID 生成器实现.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public class DefaultSessionIdGenerator implements SessionIdGenerator {
 

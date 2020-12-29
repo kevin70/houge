@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 /**
  * 用户认证服务.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public interface AuthService {
 
@@ -38,4 +38,12 @@ public interface AuthService {
    * @return 认证上下文
    */
   Mono<AuthContext> authorize(String token);
+
+  /**
+   * 生成访问令牌.
+   *
+   * @param uid 用户 ID
+   * @return 访问令牌
+   */
+  Mono<String> generateToken(long uid);
 }

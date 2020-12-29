@@ -28,7 +28,7 @@ import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.core.TestUtils;
 import top.yein.tethys.session.Session;
 
-/** @author Kevin Zou (kevinz@weghst.com) */
+/** @author KK (kzou227@qq.com) */
 class DefaultSessionManagerTests {
 
   private Cache<Long, Session> getSessions(DefaultSessionManager dsm) {
@@ -116,14 +116,14 @@ class DefaultSessionManagerTests {
   @Test
   void removeByUid() {
     var dsm = new DefaultSessionManager();
-    var uid = Long.toHexString(new SecureRandom().nextLong());
+    var uid = new SecureRandom().nextLong();
     var session =
         new TestSession() {
           @Override
           public AuthContext authContext() {
             return new AuthContext() {
               @Override
-              public String uid() {
+              public long uid() {
                 return uid;
               }
 
@@ -152,7 +152,7 @@ class DefaultSessionManagerTests {
   @Test
   void removeByUidNoExistsSession() {
     var dsm = new DefaultSessionManager();
-    var uid = Long.toHexString(new SecureRandom().nextLong());
+    var uid = new SecureRandom().nextLong();
     var p = dsm.removeByUid(uid);
     StepVerifier.create(p).expectComplete().verify();
   }

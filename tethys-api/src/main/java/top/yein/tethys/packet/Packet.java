@@ -17,6 +17,7 @@ package top.yein.tethys.packet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -24,24 +25,28 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  * <p>所有 IM 消息会话都需要继续该接口, 该接口定义了标准的解析及响应规范.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "@ns")
-@JsonPropertyOrder("@ns")
+    property = Packet.NS_JSON_PROPERTY_NAME)
+@JsonSubTypes({
+  @JsonSubTypes.Type(PrivateMessagePacket.class),
+  @JsonSubTypes.Type(GroupMessagePacket.class)
+})
+@JsonPropertyOrder(Packet.NS_JSON_PROPERTY_NAME)
 public interface Packet {
 
-  /** 全局消息分组 ID. */
-  String GROUP_ID_ALL = "all";
+  /** {@code @ns} JSON 属性名称. */
+  String NS_JSON_PROPERTY_NAME = "@ns";
 
   /**
-   * 命名空间.
+   * 消息包命名空间.
    *
    * @return 命名空间
    * @see Namespaces
    */
-  @JsonProperty("@ns")
+  @JsonProperty(NS_JSON_PROPERTY_NAME)
   String getNs();
 }

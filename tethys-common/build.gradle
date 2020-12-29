@@ -1,0 +1,4 @@
+dependencies {
+  api("com.fasterxml.jackson.core:jackson-databind")
+  api("io.netty:netty-buffer")
+}

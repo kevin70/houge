@@ -18,7 +18,7 @@ package top.yein.tethys.packet;
 /**
  * 消息包的命名空间常量定义与 {@link Packet#getNs()} 属性对应.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public final class Namespaces {
 
@@ -27,7 +27,7 @@ public final class Namespaces {
    *
    * @see ErrorPacket
    */
-  public static final String ERROR = "error";
+  public static final String NS_ERROR = "error";
   /**
    * 心跳消息.
    *
@@ -35,34 +35,40 @@ public final class Namespaces {
    *
    * <p>由客户端发起确保连接的可用性。
    */
-  public static final String PING = "ping";
+  public static final String NS_PING = "ping";
+  /**
+   * 心路响应消息.
+   *
+   * <p>与 {@link #NS_PING} 消息对应, 当接收消息客户端发送的 {@link #NS_PING} 消息后响应 {@link #NS_PONG}.
+   */
+  public static final String NS_PONG = "pong";
   /**
    * 私人聊天消息.
    *
-   * @see PrivateMsgPacket
+   * @see PrivateMessagePacket
    */
-  public static final String PRIVATE_MSG = "private.msg";
+  public static final String NS_PRIVATE_MESSAGE = "p.msg";
   /**
    * 群组聊天消息.
    *
-   * @see GroupMsgPacket
+   * @see GroupMessagePacket
    */
-  public static final String GROUP_MSG = "group.msg";
+  public static final String NS_GROUP_MESSAGE = "g.msg";
 
   // ================================== 操作类消息 ==================================//
 
   /**
    * 订阅群组消息.
    *
-   * @see GroupSubPacket
+   * @see GroupSubscribePacket
    */
-  public static final String GROUP_SUBSCRIBE = "group.sub";
+  public static final String NS_GROUP_SUBSCRIBE = "g.sub";
   /**
    * 取消订阅群组消息.
    *
-   * @see GroupUnsubPacket
+   * @see GroupUnsubscribePacket
    */
-  public static final String GROUP_UNSUBSCRIBE = "group.unsub";
+  public static final String NS_GROUP_UNSUBSCRIBE = "g.unsub";
 
   // ================================== 操作类消息 ==================================//
 }

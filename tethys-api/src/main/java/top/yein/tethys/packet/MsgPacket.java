@@ -18,7 +18,7 @@ package top.yein.tethys.packet;
 /**
  * 消息 Packet.
  *
- * @author Kevin Zou (kevinz@weghst.com)
+ * @author KK (kzou227@qq.com)
  */
 public interface MsgPacket extends Packet {
 
