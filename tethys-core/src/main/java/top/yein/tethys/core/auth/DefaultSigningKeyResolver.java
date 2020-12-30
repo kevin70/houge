@@ -21,6 +21,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import java.security.Key;
 import java.util.Map;
+import javax.crypto.SecretKey;
 
 /**
  * JWT Key 查找实现.
@@ -29,9 +30,9 @@ import java.util.Map;
  */
 class DefaultSigningKeyResolver implements SigningKeyResolver {
 
-  private final Map<String, Key> jwtSecrets;
+  private final Map<String, SecretKey> jwtSecrets;
 
-  DefaultSigningKeyResolver(Map<String, Key> jwtSecrets) {
+  DefaultSigningKeyResolver(Map<String, SecretKey> jwtSecrets) {
     this.jwtSecrets = jwtSecrets;
   }
 

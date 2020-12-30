@@ -21,10 +21,10 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
+import reactor.netty.http.server.HttpServerRoutes;
 import reactor.netty.http.server.WebsocketServerSpec;
 import top.yein.tethys.core.Env;
-import top.yein.tethys.core.netty.HttpExceptionHandler;
-import top.yein.tethys.core.resource.TokenResource;
+import top.yein.tethys.core.http.HttpServerRoutesWrapper;
 
 /**
  * IM Server.
@@ -39,24 +39,33 @@ public final class ImServer {
 
   private final String addr;
   private final WebsocketHandler websocketHandler;
-  private final RestHandler restHandler;
+  private final RestRegister restRegister;
   private DisposableServer disposableServer;
 
   /**
    * @param addr
    * @param websocketHandler
-   * @param restHandler
+   * @param restRegister
    */
   @Inject
-  public ImServer(String addr, WebsocketHandler websocketHandler, RestHandler restHandler) {
+  public ImServer(String addr, WebsocketHandler websocketHandler, RestRegister restRegister) {
     this.addr = addr;
     this.websocketHandler = websocketHandler;
-    this.restHandler = restHandler;
+    this.restRegister = restRegister;
   }
 
   /** 启动 IM 服务. */
   public void start() {
     var hap = HostAndPort.fromString(addr);
+
+    var routes = HttpServerRoutes.newRoutes();
+    restRegister.accept(routes);
+    // ws 注册
+    routes.ws(
+        IM_WS_PATH,
+        websocketHandler::handle,
+        WebsocketServerSpec.builder().handlePing(false).build());
+
     this.disposableServer =
         HttpServer.create()
             .host(hap.getHost())
@@ -66,24 +75,11 @@ public final class ImServer {
                 tcpServer -> {
                   var sb = tcpServer.configure();
                   sb.childHandler(
-                          new IdleStateHandler(
-                              IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS))
-                      .childHandler(new HttpExceptionHandler());
+                      new IdleStateHandler(
+                          IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS));
                   return tcpServer;
                 })
-            .route(
-                routes -> {
-                  // 注册 REST 服务
-                  this.restHandler.registerService(routes);
-
-                  var tokenResource = new TokenResource(null);
-                  routes.get("/token", tokenResource::generateToken);
-                  // Websocket 处理器
-                  routes.ws(
-                      IM_WS_PATH,
-                      websocketHandler::handle,
-                      WebsocketServerSpec.builder().handlePing(false).build());
-                })
+            .handle(new HttpServerRoutesWrapper(routes))
             .bindNow();
     log.info("IM Server 启动完成 - {}", hap);
   }

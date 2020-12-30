@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.DataInput;
 import java.io.IOException;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -52,6 +53,7 @@ public class WebsocketHandler {
 
   private final ObjectReader objectReader;
 
+  @Inject
   public WebsocketHandler(
       AuthService authService,
       SessionManager sessionManager,

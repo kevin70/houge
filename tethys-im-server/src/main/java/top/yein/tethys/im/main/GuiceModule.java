@@ -15,21 +15,28 @@
  */
 package top.yein.tethys.im.main;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
-import java.util.Map;
+import com.typesafe.config.ConfigValue;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.util.Map.Entry;
+import javax.crypto.SecretKey;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.core.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
+import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.session.DefaultSessionGroupManager;
 import top.yein.tethys.core.session.DefaultSessionIdGenerator;
 import top.yein.tethys.core.session.DefaultSessionManager;
 import top.yein.tethys.im.handler.BasisPacketHandler;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.PacketHandler;
-import top.yein.tethys.im.server.RestHandler;
+import top.yein.tethys.im.server.RestRegister;
 import top.yein.tethys.im.server.WebsocketHandler;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.session.SessionIdGenerator;
@@ -46,6 +53,14 @@ public final class GuiceModule extends AbstractModule {
 
   public GuiceModule(Config config) {
     this.config = config;
+  }
+
+  @Override
+  protected void configure() {
+    bind(TokenResource.class).in(Scopes.SINGLETON);
+    bind(RestRegister.class).in(Scopes.SINGLETON);
+
+    bind(WebsocketHandler.class).in(Scopes.SINGLETON);
   }
 
   @Provides
@@ -69,8 +84,15 @@ public final class GuiceModule extends AbstractModule {
   @Provides
   @Singleton
   public AuthService authService() {
-    // FIXME 待修复
-    return new JwsAuthService(false, Map.of());
+    var enabled = config.getBoolean(ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS);
+    var builder = ImmutableMap.<String, SecretKey>builder();
+    for (Entry<String, ConfigValue> e : config.getObject(ConfigKeys.JWT_SECRETS).entrySet()) {
+      String v = (String) e.getValue().unwrapped();
+      var sk = Keys.hmacShaKeyFor(v.getBytes(StandardCharsets.UTF_8));
+      builder.put(e.getKey(), sk);
+    }
+
+    return new JwsAuthService(enabled, builder.build());
   }
 
   @Provides
@@ -82,23 +104,8 @@ public final class GuiceModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public WebsocketHandler websocketHandler(
-      AuthService authService,
-      SessionManager sessionManager,
-      SessionIdGenerator sessionIdGenerator,
-      PacketHandler packetHandler) {
-    return new WebsocketHandler(authService, sessionManager, sessionIdGenerator, packetHandler);
-  }
-
-  @Provides
-  @Singleton
-  public RestHandler restHandler() {
-    return new RestHandler();
-  }
-
-  @Provides
-  @Singleton
-  public ImServer imServer(WebsocketHandler websocketHandler, RestHandler restHandler) {
-    return new ImServer(config.getString(ConfigKeys.IM_SERVER_ADDR), websocketHandler, restHandler);
+  public ImServer imServer(WebsocketHandler websocketHandler, RestRegister restRegister) {
+    return new ImServer(
+        config.getString(ConfigKeys.IM_SERVER_ADDR), websocketHandler, restRegister);
   }
 }

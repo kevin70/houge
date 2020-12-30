@@ -1,6 +1,6 @@
 dependencies {
   api("com.google.guava:guava")
-  api("io.projectreactor:reactor-core")
   api("io.netty:netty-buffer")
+  api("io.projectreactor:reactor-core")
   api("com.fasterxml.jackson.core:jackson-databind")
 }

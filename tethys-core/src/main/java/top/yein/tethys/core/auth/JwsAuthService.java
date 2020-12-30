@@ -21,10 +21,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import javax.crypto.SecretKey;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
@@ -44,10 +44,10 @@ public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
   private final boolean anonymousEnabled;
-  private final Map<String, Key> jwtSecrets;
+  private final Map<String, SecretKey> jwtSecrets;
 
   @Inject
-  public JwsAuthService(boolean anonymousEnabled, Map<String, Key> jwtSecrets) {
+  public JwsAuthService(boolean anonymousEnabled, Map<String, SecretKey> jwtSecrets) {
     this.anonymousEnabled = anonymousEnabled;
     this.jwtParser =
         Jwts.parserBuilder()

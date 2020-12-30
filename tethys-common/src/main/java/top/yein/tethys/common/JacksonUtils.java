@@ -23,6 +23,7 @@ public class JacksonUtils {
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   static {
+    OBJECT_MAPPER.findAndRegisterModules();
     OBJECT_MAPPER.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     OBJECT_MAPPER.setSerializationInclusion(Include.NON_NULL);
     OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

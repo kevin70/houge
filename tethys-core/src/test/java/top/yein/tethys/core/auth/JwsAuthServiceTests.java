@@ -26,13 +26,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
+import javax.crypto.SecretKey;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,11 +49,11 @@ import top.yein.tethys.auth.NoneAuthContext;
 class JwsAuthServiceTests {
 
   String kid = "test";
-  Key testSecret =
+  SecretKey testSecret =
       Keys.hmacShaKeyFor(
           "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764"
               .getBytes(StandardCharsets.UTF_8));
-  Key illegalSecret =
+  SecretKey illegalSecret =
       Keys.hmacShaKeyFor(
           "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764-illegal-secret"
               .getBytes(StandardCharsets.UTF_8));
