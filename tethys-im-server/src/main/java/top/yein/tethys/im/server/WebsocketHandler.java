@@ -24,7 +24,7 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthService;
-import top.yein.tethys.common.JacksonUtils;
+import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.core.session.DefaultSession;
 import top.yein.tethys.packet.ErrorPacket;
 import top.yein.tethys.packet.Packet;
@@ -64,7 +64,7 @@ public class WebsocketHandler {
     this.sessionIdGenerator = sessionIdGenerator;
     this.packetHandler = packetHandler;
     //
-    this.objectReader = JacksonUtils.objectMapper().readerFor(Packet.class);
+    this.objectReader = JsonUtils.objectMapper().readerFor(Packet.class);
   }
 
   //

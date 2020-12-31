@@ -15,9 +15,12 @@
  */
 package top.yein.tethys.core.session;
 
+import io.netty.buffer.ByteBuf;
 import java.security.SecureRandom;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.NoneAuthContext;
 import top.yein.tethys.session.Session;
@@ -58,5 +61,20 @@ public class TestSession implements Session {
   @Override
   public Set<String> subGroupIds() {
     return subGroupIds;
+  }
+
+  @Override
+  public Mono<Void> send(Publisher<ByteBuf> source) {
+    return null;
+  }
+
+  @Override
+  public Mono<Void> close() {
+    return null;
+  }
+
+  @Override
+  public Mono<Void> onClose() {
+    return null;
   }
 }

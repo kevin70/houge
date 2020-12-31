@@ -1,6 +1,6 @@
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-import top.yein.tethys.common.JacksonUtils;
+import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.packet.PrivateMessagePacket;
 
@@ -12,8 +12,8 @@ public class PacketTest {
 
   @Test
   void exec() throws IOException {
-    var objectReader = JacksonUtils.objectMapper().readerFor(Packet.class);
-    var objectWriter = JacksonUtils.objectMapper().writerFor(Packet.class);
+    var objectReader = JsonUtils.objectMapper().readerFor(Packet.class);
+    var objectWriter = JsonUtils.objectMapper().writerFor(Packet.class);
 
     var privateMsgJson = "{\"@ns\":\"private.msg\",\"content\":\"Hello World!\"}";
     Packet packet = objectReader.readValue(privateMsgJson);

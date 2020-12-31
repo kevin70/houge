@@ -17,7 +17,10 @@ package top.yein.tethys.core.session;
 
 import static java.util.Objects.requireNonNull;
 
+import com.fasterxml.jackson.databind.ObjectWriter;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -31,6 +34,7 @@ import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import top.yein.tethys.auth.AuthContext;
+import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.session.Session;
 
@@ -42,8 +46,10 @@ import top.yein.tethys.session.Session;
 @Log4j2
 public final class DefaultSession implements Session {
 
+  private static final ObjectWriter OBJECT_WRITER =
+      JsonUtils.objectMapper().writerFor(Packet.class);
+
   final String sessionId;
-  final long uid;
   final WebsocketInbound inbound;
   final WebsocketOutbound outbound;
   final AuthContext authContext;
@@ -74,25 +80,16 @@ public final class DefaultSession implements Session {
     this.outbound = outbound;
     this.authContext = authContext;
 
-    if (!authContext.isAnonymous()) {
-      this.uid = authContext.uid();
-    } else {
-      this.uid = -1;
-    }
-
     // 连接关闭
-    this.inbound.withConnection(conn -> conn.onDispose().subscribe(closeProcessor));
+    this.inbound.withConnection(
+        conn ->
+            conn.onDispose().doOnSubscribe(unused -> closed.set(true)).subscribe(closeProcessor));
     this.subGroupIds = new LinkedHashSet<>();
   }
 
   @Override
   public String sessionId() {
     return sessionId;
-  }
-
-  @Override
-  public long uid() {
-    return uid;
   }
 
   @Override
@@ -111,27 +108,36 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public Mono<Void> sendPacket(Publisher<Packet> packet) {
-    return Mono.from(packet)
+  public Mono<Void> sendPacket(Publisher<Packet> source) {
+    return Mono.from(source)
         .map(
-            p -> {
-              //              try {
-              var buf = outbound.alloc().buffer();
-              OutputStream bbos = new ByteBufOutputStream(buf);
-              //                PacketHelper.getObjectMapper().writeValue(bbos, p);
-              return buf;
-              //              } catch (IOException e) {
-              //                log.error(
-              //                    "序列化 Packet 失败 [sessionId={}, uid={}]\nPacket:\n{}",
-              //                    this.sessionId,
-              //                    this.uid(),
-              //                    p,
-              //                    e);
-              //                throw new RuntimeException("序列化 Packet 失败", e);
-              //              }
+            packet -> {
+              try {
+                var buf = outbound.alloc().directBuffer();
+                OutputStream out = new ByteBufOutputStream(buf);
+                OBJECT_WRITER.writeValue(out, packet);
+                return buf;
+              } catch (IOException e) {
+                var message =
+                    log.getMessageFactory()
+                        .newMessage(
+                            "Packet JSON 序列化错误[sessionId={}, uid={}]{}Packet:{}{}",
+                            sessionId(),
+                            uid(),
+                            System.lineSeparator(),
+                            System.lineSeparator(),
+                            packet)
+                        .getFormattedMessage();
+                log.error(message, e);
+                throw new IllegalStateException(message, e);
+              }
             })
-        .flatMap(this::send)
-        .then();
+        .transform(this::send);
+  }
+
+  @Override
+  public Mono<Void> send(Publisher<ByteBuf> source) {
+    return outbound.send(source).then();
   }
 
   @Override
@@ -157,10 +163,10 @@ public final class DefaultSession implements Session {
     return new StringBuilder()
         .append("Session{")
         .append("sessionId=")
-        .append(sessionId)
+        .append(sessionId())
         .append(", ")
         .append("uid=")
-        .append(uid)
+        .append(uid())
         .append(", ")
         .append("clientIp=")
         .append(request.remoteAddress().getAddress().getHostAddress())

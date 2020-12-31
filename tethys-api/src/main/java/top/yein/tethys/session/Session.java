@@ -39,20 +39,22 @@ public interface Session {
   String sessionId();
 
   /**
+   * 会话认证的上下文信息. 未认证则返回 {@link top.yein.tethys.auth.NoneAuthContext#INSTANCE}.
+   *
+   * @return 会话认证的上下文信息
+   */
+  AuthContext authContext();
+
+  /**
    * 返回认证用户 ID.
    *
    * <p>如果为匿名认证则返回默认生成的临时用户 ID.
    *
    * @return 用户 ID
    */
-  long uid();
-
-  /**
-   * 会话认证的上下文信息. 未认证则返回 {@link io.zhudy.xim.auth.NoneAuthContext#INSTANCE}.
-   *
-   * @return 会话认证的上下文信息
-   */
-  AuthContext authContext();
+  default long uid() {
+    return authContext().uid();
+  }
 
   /**
    * 是否为匿名认证.
@@ -81,7 +83,7 @@ public interface Session {
    * 向客户端发送数据.
    *
    * @param packet 数据包
-   * @return Mono
+   * @return RS
    */
   default Mono<Void> sendPacket(Packet packet) {
     return sendPacket(Mono.just(packet));
@@ -90,32 +92,24 @@ public interface Session {
   /**
    * 向客户端发送数据.
    *
-   * @param packet 数据包
+   * @param source 数据包
    * @return Mono
    */
-  default Mono<Void> sendPacket(Publisher<Packet> packet) {
+  default Mono<Void> sendPacket(Publisher<Packet> source) {
     return Mono.empty();
   }
 
   /**
    * 向客户端发送数据.
    *
-   * @param buf 数据
+   * @param source 数据
    * @return Mono
    */
-  default Mono<Void> send(ByteBuf buf) {
-    //    return send(Mono.just(new TextWebSocketFrame(buf)));
-    // FIXME
-    return Mono.empty();
-  }
+  Mono<Void> send(Publisher<ByteBuf> source);
 
   /** 关闭会话. */
-  default Mono<Void> close() {
-    return Mono.empty();
-  }
+  Mono<Void> close();
 
   /** 关闭会话的事件回调. */
-  default Mono<Void> onClose() {
-    return Mono.empty();
-  }
+  Mono<Void> onClose();
 }
