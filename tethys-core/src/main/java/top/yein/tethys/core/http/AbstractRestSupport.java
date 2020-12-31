@@ -6,8 +6,6 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.util.AttributeKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,99 +13,84 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import reactor.netty.Connection;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
-import top.yein.tethys.common.JacksonUtils;
+import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.core.BizCodes;
+import top.yein.tethys.util.JsonUtils;
+import top.yein.tethys.util.ReactorHttpServerUtils;
 
 /**
+ * REST 抽象支撑类.
+ *
  * @author KK (kzou227@qq.com)
  * @date 2020-12-30 15:10
  */
 @Log4j2
 public abstract class AbstractRestSupport {
 
-  /** */
-  public static final AttributeKey<QueryStringDecoder> QUERY_PARAMS_ATTRIBUTE_KEY =
-      AttributeKey.newInstance("reactor.http.queryParams");
-
-  private ObjectMapper objectMapper;
-
-  //  @Inject
-  public void setObjectMapper(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
-
   /**
-   * @param request
-   * @param name
-   * @return
+   * 获取 {@link HttpServerRequest} 查询参数值.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @return 查询参数值
    */
   protected String queryParam(HttpServerRequest request, String name) {
-    var value = queryParams(request, name);
-    if (value == null || value.isEmpty()) {
-      return null;
-    }
-    return value.get(0);
+    return ReactorHttpServerUtils.queryParam(request, name);
   }
 
   /**
-   * @param request
-   * @param name
-   * @return
+   * 获取 {@link HttpServerRequest} 查询参数值列表.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @return 查询参数值列表
    */
   protected List<String> queryParams(HttpServerRequest request, String name) {
-    Map<String, List<String>> params = queryParams(request);
-    var value = params.get(name);
-    if (value == null || value.isEmpty()) {
-      return null;
-    }
-    return value;
+    return ReactorHttpServerUtils.queryParams(request, name);
   }
 
   /**
-   * @param request
-   * @return
+   * 获取 {@link HttpServerRequest} 查询所有查询参数.
+   *
+   * @param request HTTP 请求对象
+   * @return 查询参数值映射
    */
   protected Map<String, List<String>> queryParams(HttpServerRequest request) {
-    var connection = getConnection(request);
-    var channel = connection.channel();
-    if (channel.hasAttr(QUERY_PARAMS_ATTRIBUTE_KEY)) {
-      return channel.attr(QUERY_PARAMS_ATTRIBUTE_KEY).get().parameters();
-    }
-    QueryStringDecoder query = new QueryStringDecoder(request.uri());
-    channel.attr(QUERY_PARAMS_ATTRIBUTE_KEY).setIfAbsent(query);
-    return query.parameters();
+    return ReactorHttpServerUtils.queryParams(request);
   }
 
   /**
-   * @param request
-   * @param clazz
-   * @param <T>
-   * @return
+   * 解析 HTTP 请求 JSON BODY.
+   *
+   * @param request HTTP 请求对象
+   * @param clazz body class
+   * @param <T> 泛型
+   * @return RS
    */
   protected <T> Mono<T> json(HttpServerRequest request, Class<T> clazz) {
+    // TODO: 校验 content-type
     return request
         .receiveContent()
         .map(
             httpContent -> {
               InputStream in = new ByteBufInputStream(httpContent.content());
               try {
-                // FIXME 判断此处的 content-type
                 return getObjectMapper().readValue(in, clazz);
               } catch (IOException e) {
-                // FIXME 完善此处逻辑
-                e.printStackTrace();
-                throw new IllegalArgumentException(e);
+                throw new BizCodeException(BizCodes.C400, "解析JSON异常", e);
               }
             })
         .next();
   }
 
   /**
-   * @param response
-   * @param value
-   * @return
+   * 输入 HTTP 响应 JSON BODY.
+   *
+   * @param response HTTP 响应对象
+   * @param value 响应 BODY 对象
+   * @return RS
    */
   protected Mono<Void> json(HttpServerResponse response, Object value) {
     var buf = response.alloc().directBuffer();
@@ -125,20 +108,7 @@ public abstract class AbstractRestSupport {
     }
   }
 
-  /**
-   * @param request
-   * @return
-   */
-  private Connection getConnection(HttpServerRequest request) {
-    Connection[] connections = new Connection[1];
-    request.withConnection(connection -> connections[0] = connection);
-    return connections[0];
-  }
-
   private ObjectMapper getObjectMapper() {
-    if (objectMapper == null) {
-      return JacksonUtils.objectMapper();
-    }
-    return objectMapper;
+    return JsonUtils.objectMapper();
   }
 }
