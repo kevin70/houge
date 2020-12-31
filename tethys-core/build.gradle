@@ -1,6 +1,6 @@
 dependencies {
   api(project(":tethys-api"))
-  api(project(":tethys-common"))
+  api(project(":tethys-util"))
   api("com.google.inject:guice")
   api("top.yein.chaos:chaos-core")
   api("com.typesafe:config")
