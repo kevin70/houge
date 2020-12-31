@@ -1,8 +1,8 @@
-rootProject.name = "xim"
+rootProject.name = "tethys"
 
 include ":tethys-api"
 include ":tethys-core"
-include ":tethys-common"
+include ":tethys-util"
 include ":tethys-storage"
 include ":tethys-im-server"
 include ":tethys-rest-server"
