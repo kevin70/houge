@@ -26,6 +26,13 @@ import reactor.core.publisher.Mono;
 public interface SessionManager {
 
   /**
+   * 会话 ID 生成器.
+   *
+   * @return ID 生成
+   */
+  SessionIdGenerator sessionIdGenerator();
+
+  /**
    * 注册会话监听器.
    *
    * @param sessionListener 会话监听器

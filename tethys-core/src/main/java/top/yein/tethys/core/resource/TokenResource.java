@@ -1,7 +1,5 @@
 package top.yein.tethys.core.resource;
 
-import com.google.common.net.MediaType;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -13,6 +11,8 @@ import top.yein.tethys.core.dto.AccessTokenDto;
 import top.yein.tethys.core.http.AbstractRestSupport;
 
 /**
+ * 访问令牌 REST 接口.
+ *
  * @author KK (kzou227@qq.com)
  * @date 2020-12-29 20:39
  */
@@ -21,9 +21,9 @@ public class TokenResource extends AbstractRestSupport {
   private final AuthService authService;
 
   /**
-   * 构建.
+   * 默认构造函数.
    *
-   * @param authService
+   * @param authService 认证服务
    */
   @Inject
   public TokenResource(AuthService authService) {
@@ -31,12 +31,13 @@ public class TokenResource extends AbstractRestSupport {
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 生成访问令牌.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   public Mono<Void> generateToken(HttpServerRequest request, HttpServerResponse response) {
-    response.header(HttpHeaderNames.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
     var uidStr = request.param("uid");
     if (uidStr == null || uidStr.isEmpty()) {
       throw new BizCodeException(BizCodes.C912);

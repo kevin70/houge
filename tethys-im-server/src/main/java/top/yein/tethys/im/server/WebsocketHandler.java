@@ -24,13 +24,12 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthService;
-import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.core.session.DefaultSession;
 import top.yein.tethys.packet.ErrorPacket;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.session.Session;
-import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.session.SessionManager;
+import top.yein.tethys.util.JsonUtils;
 
 /**
  * @author KK (kzou227@qq.com)
@@ -46,28 +45,26 @@ public class WebsocketHandler {
   private final AuthService authService;
   /** 会话管理器器. */
   private final SessionManager sessionManager;
-  /** 会话 ID 生成器. */
-  private final SessionIdGenerator sessionIdGenerator;
 
   private final PacketHandler packetHandler;
-
   private final ObjectReader objectReader;
 
   @Inject
   public WebsocketHandler(
-      AuthService authService,
-      SessionManager sessionManager,
-      SessionIdGenerator sessionIdGenerator,
-      PacketHandler packetHandler) {
+      AuthService authService, SessionManager sessionManager, PacketHandler packetHandler) {
     this.authService = authService;
     this.sessionManager = sessionManager;
-    this.sessionIdGenerator = sessionIdGenerator;
     this.packetHandler = packetHandler;
-    //
     this.objectReader = JsonUtils.objectMapper().readerFor(Packet.class);
   }
 
-  //
+  /**
+   * Websocket 处理器.
+   *
+   * @param in 输入
+   * @param out 输出
+   * @return RS
+   */
   public Mono<Void> handle(WebsocketInbound in, WebsocketOutbound out) {
     final Connection[] connVal = new Connection[1];
     in.withConnection(conn -> connVal[0] = conn);
@@ -78,7 +75,8 @@ public class WebsocketHandler {
         .flatMap(
             ac -> {
               // 将会话添加至会话管理器
-              var session = new DefaultSession(sessionIdGenerator.nextId(), in, out, ac);
+              var session =
+                  new DefaultSession(sessionManager.sessionIdGenerator().nextId(), in, out, ac);
 
               log.info(
                   "channelId: {} > session add to session manager [sessionId={}, uid={}]",
@@ -91,7 +89,7 @@ public class WebsocketHandler {
                   .onClose()
                   .doFinally(
                       signalType -> {
-                        log.debug("会话关闭 session={}, signalType", session, signalType);
+                        log.debug("会话关闭 session={}, signalType={}", session, signalType);
                         sessionManager.remove(session).subscribe();
                       })
                   .subscribeOn(Schedulers.boundedElastic())

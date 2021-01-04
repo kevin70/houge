@@ -16,13 +16,13 @@
 package top.yein.tethys.core;
 
 /**
- * 当前应用的版本号.
+ * 应用的版本号.
  *
  * @author KK (kzou227@qq.com)
  */
-public final class TethysVersion {
+public final class Version {
 
-  private TethysVersion() {
+  private Version() {
     throw new IllegalStateException("Utility class");
   }
 
@@ -34,7 +34,7 @@ public final class TethysVersion {
    * @return 版本号
    */
   public static String version() {
-    var v = TethysVersion.class.getPackage().getImplementationVersion();
+    var v = Version.class.getPackage().getImplementationVersion();
     if (v != null) {
       return v;
     }

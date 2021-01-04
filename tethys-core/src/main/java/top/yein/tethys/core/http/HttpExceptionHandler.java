@@ -13,6 +13,8 @@ import top.yein.tethys.core.Env;
 import top.yein.tethys.domain.Problem;
 
 /**
+ * HTTP REST 异常处理器.
+ *
  * @author KK (kzou227@qq.com)
  * @date 2020-12-29 21:27
  */
@@ -20,10 +22,12 @@ import top.yein.tethys.domain.Problem;
 public class HttpExceptionHandler extends AbstractRestSupport {
 
   /**
-   * @param request
-   * @param response
-   * @param t
-   * @return
+   * 应用处理器.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @param t 异常对象
+   * @return RS
    */
   public Mono<Void> apply(HttpServerRequest request, HttpServerResponse response, Throwable t) {
     var problemBuilder = Problem.builder();

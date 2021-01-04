@@ -30,8 +30,8 @@ public final class ConfigKeys {
    * <p>e.g:
    *
    * <ul>
-   *   <li>jwt.secrets.key1=This is secret of key1
-   *   <li>jwt.secrets.keyX=This is secret of keyX
+   *   <li>jwt.secrets.[key1]=This is secret of key1
+   *   <li>jwt.secrets.[keyX]=This is secret of keyX
    * </ul>
    */
   public static final String JWT_SECRETS = "jwt.secrets";

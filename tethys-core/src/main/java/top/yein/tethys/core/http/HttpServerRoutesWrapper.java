@@ -13,6 +13,8 @@ import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
 
 /**
+ * {@link HttpServerRoutes} 包装器.
+ *
  * @author KK (kzou227@qq.com)
  * @date 2020-12-30 13:30
  */
@@ -22,6 +24,11 @@ public class HttpServerRoutesWrapper implements HttpServerRoutes {
   private final HttpServerRoutes routes;
   private final HttpExceptionHandler httpExceptionHandler;
 
+  /**
+   * 构造函数.
+   *
+   * @param routes 路由对象
+   */
   public HttpServerRoutesWrapper(HttpServerRoutes routes) {
     this.routes = routes;
     this.httpExceptionHandler = new HttpExceptionHandler();

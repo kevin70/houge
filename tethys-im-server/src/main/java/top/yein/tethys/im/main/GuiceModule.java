@@ -15,10 +15,11 @@
  */
 package top.yein.tethys.im.main;
 
+import static com.google.inject.Scopes.SINGLETON;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
@@ -31,8 +32,8 @@ import top.yein.tethys.core.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
 import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.session.DefaultSessionGroupManager;
-import top.yein.tethys.core.session.LocalSessionIdGenerator;
 import top.yein.tethys.core.session.DefaultSessionManager;
+import top.yein.tethys.core.session.LocalSessionIdGenerator;
 import top.yein.tethys.im.handler.BasisPacketHandler;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.PacketHandler;
@@ -57,22 +58,16 @@ public final class GuiceModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(TokenResource.class).in(Scopes.SINGLETON);
-    bind(RestRegister.class).in(Scopes.SINGLETON);
-
-    bind(WebsocketHandler.class).in(Scopes.SINGLETON);
+    bind(TokenResource.class).in(SINGLETON);
+    bind(RestRegister.class).in(SINGLETON);
+    bind(WebsocketHandler.class).in(SINGLETON);
+    bind(SessionManager.class).to(DefaultSessionManager.class).in(SINGLETON);
   }
 
   @Provides
   @Singleton
   public SessionIdGenerator sessionIdGenerator() {
     return new LocalSessionIdGenerator();
-  }
-
-  @Provides
-  @Singleton
-  public SessionManager sessionManager() {
-    return new DefaultSessionManager();
   }
 
   @Provides

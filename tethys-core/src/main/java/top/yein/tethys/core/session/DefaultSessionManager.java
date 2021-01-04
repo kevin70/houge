@@ -24,12 +24,14 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionEvent;
+import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.session.SessionListener;
 import top.yein.tethys.session.SessionManager;
 
@@ -50,6 +52,18 @@ public class DefaultSessionManager implements SessionManager {
   private final AsyncCache<String, Session> sessions = Caffeine.newBuilder().buildAsync();
   // 所有用户的 Session
   private final AsyncCache<Long, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
+  // 会话 ID 生成器
+  private final SessionIdGenerator sessionIdGenerator;
+
+  @Inject
+  public DefaultSessionManager(SessionIdGenerator sessionIdGenerator) {
+    this.sessionIdGenerator = sessionIdGenerator;
+  }
+
+  @Override
+  public SessionIdGenerator sessionIdGenerator() {
+    return sessionIdGenerator;
+  }
 
   @Override
   public boolean registerListener(SessionListener sessionListener) {

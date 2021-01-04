@@ -27,6 +27,7 @@ import reactor.test.StepVerifier;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.core.TestUtils;
 import top.yein.tethys.session.Session;
+import top.yein.tethys.session.SessionIdGenerator;
 
 /**
  * {@link DefaultSessionManager} 单元测试.
@@ -35,6 +36,8 @@ import top.yein.tethys.session.Session;
  */
 class DefaultSessionManagerTest {
 
+  private final SessionIdGenerator sessionIdGenerator = new LocalSessionIdGenerator();
+
   private Cache<Long, Session> getSessions(DefaultSessionManager dsm) {
     AsyncCache<Long, Session> sessions = Whitebox.getInternalState(dsm, "sessions");
     return sessions.synchronous();
@@ -42,7 +45,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void add() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var session = new TestSession();
     StepVerifier.create(dsm.add(session)).verifyComplete();
 
@@ -51,7 +54,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void addConflictSessionId() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var session1 = new TestSession();
     var session2 =
         new TestSession() {
@@ -67,7 +70,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void remove() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var session = new TestSession();
     StepVerifier.create(dsm.add(session).then(dsm.remove(session))).verifyComplete();
 
@@ -76,7 +79,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void removeById() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var session = new TestSession();
     StepVerifier.create(dsm.add(session).then(dsm.removeById(session.sessionId())))
         .expectNext(session)
@@ -85,7 +88,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void removeByIdWithUid() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var authContext = new TestAuthContext();
     var session1 =
         new TestSession() {
@@ -112,14 +115,14 @@ class DefaultSessionManagerTest {
 
   @Test
   void removeByIdNoExistsSession() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var session = new TestSession();
     StepVerifier.create(dsm.removeById(session.sessionId())).expectComplete().verify();
   }
 
   @Test
   void removeByUid() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var uid = new SecureRandom().nextLong();
     var session =
         new TestSession() {
@@ -155,7 +158,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void removeByUidNoExistsSession() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var uid = new SecureRandom().nextLong();
     var p = dsm.removeByUid(uid);
     StepVerifier.create(p).expectComplete().verify();
@@ -163,7 +166,7 @@ class DefaultSessionManagerTest {
 
   @Test
   void all() {
-    var dsm = new DefaultSessionManager();
+    var dsm = new DefaultSessionManager(sessionIdGenerator);
     var session = new TestSession();
     var p = dsm.add(session).thenMany(dsm.all());
     StepVerifier.create(p).expectNext(session).verifyComplete();
