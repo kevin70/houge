@@ -30,8 +30,12 @@ import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupEvent;
 import top.yein.tethys.session.SessionGroupListener;
 
-/** @author KK (kzou227@qq.com) */
-class DefaultSessionGroupManagerTests {
+/**
+ * {@link DefaultSessionManager} 单元测试.
+ *
+ * @author KK (kzou227@qq.com)
+ */
+class DefaultSessionGroupManagerTest {
 
   @Test
   void subGroups() {

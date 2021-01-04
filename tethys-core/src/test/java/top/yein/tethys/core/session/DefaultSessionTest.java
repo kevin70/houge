@@ -39,7 +39,7 @@ import top.yein.tethys.packet.ErrorPacket;
  *
  * @author KK (kzou227@qq.com)
  */
-class DefaultSessionTests {
+class DefaultSessionTest {
 
   private volatile DisposableServer disposableServer;
   private volatile WebsocketInbound inbound;

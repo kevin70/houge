@@ -19,7 +19,11 @@ import java.security.SecureRandom;
 import javax.annotation.Nonnull;
 import top.yein.tethys.auth.AuthContext;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * 测试专用的 AuthContext.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public class TestAuthContext implements AuthContext {
 
   final long uid = new SecureRandom().nextLong();

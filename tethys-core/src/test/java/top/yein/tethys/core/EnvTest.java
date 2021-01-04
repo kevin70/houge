@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author KK (kzou227@qq.com)
  */
-class EnvTests {
+class EnvTest {
 
   @Test
   void defaultEnv() {

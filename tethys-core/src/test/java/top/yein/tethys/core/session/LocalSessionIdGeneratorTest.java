@@ -15,23 +15,21 @@
  */
 package top.yein.tethys.core.session;
 
-import java.time.Clock;
-import java.util.concurrent.atomic.AtomicInteger;
-import top.yein.tethys.session.SessionIdGenerator;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
- * 默认会话 ID 生成器实现.
+ * {@link LocalSessionIdGenerator} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-public class DefaultSessionIdGenerator implements SessionIdGenerator {
+class LocalSessionIdGeneratorTest {
 
-  private final AtomicInteger seq = new AtomicInteger();
-
-  @Override
-  public String nextId() {
-    seq.compareAndSet(Integer.MAX_VALUE, 0);
-    long t = Clock.systemDefaultZone().instant().getEpochSecond();
-    return String.valueOf((t << 32) | seq.incrementAndGet());
+  @Test
+  void nextId() {
+    var dsig = new LocalSessionIdGenerator();
+    var sessionId = dsig.nextId();
+    assertThat(sessionId).isNotEmpty();
   }
 }

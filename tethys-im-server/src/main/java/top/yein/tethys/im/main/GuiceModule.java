@@ -31,7 +31,7 @@ import top.yein.tethys.core.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
 import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.session.DefaultSessionGroupManager;
-import top.yein.tethys.core.session.DefaultSessionIdGenerator;
+import top.yein.tethys.core.session.LocalSessionIdGenerator;
 import top.yein.tethys.core.session.DefaultSessionManager;
 import top.yein.tethys.im.handler.BasisPacketHandler;
 import top.yein.tethys.im.server.ImServer;
@@ -66,7 +66,7 @@ public final class GuiceModule extends AbstractModule {
   @Provides
   @Singleton
   public SessionIdGenerator sessionIdGenerator() {
-    return new DefaultSessionIdGenerator();
+    return new LocalSessionIdGenerator();
   }
 
   @Provides

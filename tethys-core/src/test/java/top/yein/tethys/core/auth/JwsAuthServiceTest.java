@@ -46,7 +46,7 @@ import top.yein.tethys.auth.NoneAuthContext;
  *
  * @author KK (kzou227@qq.com)
  */
-class JwsAuthServiceTests {
+class JwsAuthServiceTest {
 
   String kid = "test";
   SecretKey testSecret =

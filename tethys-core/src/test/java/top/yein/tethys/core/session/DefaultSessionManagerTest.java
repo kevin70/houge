@@ -28,8 +28,12 @@ import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.core.TestUtils;
 import top.yein.tethys.session.Session;
 
-/** @author KK (kzou227@qq.com) */
-class DefaultSessionManagerTests {
+/**
+ * {@link DefaultSessionManager} 单元测试.
+ *
+ * @author KK (kzou227@qq.com)
+ */
+class DefaultSessionManagerTest {
 
   private Cache<Long, Session> getSessions(DefaultSessionManager dsm) {
     AsyncCache<Long, Session> sessions = Whitebox.getInternalState(dsm, "sessions");
