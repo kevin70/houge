@@ -4,5 +4,5 @@ dependencies {
   implementation(project(":tethys-core"))
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
-  implementation("io.projectreactor:reactor-tools")
+//  implementation("io.projectreactor:reactor-tools")
 }

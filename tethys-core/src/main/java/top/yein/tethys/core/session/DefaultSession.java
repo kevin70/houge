@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
@@ -84,7 +85,7 @@ public final class DefaultSession implements Session {
     this.inbound.withConnection(
         conn ->
             conn.onDispose().doOnSubscribe(unused -> closed.set(true)).subscribe(closeProcessor));
-    this.subGroupIds = new LinkedHashSet<>();
+    this.subGroupIds = new ConcurrentSkipListSet<>();
   }
 
   @Override
