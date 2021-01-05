@@ -16,11 +16,14 @@
 package top.yein.tethys.im.main;
 
 import static com.google.inject.Scopes.SINGLETON;
+import static top.yein.tethys.packet.Namespaces.NS_PING;
+import static top.yein.tethys.packet.Namespaces.NS_PRIVATE_MESSAGE;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.MapBinder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
 import io.jsonwebtoken.security.Keys;
@@ -34,7 +37,9 @@ import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.session.DefaultSessionGroupManager;
 import top.yein.tethys.core.session.DefaultSessionManager;
 import top.yein.tethys.core.session.LocalSessionIdGenerator;
-import top.yein.tethys.im.handler.BasisPacketHandler;
+import top.yein.tethys.im.server.PacketDispatcher;
+import top.yein.tethys.im.handler.PingHandler;
+import top.yein.tethys.im.handler.PrivateMessageHandler;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.im.server.RestRegister;
@@ -62,6 +67,10 @@ public final class GuiceModule extends AbstractModule {
     bind(RestRegister.class).in(SINGLETON);
     bind(WebsocketHandler.class).in(SINGLETON);
     bind(SessionManager.class).to(DefaultSessionManager.class).in(SINGLETON);
+
+    // 消息处理总线
+    bind(PacketDispatcher.class).in(SINGLETON);
+    binderPacketHandler();
   }
 
   @Provides
@@ -92,15 +101,14 @@ public final class GuiceModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public PacketHandler packetHandler(
-      SessionManager sessionManager, SessionGroupManager sessionGroupManager) {
-    return new BasisPacketHandler(sessionManager, sessionGroupManager);
-  }
-
-  @Provides
-  @Singleton
   public ImServer imServer(WebsocketHandler websocketHandler, RestRegister restRegister) {
     return new ImServer(
         config.getString(ConfigKeys.IM_SERVER_ADDR), websocketHandler, restRegister);
+  }
+
+  private void binderPacketHandler() {
+    var handlerBinder = MapBinder.newMapBinder(binder(), String.class, PacketHandler.class);
+    handlerBinder.addBinding(NS_PING).to(PingHandler.class).in(SINGLETON);
+    handlerBinder.addBinding(NS_PRIVATE_MESSAGE).to(PrivateMessageHandler.class).in(SINGLETON);
   }
 }

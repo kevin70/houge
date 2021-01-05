@@ -26,7 +26,7 @@ import top.yein.tethys.session.Session;
  * @author KK (kzou227@qq.com)
  */
 @FunctionalInterface
-public interface PacketHandler {
+public interface PacketHandler<T extends Packet> {
 
   /**
    * 消息包处理器.
@@ -35,6 +35,5 @@ public interface PacketHandler {
    * @param packet 消息包
    * @return RS
    */
-  @Nonnull
-  Mono<Void> handle(@Nonnull Session session, @Nonnull Packet packet);
+  Mono<Void> handle(@Nonnull Session session, @Nonnull T packet);
 }

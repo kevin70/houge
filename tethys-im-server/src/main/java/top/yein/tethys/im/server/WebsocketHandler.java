@@ -47,15 +47,15 @@ public class WebsocketHandler {
   /** 会话管理器器. */
   private final SessionManager sessionManager;
 
-  private final PacketHandler packetHandler;
+  private final PacketDispatcher packetDispatcher;
   private final ObjectReader objectReader;
 
   @Inject
   public WebsocketHandler(
-      AuthService authService, SessionManager sessionManager, PacketHandler packetHandler) {
+      AuthService authService, SessionManager sessionManager, PacketDispatcher packetDispatcher) {
     this.authService = authService;
     this.sessionManager = sessionManager;
-    this.packetHandler = packetHandler;
+    this.packetDispatcher = packetDispatcher;
     this.objectReader = JsonUtils.objectMapper().readerFor(Packet.class);
   }
 
@@ -165,7 +165,9 @@ public class WebsocketHandler {
     }
 
     // 包处理
-    return packetHandler.handle(session, packet).contextWrite(Context.of(ByteBuf.class, packet));
+    return packetDispatcher
+        .dispatch(session, packet)
+        .contextWrite(Context.of(ByteBuf.class, packet));
   }
 
   private String getAuthorization(WebsocketInbound in) {
