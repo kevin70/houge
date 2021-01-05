@@ -13,13 +13,13 @@ import lombok.Data;
 public class PrivateMessage {
 
   /** 用户 ID. */
-  private long uid;
+  private String uid;
   /** 消息 ID. */
   private long messageId;
   /** 发送人 ID. */
-  private Long senderId;
+  private String senderId;
   /** 接收人 ID. */
-  private Long receiverId;
+  private String receiverId;
   /** 消息类型. */
   private int kind;
   /** 消息内容. */
@@ -34,5 +34,4 @@ public class PrivateMessage {
   private LocalDateTime createTime;
   /** 修改时间. */
   private LocalDateTime updateTime;
-
 }

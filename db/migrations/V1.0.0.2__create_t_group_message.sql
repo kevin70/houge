@@ -2,7 +2,7 @@ create table t_group_message
 (
     gid bigint not null,
     message_id bigint not null,
-    sender bigint not null,
+    sender varchar(128) not null,
     kind smallint default 1 not null,
     content varchar(4096),
     url varchar(1024),
