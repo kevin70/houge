@@ -1,8 +1,48 @@
 apply plugin: "application"
 
+task repairTethysConf {
+  doLast {
+    sourceSets.each { SourceSet sourceSet ->
+      def tethysConfFile = new File(buildDir, "resources/main/tethys.conf")
+      if (!tethysConfFile.exists()) {
+        return
+      }
+      def lines = tethysConfFile.readLines()
+      def skip = false
+      def newLines = []
+      lines.each { String line ->
+        if (line.startsWith("# {== DELETE BUILDING ========================")) {
+          skip = true
+          return
+        }
+        if (line.startsWith("# == DELETE BUILDING ========================}")) {
+          skip = false
+          return
+        }
+        if (skip) {
+          return
+        }
+        newLines.add(line)
+      }
+
+      def writer = tethysConfFile.newWriter()
+      for (i in 0..<newLines.size()) {
+        if (i == newLines.size() - 1) {
+          writer.write(newLines[i])
+        } else {
+          writer.writeLine(newLines[i])
+        }
+      }
+      writer.flush()
+      writer.close()
+    }
+  }
+}
+jar.dependsOn("repairTethysConf")
+
 dependencies {
   implementation(project(":tethys-core"))
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
-//  implementation("io.projectreactor:reactor-tools")
+  implementation("io.projectreactor:reactor-tools")
 }

@@ -37,6 +37,6 @@ public class RestRegister implements Consumer<HttpServerRoutes> {
   @Override
   public void accept(HttpServerRoutes routes) {
     // 访问令牌
-    routes.get("/token/{uid}", tokenResource::generateToken);
+    routes.post("/token/{uid}", tokenResource::generateToken);
   }
 }

@@ -16,7 +16,7 @@
 package top.yein.tethys.im.server;
 
 import com.google.common.net.HostAndPort;
-import io.netty.handler.timeout.IdleStateHandler;
+import java.time.Duration;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.netty.DisposableServer;
@@ -71,14 +71,7 @@ public final class ImServer {
             .host(hap.getHost())
             .port(hap.getPort())
             .wiretap(Env.current() != Env.PROD)
-            .tcpConfiguration(
-                tcpServer -> {
-                  var sb = tcpServer.configure();
-                  sb.childHandler(
-                      new IdleStateHandler(
-                          IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS, IDLE_TIMEOUT_SECS));
-                  return tcpServer;
-                })
+            .idleTimeout(Duration.ofSeconds(IDLE_TIMEOUT_SECS))
             .handle(new HttpServerRoutesWrapper(routes))
             .bindNow();
     log.info("IM Server 启动完成 - {}", hap);

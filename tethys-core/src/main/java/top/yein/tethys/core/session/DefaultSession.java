@@ -20,9 +20,9 @@ import static java.util.Objects.requireNonNull;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -30,14 +30,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoProcessor;
+import reactor.core.publisher.Sinks;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import top.yein.tethys.auth.AuthContext;
-import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.session.Session;
+import top.yein.tethys.util.JsonUtils;
 
 /**
  * 默认会话实现.
@@ -56,7 +56,7 @@ public final class DefaultSession implements Session {
   final AuthContext authContext;
   final Set<String> subGroupIds;
 
-  private final MonoProcessor<Void> closeProcessor = MonoProcessor.create();
+  private final Sinks.Empty<Void> closeSink = Sinks.empty();
   private final AtomicBoolean closed = new AtomicBoolean(false);
 
   /**
@@ -84,7 +84,12 @@ public final class DefaultSession implements Session {
     // 连接关闭
     this.inbound.withConnection(
         conn ->
-            conn.onDispose().doOnSubscribe(unused -> closed.set(true)).subscribe(closeProcessor));
+            conn.onDispose()
+                .doOnSubscribe(unused -> closed.set(true))
+                .subscribe(
+                    unused -> closeSink.tryEmitEmpty(),
+                    e -> closeSink.tryEmitError(e),
+                    closeSink::tryEmitEmpty));
     this.subGroupIds = new ConcurrentSkipListSet<>();
   }
 
@@ -138,7 +143,8 @@ public final class DefaultSession implements Session {
 
   @Override
   public Mono<Void> send(Publisher<ByteBuf> source) {
-    return outbound.send(source).then();
+    return Mono.from(source)
+        .flatMap(buf -> outbound.sendObject(new TextWebSocketFrame(buf)).then());
   }
 
   @Override
@@ -155,7 +161,7 @@ public final class DefaultSession implements Session {
 
   @Override
   public Mono<Void> onClose() {
-    return closeProcessor;
+    return closeSink.asMono();
   }
 
   @Override
