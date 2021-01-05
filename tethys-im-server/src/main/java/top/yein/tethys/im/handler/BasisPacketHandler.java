@@ -50,6 +50,7 @@ public class BasisPacketHandler implements PacketHandler {
     log.error("未找到 Packet[@ns={}] 实现 {}", packet.getNs(), packet);
     return Mono.empty();
   }
+
   /**
    * @param session
    * @param packet
@@ -57,8 +58,10 @@ public class BasisPacketHandler implements PacketHandler {
    */
   protected Mono<Void> handlePrivateMessage(
       final Session session, final PrivateMessagePacket packet) {
-    //    return messageRouter.route(packet);
-    return Mono.empty();
+    return sessionManager
+        .findByUid(packet.getTo())
+        .flatMap(toSession -> toSession.sendPacket(packet))
+        .then();
   }
 
   /**
@@ -79,11 +82,7 @@ public class BasisPacketHandler implements PacketHandler {
    */
   protected Mono<Void> handleGroupSubscribe(
       final Session session, final GroupSubscribePacket packet) {
-    var groupIds = packet.getGroupIds();
-    if (groupIds == null || groupIds.isEmpty()) {
-      return Mono.empty();
-    }
-    return sessionGroupManager.subGroups(session, groupIds);
+    return sessionGroupManager.subGroups(session, packet.getGroupIds());
   }
 
   /**
@@ -95,11 +94,7 @@ public class BasisPacketHandler implements PacketHandler {
    */
   protected Mono<Void> handleGroupUnsubscribe(
       final Session session, final GroupUnsubscribePacket packet) {
-    var groupIds = packet.getGroupIds();
-    if (groupIds == null || groupIds.isEmpty()) {
-      return Mono.empty();
-    }
-    return sessionGroupManager.unsubGroups(session, groupIds);
+    return sessionGroupManager.unsubGroups(session, packet.getGroupIds());
   }
 
   /**

@@ -1,6 +1,7 @@
 package top.yein.tethys.im.server;
 
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -140,10 +141,21 @@ public class WebsocketHandler {
     final ByteBuf content = frame.content();
     final DataInput input = new ByteBufInputStream(content);
     final Packet packet;
+
     try {
       packet = objectReader.readValue(input);
     } catch (UnrecognizedPropertyException e) {
       var ep = new ErrorPacket("未知的属性", e.getPropertyName());
+      return session.sendPacket(ep).then(session.close());
+    } catch (InvalidTypeIdException e) {
+      String message;
+      if (e.getTypeId() == null) {
+        message = "缺少 @ns 命名空间";
+      } else {
+        message = "非法的 @ns 命名空间 [" + e.getTypeId() + "]";
+      }
+      log.debug(message, e);
+      var ep = new ErrorPacket(message, e.getOriginalMessage());
       return session.sendPacket(ep).then(session.close());
     } catch (IOException e) {
       // JSON 解析失败
@@ -153,9 +165,7 @@ public class WebsocketHandler {
     }
 
     // 包处理
-    return packetHandler
-        .handle(session, packet)
-        .subscriberContext(Context.of(ByteBuf.class, packet));
+    return packetHandler.handle(session, packet).contextWrite(Context.of(ByteBuf.class, packet));
   }
 
   private String getAuthorization(WebsocketInbound in) {

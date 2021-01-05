@@ -32,7 +32,7 @@ public interface AuthContext {
    * @return 用户 ID
    */
   @Nonnull
-  long uid();
+  String uid();
 
   /**
    * 返回认证令牌.

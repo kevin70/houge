@@ -28,16 +28,16 @@ class JwsAuthContext implements AuthContext {
 
   private final String token;
   private final Claims claims;
-  private final long uid;
+  private final String uid;
 
   JwsAuthContext(String token, Claims claims) {
     this.token = token;
     this.claims = claims;
-    this.uid = Long.parseLong(claims.getId());
+    this.uid = claims.getId();
   }
 
   @Override
-  public long uid() {
+  public String uid() {
     return uid;
   }
 

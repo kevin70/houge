@@ -52,7 +52,7 @@ public interface Session {
    *
    * @return 用户 ID
    */
-  default long uid() {
+  default String uid() {
     return authContext().uid();
   }
 

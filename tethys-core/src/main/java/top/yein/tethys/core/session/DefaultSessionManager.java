@@ -51,7 +51,7 @@ public class DefaultSessionManager implements SessionManager {
   // 所有的 Session
   private final AsyncCache<String, Session> sessions = Caffeine.newBuilder().buildAsync();
   // 所有用户的 Session
-  private final AsyncCache<Long, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
+  private final AsyncCache<String, Set<Session>> uidSessions = Caffeine.newBuilder().buildAsync();
   // 会话 ID 生成器
   private final SessionIdGenerator sessionIdGenerator;
 
@@ -135,7 +135,7 @@ public class DefaultSessionManager implements SessionManager {
   }
 
   @Override
-  public Flux<Session> removeByUid(long uid) {
+  public Flux<Session> removeByUid(String uid) {
     return findByUid(uid)
         .distinct()
         .collectList()
@@ -171,7 +171,7 @@ public class DefaultSessionManager implements SessionManager {
   }
 
   @Override
-  public Flux<Session> findByUid(long uid) {
+  public Flux<Session> findByUid(String uid) {
     return Flux.defer(
         () -> {
           var cf = uidSessions.getIfPresent(uid);

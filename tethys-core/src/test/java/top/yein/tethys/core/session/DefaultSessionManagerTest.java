@@ -123,14 +123,14 @@ class DefaultSessionManagerTest {
   @Test
   void removeByUid() {
     var dsm = new DefaultSessionManager(sessionIdGenerator);
-    var uid = new SecureRandom().nextLong();
+    var uid = Long.toHexString(new SecureRandom().nextLong());
     var session =
         new TestSession() {
           @Override
           public AuthContext authContext() {
             return new AuthContext() {
               @Override
-              public long uid() {
+              public String uid() {
                 return uid;
               }
 
@@ -159,7 +159,7 @@ class DefaultSessionManagerTest {
   @Test
   void removeByUidNoExistsSession() {
     var dsm = new DefaultSessionManager(sessionIdGenerator);
-    var uid = new SecureRandom().nextLong();
+    var uid = Long.toHexString(new SecureRandom().nextLong());
     var p = dsm.removeByUid(uid);
     StepVerifier.create(p).expectComplete().verify();
   }

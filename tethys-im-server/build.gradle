@@ -1,5 +1,7 @@
 apply plugin: "application"
 
+mainClassName = "top.yein.tethys.im.main.ImMain"
+
 task repairTethysConf {
   doLast {
     sourceSets.each { SourceSet sourceSet ->
