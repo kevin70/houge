@@ -32,5 +32,5 @@ jobs:
       with:
         name: Package
         path: |
-          tethys-im-server/build/libs/*-all.jar
-          tethys-rest-server/build/libs/*-all.jar
+          tethys-im-server/build/libs
+          tethys-rest-server/build/libs
