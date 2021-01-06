@@ -30,7 +30,7 @@ jobs:
     - name: Codecov
       uses: codecov/codecov-action@v1.0.7
       with:
-        file: build/reports/jacoco/test/jacocoTestReport.xml
+        files: tethys-api/build/reports/jacoco/test/jacocoTestReport.xml,tethys-core/build/reports/jacoco/test/jacocoTestReport.xml,tethys-im-server/build/reports/jacoco/test/jacocoTestReport.xml,tethys-rest-server/build/reports/jacoco/test/jacocoTestReport.xml,tethys-storage/build/reports/jacoco/test/jacocoTestReport.xml,tethys-util/build/reports/jacoco/test/jacocoTestReport.xml
     - uses: actions/upload-artifact@v1
       with:
         name: Package
