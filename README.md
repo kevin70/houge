@@ -1,4 +1,4 @@
-# Xim
+# Tethys
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
 致力于打造是一个**免费安全可靠**的企业级 IM 解决方案。
@@ -37,10 +37,10 @@
 - [消息协议](docs/design/message_protocol.md)
 
 ## 感谢
-Xim 的实现离不开源社区的支持，感恩为开源做出贡献的人。
+Tethys 的实现离不开源社区的支持，感恩为开源做出贡献的人。
 
 ## 捐赠
-如果您觉得 Xim 做得不错，对您有实际的帮助，请支持我们更好的维护项目。
+如果您觉得 Tethys 做得不错，对您有实际的帮助，请支持我们更好的维护项目。
 
 ![Alipay](docs/images/alipay_qrcode.png)
 ![Wechat](docs/images/wechat_qrcode.png)
