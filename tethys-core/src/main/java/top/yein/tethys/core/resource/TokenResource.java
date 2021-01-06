@@ -14,7 +14,6 @@ import top.yein.tethys.core.http.AbstractRestSupport;
  * 访问令牌 REST 接口.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-29 20:39
  */
 public class TokenResource extends AbstractRestSupport {
 

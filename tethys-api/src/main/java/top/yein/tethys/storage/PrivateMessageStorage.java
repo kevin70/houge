@@ -8,7 +8,6 @@ import top.yein.tethys.entity.PrivateMessage;
  * 私聊消息存储.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-24 17:44
  */
 public interface PrivateMessageStorage {
 
@@ -16,7 +15,7 @@ public interface PrivateMessageStorage {
    * 存储私聊消息.
    *
    * @param entity 数据实体
-   * @return
+   * @return RS
    */
   Mono<Void> store(PrivateMessage entity);
 
@@ -25,14 +24,16 @@ public interface PrivateMessageStorage {
    *
    * @param uid 用户 ID
    * @param messageId 消息 ID
-   * @return
+   * @return RS
    */
   Mono<Void> readPrivateMessage(int uid, int messageId);
 
   /**
-   * @param uid
-   * @param limit
-   * @return
+   * 查询用户私人聊天消息.
+   *
+   * @param uid 用户 ID
+   * @param limit 返回最大记录数
+   * @return 私人消息
    */
   Flux<PrivateMessage> findByUid(int uid, int limit);
 }

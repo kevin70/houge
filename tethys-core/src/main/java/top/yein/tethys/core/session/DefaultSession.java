@@ -85,11 +85,11 @@ public final class DefaultSession implements Session {
     this.inbound.withConnection(
         conn ->
             conn.onDispose()
-                .doOnSubscribe(unused -> closed.set(true))
+                .doOnTerminate(() -> closed.set(true))
                 .subscribe(
                     unused -> closeSink.tryEmitEmpty(),
                     e -> closeSink.tryEmitError(e),
-                    closeSink::tryEmitEmpty));
+                    () -> closeSink.tryEmitEmpty()));
     this.subGroupIds = new ConcurrentSkipListSet<>();
   }
 

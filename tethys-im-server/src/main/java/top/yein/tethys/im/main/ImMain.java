@@ -12,7 +12,6 @@ import top.yein.tethys.im.server.ImServer;
  * 主程序.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-28 11:20
  */
 @Log4j2
 public class ImMain implements Runnable {

@@ -11,8 +11,9 @@ import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionManager;
 
 /**
+ * 心跳处理器.
+ *
  * @author KK (kzou227@qq.com)
- * @date 2021-01-05 16:41
  */
 @Log4j2
 public class PingHandler implements PacketHandler<PingPacket> {

@@ -31,7 +31,6 @@ import top.yein.tethys.util.JsonUtils;
 
 /**
  * @author KK (kzou227@qq.com)
- * @date 2020-12-31 16:05
  */
 class AbstractRestSupportTest {
 

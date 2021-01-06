@@ -9,7 +9,6 @@ import lombok.Data;
  * <a href="https://tools.ietf.org/html/rfc7807">https://tools.ietf.org/html/rfc7807</a>.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-30 17:38
  */
 @Data
 @Builder

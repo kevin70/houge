@@ -7,7 +7,6 @@ import lombok.Data;
  * t_private_message 数据实体.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-25 16:51
  */
 @Data
 public class PrivateMessage {

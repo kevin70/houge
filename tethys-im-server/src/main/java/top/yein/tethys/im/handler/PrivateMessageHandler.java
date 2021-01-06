@@ -9,8 +9,9 @@ import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionManager;
 
 /**
+ * 私聊处理器.
+ *
  * @author KK (kzou227@qq.com)
- * @date 2021-01-05 16:12
  */
 public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket> {
 

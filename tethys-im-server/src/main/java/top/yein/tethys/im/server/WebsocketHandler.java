@@ -34,7 +34,6 @@ import top.yein.tethys.util.JsonUtils;
 
 /**
  * @author KK (kzou227@qq.com)
- * @date 2020-12-29 14:14
  */
 @Log4j2
 public class WebsocketHandler {

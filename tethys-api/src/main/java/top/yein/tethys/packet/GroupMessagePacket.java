@@ -18,6 +18,7 @@ package top.yein.tethys.packet;
 import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.Getter;
 import lombok.Value;
 import top.yein.tethys.constants.MessageKind;
 
@@ -31,8 +32,10 @@ import top.yein.tethys.constants.MessageKind;
 public class GroupMessagePacket implements MsgPacket {
 
   /** 发送消息者. */
+  @Getter(onMethod_ = {@Override})
   String from;
   /** 接收消息者. */
+  @Getter(onMethod_ = {@Override})
   String to;
   /** 消息类型 {@link top.yein.tethys.constants.MessageKind}. */
   int kind = MessageKind.TEXT.getCode();

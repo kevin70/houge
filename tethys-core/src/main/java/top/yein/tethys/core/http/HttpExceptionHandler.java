@@ -16,7 +16,6 @@ import top.yein.tethys.domain.Problem;
  * HTTP REST 异常处理器.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-29 21:27
  */
 @Log4j2
 public class HttpExceptionHandler extends AbstractRestSupport {

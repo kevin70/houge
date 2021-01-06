@@ -14,7 +14,6 @@ import top.yein.tethys.session.Session;
  * Packet 分发器.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-29 15:43
  */
 @Log4j2
 public class PacketDispatcher {

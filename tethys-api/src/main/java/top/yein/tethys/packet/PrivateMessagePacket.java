@@ -20,7 +20,9 @@ import static top.yein.tethys.packet.Namespaces.NS_PRIVATE_MESSAGE;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import top.yein.tethys.constants.MessageKind;
 
@@ -37,11 +39,13 @@ import top.yein.tethys.constants.MessageKind;
 public class PrivateMessagePacket implements MsgPacket {
 
   /** 发送消息者. */
+  @Getter(onMethod_ = {@Override})
   String from;
   /** 接收消息者. */
+  @Getter(onMethod_ = {@Override})
   String to;
   /** 消息类型 {@link top.yein.tethys.constants.MessageKind}. */
-  int kind = MessageKind.TEXT.getCode();
+  @Default int kind = MessageKind.TEXT.getCode();
   /** 消息内容. */
   String content;
   /** 统一资源定位器, 图片URL, 视频URL. */

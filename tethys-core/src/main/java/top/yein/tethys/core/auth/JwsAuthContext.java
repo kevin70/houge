@@ -51,4 +51,18 @@ class JwsAuthContext implements AuthContext {
   public boolean isAnonymous() {
     return false;
   }
+
+  @Override
+  public String toString() {
+    return "JwsAuthContext{"
+        + "token='"
+        + token
+        + '\''
+        + ", claims="
+        + claims
+        + ", uid='"
+        + uid
+        + '\''
+        + '}';
+  }
 }

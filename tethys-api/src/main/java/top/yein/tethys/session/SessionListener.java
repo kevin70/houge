@@ -26,6 +26,8 @@ import reactor.core.publisher.Mono;
 public interface SessionListener {
 
   /**
+   * Session 事件处理.
+   *
    * @param session 会话信息
    * @param event 事件类型
    * @return {@link Mono#empty()}

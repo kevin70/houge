@@ -1,8 +1,7 @@
-package top.yein.tethys.rest;
+package top.yein.tethys.rest.main;
 
 /**
  * @author KK (kzou227@qq.com)
- * @date 2020-12-28 11:21
  */
 public class RestMain {
 

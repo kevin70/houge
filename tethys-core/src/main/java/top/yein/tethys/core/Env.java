@@ -71,6 +71,6 @@ public enum Env {
       }
     }
     throw new IllegalArgumentException(
-        "非法的 \"" + k + "\" 值 \"" + v + "\"，可选值为 " + Arrays.stream(values()));
+        "非法的 \"" + k + "\" 值 \"" + v + "\"，可选值为 " + Arrays.toString(values()));
   }
 }

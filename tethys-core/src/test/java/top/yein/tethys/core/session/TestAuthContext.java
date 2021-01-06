@@ -29,8 +29,8 @@ public class TestAuthContext implements AuthContext {
   final long uid = new SecureRandom().nextLong();
 
   @Override
-  public long uid() {
-    return uid;
+  public String uid() {
+    return Long.toHexString(uid);
   }
 
   @Nonnull

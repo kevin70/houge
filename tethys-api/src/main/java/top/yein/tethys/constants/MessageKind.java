@@ -4,7 +4,6 @@ package top.yein.tethys.constants;
  * 消息类型枚举定义.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-29 11:29
  */
 public enum MessageKind {
   /** 普通文本消息. */

@@ -79,9 +79,6 @@ allprojects {
     compileOnly("com.google.code.findbugs:jsr305")
     api("org.apache.logging.log4j:log4j-api")
 
-//    implementation("org.apache.logging.log4j:log4j-core")
-//    implementation("org.apache.logging.log4j:log4j-slf4j-impl")
-
     // Test
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")

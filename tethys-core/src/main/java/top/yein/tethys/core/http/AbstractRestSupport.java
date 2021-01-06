@@ -24,7 +24,6 @@ import top.yein.tethys.util.ReactorHttpServerUtils;
  * REST 抽象支撑类.
  *
  * @author KK (kzou227@qq.com)
- * @date 2020-12-30 15:10
  */
 @Log4j2
 public abstract class AbstractRestSupport {

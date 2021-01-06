@@ -16,6 +16,9 @@
 package top.yein.tethys.im.main;
 
 import static com.google.inject.Scopes.SINGLETON;
+import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
+import static top.yein.tethys.packet.Namespaces.NS_GROUP_SUBSCRIBE;
+import static top.yein.tethys.packet.Namespaces.NS_GROUP_UNSUBSCRIBE;
 import static top.yein.tethys.packet.Namespaces.NS_PING;
 import static top.yein.tethys.packet.Namespaces.NS_PRIVATE_MESSAGE;
 
@@ -37,10 +40,13 @@ import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.session.DefaultSessionGroupManager;
 import top.yein.tethys.core.session.DefaultSessionManager;
 import top.yein.tethys.core.session.LocalSessionIdGenerator;
-import top.yein.tethys.im.server.PacketDispatcher;
+import top.yein.tethys.im.handler.GroupMessageHandler;
+import top.yein.tethys.im.handler.GroupSubscribeHandler;
+import top.yein.tethys.im.handler.GroupUnsubscribeHandler;
 import top.yein.tethys.im.handler.PingHandler;
 import top.yein.tethys.im.handler.PrivateMessageHandler;
 import top.yein.tethys.im.server.ImServer;
+import top.yein.tethys.im.server.PacketDispatcher;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.im.server.RestRegister;
 import top.yein.tethys.im.server.WebsocketHandler;
@@ -110,5 +116,8 @@ public final class GuiceModule extends AbstractModule {
     var handlerBinder = MapBinder.newMapBinder(binder(), String.class, PacketHandler.class);
     handlerBinder.addBinding(NS_PING).to(PingHandler.class).in(SINGLETON);
     handlerBinder.addBinding(NS_PRIVATE_MESSAGE).to(PrivateMessageHandler.class).in(SINGLETON);
+    handlerBinder.addBinding(NS_GROUP_MESSAGE).to(GroupMessageHandler.class).in(SINGLETON);
+    handlerBinder.addBinding(NS_GROUP_SUBSCRIBE).to(GroupSubscribeHandler.class).in(SINGLETON);
+    handlerBinder.addBinding(NS_GROUP_UNSUBSCRIBE).to(GroupUnsubscribeHandler.class).in(SINGLETON);
   }
 }

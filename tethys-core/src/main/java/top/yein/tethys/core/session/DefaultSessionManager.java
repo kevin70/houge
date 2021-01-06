@@ -29,6 +29,8 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionEvent;
 import top.yein.tethys.session.SessionIdGenerator;
@@ -85,10 +87,8 @@ public class DefaultSessionManager implements SessionManager {
                     .doOnNext(
                         existsSession -> {
                           if (existsSession != session) {
-                            // FIXME 待修复
-                            //                            throw new BizCodeException(BizCodes.C3500)
-                            //                                .addContextValue("sessionId",
-                            // session.sessionId());
+                            throw new BizCodeException(BizCodes.C3500)
+                                .addContextValue("sessionId", session.sessionId());
                           }
                           sessionCounter.increment();
                         })
