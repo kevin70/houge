@@ -23,6 +23,13 @@ package top.yein.tethys.packet;
 public interface MsgPacket extends Packet {
 
   /**
+   * 消息 ID 全局唯一.
+   *
+   * @return 消息 ID
+   */
+  String getMsgId();
+
+  /**
    * 消息发送者.
    *
    * @return 发送者

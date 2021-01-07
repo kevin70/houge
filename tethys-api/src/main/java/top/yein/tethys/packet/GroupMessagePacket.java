@@ -31,6 +31,9 @@ import top.yein.tethys.constants.MessageKind;
 @Value
 public class GroupMessagePacket implements MsgPacket {
 
+  /** 消息 ID 全局唯一. */
+  @Getter(onMethod_ = {@Override})
+  String msgId;
   /** 发送消息者. */
   @Getter(onMethod_ = {@Override})
   String from;
