@@ -1,0 +1,73 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Tethys REST RESTful 接口
+servers:
+  - url: http://localhost:11019/
+tags:
+  - name: TEST
+    description: 测试专用
+  - name: MESSAGE
+    description: IM 消息
+components:
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      description: 访问令牌
+      name: access_token
+      in: query
+paths:
+  /token/{uid}:
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        description: 用户 ID
+        schema:
+          type: integer
+          format: int64
+    post:
+      tags: [TEST]
+      summary: 生成用户访问令牌
+      description: |
+        **测试专用** 快速通过用户 ID 生成访问令牌
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                properties:
+                  access_token:
+                    type: string
+                    description: 访问令牌
+
+  /message-ids:
+    get:
+      parameters:
+        - name: limit
+          in: query
+          description: 返回 ID 的最大数量
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+      tags: [MESSAGE]
+      security: [AccessToken:[]]
+      summary: 获取 IM 消息 ID
+      description: |
+        返回 IM 消息 ID 列表，该列表中的 ID 用于在后续聊天消息中使用，每个 ID 仅可使用一次。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: IM 消息 ID
