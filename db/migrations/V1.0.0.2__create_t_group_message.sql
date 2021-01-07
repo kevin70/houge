@@ -1,7 +1,7 @@
 create table t_group_message
 (
     gid bigint not null,
-    message_id bigint not null,
+    message_id varchar(48) not null,
     sender varchar(128) not null,
     kind smallint default 1 not null,
     content varchar(4096),
