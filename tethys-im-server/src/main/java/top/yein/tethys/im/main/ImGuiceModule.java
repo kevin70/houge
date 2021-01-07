@@ -31,11 +31,14 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Map.Entry;
 import javax.crypto.SecretKey;
 import top.yein.tethys.auth.AuthService;
+import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
+import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.session.DefaultSessionGroupManager;
 import top.yein.tethys.core.session.DefaultSessionManager;
@@ -59,17 +62,19 @@ import top.yein.tethys.session.SessionManager;
  *
  * @author KK (kzou227@qq.com)
  */
-public final class GuiceModule extends AbstractModule {
+public final class ImGuiceModule extends AbstractModule {
 
   private final Config config;
 
-  public GuiceModule(Config config) {
+  public ImGuiceModule(Config config) {
     this.config = config;
   }
 
   @Override
   protected void configure() {
+    // 令牌
     bind(TokenResource.class).in(SINGLETON);
+
     bind(RestRegister.class).in(SINGLETON);
     bind(WebsocketHandler.class).in(SINGLETON);
     bind(SessionManager.class).to(DefaultSessionManager.class).in(SINGLETON);
@@ -93,16 +98,15 @@ public final class GuiceModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public AuthService authService() {
-    var enabled = config.getBoolean(ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS);
-    var builder = ImmutableMap.<String, SecretKey>builder();
-    for (Entry<String, ConfigValue> e : config.getObject(ConfigKeys.JWT_SECRETS).entrySet()) {
-      String v = (String) e.getValue().unwrapped();
-      var sk = Keys.hmacShaKeyFor(v.getBytes(StandardCharsets.UTF_8));
-      builder.put(e.getKey(), sk);
-    }
+  public TokenService tokenService() {
+    return new TokenServiceImpl(jwtSecrets());
+  }
 
-    return new JwsAuthService(enabled, builder.build());
+  @Provides
+  @Singleton
+  public AuthService authService() {
+    // var enabled = config.getBoolean(ConfigKeys.IM_SERVER_ENABLED_ANONYMOUS);
+    return new JwsAuthService(jwtSecrets());
   }
 
   @Provides
@@ -119,5 +123,15 @@ public final class GuiceModule extends AbstractModule {
     handlerBinder.addBinding(NS_GROUP_MESSAGE).to(GroupMessageHandler.class).in(SINGLETON);
     handlerBinder.addBinding(NS_GROUP_SUBSCRIBE).to(GroupSubscribeHandler.class).in(SINGLETON);
     handlerBinder.addBinding(NS_GROUP_UNSUBSCRIBE).to(GroupUnsubscribeHandler.class).in(SINGLETON);
+  }
+
+  private Map<String, SecretKey> jwtSecrets() {
+    var builder = ImmutableMap.<String, SecretKey>builder();
+    for (Entry<String, ConfigValue> e : config.getObject(ConfigKeys.JWT_SECRETS).entrySet()) {
+      String v = (String) e.getValue().unwrapped();
+      var sk = Keys.hmacShaKeyFor(v.getBytes(StandardCharsets.UTF_8));
+      builder.put(e.getKey(), sk);
+    }
+    return builder.build();
   }
 }

@@ -71,7 +71,7 @@ public class WebsocketHandler {
     final Channel channel = connVal[0].channel();
 
     return authService
-        .authorize(getAuthorization(in))
+        .authenticate(getAuthorization(in))
         .flatMap(
             ac -> {
               // 将会话添加至会话管理器

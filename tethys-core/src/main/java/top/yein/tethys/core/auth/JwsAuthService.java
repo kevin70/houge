@@ -20,9 +20,6 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
@@ -31,7 +28,6 @@ import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.AuthService;
-import top.yein.tethys.auth.NoneAuthContext;
 import top.yein.tethys.core.BizCodes;
 
 /**
@@ -43,32 +39,19 @@ import top.yein.tethys.core.BizCodes;
 public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
-  private final boolean anonymousEnabled;
-  private final Map<String, SecretKey> jwtSecrets;
 
   @Inject
-  public JwsAuthService(boolean anonymousEnabled, Map<String, SecretKey> jwtSecrets) {
-    this.anonymousEnabled = anonymousEnabled;
+  public JwsAuthService(Map<String, SecretKey> jwtSecrets) {
     this.jwtParser =
         Jwts.parserBuilder()
             .setSigningKeyResolver(new DefaultSigningKeyResolver(jwtSecrets))
             .build();
-    this.jwtSecrets = jwtSecrets;
   }
 
   @Override
-  public Mono<Boolean> anonymousEnabled() {
-    return Mono.just(anonymousEnabled);
-  }
-
-  @Override
-  public Mono<AuthContext> authorize(String token) {
+  public Mono<AuthContext> authenticate(String token) {
     if (token == null || token.isEmpty()) {
-      if (anonymousEnabled) {
-        return Mono.just(NoneAuthContext.INSTANCE);
-      } else {
-        return Mono.error(new BizCodeException(BizCodes.C401, "缺少访问令牌"));
-      }
+      return Mono.error(new BizCodeException(BizCodes.C401, "缺少访问令牌"));
     }
 
     return Mono.create(
@@ -87,24 +70,5 @@ public class JwsAuthService implements AuthService {
             sink.error(new BizCodeException(BizCodes.C3305, e.getMessage()));
           }
         });
-  }
-
-  @Override
-  public Mono<String> generateToken(long uid) {
-    var keys = new ArrayList<>(jwtSecrets.entrySet());
-    Collections.shuffle(keys);
-
-    var entry = keys.get(0);
-    Map<String, Object> header = Jwts.jwsHeader().setKeyId(entry.getKey());
-    var claims = Jwts.claims().setId(String.valueOf(uid));
-    var token =
-        Jwts.builder()
-            .signWith(entry.getValue(), SignatureAlgorithm.HS512)
-            .setHeader(header)
-            .setClaims(claims)
-            .compact();
-
-    log.info("生成访问令牌 [uid={}, access_token={}]", uid, token);
-    return Mono.just(token);
   }
 }

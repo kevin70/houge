@@ -37,7 +37,9 @@ public final class ConfigKeys {
   public static final String JWT_SECRETS = "jwt.secrets";
 
   /**
-   * IM 服务开放访问的地址.地址中可包含 `IP` 及 `PORT`.
+   * IM 服务开放访问的地址.
+   *
+   * <p>地址中可包含 `IP` 及 `PORT`.
    *
    * <p>配置示例:
    *
@@ -53,4 +55,18 @@ public final class ConfigKeys {
 
   /** JWT 密钥配置前缀. */
   public static final String IM_SERVER_AUTH_JWT_SECRETS = "im-server.auth-jwt-secrets";
+
+  /**
+   * REST 服务开放访问的地址.
+   *
+   * <p>地址中可包含 `IP` 及 `PORT`.
+   *
+   * <p>配置示例:
+   *
+   * <ul>
+   *   <li>:8888
+   *   <li>192.168.1.5:8888
+   * </ul>
+   */
+  public static final String REST_SERVER_ADDR = "rest-server.addr";
 }

@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.auth.AuthService;
+import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.dto.AccessTokenDto;
 import top.yein.tethys.core.http.AbstractRestSupport;
@@ -17,16 +17,16 @@ import top.yein.tethys.core.http.AbstractRestSupport;
  */
 public class TokenResource extends AbstractRestSupport {
 
-  private final AuthService authService;
+  private final TokenService tokenService;
 
   /**
    * 默认构造函数.
    *
-   * @param authService 认证服务
+   * @param tokenService 令牌服务
    */
   @Inject
-  public TokenResource(AuthService authService) {
-    this.authService = authService;
+  public TokenResource(TokenService tokenService) {
+    this.tokenService = tokenService;
   }
 
   /**
@@ -49,7 +49,7 @@ public class TokenResource extends AbstractRestSupport {
       throw new BizCodeException(BizCodes.C911, "非法的 uid: " + uidStr)
           .addContextValue("uid", uidStr);
     }
-    return authService
+    return tokenService
         .generateToken(uid)
         .flatMap(s -> json(response, new AccessTokenDto().setAccessToken(s)));
   }

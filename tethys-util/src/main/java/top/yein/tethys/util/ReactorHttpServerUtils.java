@@ -15,7 +15,7 @@ import reactor.netty.http.server.HttpServerRequest;
 public class ReactorHttpServerUtils {
 
   /** HTTP Query 参数解析存储的属性键. */
-  public static final AttributeKey<QueryStringDecoder> QUERY_PARAMS_ATTRIBUTE_KEY =
+  public static final AttributeKey<QueryParameterHolder> QUERY_PARAMS_ATTRIBUTE_KEY =
       AttributeKey.newInstance("reactor.http.queryParams");
 
   private ReactorHttpServerUtils() {
@@ -63,10 +63,13 @@ public class ReactorHttpServerUtils {
     var connection = getConnection(request);
     var channel = connection.channel();
     if (channel.hasAttr(QUERY_PARAMS_ATTRIBUTE_KEY)) {
-      return channel.attr(QUERY_PARAMS_ATTRIBUTE_KEY).get().parameters();
+      var holder = channel.attr(QUERY_PARAMS_ATTRIBUTE_KEY).get();
+      if (holder.connection == connection) {
+        return holder.query.parameters();
+      }
     }
     QueryStringDecoder query = new QueryStringDecoder(request.uri());
-    channel.attr(QUERY_PARAMS_ATTRIBUTE_KEY).setIfAbsent(query);
+    channel.attr(QUERY_PARAMS_ATTRIBUTE_KEY).set(new QueryParameterHolder(connection, query));
     return query.parameters();
   }
 
@@ -80,5 +83,15 @@ public class ReactorHttpServerUtils {
     Connection[] connections = new Connection[1];
     request.withConnection(connection -> connections[0] = connection);
     return connections[0];
+  }
+
+  static class QueryParameterHolder {
+    Connection connection;
+    QueryStringDecoder query;
+
+    public QueryParameterHolder(Connection connection, QueryStringDecoder query) {
+      this.connection = connection;
+      this.query = query;
+    }
   }
 }

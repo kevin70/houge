@@ -63,7 +63,7 @@ class JwsAuthServiceTest {
   }
 
   private JwsAuthService newJwsAuthService(boolean anonymousEnabled) {
-    return new JwsAuthService(anonymousEnabled, Map.of(kid, testSecret));
+    return new JwsAuthService(Map.of(kid, testSecret));
   }
 
   @ParameterizedTest
@@ -83,7 +83,7 @@ class JwsAuthServiceTest {
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize(token);
+    var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectNextMatches(ac -> "test".equals(ac.uid()) && token.equals(ac.token()))
         .verifyComplete();
@@ -93,14 +93,14 @@ class JwsAuthServiceTest {
   @DisplayName("匿名认证")
   void anonymousAuth() {
     JwsAuthService authService = newJwsAuthService(true);
-    var p = authService.authorize(null);
+    var p = authService.authenticate(null);
     StepVerifier.create(p).expectNext(NoneAuthContext.INSTANCE).verifyComplete();
   }
 
   @Test
   void nullToken() {
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize(null);
+    var p = authService.authenticate(null);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C401 == ((BizCodeException) e).getBizCode())
         .verify();
@@ -109,7 +109,7 @@ class JwsAuthServiceTest {
   @Test
   void illegalToken() {
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize("illegal token");
+    var p = authService.authenticate("illegal token");
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3300 == ((BizCodeException) e).getBizCode())
         .verify(Duration.ofSeconds(1));
@@ -127,7 +127,7 @@ class JwsAuthServiceTest {
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize(token);
+    var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3301 == ((BizCodeException) e).getBizCode())
         .verify(Duration.ofSeconds(1));
@@ -145,7 +145,7 @@ class JwsAuthServiceTest {
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize(token);
+    var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3302 == ((BizCodeException) e).getBizCode())
         .verify(Duration.ofSeconds(1));
@@ -161,7 +161,7 @@ class JwsAuthServiceTest {
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize(token);
+    var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())
         .verify(Duration.ofSeconds(1));
@@ -177,7 +177,7 @@ class JwsAuthServiceTest {
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authorize(token);
+    var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())
         .verify(Duration.ofSeconds(1));

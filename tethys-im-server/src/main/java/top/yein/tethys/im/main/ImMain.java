@@ -39,7 +39,7 @@ public class ImMain implements Runnable {
 
     // 初始化 Guice
     log.info("初始化 Guice");
-    final var injector = Guice.createInjector(stage, new GuiceModule(config));
+    final var injector = Guice.createInjector(stage, new ImGuiceModule(config));
     log.info("初始化 Guice 成功");
 
     // 启动 IM 服务
