@@ -4,7 +4,7 @@
 ### 文本消息
 ```json
 {
-  "@ns": "private.msg",
+  "@ns": "p.msg",
   "msg_id": "643bf3b250c211ebae930242ac130002",
   "from": "from user id",
   "to": "to user id",
@@ -15,7 +15,7 @@
 
 | 属性名称 | 数据类型 | 必选 | 描述 |
 | --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `private.msg` |
+| `@ns` | `string` | Y | 命名空间，固定取值 `p.msg` |
 | `msg_id` | `string` | Y | 消息 ID 全局唯一 |
 | `from` | `string` | Y | 发送者用户 ID |
 | `to` | `string` |Y | 接收者用户 ID |
@@ -26,7 +26,7 @@
 ### 图片消息
 ```json
 {
-  "@ns": "private.msg",
+  "@ns": "p.msg",
   "msg_id": "643bf3b250c211ebae930242ac130002",
   "from": "from user id",
   "to": "to user id",
@@ -38,7 +38,7 @@
 
 | 属性名称 | 数据类型 | 必选 | 描述 |
 | --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `private.msg` |
+| `@ns` | `string` | Y | 命名空间，固定取值 `p.msg` |
 | `msg_id` | `string` | Y | 消息 ID 全局唯一 |
 | `from` | `string` | Y | 发送者用户 ID |
 | `to` | `string` | Y | 接收者用户 ID |
@@ -51,33 +51,33 @@
 ### 订阅群组消息
 ```json
 {
-  "@ns": "group.sub",
+  "@ns": "g.sub",
   "group_ids": ["group id-1", "group id-2"]
 }
 ```
 
 | 属性名称 | 数据类型 | 描述 |
 | --- | --- | --- |
-| `@ns` | `string` | 命名空间，固定取值 `group.sub` |
+| `@ns` | `string` | 命名空间，固定取值 `g.sub` |
 | `group_ids` | `array[string]` | 群组 ID 列表 |
 
 ### 取消订阅群组消息
 ```json
 {
-  "@ns": "group.u@nsub",
+  "@ns": "g.unsub",
   "group_ids": ["group id-1", "group id-2"]
 }
 ```
 
 | 属性名称 | 数据类型 | 描述 |
 | --- | --- | --- |
-| `@ns` | `string` | 命名空间，固定取值 `group.u@nsub` |
+| `@ns` | `string` | 命名空间，固定取值 `g.unsub` |
 | `group_ids` | `array[string]` | 群组 ID 列表 |
 
 ### 文本消息
 ```json
 {
-  "@ns": "group.msg",
+  "@ns": "g.msg",
   "msg_id": "643bf3b250c211ebae930242ac130002",
   "from": "from user id",
   "to": "to group id",
@@ -88,7 +88,7 @@
 
 | 属性名称 | 数据类型 | 必选 | 描述 |
 | --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `group.msg` |
+| `@ns` | `string` | Y | 命名空间，固定取值 `g.msg` |
 | `msg_id` | `string` | Y | 消息 ID 全局唯一 |
 | `from` | `string` | Y | 发送者用户 ID |
 | `to` | `string` |Y | 接收者用户 ID |
@@ -99,7 +99,7 @@
 ### 图片消息
 ```json
 {
-  "@ns": "group.msg",
+  "@ns": "g.msg",
   "msg_id": "643bf3b250c211ebae930242ac130002",
   "from": "from user id",
   "to": "to group id",
@@ -111,7 +111,7 @@
 
 | 属性名称 | 数据类型 | 必选 | 描述 |
 | --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `group.msg` |
+| `@ns` | `string` | Y | 命名空间，固定取值 `g.msg` |
 | `msg_id` | `string` | Y | 消息 ID 全局唯一 |
 | `from` | `string` | Y | 发送者用户 ID |
 | `to` | `string` | Y | 接收者用户 ID |
