@@ -31,7 +31,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
-import top.yein.tethys.auth.NoneAuthContext;
+import top.yein.tethys.core.auth.NoneAuthContext;
 import top.yein.tethys.packet.ErrorPacket;
 
 /**

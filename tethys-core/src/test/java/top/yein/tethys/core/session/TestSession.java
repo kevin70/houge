@@ -22,7 +22,7 @@ import java.util.Set;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.auth.AuthContext;
-import top.yein.tethys.auth.NoneAuthContext;
+import top.yein.tethys.core.auth.NoneAuthContext;
 import top.yein.tethys.session.Session;
 
 /**

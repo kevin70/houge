@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.auth;
+package top.yein.tethys.core.auth;
+
+import top.yein.tethys.auth.AuthContext;
 
 /**
  * 未认证的默认用户上下文.

@@ -32,6 +32,7 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
     var groupId = packet.getTo();
     return sessionGroupManager
         .findByGroupId(groupId)
+        .filter(toSession -> toSession != session)
         .flatMap(toSession -> toSession.sendPacket(packet))
         .then();
   }

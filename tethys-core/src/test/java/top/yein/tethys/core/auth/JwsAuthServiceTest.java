@@ -39,7 +39,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.auth.NoneAuthContext;
 
 /**
  * {@link JwsAuthService} 单元测试.

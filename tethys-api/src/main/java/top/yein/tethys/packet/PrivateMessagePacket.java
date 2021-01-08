@@ -22,7 +22,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import top.yein.tethys.constants.MessageKind;
 
@@ -36,16 +35,13 @@ import top.yein.tethys.constants.MessageKind;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrivateMessagePacket implements MsgPacket {
+public class PrivateMessagePacket implements Packet {
 
   /** 消息 ID 全局唯一. */
-  @Getter(onMethod_ = {@Override})
   String msgId;
   /** 发送消息者. */
-  @Getter(onMethod_ = {@Override})
   String from;
   /** 接收消息者. */
-  @Getter(onMethod_ = {@Override})
   String to;
   /** 消息类型 {@link top.yein.tethys.constants.MessageKind}. */
   @Default int kind = MessageKind.TEXT.getCode();
