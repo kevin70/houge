@@ -29,8 +29,17 @@ public class HttpServerRoutesWrapper implements HttpServerRoutes {
    * @param routes 被包装的路由对象
    */
   public HttpServerRoutesWrapper(HttpServerRoutes routes) {
+    this(routes, new HttpExceptionHandler());
+  }
+
+  /**
+   * @param routes
+   * @param httpExceptionHandler
+   */
+  public HttpServerRoutesWrapper(
+      HttpServerRoutes routes, HttpExceptionHandler httpExceptionHandler) {
     this.routes = routes;
-    this.httpExceptionHandler = new HttpExceptionHandler();
+    this.httpExceptionHandler = httpExceptionHandler;
   }
 
   @Override
@@ -51,7 +60,7 @@ public class HttpServerRoutesWrapper implements HttpServerRoutes {
 
   @Override
   public Publisher<Void> apply(HttpServerRequest request, HttpServerResponse response) {
-    return Flux.from(routes.apply(request, response))
+    return Flux.defer(() -> routes.apply(request, response))
         .onErrorResume(t -> httpExceptionHandler.apply(request, response, t));
   }
 }

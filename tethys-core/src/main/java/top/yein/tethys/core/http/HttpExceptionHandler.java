@@ -20,6 +20,27 @@ import top.yein.tethys.domain.Problem;
 @Log4j2
 public class HttpExceptionHandler extends AbstractRestSupport {
 
+  /** 是否为调试模式. */
+  private final boolean debug;
+
+  /**
+   * 默认构造函数.
+   *
+   * <p>默认 {@link Env#current()} 当前运行环境为等于 {@link Env#PROD} 时，自动开启调试模式.
+   */
+  public HttpExceptionHandler() {
+    this(Env.current() != Env.PROD);
+  }
+
+  /**
+   * 可开关调试模式的构造函数.
+   *
+   * @param debug 是否开启调试模式
+   */
+  public HttpExceptionHandler(boolean debug) {
+    this.debug = debug;
+  }
+
   /**
    * 应用处理器.
    *
@@ -52,7 +73,7 @@ public class HttpExceptionHandler extends AbstractRestSupport {
     }
 
     // 是否打印 DEBUG 日志
-    var debug = Env.current() != Env.PROD || queryParam(request, "debug") != null;
+    var debug = this.debug || queryParam(request, "debug") != null;
     if (errorLog) {
       // 服务器内部错误需要记录 ERROR 日志
       log.error("服务器内部异常 uri={}", request.uri(), t);
