@@ -1,3 +1,6 @@
+[![CI/CD](https://github.com/kevin70/tethys/workflows/Tethys%20CI/CD/badge.svg)](https://github.com/kevin70/tethys/actions)
+[![codecov](https://codecov.io/gh/kevin70/tethys/branch/main/graph/badge.svg?token=BRJECD0HF0)](https://codecov.io/gh/kevin70/tethys)
+
 # Tethys
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
