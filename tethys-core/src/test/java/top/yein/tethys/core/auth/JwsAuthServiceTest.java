@@ -65,13 +65,6 @@ class JwsAuthServiceTest {
     return new JwsAuthService(Map.of(kid, testSecret));
   }
 
-  @ParameterizedTest
-  @ValueSource(booleans = {true, false})
-  void anonymousEnabled(boolean v) {
-    JwsAuthService authService = newJwsAuthService(v);
-    StepVerifier.create(authService.anonymousEnabled()).expectNext(v).verifyComplete();
-  }
-
   @Test
   void authorize() {
     var token =
