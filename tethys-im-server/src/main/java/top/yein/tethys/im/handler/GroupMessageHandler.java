@@ -17,6 +17,11 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
 
   private final SessionGroupManager sessionGroupManager;
 
+  /**
+   * 构造函数.
+   *
+   * @param sessionGroupManager 会话群组管理对象
+   */
   @Inject
   public GroupMessageHandler(SessionGroupManager sessionGroupManager) {
     this.sessionGroupManager = sessionGroupManager;

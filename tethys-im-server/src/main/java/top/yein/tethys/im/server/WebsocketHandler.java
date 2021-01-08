@@ -33,6 +33,8 @@ import top.yein.tethys.session.SessionManager;
 import top.yein.tethys.util.JsonUtils;
 
 /**
+ * Websocket 处理器.
+ *
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
@@ -47,8 +49,16 @@ public class WebsocketHandler {
   private final SessionManager sessionManager;
 
   private final PacketDispatcher packetDispatcher;
+
   private final ObjectReader objectReader;
 
+  /**
+   * 构造函数.
+   *
+   * @param authService 认证服务
+   * @param sessionManager 会话管理
+   * @param packetDispatcher 包分发器
+   */
   @Inject
   public WebsocketHandler(
       AuthService authService, SessionManager sessionManager, PacketDispatcher packetDispatcher) {
