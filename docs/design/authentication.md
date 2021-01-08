@@ -1,8 +1,10 @@
 # 认证
 
-Xim 目前仅实现 JWT 认证，仅支持 TOKEN 认证，暂时不提供用户信息认证相关实现。
+Tethys 目前支持 JWT TOKEN 认证。
 
-用户需要在自身的业务系统中实现用户认证，生成 TOKEN 在与 Xim 系统对接认证。
+## 测试令牌
+
+为方便测试验证，Tethys 为测试开发环境提供了快速生成访问令牌的 REST 接口（参考接口文档：[tethys-im-openapi](../tethys-im-oais/tethys-im.yml))。
 
 ## JWT
 
