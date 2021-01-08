@@ -33,10 +33,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import javax.crypto.SecretKey;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
 
@@ -79,14 +76,6 @@ class JwsAuthServiceTest {
     StepVerifier.create(p)
         .expectNextMatches(ac -> "test".equals(ac.uid()) && token.equals(ac.token()))
         .verifyComplete();
-  }
-
-  @Test
-  @DisplayName("匿名认证")
-  void anonymousAuth() {
-    JwsAuthService authService = newJwsAuthService(true);
-    var p = authService.authenticate(null);
-    StepVerifier.create(p).expectNext(NoneAuthContext.INSTANCE).verifyComplete();
   }
 
   @Test
