@@ -40,7 +40,11 @@ public class HttpExceptionHandler extends AbstractRestSupport {
           .code(bc.getCode())
           .title(ex.getRawMessage())
           .detail(ex.getMessage());
-      propertiesBuilder.put("context_values", ex.getContextEntries());
+
+      var contextEntries = ex.getContextEntries();
+      if (!contextEntries.isEmpty()) {
+        propertiesBuilder.put("context_values", ex.getContextEntries());
+      }
       errorLog = bc.getStatus() >= HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
     } else {
       problemBuilder.status(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).title(t.getMessage());

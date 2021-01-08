@@ -15,8 +15,7 @@
  */
 package top.yein.tethys.core.session;
 
-import java.time.Clock;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 import top.yein.tethys.session.SessionIdGenerator;
 
 /**
@@ -26,12 +25,8 @@ import top.yein.tethys.session.SessionIdGenerator;
  */
 public class LocalSessionIdGenerator implements SessionIdGenerator {
 
-  private final AtomicInteger seq = new AtomicInteger();
-
   @Override
   public String nextId() {
-    seq.compareAndSet(Integer.MAX_VALUE, 0);
-    long t = Clock.systemDefaultZone().instant().getEpochSecond();
-    return String.valueOf((t << 32) | seq.incrementAndGet());
+    return UUID.randomUUID().toString().replaceAll("-", "");
   }
 }

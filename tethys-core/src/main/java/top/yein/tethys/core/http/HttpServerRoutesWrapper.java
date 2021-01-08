@@ -26,7 +26,7 @@ public class HttpServerRoutesWrapper implements HttpServerRoutes {
   /**
    * 构造函数.
    *
-   * @param routes 路由对象
+   * @param routes 被包装的路由对象
    */
   public HttpServerRoutesWrapper(HttpServerRoutes routes) {
     this.routes = routes;

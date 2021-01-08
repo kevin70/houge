@@ -25,7 +25,7 @@ public class AuthenticationInterceptor extends AbstractRestSupport {
   private final AuthService authService;
 
   /**
-   * 默认构造函数.
+   * 构造函数.
    *
    * @param authService 认证服务
    */
@@ -35,8 +35,10 @@ public class AuthenticationInterceptor extends AbstractRestSupport {
   }
 
   /**
-   * @param next
-   * @return
+   * 请求认证.
+   *
+   * @param next 认证成功后执行的处理函数
+   * @return RS
    */
   public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> handle(
       BiFunction<? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>
