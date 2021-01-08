@@ -36,6 +36,11 @@
 - [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
 
+## Browser WebSocket Client
+使用 Chrome 浏览器安装扩展 [Browser-WebSocket-Client
+](https://github.com/abeade/browser-websocket-client) 用于快速测试 WebSocket。
+
+
 ## 感谢
 Tethys 的实现离不开源社区的支持，感恩为开源做出贡献的人。
 
