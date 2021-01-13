@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 import javax.crypto.SecretKey;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.auth.TokenService;
-import top.yein.tethys.core.ConfigKeys;
+import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
 import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.resource.TokenResource;

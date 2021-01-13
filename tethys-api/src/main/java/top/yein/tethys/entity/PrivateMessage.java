@@ -11,10 +11,8 @@ import lombok.Data;
 @Data
 public class PrivateMessage {
 
-  /** 用户 ID. */
-  private String uid;
   /** 消息 ID 全局唯一. */
-  private String messageId;
+  private String id;
   /** 发送人 ID. */
   private String senderId;
   /** 接收人 ID. */

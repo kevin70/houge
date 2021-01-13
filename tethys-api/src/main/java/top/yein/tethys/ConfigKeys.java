@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.core;
+package top.yein.tethys;
 
 /**
  * 应用配置键名称定义.
@@ -69,4 +69,13 @@ public final class ConfigKeys {
    * </ul>
    */
   public static final String REST_SERVER_ADDR = "rest-server.addr";
+
+  /**
+   * 消息存储的数据库链接.
+   *
+   * <p>示例：
+   *
+   * <p>{@code r2dbc:postgresql://[<username>:<password>@]<host>:5432/<database>}
+   */
+  public static final String MESSAGE_STORAGE_R2DBC_URL = "message-storage.r2dbc.url";
 }

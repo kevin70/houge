@@ -22,11 +22,10 @@ public interface PrivateMessageStorage {
   /**
    * 将消息设置为已读.
    *
-   * @param uid 用户 ID
-   * @param messageId 消息 ID
+   * @param id 消息 ID
    * @return RS
    */
-  Mono<Void> readPrivateMessage(int uid, int messageId);
+  Mono<Void> readMessage(String id);
 
   /**
    * 查询用户私人聊天消息.

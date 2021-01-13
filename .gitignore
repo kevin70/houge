@@ -8,3 +8,6 @@
 build
 # Ignore IDEA build output directory
 out
+
+# Tethys 开发配置
+tethys-dev.conf

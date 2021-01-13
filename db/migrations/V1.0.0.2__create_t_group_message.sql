@@ -1,8 +1,8 @@
 create table t_group_message
 (
+    id varchar(48) not null,
     gid bigint not null,
-    message_id varchar(48) not null,
-    sender varchar(128) not null,
+    sender_id varchar(128) not null,
     kind smallint default 1 not null,
     content varchar(4096),
     url varchar(1024),
@@ -13,11 +13,11 @@ create table t_group_message
 
 comment on table t_group_message is '群组消息';
 
+comment on column t_group_message.id is '全局唯一消息 ID';
+
 comment on column t_group_message.gid is '群组 ID';
 
-comment on column t_group_message.message_id is '群组全局唯一消息 ID';
-
-comment on column t_group_message.sender is '发送人 ID';
+comment on column t_group_message.sender_id is '发送人 ID';
 
 comment on column t_group_message.kind is '消息类型
 1：普通文本消息
@@ -36,8 +36,8 @@ comment on column t_group_message.create_time is '创建时间';
 
 comment on column t_group_message.update_time is '修改时间';
 
-create unique index t_group_message_gid_message_id_uindex
-	on t_group_message (gid, message_id);
+create unique index t_group_message_id_uindex
+	on t_group_message (id);
 
 create index t_group_message_gid_create_time_index
 	on t_group_message (gid asc, create_time desc);
