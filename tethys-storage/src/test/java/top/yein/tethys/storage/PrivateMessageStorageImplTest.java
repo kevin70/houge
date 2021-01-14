@@ -51,4 +51,70 @@ class PrivateMessageStorageImplTest extends AbstractTestStorage {
           s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
         });
   }
+
+  @Test
+  void readMessage() {
+    var storage = new PrivateMessageStorageImpl();
+
+    var entity = new PrivateMessage();
+    entity.setId(UUID.randomUUID().toString());
+    entity.setSenderId("TEST-SENDER");
+    entity.setReceiverId("TEST-RECEIVER");
+    entity.setKind(MessageKind.TEXT.getCode());
+    entity.setContent("unit test");
+    entity.setUrl("https://via.placeholder.com/150");
+    entity.setCustomArgs("{}");
+
+    var p = super.transactional(storage.store(entity).then(storage.readMessage(entity.getId())));
+    StepVerifier.create(p).verifyComplete();
+
+    // 校验数据库存储数据
+    var dbRow =
+        super.findOne("select * from t_private_message where id=$1", Map.of("$1", entity.getId()));
+    assertSoftly(
+        s -> {
+          s.assertThat(dbRow.get("id")).as("id").isEqualTo(entity.getId());
+          s.assertThat(dbRow.get("unread")).as("unread").isEqualTo((short) 0);
+          s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
+        });
+  }
+
+  @Test
+  void findById() {
+    var storage = new PrivateMessageStorageImpl();
+
+    var entity = new PrivateMessage();
+    entity.setId(UUID.randomUUID().toString());
+    entity.setSenderId("TEST-SENDER");
+    entity.setReceiverId("TEST-RECEIVER");
+    entity.setKind(MessageKind.TEXT.getCode());
+    entity.setContent("unit test");
+    entity.setUrl("https://via.placeholder.com/150");
+    entity.setCustomArgs("{}");
+
+    var p = super.transactional(storage.store(entity).thenMany(storage.findById(entity.getId())));
+    StepVerifier.create(p)
+        .assertNext(
+            dbRow ->
+                assertSoftly(
+                    s -> {
+                      s.assertThat(dbRow.getId()).as("id").isEqualTo(entity.getId());
+                      s.assertThat(dbRow.getSenderId())
+                          .as("sender_id")
+                          .isEqualTo(entity.getSenderId());
+                      s.assertThat(dbRow.getReceiverId())
+                          .as("receiver_id")
+                          .isEqualTo(entity.getReceiverId());
+                      s.assertThat(dbRow.getKind()).as("kind").isEqualTo(entity.getKind());
+                      s.assertThat(dbRow.getContent()).as("content").isEqualTo(entity.getContent());
+                      s.assertThat(dbRow.getUrl()).as("url").isEqualTo(entity.getUrl());
+                      s.assertThat(dbRow.getCustomArgs())
+                          .as("custom_args")
+                          .isEqualTo(entity.getCustomArgs());
+                      s.assertThat(dbRow.getUnread()).as("unread").isEqualTo(1);
+                      s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
+                      s.assertThat(dbRow.getUpdateTime()).as("update_time").isNotNull();
+                    }))
+        .verifyComplete();
+  }
 }

@@ -28,11 +28,19 @@ public interface PrivateMessageStorage {
   Mono<Void> readMessage(String id);
 
   /**
+   * 根据消息 ID 查询私聊信息.
+   *
+   * @param id 消息 ID
+   * @return 私聊信息
+   */
+  Flux<PrivateMessage> findById(String id);
+
+  /**
    * 查询用户私人聊天消息.
    *
-   * @param uid 用户 ID
+   * @param receiverId 用户 ID
    * @param limit 返回最大记录数
    * @return 私人消息
    */
-  Flux<PrivateMessage> findByUid(int uid, int limit);
+  Flux<PrivateMessage> findByReceiverId(String receiverId, int limit);
 }
