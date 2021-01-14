@@ -37,14 +37,15 @@ jobs:
 
         ###------------ 安装 psql
       - run: |
-          apt-get update
-          apt-get install --yes --no-install-recommends postgresql-client
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends postgresql-client
         ###------------ 创建数据库
       - run: |
           psql -h postgres -U postgres -W 123456 -c 'create database tethys;'
         ###------------ FlywayDB 配置文件
       - run: mv flyway.conf.template flyway.conf
       - run: ./gradlew :flywayMigrate
+        ###------------ 项目构建
       - run: ./gradlew build
       - run: ./gradlew jacocoTestReport
       - uses: codecov/codecov-action@v1
