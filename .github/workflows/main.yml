@@ -42,7 +42,7 @@ jobs:
           sudo apt-get install --yes --no-install-recommends postgresql-client
         ###------------ 创建数据库
       - run: |
-          psql -h localhost -U postgres -W 123456 -c 'create database tethys;'
+          psql -h localhost -U postgres -c 'create database tethys;'
         ###------------ FlywayDB 配置文件
       - run: mv flyway.conf.template flyway.conf
       - run: ./gradlew :flywayMigrate
