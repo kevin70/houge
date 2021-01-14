@@ -24,7 +24,7 @@
 # SQLite            : jdbc:sqlite:<database>
 # Sybase ASE        : jdbc:jtds:sybase://<host>:<port>/<database>
 # Redshift*         : jdbc:redshift://<host>:<port>/<database>
-flyway.url=jdbc:postgresql://postgres:5432/tethys
+flyway.url=jdbc:postgresql://localhost:5432/tethys
 
 # Fully qualified classname of the JDBC driver (autodetected by default based on flyway.url)
 # flyway.driver=
