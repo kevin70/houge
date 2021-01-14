@@ -11,3 +11,4 @@ out
 
 # Tethys 开发配置
 tethys-dev.conf
+flyway.conf
