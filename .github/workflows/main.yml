@@ -43,6 +43,8 @@ jobs:
         ###------------ 创建数据库
       - run: |
           psql -h localhost -U postgres -c 'create database tethys;'
+        env:
+          PGPASSWORD: 123456
         ###------------ FlywayDB 配置文件
       - run: mv flyway.conf.template flyway.conf
       - run: ./gradlew :flywayMigrate
