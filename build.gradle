@@ -16,6 +16,15 @@ plugins {
   id "org.hidetake.ssh" version "2.10.1"
 }
 
+flyway {
+  configFiles = ["${projectDir}/flyway.conf"]
+}
+
+dependencies {
+  // flywaydb 需要使用的依赖 https://flywaydb.org/
+  implementation("org.postgresql:postgresql")
+}
+
 allprojects {
 
   apply plugin: "java"
