@@ -45,7 +45,7 @@ class PrivateMessageStorageImplTest extends AbstractTestStorage {
           s.assertThat(dbRow.get("kind")).as("kind").isEqualTo((short) entity.getKind());
           s.assertThat(dbRow.get("content")).as("content").isEqualTo(entity.getContent());
           s.assertThat(dbRow.get("url")).as("url").isEqualTo(entity.getUrl());
-          s.assertThat(dbRow.get("custom_args")).as("url").isEqualTo(entity.getCustomArgs());
+          s.assertThat(dbRow.get("custom_args")).as("custom_args").isEqualTo(entity.getCustomArgs());
           s.assertThat(dbRow.get("unread")).as("unread").isEqualTo((short) 1);
           s.assertThat(dbRow.get("create_time")).as("create_time").isNotNull();
           s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
