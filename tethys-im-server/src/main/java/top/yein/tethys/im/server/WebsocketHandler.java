@@ -118,8 +118,14 @@ public class WebsocketHandler {
         .receiveFrames()
         .doOnError(
             e -> {
+              // TODO: 异常处理需要进一步完善
               // 异常处理
               if (AbortedException.isConnectionReset(e)) {
+                return;
+              }
+              if ((e instanceof IOException
+                  && e.getMessage() != null
+                  && e.getMessage().contains("远程主机强迫关闭了一个现有的连接"))) {
                 return;
               }
 
