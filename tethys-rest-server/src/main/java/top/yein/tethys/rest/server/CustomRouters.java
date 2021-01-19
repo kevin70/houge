@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import javax.inject.Inject;
 import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
+import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.rest.resource.MessageIdResource;
 
 /**
@@ -29,19 +30,23 @@ import top.yein.tethys.rest.resource.MessageIdResource;
 public class CustomRouters implements Consumer<HttpServerRoutes> {
 
   private final AuthenticationInterceptor authenticationInterceptor;
+  private final TokenResource tokenResource;
   private final MessageIdResource messageIdResource;
 
   @Inject
   public CustomRouters(
-      AuthenticationInterceptor authenticationInterceptor, MessageIdResource messageIdResource) {
+      AuthenticationInterceptor authenticationInterceptor,
+      TokenResource tokenResource,
+      MessageIdResource messageIdResource) {
     this.authenticationInterceptor = authenticationInterceptor;
+    this.tokenResource = tokenResource;
     this.messageIdResource = messageIdResource;
   }
 
   @Override
   public void accept(HttpServerRoutes routes) {
     // 访问令牌
-    //    routes.post("/token/{uid}", tokenResource::generateToken);
+    routes.post("/token/{uid}", tokenResource::generateToken);
     routes.get("/message-ids", authenticationInterceptor.handle(messageIdResource::getMessageIds));
   }
 }

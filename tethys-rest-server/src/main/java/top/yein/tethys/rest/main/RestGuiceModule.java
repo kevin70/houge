@@ -28,11 +28,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.crypto.SecretKey;
-import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.ConfigKeys;
+import top.yein.tethys.auth.AuthService;
+import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.auth.JwsAuthService;
+import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.id.YeinGidMessageIdGenerator;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
+import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.rest.resource.MessageIdResource;
 import top.yein.tethys.rest.server.CustomRouters;
@@ -55,12 +58,18 @@ public final class RestGuiceModule extends AbstractModule {
   protected void configure() {
     bind(MessageIdGenerator.class).to(YeinGidMessageIdGenerator.class).in(SINGLETON);
 
-    //    bind(TokenResource.class).in(SINGLETON);
     // resources
+    bind(TokenResource.class).in(SINGLETON);
     bind(MessageIdResource.class).in(SINGLETON);
 
     bind(AuthenticationInterceptor.class).in(SINGLETON);
     bind(CustomRouters.class).in(SINGLETON);
+  }
+
+  @Provides
+  @Singleton
+  public TokenService tokenService() {
+    return new TokenServiceImpl(jwtSecrets());
   }
 
   @Provides
