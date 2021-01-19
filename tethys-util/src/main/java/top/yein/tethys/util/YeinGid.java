@@ -38,13 +38,13 @@ public class YeinGid {
 
   public static final int YEIN_GID_LENGTH = 14;
   /** 版本号掩码. */
-  private static final int VERSION_MASK = (int) (Math.pow(2, 3) - 1);
+  private static final int VERSION_MASK = -1 ^ (-1 << 3);
   /** 时间戳(秒). */
-  private static final int SECONDS_MASK = (int) (Math.pow(2, 32) - 1);
+  private static final int SECONDS_MASK = Integer.MAX_VALUE;
   /** 序列掩码. */
-  private static final int SEQ_MASK = (int) (Math.pow(2, 18) - 1);
-  /** 标志一掩码. */
-  private static final int FID_MASK = (int) (Math.pow(2, 17) - 1);
+  private static final int SEQ_MASK = -1 ^ (-1 << 18);
+  /** 标识掩码. */
+  private static final int FID_MASK = -1 ^ (-1 << 17);
 
   /** 当前版本号. */
   private static final int CURRENT_VERSION = 1;
