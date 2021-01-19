@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux;
  */
 public interface MessageIdGenerator {
 
-  /** 单次请求 ID 的最大个数. */
+  /** 单次请求消息 ID 的返回的最大个数. */
   int REQUEST_IDS_LIMIT = 100;
 
   /**
