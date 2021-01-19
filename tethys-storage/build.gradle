@@ -3,6 +3,7 @@ dependencies {
   implementation("aopalliance:aopalliance")
   implementation("io.r2dbc:r2dbc-postgresql")
 
+  testImplementation(project(":tethys-util"))
   testImplementation("com.typesafe:config")
   testImplementation("org.apache.logging.log4j:log4j-core")
   testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
