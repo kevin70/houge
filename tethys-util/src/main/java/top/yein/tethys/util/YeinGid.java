@@ -12,15 +12,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <table border="1">
  *   <tr>
  *     <td>version</td>
- *     <td>seconds</td>
+ *     <td>timestamp</td>
  *     <td>sequence</td>
  *     <td>fid</td>
  *   </tr>
  *   <tr>
- *     <td>3bit</td>
- *     <td>32bit</td>
- *     <td>18bit</td>
- *     <td>17bit</td>
+ *     <td>3bits</td>
+ *     <td>32bits</td>
+ *     <td>18bits</td>
+ *     <td>17bits</td>
  *   </tr>
  * </table>
  *
