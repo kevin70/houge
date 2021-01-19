@@ -31,7 +31,7 @@ import javax.crypto.SecretKey;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
-import top.yein.tethys.core.id.UuidMessageIdGenerator;
+import top.yein.tethys.core.id.YeinGidMessageIdGenerator;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.rest.resource.MessageIdResource;
@@ -53,7 +53,7 @@ public final class RestGuiceModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(MessageIdGenerator.class).to(UuidMessageIdGenerator.class).in(SINGLETON);
+    bind(MessageIdGenerator.class).to(YeinGidMessageIdGenerator.class).in(SINGLETON);
 
     //    bind(TokenResource.class).in(SINGLETON);
     // resources
