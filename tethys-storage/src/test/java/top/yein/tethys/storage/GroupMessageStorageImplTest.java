@@ -21,7 +21,7 @@ class GroupMessageStorageImplTest extends AbstractTestStorage {
     var storage = new GroupMessageStorageImpl();
 
     var entity = new GroupMessage();
-    entity.setId(UUID.randomUUID().toString());
+    entity.setId(TestUtils.newMessageId());
     entity.setGid(0L);
     entity.setSenderId(UUID.randomUUID().toString());
     entity.setKind(MessageKind.TEXT.getCode());
@@ -55,7 +55,7 @@ class GroupMessageStorageImplTest extends AbstractTestStorage {
     var storage = new GroupMessageStorageImpl();
 
     var entity = new GroupMessage();
-    entity.setId(UUID.randomUUID().toString());
+    entity.setId(TestUtils.newMessageId());
     entity.setGid(0L);
     entity.setSenderId(UUID.randomUUID().toString());
     entity.setKind(MessageKind.TEXT.getCode());

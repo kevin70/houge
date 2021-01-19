@@ -1,6 +1,6 @@
 create table t_private_message
 (
-    id varchar(48) not null,
+    id char(14) not null,
     sender_id varchar(128) not null,
     receiver_id varchar(128) not null,
     kind smallint default 1 not null,

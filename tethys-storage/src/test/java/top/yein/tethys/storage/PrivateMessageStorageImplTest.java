@@ -3,7 +3,6 @@ package top.yein.tethys.storage;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.Map;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 import top.yein.tethys.constants.MessageKind;
@@ -21,7 +20,7 @@ class PrivateMessageStorageImplTest extends AbstractTestStorage {
     var storage = new PrivateMessageStorageImpl();
 
     var entity = new PrivateMessage();
-    entity.setId(UUID.randomUUID().toString());
+    entity.setId(TestUtils.newMessageId());
     entity.setSenderId("TEST-SENDER");
     entity.setReceiverId("TEST-RECEIVER");
     entity.setKind(MessageKind.TEXT.getCode());
@@ -45,7 +44,9 @@ class PrivateMessageStorageImplTest extends AbstractTestStorage {
           s.assertThat(dbRow.get("kind")).as("kind").isEqualTo((short) entity.getKind());
           s.assertThat(dbRow.get("content")).as("content").isEqualTo(entity.getContent());
           s.assertThat(dbRow.get("url")).as("url").isEqualTo(entity.getUrl());
-          s.assertThat(dbRow.get("custom_args")).as("custom_args").isEqualTo(entity.getCustomArgs());
+          s.assertThat(dbRow.get("custom_args"))
+              .as("custom_args")
+              .isEqualTo(entity.getCustomArgs());
           s.assertThat(dbRow.get("unread")).as("unread").isEqualTo((short) 1);
           s.assertThat(dbRow.get("create_time")).as("create_time").isNotNull();
           s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
@@ -57,7 +58,7 @@ class PrivateMessageStorageImplTest extends AbstractTestStorage {
     var storage = new PrivateMessageStorageImpl();
 
     var entity = new PrivateMessage();
-    entity.setId(UUID.randomUUID().toString());
+    entity.setId(TestUtils.newMessageId());
     entity.setSenderId("TEST-SENDER");
     entity.setReceiverId("TEST-RECEIVER");
     entity.setKind(MessageKind.TEXT.getCode());
@@ -84,7 +85,7 @@ class PrivateMessageStorageImplTest extends AbstractTestStorage {
     var storage = new PrivateMessageStorageImpl();
 
     var entity = new PrivateMessage();
-    entity.setId(UUID.randomUUID().toString());
+    entity.setId(TestUtils.newMessageId());
     entity.setSenderId("TEST-SENDER");
     entity.setReceiverId("TEST-RECEIVER");
     entity.setKind(MessageKind.TEXT.getCode());
