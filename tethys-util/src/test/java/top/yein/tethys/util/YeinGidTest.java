@@ -58,7 +58,8 @@ class YeinGidTest {
 
   @Test
   void examples() {
-
+    System.out.println(new YeinGid(5432));
+    System.out.println(new YeinGid(12345));
   }
 
 }
