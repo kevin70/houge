@@ -159,8 +159,6 @@ public class YeinGid {
             | longs[11] << 4
             | (longs[12] >> 1 & 0xf);
     long lowBits = (longs[12] & 0x3f) << 63 | longs[13] << 58;
-    System.out.println("from highBits: " + highBits);
-    System.out.println("from lowBits: " + lowBits);
 
     int version = (int) (highBits >> 61 & VERSION_MASK);
     int timestamp = (int) (highBits >> 29 & SECONDS_MASK);
