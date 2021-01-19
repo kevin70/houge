@@ -38,6 +38,7 @@
 ## 文档
 - [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
+- [分布式消息 ID 设计](docs/design/message_id.md)
 
 ## Browser WebSocket Client
 使用 Chrome 浏览器安装扩展 [Browser-WebSocket-Client
