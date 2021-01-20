@@ -44,6 +44,7 @@ jar.dependsOn("repairTethysConf")
 
 dependencies {
   implementation(project(":tethys-core"))
+  implementation(project(":tethys-storage"))
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
   implementation("io.projectreactor:reactor-tools")
