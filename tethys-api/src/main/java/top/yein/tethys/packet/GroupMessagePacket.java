@@ -18,6 +18,10 @@ package top.yein.tethys.packet;
 import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import top.yein.tethys.constants.MessageKind;
 
@@ -27,7 +31,10 @@ import top.yein.tethys.constants.MessageKind;
  * @author KK (kzou227@qq.com)
  */
 @JsonTypeName(NS_GROUP_MESSAGE)
-@Value
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GroupMessagePacket implements Packet {
 
   /** 消息 ID 全局唯一. */
