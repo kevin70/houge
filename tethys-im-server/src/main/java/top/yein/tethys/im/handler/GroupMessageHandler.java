@@ -1,12 +1,16 @@
 package top.yein.tethys.im.handler;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.entity.GroupMessage;
+import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupMessagePacket;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupManager;
+import top.yein.tethys.storage.GroupMessageStorage;
 
 /**
  * 群组消息处理器.
@@ -16,19 +20,32 @@ import top.yein.tethys.session.SessionGroupManager;
 public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
 
   private final SessionGroupManager sessionGroupManager;
+  private final GroupMessageStorage groupMessageStorage;
 
   /**
    * 构造函数.
    *
-   * @param sessionGroupManager 会话群组管理对象
+   * @param sessionGroupManager 群组会话管理对象
+   * @param groupMessageStorage 群组消息存储器
    */
   @Inject
-  public GroupMessageHandler(SessionGroupManager sessionGroupManager) {
+  public GroupMessageHandler(
+      SessionGroupManager sessionGroupManager, GroupMessageStorage groupMessageStorage) {
     this.sessionGroupManager = sessionGroupManager;
+    this.groupMessageStorage = groupMessageStorage;
   }
 
   @Override
   public Mono<Void> handle(@Nonnull Session session, @Nonnull GroupMessagePacket packet) {
+    // 校验消息
+    MessagePacketChecker.check(packet);
+    var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
+
+    // 存储的消息实体
+    GroupMessage entity = new GroupMessage();
+    entity.setId(packet.getMsgId());
+    entity.setSenderId(from);
+
     var groupId = packet.getTo();
     return sessionGroupManager
         .findByGroupId(groupId)
