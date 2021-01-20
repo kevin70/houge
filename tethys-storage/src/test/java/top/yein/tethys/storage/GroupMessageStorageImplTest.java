@@ -109,12 +109,11 @@ class GroupMessageStorageImplTest extends AbstractTestStorage {
     var p = super.transactional(storage.store(entity).thenMany(storage.findByGid(query)));
     StepVerifier.create(p)
         .recordWith(ArrayList::new)
-        .expectRecordedMatches(
+        .consumeRecordedWith(
             messages -> {
               System.out.println("find group messages ------------------");
               System.out.println(messages);
               System.out.println("find group messages ------------------");
-              return messages.size() >= 1;
             })
         .verifyComplete();
   }
