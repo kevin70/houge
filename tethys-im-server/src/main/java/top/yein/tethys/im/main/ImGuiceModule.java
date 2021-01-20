@@ -34,9 +34,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.crypto.SecretKey;
+import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.auth.TokenService;
-import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.auth.JwsAuthService;
 import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.resource.TokenResource;
@@ -56,6 +56,10 @@ import top.yein.tethys.im.server.WebsocketHandler;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.session.SessionManager;
+import top.yein.tethys.storage.GroupMessageStorage;
+import top.yein.tethys.storage.GroupMessageStorageImpl;
+import top.yein.tethys.storage.PrivateMessageStorage;
+import top.yein.tethys.storage.PrivateMessageStorageImpl;
 
 /**
  * Guice IM 模块.
@@ -82,6 +86,10 @@ public final class ImGuiceModule extends AbstractModule {
     // 消息处理总线
     bind(PacketDispatcher.class).in(SINGLETON);
     binderPacketHandler();
+
+    // 消息存储器
+    bind(PrivateMessageStorage.class).to(PrivateMessageStorageImpl.class);
+    bind(GroupMessageStorage.class).to(GroupMessageStorageImpl.class);
   }
 
   @Provides
