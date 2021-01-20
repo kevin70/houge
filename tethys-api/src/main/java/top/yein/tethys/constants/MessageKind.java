@@ -35,8 +35,9 @@ public enum MessageKind {
    *
    * @param code 代码
    * @return 枚举
+   * @throws IllegalArgumentException 非法的消息码
    */
-  public static MessageKind forCode(int code) {
+  public static MessageKind forCode(int code) throws IllegalArgumentException {
     for (MessageKind v : values()) {
       if (v.code == code) {
         return v;
