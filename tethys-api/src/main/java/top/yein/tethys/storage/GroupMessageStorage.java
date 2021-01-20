@@ -3,6 +3,7 @@ package top.yein.tethys.storage;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.GroupMessage;
+import top.yein.tethys.query.GroupMessageQuery;
 
 /**
  * 群组消息存储.
@@ -26,4 +27,12 @@ public interface GroupMessageStorage {
    * @return 群组信息
    */
   Flux<GroupMessage> findById(String id);
+
+  /**
+   * 查询指定时间之后的群组消息.
+   *
+   * @param query 查询对象
+   * @return 群组消息
+   */
+  Flux<GroupMessage> findByGid(GroupMessageQuery query);
 }

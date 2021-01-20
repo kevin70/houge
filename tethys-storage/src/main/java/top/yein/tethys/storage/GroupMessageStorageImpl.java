@@ -6,6 +6,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.GroupMessage;
+import top.yein.tethys.query.GroupMessageQuery;
 
 /**
  * 群聊消息存储.
@@ -17,7 +18,11 @@ public class GroupMessageStorageImpl implements GroupMessageStorage {
   private static final String STORE_SQL =
       "INSERT INTO t_group_message(id,gid,sender_id,kind,content,url,custom_args)"
           + " VALUES($1,$2,$3,$4,$5,$6,$7)";
-  private static final String FIND_BY_ID_SQL = "select * from t_group_message where id=$1";
+  private static final String FIND_BY_ID_SQL = "SELECT * FROM t_group_message WHERE id=$1";
+  private static final String FIND_BY_GID_SQL =
+      "SELECT * FROM t_group_message"
+          + " WHERE gid=$1 and create_time >= $2"
+          + " LIMIT $3 OFFSET $4";
 
   @Override
   public Mono<Void> store(GroupMessage entity) {
@@ -43,6 +48,21 @@ public class GroupMessageStorageImpl implements GroupMessageStorage {
     return R2dbcUtils.getConnection()
         .flatMapMany(
             connection -> connection.createStatement(FIND_BY_ID_SQL).bind("$1", id).execute())
+        .flatMap(this::mapEntity);
+  }
+
+  @Override
+  public Flux<GroupMessage> findByGid(GroupMessageQuery query) {
+    return R2dbcUtils.getConnection()
+        .flatMapMany(
+            connection ->
+                connection
+                    .createStatement(FIND_BY_GID_SQL)
+                    .bind("$1", query.getGid())
+                    .bind("$2", query.getCreateTime())
+                    .bind("$3", query.getLimit())
+                    .bind("$4", query.getOffset())
+                    .execute())
         .flatMap(this::mapEntity);
   }
 

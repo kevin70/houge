@@ -2,12 +2,15 @@ package top.yein.tethys.storage;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 import top.yein.tethys.constants.MessageKind;
 import top.yein.tethys.entity.GroupMessage;
+import top.yein.tethys.query.GroupMessageQuery;
 
 /**
  * {@link GroupMessageStorageImpl} 单元测试.
@@ -82,6 +85,37 @@ class GroupMessageStorageImplTest extends AbstractTestStorage {
                       s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
                       s.assertThat(dbRow.getUpdateTime()).as("update_time").isNotNull();
                     }))
+        .verifyComplete();
+  }
+
+  @Test
+  void findByGid() {
+    var storage = new GroupMessageStorageImpl();
+
+    var entity = new GroupMessage();
+    entity.setId(TestUtils.newMessageId());
+    entity.setGid(0L);
+    entity.setSenderId(UUID.randomUUID().toString());
+    entity.setKind(MessageKind.TEXT.getCode());
+    entity.setContent("unit test");
+    entity.setUrl("https://via.placeholder.com/150");
+    entity.setCustomArgs("{}");
+
+    var query = new GroupMessageQuery();
+    query.setGid(entity.getGid());
+    query.setCreateTime(LocalDateTime.now().minusSeconds(5));
+    query.setLimit(10);
+
+    var p = super.transactional(storage.store(entity).thenMany(storage.findByGid(query)));
+    StepVerifier.create(p)
+        .recordWith(ArrayList::new)
+        .expectRecordedMatches(
+            messages -> {
+              System.out.println("find group messages ------------------");
+              System.out.println(messages);
+              System.out.println("find group messages ------------------");
+              return messages.size() >= 1;
+            })
         .verifyComplete();
   }
 }
