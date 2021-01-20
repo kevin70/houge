@@ -1,9 +1,10 @@
 package top.yein.tethys.storage;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -107,15 +108,11 @@ class GroupMessageStorageImplTest extends AbstractTestStorage {
     query.setLimit(10);
 
     var p = super.transactional(storage.store(entity).thenMany(storage.findByGid(query)));
-    StepVerifier.create(p)
-        .recordWith(ArrayList::new)
-        .consumeNextWith(unused -> {})
-        .consumeRecordedWith(
-            messages -> {
-              System.out.println("find group messages ------------------");
-              System.out.println(messages);
-              System.out.println("find group messages ------------------");
-            })
-        .verifyComplete();
+    var messages = p.collectList().block(Duration.ofSeconds(5));
+    assertThat(messages.size()).isGreaterThanOrEqualTo(1);
+
+    System.out.println("find group messages ------------------");
+    System.out.println(messages);
+    System.out.println("find group messages ------------------");
   }
 }
