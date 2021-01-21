@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +32,8 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 import top.yein.tethys.core.auth.NoneAuthContext;
 import top.yein.tethys.packet.ErrorPacket;
 
@@ -47,7 +50,8 @@ class DefaultSessionTest {
   private volatile Connection webSocketClient;
 
   @BeforeEach
-  void before() {
+  void before() throws InterruptedException {
+    final var boundQueue = new ArrayBlockingQueue<Tuple2<WebsocketInbound, WebsocketOutbound>>(1);
     disposableServer =
         HttpServer.create()
             .port(0)
@@ -56,8 +60,7 @@ class DefaultSessionTest {
                   routes.ws(
                       "/im",
                       (inbound, outbound) -> {
-                        this.inbound = inbound;
-                        this.outbound = outbound;
+                        boundQueue.offer(Tuples.of(inbound, outbound));
                         return outbound.neverComplete();
                       });
                 })
@@ -71,6 +74,11 @@ class DefaultSessionTest {
             .uri("/im")
             .connect()
             .block();
+
+    // 获取 inbound/output
+    var tuple = boundQueue.take();
+    this.inbound = tuple.getT1();
+    this.outbound = tuple.getT2();
   }
 
   @AfterEach
