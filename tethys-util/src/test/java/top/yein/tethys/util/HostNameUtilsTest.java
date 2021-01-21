@@ -1,6 +1,7 @@
 package top.yein.tethys.util;
 
-import java.net.SocketException;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,12 @@ import org.junit.jupiter.api.Test;
 class HostNameUtilsTest {
 
   @Test
-  void getLocalHostLANAddress() throws UnknownHostException, SocketException {
-    // FIXME
+  void getLocalHostAddress() throws UnknownHostException {
+    assertThat(HostNameUtils.getLocalHostAddress()).isNotNull();
+  }
+
+  @Test
+  void getLocalHostLANAddress() throws UnknownHostException {
+    assertThat(HostNameUtils.getLocalHostLANAddress()).isNotNull();
   }
 }
