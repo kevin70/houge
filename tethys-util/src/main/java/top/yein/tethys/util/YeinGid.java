@@ -44,7 +44,7 @@ public class YeinGid {
   /** 序列掩码. */
   private static final int SEQ_MASK = -1 ^ (-1 << 18);
   /** 标识掩码. */
-  private static final int FID_MASK = -1 ^ (-1 << 17);
+  public static final int FID_MASK = -1 ^ (-1 << 17);
 
   /** 当前版本号. */
   private static final int CURRENT_VERSION = 1;
