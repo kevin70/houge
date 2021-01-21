@@ -29,11 +29,4 @@ public interface ApplicationIdentifier {
    * @return 应用版本
    */
   String version();
-
-  /**
-   * 返回当前应用进程 ID.
-   *
-   * @return 进程 ID
-   */
-  int pid();
 }
