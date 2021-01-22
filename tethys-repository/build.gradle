@@ -1,10 +1,12 @@
 dependencies {
   implementation(project(":tethys-api"))
-  implementation("aopalliance:aopalliance")
   implementation("io.r2dbc:r2dbc-postgresql")
+  implementation("org.springframework:spring-r2dbc")
+  implementation("org.springframework:spring-context")
 
   testImplementation(project(":tethys-util"))
   testImplementation("com.typesafe:config")
   testImplementation("org.apache.logging.log4j:log4j-core")
   testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
+  testImplementation("org.springframework:spring-test")
 }

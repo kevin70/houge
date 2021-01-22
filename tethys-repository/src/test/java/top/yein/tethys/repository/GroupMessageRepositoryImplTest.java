@@ -20,9 +20,13 @@ import top.yein.tethys.query.GroupMessageQuery;
  */
 class GroupMessageRepositoryImplTest extends AbstractTestRepository {
 
+  private GroupMessageRepository newGroupMessageRepository() {
+    return new GroupMessageRepositoryImpl(dc);
+  }
+
   @Test
   void store() {
-    var storage = new GroupMessageRepositoryImpl();
+    var repo = newGroupMessageRepository();
 
     var entity = new GroupMessage();
     entity.setId(TestUtils.newMessageId());
@@ -33,12 +37,11 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setUrl("https://via.placeholder.com/150");
     entity.setCustomArgs("{}");
 
-    var p = super.transactional(storage.store(entity));
-    StepVerifier.create(p).verifyComplete();
+    var fo = findOne("select * from t_group_message where id=:id", Map.of("id", entity.getId()));
+    var tuple = super.transactional(repo.store(entity).zipWith(fo)).block();
 
     // 校验数据库存储数据
-    var dbRow =
-        super.findOne("select * from t_group_message where id=$1", Map.of("$1", entity.getId()));
+    var dbRow = tuple.getT2();
     assertSoftly(
         s -> {
           s.assertThat(dbRow.get("id")).as("id").isEqualTo(entity.getId());
@@ -56,7 +59,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void findById() {
-    var storage = new GroupMessageRepositoryImpl();
+    var repo = newGroupMessageRepository();
 
     var entity = new GroupMessage();
     entity.setId(TestUtils.newMessageId());
@@ -67,7 +70,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setUrl("https://via.placeholder.com/150");
     entity.setCustomArgs("{}");
 
-    var p = super.transactional(storage.store(entity).thenMany(storage.findById(entity.getId())));
+    var p = super.transactional(repo.store(entity).thenMany(repo.findById(entity.getId())));
     StepVerifier.create(p)
         .assertNext(
             dbRow ->
@@ -91,7 +94,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void findByGid() {
-    var storage = new GroupMessageRepositoryImpl();
+    var repo = newGroupMessageRepository();
 
     var entity = new GroupMessage();
     entity.setId(TestUtils.newMessageId());
@@ -107,7 +110,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     query.setCreateTime(LocalDateTime.now().minusSeconds(5));
     query.setLimit(10);
 
-    var p = super.transactional(storage.store(entity).thenMany(storage.findByGid(query)));
+    var p = super.transactional(repo.store(entity).thenMany(repo.findByGid(query)));
     var messages = p.collectList().block(Duration.ofSeconds(5));
     assertThat(messages.size()).isGreaterThanOrEqualTo(1);
 

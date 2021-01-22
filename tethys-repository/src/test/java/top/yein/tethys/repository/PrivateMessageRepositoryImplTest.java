@@ -17,7 +17,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void store() {
-    var storage = new PrivateMessageRepositoryImpl();
+    var storage = new PrivateMessageRepositoryImpl(dc);
 
     var entity = new PrivateMessage();
     entity.setId(TestUtils.newMessageId());
@@ -28,12 +28,18 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setUrl("https://via.placeholder.com/150");
     entity.setCustomArgs("{}");
 
-    var p = super.transactional(storage.store(entity));
-    StepVerifier.create(p).verifyComplete();
+    var tuple =
+        super.transactional(
+                storage
+                    .store(entity)
+                    .zipWith(
+                        findOne(
+                            "select * from t_private_message where id=:id",
+                            Map.of("id", entity.getId()))))
+            .block();
 
     // 校验数据库存储数据
-    var dbRow =
-        super.findOne("select * from t_private_message where id=$1", Map.of("$1", entity.getId()));
+    var dbRow = tuple.getT2();
     assertSoftly(
         s -> {
           s.assertThat(dbRow.get("id")).as("id").isEqualTo(entity.getId());
@@ -55,7 +61,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void readMessage() {
-    var storage = new PrivateMessageRepositoryImpl();
+    var storage = new PrivateMessageRepositoryImpl(dc);
 
     var entity = new PrivateMessage();
     entity.setId(TestUtils.newMessageId());
@@ -66,12 +72,14 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setUrl("https://via.placeholder.com/150");
     entity.setCustomArgs("{}");
 
-    var p = super.transactional(storage.store(entity).then(storage.readMessage(entity.getId())));
-    StepVerifier.create(p).verifyComplete();
+    var fo = findOne("select * from t_private_message where id=:id", Map.of("id", entity.getId()));
+    var tuple =
+        super.transactional(
+                storage.store(entity).then(storage.readMessage(entity.getId()).zipWith(fo)))
+            .block();
 
     // 校验数据库存储数据
-    var dbRow =
-        super.findOne("select * from t_private_message where id=$1", Map.of("$1", entity.getId()));
+    var dbRow = tuple.getT2();
     assertSoftly(
         s -> {
           s.assertThat(dbRow.get("id")).as("id").isEqualTo(entity.getId());
@@ -82,7 +90,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void findById() {
-    var storage = new PrivateMessageRepositoryImpl();
+    var storage = new PrivateMessageRepositoryImpl(dc);
 
     var entity = new PrivateMessage();
     entity.setId(TestUtils.newMessageId());

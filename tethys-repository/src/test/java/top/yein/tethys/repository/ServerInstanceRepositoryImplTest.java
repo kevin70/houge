@@ -1,6 +1,5 @@
 package top.yein.tethys.repository;
 
-import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
@@ -16,7 +15,7 @@ class ServerInstanceRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void insert() throws UnknownHostException {
-    var repo = new ServerInstanceRepositoryImpl();
+    var repo = new ServerInstanceRepositoryImpl(dc);
 
     var inetAddress = HostNameUtils.getLocalHostLANAddress();
     var entity = new ServerInstance();
@@ -33,17 +32,8 @@ class ServerInstanceRepositoryImplTest extends AbstractTestRepository {
     entity.setWorkDir(System.getProperty("user.dir"));
     entity.setPid(ProcessHandle.current().pid());
 
-    var p =
-        transactional(repo.insert(entity))
-            .onErrorMap(
-                R2dbcDataIntegrityViolationException.class,
-                e -> {
-                  System.out.println("-------------------errorCode");
-                  System.out.println(e.getSqlState());
-                  return e;
-                });
-
-    StepVerifier.create(p).verifyComplete();
+    var p = transactional(repo.insert(entity));
+    StepVerifier.create(p).expectNextCount(1).verifyComplete();
   }
 
   @Test

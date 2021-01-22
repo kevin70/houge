@@ -17,7 +17,7 @@ public interface PrivateMessageRepository {
    * @param entity 数据实体
    * @return RS
    */
-  Mono<Void> store(PrivateMessage entity);
+  Mono<Integer> store(PrivateMessage entity);
 
   /**
    * 将消息设置为已读.
@@ -25,7 +25,7 @@ public interface PrivateMessageRepository {
    * @param id 消息 ID
    * @return RS
    */
-  Mono<Void> readMessage(String id);
+  Mono<Integer> readMessage(String id);
 
   /**
    * 根据消息 ID 查询私聊信息.
