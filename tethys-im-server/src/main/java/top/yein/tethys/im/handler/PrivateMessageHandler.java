@@ -12,7 +12,7 @@ import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.PrivateMessagePacket;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionManager;
-import top.yein.tethys.storage.PrivateMessageStorage;
+import top.yein.tethys.repository.PrivateMessageRepository;
 
 /**
  * 私聊处理器.
@@ -23,19 +23,19 @@ import top.yein.tethys.storage.PrivateMessageStorage;
 public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket> {
 
   private final SessionManager sessionManager;
-  private final PrivateMessageStorage privateMessageStorage;
+  private final PrivateMessageRepository privateMessageRepository;
 
   /**
    * 构造函数.
    *
    * @param sessionManager 会话管理器
-   * @param privateMessageStorage 私聊消息存储器
+   * @param privateMessageRepository 私聊消息存储器
    */
   @Inject
   public PrivateMessageHandler(
-      SessionManager sessionManager, PrivateMessageStorage privateMessageStorage) {
+      SessionManager sessionManager, PrivateMessageRepository privateMessageRepository) {
     this.sessionManager = sessionManager;
-    this.privateMessageStorage = privateMessageStorage;
+    this.privateMessageRepository = privateMessageRepository;
   }
 
   @Override
@@ -58,7 +58,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
         sessionManager
             .findByUid(packet.getTo())
             .delayUntil(toSession -> toSession.sendPacket(packet));
-    var p2 = privateMessageStorage.store(entity);
+    var p2 = privateMessageRepository.store(entity);
     return Flux.zip(p1, p2).then();
   }
 }

@@ -1,4 +1,4 @@
-package top.yein.tethys.storage;
+package top.yein.tethys.repository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -10,7 +10,7 @@ import top.yein.tethys.query.GroupMessageQuery;
  *
  * @author KK (kzou227@qq.com)
  */
-public interface GroupMessageStorage {
+public interface GroupMessageRepository {
 
   /**
    * 存储群组消息.

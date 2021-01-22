@@ -1,4 +1,4 @@
-package top.yein.tethys.storage;
+package top.yein.tethys.repository;
 
 import io.r2dbc.spi.Result;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import top.yein.tethys.entity.PrivateMessage;
  *
  * @author KK (kzou227@qq.com)
  */
-public class PrivateMessageStorageImpl implements PrivateMessageStorage {
+public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
 
   private static final String STORE_SQL =
       "INSERT INTO t_private_message(id,sender_id,receiver_id,kind,content,url,custom_args)"

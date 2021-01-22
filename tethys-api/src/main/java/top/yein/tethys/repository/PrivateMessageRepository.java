@@ -1,4 +1,4 @@
-package top.yein.tethys.storage;
+package top.yein.tethys.repository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -9,7 +9,7 @@ import top.yein.tethys.entity.PrivateMessage;
  *
  * @author KK (kzou227@qq.com)
  */
-public interface PrivateMessageStorage {
+public interface PrivateMessageRepository {
 
   /**
    * 存储私聊消息.

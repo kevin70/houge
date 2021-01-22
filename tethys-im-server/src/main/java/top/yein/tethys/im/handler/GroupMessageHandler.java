@@ -10,7 +10,7 @@ import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupMessagePacket;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupManager;
-import top.yein.tethys.storage.GroupMessageStorage;
+import top.yein.tethys.repository.GroupMessageRepository;
 
 /**
  * 群组消息处理器.
@@ -20,19 +20,19 @@ import top.yein.tethys.storage.GroupMessageStorage;
 public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
 
   private final SessionGroupManager sessionGroupManager;
-  private final GroupMessageStorage groupMessageStorage;
+  private final GroupMessageRepository groupMessageRepository;
 
   /**
    * 构造函数.
    *
    * @param sessionGroupManager 群组会话管理对象
-   * @param groupMessageStorage 群组消息存储器
+   * @param groupMessageRepository 群组消息存储器
    */
   @Inject
   public GroupMessageHandler(
-      SessionGroupManager sessionGroupManager, GroupMessageStorage groupMessageStorage) {
+      SessionGroupManager sessionGroupManager, GroupMessageRepository groupMessageRepository) {
     this.sessionGroupManager = sessionGroupManager;
-    this.groupMessageStorage = groupMessageStorage;
+    this.groupMessageRepository = groupMessageRepository;
   }
 
   @Override

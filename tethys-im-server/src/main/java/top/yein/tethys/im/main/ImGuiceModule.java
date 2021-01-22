@@ -56,10 +56,10 @@ import top.yein.tethys.im.server.WebsocketHandler;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.session.SessionManager;
-import top.yein.tethys.storage.GroupMessageStorage;
-import top.yein.tethys.storage.GroupMessageStorageImpl;
-import top.yein.tethys.storage.PrivateMessageStorage;
-import top.yein.tethys.storage.PrivateMessageStorageImpl;
+import top.yein.tethys.repository.GroupMessageRepository;
+import top.yein.tethys.repository.GroupMessageRepositoryImpl;
+import top.yein.tethys.repository.PrivateMessageRepository;
+import top.yein.tethys.repository.PrivateMessageRepositoryImpl;
 
 /**
  * Guice IM 模块.
@@ -88,8 +88,8 @@ public final class ImGuiceModule extends AbstractModule {
     binderPacketHandler();
 
     // 消息存储器
-    bind(PrivateMessageStorage.class).to(PrivateMessageStorageImpl.class);
-    bind(GroupMessageStorage.class).to(GroupMessageStorageImpl.class);
+    bind(PrivateMessageRepository.class).to(PrivateMessageRepositoryImpl.class);
+    bind(GroupMessageRepository.class).to(GroupMessageRepositoryImpl.class);
   }
 
   @Provides

@@ -1,4 +1,4 @@
-package top.yein.tethys.storage;
+package top.yein.tethys.repository;
 
 import io.r2dbc.spi.Result;
 import java.time.LocalDateTime;
@@ -13,7 +13,7 @@ import top.yein.tethys.query.GroupMessageQuery;
  *
  * @author KK (kzou227@qq.com)
  */
-public class GroupMessageStorageImpl implements GroupMessageStorage {
+public class GroupMessageRepositoryImpl implements GroupMessageRepository {
 
   private static final String STORE_SQL =
       "INSERT INTO t_group_message(id,gid,sender_id,kind,content,url,custom_args)"

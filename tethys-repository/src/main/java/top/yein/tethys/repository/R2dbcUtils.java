@@ -1,4 +1,4 @@
-package top.yein.tethys.storage;
+package top.yein.tethys.repository;
 
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;

@@ -1,4 +1,4 @@
-package top.yein.tethys.storage;
+package top.yein.tethys.repository;
 
 import com.typesafe.config.ConfigFactory;
 import io.r2dbc.spi.ConnectionFactories;
@@ -19,12 +19,12 @@ import top.yein.tethys.ConfigKeys;
  *
  * @author KK (kzou227@qq.com)
  */
-public abstract class AbstractTestStorage {
+public abstract class AbstractTestRepository {
 
   /** 数据库链接. */
   protected final ConnectionFactory connectionFactory;
 
-  protected AbstractTestStorage() {
+  protected AbstractTestRepository() {
     var config = ConfigFactory.parseResources("tethys.conf");
     var r2dbcUrl = config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL);
 

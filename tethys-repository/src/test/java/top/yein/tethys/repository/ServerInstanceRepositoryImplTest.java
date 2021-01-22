@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 import top.yein.tethys.entity.ServerInstance;
-import top.yein.tethys.storage.AbstractTestStorage;
 import top.yein.tethys.util.HostNameUtils;
 
 /**
@@ -13,7 +12,7 @@ import top.yein.tethys.util.HostNameUtils;
  *
  * @author KK (kzou227@qq.com)
  */
-class ServerInstanceRepositoryImplTest extends AbstractTestStorage {
+class ServerInstanceRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void insert() throws UnknownHostException {
