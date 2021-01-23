@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <!--
+    按照顺序加载配置文件，后加载的配置将覆盖前加载的配置内容。
+
+    - classpath*:tethys.properties
+    - classpath*:tethys-test.properties
+    - tethys.properties
+    - /etc/tethys/tethys.properties
+    - tethys-dev.properties
+
+    tethys-dev.properties 开发配置，便于开发。
+  -->
+  <context:property-placeholder
+      location="classpath*:tethys.properties,classpath*:tethys-test.properties,tethys.properties,/etc/tethys/tethys.properties,tethys-dev.properties"
+      ignore-resource-not-found="true"
+      file-encoding="UTF-8"
+      local-override="true"/>
+
+  <bean id="connectionFactory" class="io.r2dbc.spi.ConnectionFactories" factory-method="get">
+    <constructor-arg name="url" value="${message-storage.r2dbc.url}"/>
+  </bean>
+
+  <bean id="transactionManager" class="org.springframework.r2dbc.connection.R2dbcTransactionManager">
+    <constructor-arg name="connectionFactory" ref="connectionFactory"/>
+  </bean>
+
+  <bean id="databaseClient" class="org.springframework.r2dbc.core.DatabaseClient" factory-method="create">
+    <constructor-arg name="factory" ref="connectionFactory"/>
+  </bean>
+
+</beans>
