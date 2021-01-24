@@ -1,7 +1,6 @@
 package top.yein.tethys.im.handler;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.im.server.PacketHandler;
@@ -20,7 +19,6 @@ public class PingHandler implements PacketHandler<PingPacket> {
 
   private final SessionManager sessionManager;
 
-  @Inject
   public PingHandler(SessionManager sessionManager) {
     this.sessionManager = sessionManager;
   }

@@ -16,7 +16,6 @@
 package top.yein.tethys.im.server;
 
 import java.util.function.Consumer;
-import javax.inject.Inject;
 import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.resource.TokenResource;
 
@@ -29,7 +28,6 @@ public class RestRegister implements Consumer<HttpServerRoutes> {
 
   private final TokenResource tokenResource;
 
-  @Inject
   public RestRegister(TokenResource tokenResource) {
     this.tokenResource = tokenResource;
   }

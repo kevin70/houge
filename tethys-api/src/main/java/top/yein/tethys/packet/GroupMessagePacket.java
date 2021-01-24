@@ -20,6 +20,7 @@ import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Value;
@@ -44,6 +45,7 @@ public class GroupMessagePacket implements Packet {
   /** 接收消息者. */
   String to;
   /** 消息类型 {@link top.yein.tethys.constants.MessageKind}. */
+  @Default
   int kind = MessageKind.TEXT.getCode();
   /** 消息内容. */
   String content;

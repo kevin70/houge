@@ -1,7 +1,6 @@
 package top.yein.tethys.im.handler;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupUnsubscribePacket;
@@ -17,7 +16,6 @@ public class GroupUnsubscribeHandler implements PacketHandler<GroupUnsubscribePa
 
   private final SessionGroupManager sessionGroupManager;
 
-  @Inject
   public GroupUnsubscribeHandler(SessionGroupManager sessionGroupManager) {
     this.sessionGroupManager = sessionGroupManager;
   }

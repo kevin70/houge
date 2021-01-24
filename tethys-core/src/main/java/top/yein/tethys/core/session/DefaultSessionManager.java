@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -57,7 +56,6 @@ public class DefaultSessionManager implements SessionManager {
   // 会话 ID 生成器
   private final SessionIdGenerator sessionIdGenerator;
 
-  @Inject
   public DefaultSessionManager(SessionIdGenerator sessionIdGenerator) {
     this.sessionIdGenerator = sessionIdGenerator;
   }

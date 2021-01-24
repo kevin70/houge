@@ -1,6 +1,5 @@
 package top.yein.tethys.core.resource;
 
-import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -24,7 +23,6 @@ public class TokenResource extends AbstractRestSupport {
    *
    * @param tokenService 令牌服务
    */
-  @Inject
   public TokenResource(TokenService tokenService) {
     this.tokenService = tokenService;
   }

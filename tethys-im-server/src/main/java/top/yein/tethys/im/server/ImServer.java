@@ -17,7 +17,6 @@ package top.yein.tethys.im.server;
 
 import com.google.common.net.HostAndPort;
 import java.time.Duration;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
@@ -47,7 +46,6 @@ public final class ImServer {
    * @param websocketHandler
    * @param restRegister
    */
-  @Inject
   public ImServer(String addr, WebsocketHandler websocketHandler, RestRegister restRegister) {
     this.addr = addr;
     this.websocketHandler = websocketHandler;

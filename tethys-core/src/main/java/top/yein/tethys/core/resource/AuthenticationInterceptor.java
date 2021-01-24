@@ -1,7 +1,6 @@
 package top.yein.tethys.core.resource;
 
 import java.util.function.BiFunction;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -29,7 +28,6 @@ public class AuthenticationInterceptor extends AbstractRestSupport {
    *
    * @param authService 认证服务
    */
-  @Inject
   public AuthenticationInterceptor(AuthService authService) {
     this.authService = authService;
   }

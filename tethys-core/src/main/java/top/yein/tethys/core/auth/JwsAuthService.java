@@ -22,7 +22,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
 import java.util.Map;
 import javax.crypto.SecretKey;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
@@ -40,7 +39,6 @@ public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
 
-  @Inject
   public JwsAuthService(Map<String, SecretKey> jwtSecrets) {
     this.jwtParser =
         Jwts.parserBuilder()

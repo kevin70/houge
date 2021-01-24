@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import javax.crypto.SecretKey;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.auth.TokenService;
@@ -21,7 +20,6 @@ public class TokenServiceImpl implements TokenService {
 
   private final Map<String, SecretKey> jwtSecrets;
 
-  @Inject
   public TokenServiceImpl(Map<String, SecretKey> jwtSecrets) {
     this.jwtSecrets = jwtSecrets;
   }
