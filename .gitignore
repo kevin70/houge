@@ -10,5 +10,5 @@ build
 out
 
 # Tethys 开发配置
-tethys-dev.conf
+tethys-dev.properties
 flyway.conf
