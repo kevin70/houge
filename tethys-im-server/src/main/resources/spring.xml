@@ -33,4 +33,23 @@
     <constructor-arg name="factory" ref="connectionFactory"/>
   </bean>
 
+  <!-- repository -->
+  <bean id="messageRepository" class="top.yein.tethys.repository.PrivateMessageRepositoryImpl">
+    <constructor-arg name="dc" ref="databaseClient"/>
+  </bean>
+  <bean id="groupMessageRepository" class="top.yein.tethys.repository.GroupMessageRepositoryImpl">
+    <constructor-arg name="dc" ref="databaseClient"/>
+  </bean>
+  <bean name="serverInstanceRepository" class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
+    <constructor-arg name="dc" ref="databaseClient"/>
+  </bean>
+
+  <!-- session -->
+  <bean id="sessionManager" class="top.yein.tethys.core.session.DefaultSessionManager">
+    <constructor-arg name="sessionIdGenerator" ref=""/>
+  </bean>
+  <bean id="sessionGroupManager" class="top.yein.tethys.core.session.DefaultSessionGroupManager">
+  </bean>
+  <bean class="LocalSessionIdGenerator"></bean>
+
 </beans>
