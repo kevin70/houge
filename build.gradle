@@ -46,6 +46,7 @@ allprojects {
       exceptionFormat "full"
       events "passed", "skipped", "failed"
     }
+    workingDir rootProject.rootDir
   }
 
   jacocoTestReport {
