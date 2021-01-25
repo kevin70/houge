@@ -10,14 +10,14 @@
 
     - classpath*:tethys.properties
     - classpath*:tethys-test.properties
-    - tethys.properties
-    - /etc/tethys/tethys.properties
-    - tethys-dev.properties
+    - file:tethys.properties
+    - file:/etc/tethys/tethys.properties
+    - file:tethys-dev.properties
 
-    tethys-dev.properties 开发配置，便于开发。
+    file:tethys-dev.properties 开发配置，便于开发。
   -->
   <context:property-placeholder
-      location="classpath*:tethys.properties,classpath*:tethys-test.properties,tethys.properties,/etc/tethys/tethys.properties,tethys-dev.properties"
+      location="classpath*:tethys.properties,classpath*:tethys-test.properties,file:tethys.properties,file:/etc/tethys/tethys.properties,file:tethys-dev.properties"
       ignore-resource-not-found="true"
       file-encoding="UTF-8"
       local-override="true"/>
