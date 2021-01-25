@@ -9,14 +9,14 @@
     按照顺序加载配置文件，后加载的配置将覆盖前加载的配置内容。
 
     - classpath*:tethys.properties
-    - tethys.properties
-    - /etc/tethys/tethys.properties
-    - tethys-dev.properties
+    - file:tethys.properties
+    - file:/etc/tethys/tethys.properties
+    - file:tethys-dev.properties
 
-    tethys-dev.properties 开发配置，便于开发。
+    file:tethys-dev.properties 开发配置，便于开发。
   -->
   <context:property-placeholder
-      location="classpath*:tethys.properties,classpath*:tethys.properties,/etc/tethys/tethys.properties,tethys-dev.properties"
+      location="classpath*:tethys.properties,classpath*:tethys.properties,file:/etc/tethys/tethys.properties,file:tethys-dev.properties"
       ignore-resource-not-found="true"
       file-encoding="UTF-8"
       local-override="true"/>
@@ -34,22 +34,61 @@
   </bean>
 
   <!-- repository -->
+  <bean name="serverInstanceRepository" class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
+    <constructor-arg name="dc" ref="databaseClient"/>
+  </bean>
   <bean id="messageRepository" class="top.yein.tethys.repository.PrivateMessageRepositoryImpl">
     <constructor-arg name="dc" ref="databaseClient"/>
   </bean>
   <bean id="groupMessageRepository" class="top.yein.tethys.repository.GroupMessageRepositoryImpl">
     <constructor-arg name="dc" ref="databaseClient"/>
   </bean>
-  <bean name="serverInstanceRepository" class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
-    <constructor-arg name="dc" ref="databaseClient"/>
-  </bean>
 
   <!-- session -->
+  <bean id="sessionIdGenerator" class="top.yein.tethys.core.session.LocalSessionIdGenerator"/>
   <bean id="sessionManager" class="top.yein.tethys.core.session.DefaultSessionManager">
-    <constructor-arg name="sessionIdGenerator" ref=""/>
+    <constructor-arg name="sessionIdGenerator" ref="sessionIdGenerator"/>
   </bean>
-  <bean id="sessionGroupManager" class="top.yein.tethys.core.session.DefaultSessionGroupManager">
+  <bean id="sessionGroupManager" class="top.yein.tethys.core.session.DefaultSessionGroupManager"/>
+
+  <!-- packet -->
+  <bean id="packetDispatcher" class="top.yein.tethys.im.server.PacketDispatcher">
+    <constructor-arg name="handlers">
+      <map>
+        <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_PING}">
+          <bean class="top.yein.tethys.im.handler.PingHandler"/>
+        </entry>
+        <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_PRIVATE_MESSAGE}">
+          <bean class="top.yein.tethys.im.handler.PrivateMessageHandler"/>
+        </entry>
+        <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_MESSAGE}">
+          <bean class="top.yein.tethys.im.handler.GroupMessageHandler"/>
+        </entry>
+        <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_SUBSCRIBE}">
+          <bean class="top.yein.tethys.im.handler.GroupSubscribeHandler"/>
+        </entry>
+        <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_UNSUBSCRIBE}">
+          <bean class="top.yein.tethys.im.handler.GroupUnsubscribeHandler"/>
+        </entry>
+      </map>
+    </constructor-arg>
   </bean>
-  <bean class="LocalSessionIdGenerator"></bean>
+
+  <!-- -->
+  <bean id="tokenService" class="top.yein.tethys.core.auth.TokenServiceImpl">
+    <constructor-arg name="jwtSecrets">
+      <map></map>
+    </constructor-arg>
+  </bean>
+
+  <!-- rest -->
+  <bean id="tokenResource" class="top.yein.tethys.core.resource.TokenResource">
+    <constructor-arg name="tokenService" ref="tokenService"/>
+  </bean>
+  <bean id="restRegister" class="top.yein.tethys.im.server.RestRegister">
+    <constructor-arg name="tokenResource">
+      <bean class="top.yein.tethys.core.resource.TokenResource"/>
+    </constructor-arg>
+  </bean>
 
 </beans>
