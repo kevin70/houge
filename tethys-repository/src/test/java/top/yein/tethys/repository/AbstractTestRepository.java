@@ -48,7 +48,7 @@ public abstract class AbstractTestRepository {
               status.setRollbackOnly();
               return p;
             })
-        .next();
+        .last();
   }
 
   /**
