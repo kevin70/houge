@@ -108,6 +108,9 @@ allprojects {
     testImplementation("org.powermock:powermock-reflect")
     testImplementation("org.testcontainers:testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("com.github.javafaker:javafaker") {
+      exclude module: "snakeyaml"
+    }
 
     jmh("org.openjdk.jmh:jmh-core")
     jmh("org.openjdk.jmh:jmh-generator-annprocess")
