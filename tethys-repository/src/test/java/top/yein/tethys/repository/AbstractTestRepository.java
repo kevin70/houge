@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
  * @author KK (kzou227@qq.com)
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "classpath*:spring.xml")
+@ContextConfiguration(locations = "classpath*:spring-test.xml")
 @TestExecutionListeners({
   DependencyInjectionTestExecutionListener.class,
   DirtiesContextTestExecutionListener.class,
