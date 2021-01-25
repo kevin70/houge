@@ -14,6 +14,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.r2dbc.core.DatabaseClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
+import reactor.util.context.ContextView;
 import top.yein.tethys.domain.CachedJwtSecret;
 import top.yein.tethys.entity.JwtSecret;
 
@@ -31,28 +33,6 @@ public class JwtSecretRepositoryImpl implements JwtSecretRepository {
 
   private final DatabaseClient dc;
   private final AsyncCache<String, CachedJwtSecret> jwtSecretCache;
-  // 缓存映射函数
-  private final BiFunction<String, Executor, CompletableFuture<CachedJwtSecret>> cacheMappingFunc =
-      (s, executor) -> {
-        log.debug("加载 jwt secret [kid={}]", s);
-        return findById(s)
-            .map(
-                e -> {
-                  var builder = CachedJwtSecret.builder();
-                  var algorithm = SignatureAlgorithm.forName(e.getAlgorithm());
-                  var secretKey = Keys.hmacShaKeyFor(e.getSecretKey().array());
-
-                  return builder
-                      .id(e.getId())
-                      .algorithm(algorithm)
-                      .secretKey(secretKey)
-                      .deleted(e.getDeleted())
-                      .createTime(e.getCreateTime())
-                      .updateTime(e.getUpdateTime())
-                      .build();
-                })
-            .toFuture();
-      };
 
   /**
    * 构造函数.
@@ -65,7 +45,7 @@ public class JwtSecretRepositoryImpl implements JwtSecretRepository {
         Caffeine.newBuilder()
             .recordStats()
             .refreshAfterWrite(REFRESH_CACHE_DURATION)
-            .buildAsync(cacheMappingFunc::apply);
+            .buildAsync(cacheMappingFunc(Context.empty())::apply);
   }
 
   @Override
@@ -85,7 +65,8 @@ public class JwtSecretRepositoryImpl implements JwtSecretRepository {
 
   @Override
   public Mono<CachedJwtSecret> loadById(String id) {
-    return Mono.defer(() -> Mono.fromFuture(jwtSecretCache.get(id, cacheMappingFunc)));
+    return Mono.deferContextual(
+        context -> Mono.fromFuture(jwtSecretCache.get(id, cacheMappingFunc(context))));
   }
 
   @Override
@@ -103,5 +84,30 @@ public class JwtSecretRepositoryImpl implements JwtSecretRepository {
     e.setCreateTime(row.get("create_time", LocalDateTime.class));
     e.setUpdateTime(row.get("update_time", LocalDateTime.class));
     return e;
+  }
+
+  private BiFunction<String, Executor, CompletableFuture<CachedJwtSecret>> cacheMappingFunc(
+      ContextView context) {
+    return (s, executor) -> {
+      log.debug("加载 jwt secret [kid={}]", s);
+      return findById(s)
+          .map(
+              e -> {
+                var builder = CachedJwtSecret.builder();
+                var algorithm = SignatureAlgorithm.forName(e.getAlgorithm());
+                var secretKey = Keys.hmacShaKeyFor(e.getSecretKey().array());
+
+                return builder
+                    .id(e.getId())
+                    .algorithm(algorithm)
+                    .secretKey(secretKey)
+                    .deleted(e.getDeleted())
+                    .createTime(e.getCreateTime())
+                    .updateTime(e.getUpdateTime())
+                    .build();
+              })
+          .contextWrite(context)
+          .toFuture();
+    };
   }
 }

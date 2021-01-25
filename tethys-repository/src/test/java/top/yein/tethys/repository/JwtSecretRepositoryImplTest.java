@@ -106,11 +106,11 @@ class JwtSecretRepositoryImplTest extends AbstractTestRepository {
       loadByIdPublishers.add(repo.loadById(entity.getId()));
     }
 
-    var p = repo.insert(entity).then(Flux.concat(loadByIdPublishers).collectList());
-    // FIXME 清理数据
+    var p = transactional(repo.insert(entity).then(Flux.concat(loadByIdPublishers).collectList()));
     StepVerifier.create(p)
         .consumeNextWith(
             cachedJwtSecrets -> {
+              System.out.println(cachedJwtSecrets);
               assertThat(cachedJwtSecrets)
                   .allMatch(
                       cachedJwtSecret ->
