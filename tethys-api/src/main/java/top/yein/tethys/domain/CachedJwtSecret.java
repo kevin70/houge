@@ -4,12 +4,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.LocalDateTime;
 import javax.crypto.SecretKey;
 import lombok.Builder;
+import lombok.Value;
 
 /**
  * 缓存的 {@link top.yein.tethys.entity.JwtSecret}.
  *
  * @author KK (kzou227@qq.com)
  */
+@Value
 @Builder
 public class CachedJwtSecret {
 

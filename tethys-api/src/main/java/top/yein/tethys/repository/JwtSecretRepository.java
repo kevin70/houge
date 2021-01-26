@@ -25,12 +25,34 @@ public interface JwtSecretRepository {
   Mono<Integer> insert(JwtSecret entity);
 
   /**
+   * 软删除 JWT 密钥.
+   *
+   * @param id JWT kid
+   * @return 受影响行记录数
+   */
+  Mono<Integer> delete(String id);
+
+  /**
    * 查询数据并返回实体.
    *
    * @param id JWT kid
    * @return 实体
    */
   Mono<JwtSecret> findById(String id);
+
+  /**
+   * 查询所有的 JWT 密钥配置.
+   *
+   * @return 实体
+   */
+  Flux<JwtSecret> findAll();
+
+  /**
+   * 查询所有 JWT 密钥配置并刷新缓存.
+   *
+   * @return 缓存实体
+   */
+  Flux<CachedJwtSecret> refreshAll();
 
   /**
    * 优先从缓存中查询数据并返回缓存实体.
