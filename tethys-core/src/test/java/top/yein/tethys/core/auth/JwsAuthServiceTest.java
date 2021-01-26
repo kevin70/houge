@@ -15,6 +15,8 @@
  */
 package top.yein.tethys.core.auth;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static top.yein.tethys.core.BizCodes.C3300;
 import static top.yein.tethys.core.BizCodes.C3301;
 import static top.yein.tethys.core.BizCodes.C3302;
@@ -31,11 +33,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Map;
 import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.domain.CachedJwtSecret;
+import top.yein.tethys.repository.JwtSecretRepository;
 
 /**
  * {@link JwsAuthService} 单元测试.
@@ -59,7 +63,15 @@ class JwsAuthServiceTest {
   }
 
   private JwsAuthService newJwsAuthService(boolean anonymousEnabled) {
-    return new JwsAuthService(Map.of(kid, testSecret));
+    var jwtSecretRepository = mock(JwtSecretRepository.class);
+    var cachedJwtSecret =
+        CachedJwtSecret.builder()
+            .id(kid)
+            .algorithm(SignatureAlgorithm.HS512)
+            .secretKey(testSecret)
+            .build();
+    when(jwtSecretRepository.loadById(kid)).thenReturn(Mono.just(cachedJwtSecret));
+    return new JwsAuthService(jwtSecretRepository);
   }
 
   @Test

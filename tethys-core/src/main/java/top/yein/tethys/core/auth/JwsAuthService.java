@@ -20,14 +20,13 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
-import java.util.Map;
-import javax.crypto.SecretKey;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.core.BizCodes;
+import top.yein.tethys.repository.JwtSecretRepository;
 
 /**
  * <a href="https://tools.ietf.org/html/rfc7515">JWS</a> 用户认证服务实现.
@@ -39,10 +38,10 @@ public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
 
-  public JwsAuthService(Map<String, SecretKey> jwtSecrets) {
+  public JwsAuthService(JwtSecretRepository jwtSecretRepository) {
     this.jwtParser =
         Jwts.parserBuilder()
-            .setSigningKeyResolver(new DefaultSigningKeyResolver(jwtSecrets))
+            .setSigningKeyResolver(new DefaultSigningKeyResolver(jwtSecretRepository))
             .build();
   }
 
