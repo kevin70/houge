@@ -1,46 +1,59 @@
 apply plugin: "application"
+apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.im.main.ImMain"
 
-task repairTethysConf {
-  doLast {
-    sourceSets.each { SourceSet sourceSet ->
-      def tethysConfFile = new File(buildDir, "resources/main/tethys.conf")
-      if (!tethysConfFile.exists()) {
-        return
-      }
-      def lines = tethysConfFile.readLines()
-      def skip = false
-      def newLines = []
-      lines.each { String line ->
-        if (line.startsWith("# {== DELETE BUILDING ========================")) {
-          skip = true
-          return
-        }
-        if (line.startsWith("# == DELETE BUILDING ========================}")) {
-          skip = false
-          return
-        }
-        if (skip) {
-          return
-        }
-        newLines.add(line)
-      }
+File getDockerInputDir() {
+  def f = file("${buildDir}/docker/")
+  if (!f.exists()) {
+    f.mkdirs()
+  }
+  return f
+}
 
-      def writer = tethysConfFile.newWriter()
-      for (i in 0..<newLines.size()) {
-        if (i == newLines.size() - 1) {
-          writer.write(newLines[i])
-        } else {
-          writer.writeLine(newLines[i])
-        }
-      }
-      writer.flush()
-      writer.close()
+task copyAppJar {
+  group "docker"
+  doLast {
+    copy {
+      from("${buildDir}/libs")
+      into(getDockerInputDir())
+      include("*-all.jar")
+      rename(".*-all.jar", "app.jar")
     }
   }
 }
-jar.dependsOn("repairTethysConf")
+
+task createRunJavaSh {
+  group "docker"
+  doLast {
+    io.fabric8.runsh.RunShLoader.copyRunScript(getDockerInputDir())
+  }
+}
+
+task createDockerfile(type: com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+  group "docker"
+  from("openjdk:11.0-jre-slim")
+  label(["maintainer": "Kevin Zou \"kzou227@qq.com\""])
+  workingDir("/app")
+  copyFile("app.jar", "/app/app.jar")
+  exposePort(11010)
+  // `/opt/run-java-options` 挂载 JVM 配置参数文件可动态修改容器的 JVM 参数
+  volume("/opt")
+  // `/etc/tethys/tethys.properties` 挂载 tethys 项目配置参数
+  volume("/etc/tethys")
+  defaultCommand("sh", "run-java.sh")
+}
+
+docker {
+  url = "tcp://192.168.1.106:2375"
+}
+
+task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+  group "docker"
+  dependsOn("shadowJar", "copyAppJar", "createRunJavaSh", "createDockerfile")
+  inputDir = getDockerInputDir()
+  images.addAll("tethys/im:latest", "tethys/im:${version}".toString())
+}
 
 dependencies {
   implementation(project(":tethys-core"))
