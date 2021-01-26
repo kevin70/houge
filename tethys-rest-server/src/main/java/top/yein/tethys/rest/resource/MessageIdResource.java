@@ -1,7 +1,6 @@
 package top.yein.tethys.rest.resource;
 
 import java.util.Optional;
-import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -19,7 +18,6 @@ public class MessageIdResource extends AbstractRestSupport {
 
   private final MessageIdGenerator messageIdGenerator;
 
-  @Inject
   public MessageIdResource(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
   }

@@ -16,7 +16,6 @@
 package top.yein.tethys.rest.server;
 
 import java.util.function.Consumer;
-import javax.inject.Inject;
 import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
 import top.yein.tethys.core.resource.TokenResource;
@@ -33,7 +32,6 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
   private final TokenResource tokenResource;
   private final MessageIdResource messageIdResource;
 
-  @Inject
   public CustomRouters(
       AuthenticationInterceptor authenticationInterceptor,
       TokenResource tokenResource,

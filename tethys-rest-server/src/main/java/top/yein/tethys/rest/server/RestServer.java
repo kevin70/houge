@@ -2,7 +2,6 @@ package top.yein.tethys.rest.server;
 
 import com.google.common.net.HostAndPort;
 import java.time.Duration;
-import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
@@ -20,7 +19,6 @@ public class RestServer {
   private final CustomRouters customRouters;
   private DisposableServer disposableServer;
 
-  @Inject
   public RestServer(String addr, CustomRouters customRouters) {
     this.addr = addr;
     this.customRouters = customRouters;
