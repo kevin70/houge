@@ -1,11 +1,8 @@
 package top.yein.tethys.im.main;
 
-import com.google.inject.Guice;
-import com.google.inject.Stage;
-import com.typesafe.config.ConfigFactory;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.log4j.Log4j2;
-import top.yein.tethys.core.Env;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import top.yein.tethys.im.server.ImServer;
 
 /**
@@ -27,23 +24,11 @@ public class ImMain implements Runnable {
 
   @Override
   public void run() {
-    final var env = Env.current();
-    final var stage = env == Env.PROD ? Stage.PRODUCTION : Stage.DEVELOPMENT;
-    log.info("正在启动 IM Server, 当前环境参数 [env={}, stage={}]", env, stage);
-
-    //
-    var config = ConfigFactory.parseResources("tethys.conf").resolve();
-    log.info(
-        "------------------------------ CONFIG ------------------------------\n{}\n",
-        config.root().render());
-
-    // 初始化 Guice
-    log.info("初始化 Guice");
-    final var injector = Guice.createInjector(stage, new ImGuiceModule(config));
-    log.info("初始化 Guice 成功");
+    var applicationContext = new ClassPathXmlApplicationContext("classpath*:spring.xml");
+    applicationContext.start();
 
     // 启动 IM 服务
-    final var imServer = injector.getInstance(ImServer.class);
+    final var imServer = applicationContext.getBean(ImServer.class);
     imServer.start();
 
     log.info("IM 服务启动成功");
@@ -54,6 +39,7 @@ public class ImMain implements Runnable {
           log.info("IM 服务停止中...");
           // 停止操作
           imServer.stop();
+          applicationContext.stop();
           log.info("IM 服务停止成功");
         });
   }

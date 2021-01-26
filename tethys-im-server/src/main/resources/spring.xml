@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/beans/spring-context.xsd">
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
   <!--
     按照顺序加载配置文件，后加载的配置将覆盖前加载的配置内容。
@@ -16,28 +17,35 @@
     file:tethys-dev.properties 开发配置，便于开发。
   -->
   <context:property-placeholder
-      location="classpath*:tethys.properties,classpath*:tethys.properties,file:/etc/tethys/tethys.properties,file:tethys-dev.properties"
-      ignore-resource-not-found="true"
-      file-encoding="UTF-8"
-      local-override="true"/>
+    location="classpath*:tethys.properties,classpath*:tethys.properties,file:/etc/tethys/tethys.properties,file:tethys-dev.properties"
+    ignore-resource-not-found="true"
+    file-encoding="UTF-8"
+    local-override="true"/>
 
   <bean id="connectionFactory" class="io.r2dbc.spi.ConnectionFactories" factory-method="get">
     <constructor-arg name="url" value="${message-storage.r2dbc.url}"/>
   </bean>
 
-  <bean id="transactionManager" class="org.springframework.r2dbc.connection.R2dbcTransactionManager">
+  <bean id="transactionManager"
+    class="org.springframework.r2dbc.connection.R2dbcTransactionManager">
     <constructor-arg name="connectionFactory" ref="connectionFactory"/>
   </bean>
 
-  <bean id="databaseClient" class="org.springframework.r2dbc.core.DatabaseClient" factory-method="create">
+  <bean id="databaseClient" class="org.springframework.r2dbc.core.DatabaseClient"
+    factory-method="create">
     <constructor-arg name="factory" ref="connectionFactory"/>
   </bean>
 
   <!-- repository -->
-  <bean name="serverInstanceRepository" class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
+  <bean id="jwtSecretRepository" class="top.yein.tethys.repository.JwtSecretRepositoryImpl">
     <constructor-arg name="dc" ref="databaseClient"/>
   </bean>
-  <bean id="messageRepository" class="top.yein.tethys.repository.PrivateMessageRepositoryImpl">
+  <bean name="serverInstanceRepository"
+    class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
+    <constructor-arg name="dc" ref="databaseClient"/>
+  </bean>
+  <bean id="privateMessageRepository"
+    class="top.yein.tethys.repository.PrivateMessageRepositoryImpl">
     <constructor-arg name="dc" ref="databaseClient"/>
   </bean>
   <bean id="groupMessageRepository" class="top.yein.tethys.repository.GroupMessageRepositoryImpl">
@@ -56,38 +64,62 @@
     <constructor-arg name="handlers">
       <map>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_PING}">
-          <bean class="top.yein.tethys.im.handler.PingHandler"/>
+          <bean class="top.yein.tethys.im.handler.PingHandler">
+            <constructor-arg name="sessionManager" ref="sessionManager"/>
+          </bean>
         </entry>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_PRIVATE_MESSAGE}">
-          <bean class="top.yein.tethys.im.handler.PrivateMessageHandler"/>
+          <bean class="top.yein.tethys.im.handler.PrivateMessageHandler">
+            <constructor-arg name="sessionManager" ref="sessionManager"/>
+            <constructor-arg name="privateMessageRepository" ref="privateMessageRepository"/>
+          </bean>
         </entry>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_MESSAGE}">
-          <bean class="top.yein.tethys.im.handler.GroupMessageHandler"/>
+          <bean class="top.yein.tethys.im.handler.GroupMessageHandler">
+            <constructor-arg name="sessionGroupManager" ref="sessionGroupManager"/>
+            <constructor-arg name="groupMessageRepository" ref="groupMessageRepository"/>
+          </bean>
         </entry>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_SUBSCRIBE}">
-          <bean class="top.yein.tethys.im.handler.GroupSubscribeHandler"/>
+          <bean class="top.yein.tethys.im.handler.GroupSubscribeHandler">
+            <constructor-arg name="sessionGroupManager" ref="sessionGroupManager"/>
+          </bean>
         </entry>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_UNSUBSCRIBE}">
-          <bean class="top.yein.tethys.im.handler.GroupUnsubscribeHandler"/>
+          <bean class="top.yein.tethys.im.handler.GroupUnsubscribeHandler">
+            <constructor-arg name="sessionGroupManager" ref="sessionGroupManager"/>
+          </bean>
         </entry>
       </map>
     </constructor-arg>
   </bean>
 
-  <!-- -->
+  <!-- service -->
   <bean id="tokenService" class="top.yein.tethys.core.auth.TokenServiceImpl">
-    <constructor-arg name="jwtSecrets">
-      <map></map>
-    </constructor-arg>
+    <constructor-arg name="jwtSecretRepository" ref="jwtSecretRepository"/>
+  </bean>
+  <bean id="authService" class="top.yein.tethys.core.auth.JwsAuthService">
+    <constructor-arg name="jwtSecretRepository" ref="jwtSecretRepository"/>
   </bean>
 
   <!-- rest -->
   <bean id="tokenResource" class="top.yein.tethys.core.resource.TokenResource">
     <constructor-arg name="tokenService" ref="tokenService"/>
   </bean>
-  <bean id="restRegister" class="top.yein.tethys.im.server.RestRegister">
-    <constructor-arg name="tokenResource">
-      <bean class="top.yein.tethys.core.resource.TokenResource"/>
+
+  <bean id="imServer" class="top.yein.tethys.im.server.ImServer">
+    <constructor-arg name="addr" value="${im-server.addr}"/>
+    <constructor-arg name="websocketHandler">
+      <bean class="top.yein.tethys.im.server.WebsocketHandler">
+        <constructor-arg name="authService" ref="authService"/>
+        <constructor-arg name="sessionManager" ref="sessionManager"/>
+        <constructor-arg name="packetDispatcher" ref="packetDispatcher"/>
+      </bean>
+    </constructor-arg>
+    <constructor-arg name="restRegister">
+      <bean id="restRegister" class="top.yein.tethys.im.server.RestRegister">
+        <constructor-arg name="tokenResource" ref="tokenResource"/>
+      </bean>
     </constructor-arg>
   </bean>
 
