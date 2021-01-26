@@ -20,8 +20,8 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import java.security.Key;
-import java.util.Map;
-import javax.crypto.SecretKey;
+import reactor.core.scheduler.Schedulers;
+import top.yein.tethys.repository.JwtSecretRepository;
 
 /**
  * JWT Key 查找实现.
@@ -30,10 +30,10 @@ import javax.crypto.SecretKey;
  */
 class DefaultSigningKeyResolver implements SigningKeyResolver {
 
-  private final Map<String, SecretKey> jwtSecrets;
+  private final JwtSecretRepository jwtSecretRepository;
 
-  DefaultSigningKeyResolver(Map<String, SecretKey> jwtSecrets) {
-    this.jwtSecrets = jwtSecrets;
+  DefaultSigningKeyResolver(JwtSecretRepository jwtSecretRepository) {
+    this.jwtSecretRepository = jwtSecretRepository;
   }
 
   @Override
@@ -67,6 +67,8 @@ class DefaultSigningKeyResolver implements SigningKeyResolver {
   }
 
   private Key lookupVerificationKey(String kid) {
-    return jwtSecrets.get(kid);
+    var cachedJwtSecret =
+        jwtSecretRepository.loadById(kid).subscribeOn(Schedulers.boundedElastic()).block();
+    return cachedJwtSecret.getSecretKey();
   }
 }
