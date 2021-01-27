@@ -6,13 +6,13 @@
 * UUID
 
 Snowflake 算法使用一个 64bits 的整型数据，非常广泛的应用在各种业务系统里。根据当前的时间来生成 ID。**对于存储空间占用非常少**，但是目前主流的实现像百度的 [uid-generator](https://github.com/baidu/uid-generator)
-与美团的 [Leaf](https://github.com/Meituan-Dianping/Leaf) 都需要中央控制端来生成 ID。使用与 UUID 相比更加的复杂，同时提高业务架构及维护的复杂程度。
+与美团的 [Leaf](https://github.com/Meituan-Dianping/Leaf) 都需要中央服务端来生成 ID。使用与 UUID 相比更加的复杂，同时提高业务架构及维护的复杂程度。
 
 UUID(Universally unique identifier) 是一种软件建构的标准，亦为自由软件基金会组织在分散式计算环境领域的一部份。UUID 的目的，是让分散式系统中的所有元素，都能有唯一的辨识信息，
 而不需要通过中央控制端来做辨识信息的指定。**使用最为简单**，但 UUID 长度为 36 字符占用存储空间较大，是 Snowflake 的 4 倍。
 
 **YeinGid 设计的目标：**
-* 没有中央控制端依赖（部署简单）
+* 没有中央服务端（部署简单）
 * 固定长度（存储时占用空间更少）
 * 趋势递增
 * 比 UUID 占用更少的存储空间
