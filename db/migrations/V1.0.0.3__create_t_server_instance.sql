@@ -3,6 +3,7 @@ create table t_server_instance
     id              integer           not null
         constraint t_server_instance_pk
             primary key,
+    app_name        varchar(128)      not null,
     host_name       varchar(64)       not null,
     host_address    varchar(64)       not null,
     os_name         varchar(64),
@@ -22,6 +23,8 @@ create table t_server_instance
 comment on table t_server_instance is '服务实例信息';
 
 comment on column t_server_instance.id is '主键';
+
+comment on column t_server_instance.app_name is '应用名称';
 
 comment on column t_server_instance.host_name is '主机名称';
 
