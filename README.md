@@ -4,9 +4,10 @@
 # Tethys
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
-致力于打造是一个**免费安全可靠**的企业级 IM 解决方案。
+首款响应式（Reactive）开发的 IM 服务端，快速搭建高性能、高可用的 IM 服务。
 
-## 目标
+## 特点
+- 免费的
 - 高性能
 - 可靠的
 
