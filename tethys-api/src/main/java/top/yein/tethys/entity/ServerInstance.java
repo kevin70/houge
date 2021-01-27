@@ -19,6 +19,8 @@ public class ServerInstance {
 
   /** 主键 ID. */
   private int id;
+  /** 应用名称. */
+  private String appName;
   /** 主机名. */
   private String hostName;
   /** 主机 IP 地址. */
