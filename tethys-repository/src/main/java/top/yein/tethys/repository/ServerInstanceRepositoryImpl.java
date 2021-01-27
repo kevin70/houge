@@ -17,18 +17,18 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
 
   private static final String INSERT_SQL =
       "insert into t_server_instance("
-          + "id,host_name,host_address"
+          + "id,app_name,host_name,host_address"
           + ",os_name,os_version,os_arch,os_user"
           + ",java_vm_name,java_vm_version,java_vm_vendor"
           + ",work_dir,pid,create_time,check_time)"
-          + "values(:id,:hostName,:hostAddress"
+          + "values(:id,:appName,:hostName,:hostAddress"
           + ",:osName,:osVersion,:osArch,:osUser"
           + ",:javaVmName,:javaVmVersion,:javaVmVendor"
           + ",:workDir,:pid,now(),now())";
   private static final String UPDATE_SQL =
       "update t_server_instance "
           + "set"
-          + " host_name=:hostName,host_address=:hostAddress"
+          + " app_name=:appName,host_name=:hostName,host_address=:hostAddress"
           + ",os_name=:osName,os_version=:osVersion,os_arch=:osArch,os_user=:osUser"
           + ",java_vm_name=:javaVmName,java_vm_version=:javaVmVersion,java_vm_vendor=:javaVmVendor"
           + ",work_dir=:workDir,pid=:pid"
@@ -40,18 +40,20 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
 
   private final DatabaseClient dc;
 
-  /** @param dc */
+  /**
+   * 构造函数.
+   *
+   * @param dc 数据库访问客户端
+   */
   public ServerInstanceRepositoryImpl(DatabaseClient dc) {
     this.dc = dc;
   }
 
-  /**
-   * @param entity
-   * @return
-   */
+  @Override
   public Mono<Integer> insert(ServerInstance entity) {
     return dc.sql(INSERT_SQL)
         .bind("id", entity.getId())
+        .bind("appName", entity.getAppName())
         .bind("hostName", entity.getHostName())
         .bind("hostAddress", entity.getHostAddress())
         .bind("osName", entity.getOsName())
@@ -67,12 +69,10 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
         .rowsUpdated();
   }
 
-  /**
-   * @param entity
-   * @return
-   */
+  @Override
   public Mono<Integer> update(ServerInstance entity) {
     return dc.sql(UPDATE_SQL)
+        .bind("appName", entity.getAppName())
         .bind("hostName", entity.getHostName())
         .bind("hostAddress", entity.getHostAddress())
         .bind("osName", entity.getOsName())
@@ -90,18 +90,12 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
         .rowsUpdated();
   }
 
-  /**
-   * @param id
-   * @return
-   */
+  @Override
   public Mono<Integer> updateCheckTime(int id) {
     return dc.sql(UPDATE_CHECK_TIME_SQL).bind("id", id).fetch().rowsUpdated();
   }
 
-  /**
-   * @param id 实例 ID
-   * @return
-   */
+  @Override
   public Mono<ServerInstance> findById(int id) {
     return dc.sql(FIND_BY_ID_SQL).bind("id", id).map(this::mapEntity).one();
   }
@@ -109,6 +103,7 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
   private ServerInstance mapEntity(Row row) {
     var e = new ServerInstance();
     e.setId(row.get("id", Integer.class));
+    e.setAppName(row.get("app_name", String.class));
     e.setHostName(row.get("host_name", String.class));
     e.setOsName(row.get("os_name", String.class));
     e.setOsVersion(row.get("os_version", String.class));
