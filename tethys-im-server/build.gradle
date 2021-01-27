@@ -3,7 +3,7 @@ apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.im.main.ImMain"
 
-File getDockerInputDir() {
+File dockerInputDir() {
   def f = file("${buildDir}/docker/")
   if (!f.exists()) {
     f.mkdirs()
@@ -16,7 +16,7 @@ task copyAppJar {
   doLast {
     copy {
       from("${buildDir}/libs")
-      into(getDockerInputDir())
+      into(dockerInputDir())
       include("*-all.jar")
       rename(".*-all.jar", "app.jar")
     }
@@ -26,7 +26,7 @@ task copyAppJar {
 task createRunJavaSh {
   group "docker"
   doLast {
-    io.fabric8.runsh.RunShLoader.copyRunScript(getDockerInputDir())
+    io.fabric8.runsh.RunShLoader.copyRunScript(dockerInputDir())
   }
 }
 
@@ -44,15 +44,11 @@ task createDockerfile(type: com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
   defaultCommand("sh", "run-java.sh")
 }
 
-docker {
-  url = "tcp://192.168.1.106:2375"
-}
-
 task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
   group "docker"
   dependsOn("shadowJar", "copyAppJar", "createRunJavaSh", "createDockerfile")
-  inputDir = getDockerInputDir()
-  images.addAll("tethys/im:latest", "tethys/im:${version}".toString())
+  inputDir = dockerInputDir()
+  images.addAll("yein/tethys-im:latest", "yein/tethys-im:${version}".toString())
 }
 
 dependencies {
