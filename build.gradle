@@ -114,6 +114,7 @@ allprojects {
     testImplementation("com.github.javafaker:javafaker") {
       exclude module: "snakeyaml"
     }
+    testImplementation("org.yaml:snakeyaml:1.27")
 
     jmh("org.openjdk.jmh:jmh-core")
     jmh("org.openjdk.jmh:jmh-generator-annprocess")
