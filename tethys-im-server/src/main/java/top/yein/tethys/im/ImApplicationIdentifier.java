@@ -183,6 +183,7 @@ public class ImApplicationIdentifier implements ApplicationIdentifier {
                 log.error("健康检查失败 fid: {}, rowsUpdated: {}", rowsUpdated);
               }
             })
+        .onErrorContinue((ex, o) -> log.warn("健康检查异常", ex))
         .delaySubscription(CHECK_HEALTH_PERIOD)
         .repeat(() -> true)
         .subscribe();
