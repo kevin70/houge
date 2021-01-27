@@ -105,6 +105,7 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
     e.setId(row.get("id", Integer.class));
     e.setAppName(row.get("app_name", String.class));
     e.setHostName(row.get("host_name", String.class));
+    e.setHostAddress(row.get("host_address", String.class));
     e.setOsName(row.get("os_name", String.class));
     e.setOsVersion(row.get("os_version", String.class));
     e.setOsArch(row.get("os_arch", String.class));
