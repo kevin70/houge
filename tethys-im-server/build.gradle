@@ -48,7 +48,7 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
   group "docker"
   dependsOn("shadowJar", "copyAppJar", "createRunJavaSh", "createDockerfile")
   inputDir = dockerInputDir()
-  images.addAll("yein/tethys-im:latest", "yein/tethys-im:${version}".toString())
+  images.addAll("kevin70/tethys-im:latest", "kevin70/tethys-im:${version}".toString())
 }
 
 dependencies {

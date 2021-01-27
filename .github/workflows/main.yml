@@ -59,7 +59,7 @@ jobs:
       - name: Run docker push
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push yein/tethys-im:latest
+          docker push kevin70/tethys-im:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
