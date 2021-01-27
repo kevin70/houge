@@ -1,6 +1,55 @@
 apply plugin: "application"
+apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.rest.main.RestMain"
+
+File dockerInputDir() {
+  def f = file("${buildDir}/docker/")
+  if (!f.exists()) {
+    f.mkdirs()
+  }
+  return f
+}
+
+task copyAppJar {
+  group "docker"
+  doLast {
+    copy {
+      from("${buildDir}/libs")
+      into(dockerInputDir())
+      include("*-all.jar")
+      rename(".*-all.jar", "app.jar")
+    }
+  }
+}
+
+task createRunJavaSh {
+  group "docker"
+  doLast {
+    io.fabric8.runsh.RunShLoader.copyRunScript(dockerInputDir())
+  }
+}
+
+task createDockerfile(type: com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+  group "docker"
+  from("openjdk:11.0-jre-slim")
+  label(["maintainer": "Kevin Zou \"kzou227@qq.com\""])
+  workingDir("/app")
+  copyFile("app.jar", "/app/app.jar")
+  exposePort(11010)
+  // `/opt/run-java-options` 挂载 JVM 配置参数文件可动态修改容器的 JVM 参数
+  volume("/opt")
+  // `/etc/tethys/tethys.properties` 挂载 tethys 项目配置参数
+  volume("/etc/tethys")
+  defaultCommand("sh", "run-java.sh")
+}
+
+task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+  group "docker"
+  dependsOn("shadowJar", "copyAppJar", "createRunJavaSh", "createDockerfile")
+  inputDir = dockerInputDir()
+  images.addAll("kevin70/tethys-rest:latest", "kevin70/tethys-rest:${version}".toString())
+}
 
 dependencies {
   implementation(project(":tethys-core"))

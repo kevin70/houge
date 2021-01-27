@@ -54,13 +54,17 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           files: tethys-api/build/reports/jacoco/test/jacocoTestReport.xml,tethys-core/build/reports/jacoco/test/jacocoTestReport.xml,tethys-im-server/build/reports/jacoco/test/jacocoTestReport.xml,tethys-rest-server/build/reports/jacoco/test/jacocoTestReport.xml,tethys-storage/build/reports/jacoco/test/jacocoTestReport.xml,tethys-util/build/reports/jacoco/test/jacocoTestReport.xml
-        ###------------ 构造 IM docker 镜像
+        ###------------ 构造 Docker 镜像
       - run: ./gradlew :tethys-im-server:buildImage
-      - name: Run docker push
+      - run: ./gradlew :tethys-rest-server:buildImage
+      - name: Docker push
         run: |
+          PROJECT_VERSION=$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push kevin70/tethys-im:latest
-          docker push kevin70/tethys-im:$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
+          docker push kevin70/tethys-im:$PROJECT_VERSION
+          docker push kevin70/tethys-rest:latest
+          docker push kevin70/tethys-rest:$PROJECT_VERSION
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
