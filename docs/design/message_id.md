@@ -16,8 +16,10 @@ UUID(Universally unique identifier) 是一种软件建构的标准，亦为自�
 * 固定长度（存储时占用空间更少）
 * 趋势递增
 * 比 UUID 占用更少的存储空间
+* 良好的扩展性
 
 > YeinGid 长度为 70bits **固定**为 14bytes 的全局唯一字符串，无需中央控制端，相比 UUID 少占用 60% 的存储空间。
+> YeinGid 版本（version）的设计是为 YeinGid 良好的扩展性服务。
 
 ### 算法
 
