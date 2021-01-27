@@ -54,6 +54,15 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           files: tethys-api/build/reports/jacoco/test/jacocoTestReport.xml,tethys-core/build/reports/jacoco/test/jacocoTestReport.xml,tethys-im-server/build/reports/jacoco/test/jacocoTestReport.xml,tethys-rest-server/build/reports/jacoco/test/jacocoTestReport.xml,tethys-storage/build/reports/jacoco/test/jacocoTestReport.xml,tethys-util/build/reports/jacoco/test/jacocoTestReport.xml
+        ###------------ 构造 IM docker 镜像
+      - run: ./gradlew :tethys-im-server:shadowJar
+      - name: Run docker push
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push yein/tethys-im:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - uses: actions/upload-artifact@v2
         with:
           name: Package
