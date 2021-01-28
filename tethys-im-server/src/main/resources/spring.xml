@@ -107,6 +107,10 @@
     <constructor-arg name="tokenService" ref="tokenService"/>
   </bean>
 
+  <bean id="applicationIdentifier" class="top.yein.tethys.im.ImApplicationIdentifier">
+    <constructor-arg name="serverInstanceRepository" ref="serverInstanceRepository"/>
+  </bean>
+
   <bean id="imServer" class="top.yein.tethys.im.server.ImServer">
     <constructor-arg name="addr" value="${im-server.addr}"/>
     <constructor-arg name="websocketHandler">

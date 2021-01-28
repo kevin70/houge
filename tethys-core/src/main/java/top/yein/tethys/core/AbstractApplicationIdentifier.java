@@ -5,8 +5,10 @@ import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
@@ -38,11 +40,11 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   private static final Duration CHECK_HEALTH_PERIOD = Duration.ofMinutes(5);
 
   private final ServerInstanceRepository serverInstanceRepository;
-  private int fid;
+  private final int fid;
 
   protected AbstractApplicationIdentifier(ServerInstanceRepository serverInstanceRepository) {
     this.serverInstanceRepository = serverInstanceRepository;
-    this.initFid();
+    this.fid = initFid();
     this.checkHealth();
   }
 
@@ -57,9 +59,9 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   }
 
   // 初始化 Fid
-  private void initFid() {
+  private int initFid() {
     var ran = new SecureRandom();
-    var fidQueue = new ArrayBlockingQueue<Integer>(1);
+    var fidFuture = new CompletableFuture<Integer>();
     var isRun = new AtomicBoolean(true);
 
     Supplier<Mono<Integer>> makeFidFunc =
@@ -82,7 +84,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                         .doOnNext(
                             rowsUpdated -> {
                               if (rowsUpdated == 1) {
-                                fidQueue.add(fid);
+                                fidFuture.complete(tempFid);
                                 isRun.set(false);
                               }
                             });
@@ -108,7 +110,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
               .doOnNext(
                   rowsUpdated -> {
                     if (rowsUpdated == 1) {
-                      fidQueue.add(tempFid);
+                      fidFuture.complete(tempFid);
                       isRun.set(false);
                     }
                   })
@@ -127,9 +129,13 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
         .subscribe();
 
     try {
-      this.fid = fidQueue.poll(MAKE_FID_TIMEOUT, TimeUnit.SECONDS);
+      return fidFuture.get(MAKE_FID_TIMEOUT, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       throw new IllegalStateException("获取服务实例 ID 失败", e);
+    } catch (ExecutionException e) {
+      throw new IllegalStateException(e);
+    } catch (TimeoutException e) {
+      throw new IllegalStateException(e);
     }
   }
 
