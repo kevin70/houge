@@ -27,6 +27,11 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
 
   private final DatabaseClient dc;
 
+  /**
+   * 构造函数.
+   *
+   * @param dc 数据访问客户端
+   */
   public PrivateMessageRepositoryImpl(DatabaseClient dc) {
     this.dc = dc;
   }

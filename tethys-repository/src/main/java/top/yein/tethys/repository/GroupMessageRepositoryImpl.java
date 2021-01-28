@@ -28,7 +28,11 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
 
   private final DatabaseClient dc;
 
-  /** @param dc */
+  /**
+   * 构造函数.
+   *
+   * @param dc 数据访问客户端
+   */
   public GroupMessageRepositoryImpl(DatabaseClient dc) {
     this.dc = dc;
   }
