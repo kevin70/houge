@@ -3,6 +3,7 @@ package top.yein.tethys.rest.main;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.rest.server.RestServer;
 
 /**
@@ -28,10 +29,11 @@ public class RestMain implements Runnable {
     applicationContext.start();
 
     // 启动 REST 服务
+    final var applicationIdentifier = applicationContext.getBean(ApplicationIdentifier.class);
     final var restServer = applicationContext.getBean(RestServer.class);
     restServer.start();
 
-    log.info("REST 服务启动成功");
+    log.info("{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
 
     // 停止应用
     registerShutdownHook(

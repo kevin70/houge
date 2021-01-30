@@ -37,6 +37,9 @@
   </bean>
 
   <!-- repository -->
+  <bean id="serverInstanceRepository" class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
+    <constructor-arg name="dc" ref="databaseClient"/>
+  </bean>
   <bean id="jwtSecretRepository" class="top.yein.tethys.repository.JwtSecretRepositoryImpl">
     <constructor-arg name="dc" ref="databaseClient"/>
   </bean>
@@ -69,6 +72,9 @@
     <constructor-arg name="messageIdGenerator" ref="messageIdGenerator"/>
   </bean>
 
+  <bean id="applicationIdentifier" class="top.yein.tethys.rest.RestApplicationIdentifier">
+    <constructor-arg name="serverInstanceRepository" ref="serverInstanceRepository"/>
+  </bean>
   <bean id="restServer" class="top.yein.tethys.rest.server.RestServer">
     <constructor-arg name="addr" value="${rest-server.addr}"/>
     <constructor-arg name="customRouters">
