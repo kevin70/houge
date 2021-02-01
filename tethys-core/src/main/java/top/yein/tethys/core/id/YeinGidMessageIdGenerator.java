@@ -1,6 +1,7 @@
 package top.yein.tethys.core.id;
 
 import reactor.core.publisher.Flux;
+import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.util.YeinGid;
 
@@ -10,6 +11,17 @@ import top.yein.tethys.util.YeinGid;
  * @author KK (kzou227@qq.com)
  */
 public class YeinGidMessageIdGenerator implements MessageIdGenerator {
+
+  private final ApplicationIdentifier applicationIdentifier;
+
+  public YeinGidMessageIdGenerator(ApplicationIdentifier applicationIdentifier) {
+    this.applicationIdentifier = applicationIdentifier;
+  }
+
+  @Override
+  public String nextId() {
+    return new YeinGid(applicationIdentifier.fid()).toHexString();
+  }
 
   @Override
   public Flux<String> nextIds() {
@@ -22,7 +34,7 @@ public class YeinGidMessageIdGenerator implements MessageIdGenerator {
 
           var fid = 1;
           for (int i = 0; i < limit; i++) {
-            sink.next(new YeinGid(fid).toHexString());
+            sink.next(new YeinGid(applicationIdentifier.fid()).toHexString());
           }
           sink.complete();
         });
