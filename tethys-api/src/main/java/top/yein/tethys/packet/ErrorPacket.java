@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.packet;
 
+import lombok.Builder;
 import lombok.Value;
 
 /**
@@ -23,8 +24,11 @@ import lombok.Value;
  * @author KK (kzou227@qq.com)
  */
 @Value
+@Builder
 public class ErrorPacket implements Packet {
 
+  /** 错误码. */
+  int code;
   /** 错误信息描述. */
   String message;
   /** 错误信息详细信息. */
