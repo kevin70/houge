@@ -41,21 +41,21 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
     // 校验消息
     MessagePacketChecker.check(packet);
     var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
+    var to = packet.getTo();
+
+    var p1 = sessionManager.findByUid(to).delayUntil(toSession -> toSession.sendPacket(packet));
 
     // 存储的消息实体
-    var entity = new PrivateMessage();
-    entity.setId(packet.getMsgId());
-    entity.setSenderId(from);
-    entity.setReceiverId(packet.getTo());
-    entity.setKind(packet.getKind());
-    entity.setContent(packet.getContent());
-    entity.setUrl(packet.getUrl());
-    entity.setCustomArgs(packet.getCustomArgs());
-
-    var p1 =
-        sessionManager
-            .findByUid(packet.getTo())
-            .delayUntil(toSession -> toSession.sendPacket(packet));
+    var entity =
+        PrivateMessage.builder()
+            .id(packet.getMsgId())
+            .senderId(from)
+            .receiverId(to)
+            .kind(packet.getKind())
+            .content(packet.getContent())
+            .url(packet.getUrl())
+            .customArgs(packet.getCustomArgs())
+            .build();
     var p2 = privateMessageRepository.store(entity);
     return Flux.zip(p1, p2).then();
   }

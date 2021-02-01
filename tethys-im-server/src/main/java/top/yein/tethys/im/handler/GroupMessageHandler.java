@@ -2,6 +2,7 @@ package top.yein.tethys.im.handler;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.GroupMessage;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
@@ -38,17 +39,26 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
     // 校验消息
     MessagePacketChecker.check(packet);
     var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
+    var to = packet.getTo();
+
+    var p1 =
+        sessionGroupManager
+            .findByGroupId(to)
+            .filter(toSession -> toSession != session)
+            .flatMap(toSession -> toSession.sendPacket(packet));
 
     // 存储的消息实体
-    GroupMessage entity = new GroupMessage();
-    entity.setId(packet.getMsgId());
-    entity.setSenderId(from);
-
-    var groupId = packet.getTo();
-    return sessionGroupManager
-        .findByGroupId(groupId)
-        .filter(toSession -> toSession != session)
-        .flatMap(toSession -> toSession.sendPacket(packet))
-        .then();
+    var entity =
+        GroupMessage.builder()
+            .id(packet.getMsgId())
+            .senderId(from)
+            .groupId(to)
+            .kind(packet.getKind())
+            .content(packet.getContent())
+            .url(packet.getUrl())
+            .customArgs(packet.getCustomArgs())
+            .build();
+    var p2 = groupMessageRepository.store(entity);
+    return Flux.zip(p1, p2).then();
   }
 }

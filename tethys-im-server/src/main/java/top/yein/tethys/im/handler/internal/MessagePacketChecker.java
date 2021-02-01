@@ -40,8 +40,8 @@ public class MessagePacketChecker {
   }
 
   static void checkMsgId(String msgId) {
-    if (msgId == null || msgId.length() != 14) {
-      throw new BizCodeException(BizCodes.C3600, "[msgId]不能为空且必须是一个长度为14的字符串");
+    if (msgId == null || msgId.length() != MSG_ID_LENGTH) {
+      throw new BizCodeException(BizCodes.C3600, "[msg_id]不能为空且必须是一个长度为14的字符串");
     }
   }
 
