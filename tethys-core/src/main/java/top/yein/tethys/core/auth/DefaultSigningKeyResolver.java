@@ -20,7 +20,12 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SigningKeyResolver;
 import java.security.Key;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import reactor.core.scheduler.Schedulers;
+import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.repository.JwtSecretRepository;
 
 /**
@@ -67,8 +72,22 @@ class DefaultSigningKeyResolver implements SigningKeyResolver {
   }
 
   private Key lookupVerificationKey(String kid) {
-    var cachedJwtSecret =
-        jwtSecretRepository.loadById(kid).subscribeOn(Schedulers.boundedElastic()).block();
-    return cachedJwtSecret.getSecretKey();
+    var future =
+        jwtSecretRepository.loadById(kid).subscribeOn(Schedulers.boundedElastic()).toFuture();
+    try {
+      // 这里是阻塞逻辑，后续可能需要单独优化
+      var k = future.get(5, TimeUnit.SECONDS);
+      if (k == null) {
+        throw new BizCodeException(BizCodes.C3309).addContextValue("kid", kid);
+      }
+      return k.getSecretKey();
+      // TODO: 后期需要优化此处的异常处理逻辑
+    } catch (InterruptedException e) {
+      throw new IllegalStateException(e);
+    } catch (ExecutionException e) {
+      throw new IllegalStateException(e);
+    } catch (TimeoutException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }
