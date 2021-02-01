@@ -24,6 +24,7 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthService;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.session.DefaultSession;
 import top.yein.tethys.packet.ErrorPacket;
 import top.yein.tethys.packet.Packet;
@@ -146,7 +147,12 @@ public class WebsocketHandler {
 
   private Mono<Void> handleFrame(final Session session, final WebSocketFrame frame) {
     if (!(frame instanceof BinaryWebSocketFrame || frame instanceof TextWebSocketFrame)) {
-      var ep = new ErrorPacket("不支持 的 ws frame 类型", "当前仅支持 binary/text frame 类型");
+      var ep =
+          ErrorPacket.builder()
+              .code(BizCodes.C400.getCode())
+              .message("不支持 的 ws frame 类型")
+              .details("当前仅支持 binary/text frame 类型")
+              .build();
       return session.sendPacket(ep).then(session.close());
     }
 
@@ -158,7 +164,12 @@ public class WebsocketHandler {
     try {
       packet = objectReader.readValue(input);
     } catch (UnrecognizedPropertyException e) {
-      var ep = new ErrorPacket("未知的属性", e.getPropertyName());
+      var ep =
+          ErrorPacket.builder()
+              .code(BizCodes.C912.getCode())
+              .message("未知的属性")
+              .details(e.getPropertyName())
+              .build();
       return session.sendPacket(ep).then(session.close());
     } catch (InvalidTypeIdException e) {
       String message;
@@ -168,19 +179,40 @@ public class WebsocketHandler {
         message = "非法的 @ns 命名空间 [" + e.getTypeId() + "]";
       }
       log.debug(message, e);
-      var ep = new ErrorPacket(message, e.getOriginalMessage());
+      var ep =
+          ErrorPacket.builder()
+              .code(BizCodes.C912.getCode())
+              .message(message)
+              .details(e.getOriginalMessage())
+              .build();
       return session.sendPacket(ep).then(session.close());
     } catch (IOException e) {
       // JSON 解析失败
       log.warn("JSON 解析失败 session={}", e);
-      var ep = new ErrorPacket("解析请求包错误", null);
+      var ep = ErrorPacket.builder().code(BizCodes.C912.getCode()).message("解析请求包错误").build();
       return session.sendPacket(ep).then(session.close());
     }
 
     // 包处理
-    return packetDispatcher
-        .dispatch(session, packet)
-        .contextWrite(Context.of(ByteBuf.class, packet));
+    return Mono.defer(() -> packetDispatcher.dispatch(session, packet))
+        .contextWrite(Context.of(ByteBuf.class, packet))
+        .onErrorResume(
+            t -> {
+              // 业务逻辑异常处理
+              if (t instanceof BizCodeException) {
+                log.debug("业务异常 session={}", session, t);
+                var ex = (BizCodeException) t;
+                var ep =
+                    ErrorPacket.builder()
+                        .code(ex.getBizCode().getCode())
+                        .message(ex.getBizCode().getMessage())
+                        .details(t.getMessage())
+                        .build();
+                return session.sendPacket(ep);
+              }
+              log.error("未处理的异常 session={}, packet={}", session, packet, t);
+              return Mono.error(t);
+            });
   }
 
   private String getAuthorization(WebsocketInbound in) {
