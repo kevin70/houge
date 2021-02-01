@@ -30,7 +30,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
 
     var entity = new GroupMessage();
     entity.setId(TestUtils.newMessageId());
-    entity.setGid(0L);
+    entity.setGroupId("0");
     entity.setSenderId(UUID.randomUUID().toString());
     entity.setKind(MessageKind.TEXT.getCode());
     entity.setContent("unit test");
@@ -63,7 +63,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
 
     var entity = new GroupMessage();
     entity.setId(TestUtils.newMessageId());
-    entity.setGid(0L);
+    entity.setGroupId("0");
     entity.setSenderId(UUID.randomUUID().toString());
     entity.setKind(MessageKind.TEXT.getCode());
     entity.setContent("unit test");
@@ -98,7 +98,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
 
     var entity = new GroupMessage();
     entity.setId(TestUtils.newMessageId());
-    entity.setGid(0L);
+    entity.setGroupId("0");
     entity.setSenderId(UUID.randomUUID().toString());
     entity.setKind(MessageKind.TEXT.getCode());
     entity.setContent("unit test");
@@ -106,7 +106,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setCustomArgs("{}");
 
     var query = new GroupMessageQuery();
-    query.setGid(entity.getGid());
+    query.setGroupId(entity.getGroupId());
     query.setCreateTime(LocalDateTime.now().minusSeconds(5));
     query.setLimit(10);
 

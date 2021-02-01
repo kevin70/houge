@@ -18,12 +18,12 @@ import top.yein.tethys.query.GroupMessageQuery;
 public class GroupMessageRepositoryImpl implements GroupMessageRepository {
 
   private static final String STORE_SQL =
-      "INSERT INTO t_group_message(id,gid,sender_id,kind,content,url,custom_args)"
-          + " VALUES(:id,:gid,:senderId,:kind,:content,:url,:customArgs)";
+      "INSERT INTO t_group_message(id,group_id,sender_id,kind,content,url,custom_args)"
+          + " VALUES(:id,:groupId,:senderId,:kind,:content,:url,:customArgs)";
   private static final String FIND_BY_ID_SQL = "SELECT * FROM t_group_message WHERE id=:id";
   private static final String FIND_BY_GID_SQL =
       "SELECT * FROM t_group_message"
-          + " WHERE gid=:gid and create_time >= :createTime"
+          + " WHERE group_id=:groupId and create_time >= :createTime"
           + " LIMIT :limit OFFSET :offset";
 
   private final DatabaseClient dc;
@@ -41,7 +41,7 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
   public Mono<Integer> store(GroupMessage entity) {
     return dc.sql(STORE_SQL)
         .bind("id", entity.getId())
-        .bind("gid", entity.getGid())
+        .bind("groupId", entity.getGroupId())
         .bind("senderId", entity.getSenderId())
         .bind("kind", entity.getKind())
         .bind("content", entity.getContent())
@@ -59,7 +59,7 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
   @Override
   public Flux<GroupMessage> findByGid(GroupMessageQuery query) {
     return dc.sql(FIND_BY_GID_SQL)
-        .bind("gid", query.getGid())
+        .bind("groupId", query.getGroupId())
         .bind("createTime", query.getCreateTime())
         .bind("limit", query.getLimit())
         .bind("offset", query.getOffset())
@@ -70,7 +70,7 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
   private GroupMessage mapEntity(Row row) {
     var e = new GroupMessage();
     e.setId(row.get("id", String.class));
-    e.setGid(row.get("gid", Long.class));
+    e.setGroupId(row.get("group_id", String.class));
     e.setSenderId(row.get("sender_id", String.class));
     e.setKind(row.get("kind", Integer.class));
     e.setContent(row.get("content", String.class));
