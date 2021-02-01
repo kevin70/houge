@@ -2,9 +2,12 @@ package top.yein.tethys.im.handler;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.entity.GroupMessage;
+import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupMessagePacket;
@@ -17,28 +20,49 @@ import top.yein.tethys.session.SessionGroupManager;
  *
  * @author KK (kzou227@qq.com)
  */
+@Log4j2
 public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
 
   private final SessionGroupManager sessionGroupManager;
   private final GroupMessageRepository groupMessageRepository;
+  private final MessageProperties messageProperties;
+  private final MessageIdGenerator messageIdGenerator;
 
   /**
    * 构造函数.
    *
    * @param sessionGroupManager 群组会话管理对象
    * @param groupMessageRepository 群组消息存储器
+   * @param messageProperties 聊天消息静态配置
+   * @param messageIdGenerator 消息 ID 生成器
    */
   public GroupMessageHandler(
-      SessionGroupManager sessionGroupManager, GroupMessageRepository groupMessageRepository) {
+      SessionGroupManager sessionGroupManager,
+      GroupMessageRepository groupMessageRepository,
+      MessageProperties messageProperties,
+      MessageIdGenerator messageIdGenerator) {
     this.sessionGroupManager = sessionGroupManager;
     this.groupMessageRepository = groupMessageRepository;
+    this.messageProperties = messageProperties;
+    this.messageIdGenerator = messageIdGenerator;
   }
 
   @Override
   public Mono<Void> handle(@Nonnull Session session, @Nonnull GroupMessagePacket packet) {
+    if (packet.getMsgId() == null && messageProperties.isAutofillId()) {
+      packet.setMsgId(messageIdGenerator.nextId());
+      log.debug("自动填充群组消息 ID, packet={}, session={}", packet, session);
+    }
+
     // 校验消息
     MessagePacketChecker.check(packet);
-    var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
+    var from =
+        Optional.ofNullable(packet.getFrom())
+            .orElseGet(
+                () -> {
+                  packet.setFrom(session.uid());
+                  return session.uid();
+                });
     var to = packet.getTo();
 
     var p1 =
