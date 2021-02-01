@@ -3,6 +3,7 @@ package top.yein.tethys.repository;
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.r2dbc.core.Parameter;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,8 +46,8 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
         .bind("senderId", entity.getSenderId())
         .bind("kind", entity.getKind())
         .bind("content", entity.getContent())
-        .bind("url", entity.getUrl())
-        .bind("customArgs", entity.getCustomArgs())
+        .bind("url", Parameter.fromOrEmpty(entity.getUrl(), String.class))
+        .bind("customArgs", Parameter.fromOrEmpty(entity.getCustomArgs(), String.class))
         .fetch()
         .rowsUpdated();
   }
