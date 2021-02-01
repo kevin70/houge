@@ -1,7 +1,10 @@
 package top.yein.tethys.entity;
 
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * t_private_message 数据实体.
@@ -9,6 +12,9 @@ import lombok.Data;
  * @author KK (kzou227@qq.com)
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PrivateMessage {
 
   /** 消息 ID 全局唯一. */
