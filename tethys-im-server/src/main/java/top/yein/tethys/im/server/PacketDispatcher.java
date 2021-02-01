@@ -4,6 +4,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.packet.ErrorPacket;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.session.Session;
@@ -33,7 +34,12 @@ public class PacketDispatcher {
     var handler = handlers.get(packet.getNs());
     if (handler == null) {
       log.error("未找到 Packet[@ns={}] 实现 {}", packet.getNs(), packet);
-      var error = new ErrorPacket("未找到 [@ns=" + packet.getNs() + "] 处理器", packet.toString());
+      var error =
+          ErrorPacket.builder()
+              .code(BizCodes.C400.getCode())
+              .message("未找到 [@ns=" + packet.getNs() + "] 处理器")
+              .details(packet.toString())
+              .build();
       return session.sendPacket(error);
     }
     log.debug("{} 发送消息:{}{}", session, System.lineSeparator(), packet);
