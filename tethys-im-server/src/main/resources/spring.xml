@@ -22,6 +22,11 @@
     file-encoding="UTF-8"
     local-override="true"/>
 
+  <!-- 聊天消息配置 -->
+  <bean id="messageProperties" class="top.yein.tethys.core.MessageProperties">
+    <constructor-arg name="autofillId" value="${message.autofill.id:false}"/>
+  </bean>
+
   <bean id="connectionFactory" class="io.r2dbc.spi.ConnectionFactories" factory-method="get">
     <constructor-arg name="url" value="${message-storage.r2dbc.url}"/>
   </bean>
@@ -60,6 +65,9 @@
   <bean id="sessionGroupManager" class="top.yein.tethys.core.session.DefaultSessionGroupManager"/>
 
   <!-- packet -->
+  <bean id="messageIdGenerator" class="top.yein.tethys.core.id.YeinGidMessageIdGenerator">
+    <constructor-arg name="applicationIdentifier" ref="applicationIdentifier"/>
+  </bean>
   <bean id="packetDispatcher" class="top.yein.tethys.im.server.PacketDispatcher">
     <constructor-arg name="handlers">
       <map>
@@ -72,12 +80,16 @@
           <bean class="top.yein.tethys.im.handler.PrivateMessageHandler">
             <constructor-arg name="sessionManager" ref="sessionManager"/>
             <constructor-arg name="privateMessageRepository" ref="privateMessageRepository"/>
+            <constructor-arg name="messageProperties" ref="messageProperties"/>
+            <constructor-arg name="messageIdGenerator" ref="messageIdGenerator"/>
           </bean>
         </entry>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_MESSAGE}">
           <bean class="top.yein.tethys.im.handler.GroupMessageHandler">
             <constructor-arg name="sessionGroupManager" ref="sessionGroupManager"/>
             <constructor-arg name="groupMessageRepository" ref="groupMessageRepository"/>
+            <constructor-arg name="messageProperties" ref="messageProperties"/>
+            <constructor-arg name="messageIdGenerator" ref="messageIdGenerator"/>
           </bean>
         </entry>
         <entry key="#{T(top.yein.tethys.packet.Namespaces).NS_GROUP_SUBSCRIBE}">
