@@ -12,7 +12,7 @@ import lombok.Data;
 public class GroupMessageQuery {
 
   /** 群组 ID. */
-  private long gid;
+  private String groupId;
   /** 消息创建时间. */
   private LocalDateTime createTime;
   /** 返回最大条数. */
