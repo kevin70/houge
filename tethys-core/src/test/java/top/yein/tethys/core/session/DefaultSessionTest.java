@@ -113,7 +113,9 @@ class DefaultSessionTest {
     var queue = new LinkedBlockingQueue<>();
     webSocketClient.inbound().receiveObject().doOnNext(o -> queue.offer(o)).subscribe();
 
-    session.sendPacket(new ErrorPacket("test message", "test message")).subscribe();
+    session
+        .sendPacket(ErrorPacket.builder().message("test message").details("test message").build())
+        .subscribe();
 
     var o = queue.poll(5, TimeUnit.SECONDS);
     assertThat(o).isInstanceOf(WebSocketFrame.class);
