@@ -45,6 +45,14 @@
 使用 Chrome 浏览器安装扩展 [Browser-WebSocket-Client
 ](https://github.com/abeade/browser-websocket-client) 用于快速测试 WebSocket。
 
+## 私聊演示
+![](docs/images/p-msg-44.gif)
+![](docs/images/p-msg-55.gif)
+
+## 群聊演示
+![](docs/images/g-msg-44.gif)
+![](docs/images/g-msg-55.gif)
+![](docs/images/g-msg-66.gif)
 
 ## 感谢
 Tethys 的实现离不开源社区的支持，感恩为开源做出贡献的人。
