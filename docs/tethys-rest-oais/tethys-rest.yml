@@ -9,13 +9,8 @@ tags:
     description: 测试专用
   - name: MESSAGE
     description: IM 消息
-components:
-  securitySchemes:
-    AccessToken:
-      type: apiKey
-      description: 访问令牌
-      name: access_token
-      in: query
+  - name: PRIVATE-MESSAGE
+    description: 私聊消息
 paths:
   /token/{uid}:
     parameters:
@@ -44,7 +39,6 @@ paths:
                   access_token:
                     type: string
                     description: 访问令牌
-
   /message-ids:
     get:
       parameters:
@@ -71,3 +65,103 @@ paths:
                 items:
                   type: string
                   description: IM 消息 ID
+  /private-messages:
+    get:
+      parameters:
+        - name: create_time
+          in: query
+          description: |
+            私聊消息最早的创建时间。
+
+            创建时间仅支持`3天（72小时）`以内的消息查询，时间超出范围将默认当前时间之前的72小时为查询时间。
+          schema:
+            type: string
+            format: date-time
+        - name: offset
+          in: query
+          description: 查询偏移量
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: 返回最大的条数
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 500
+      tags: [MESSAGE, PRIVATE-MESSAGE]
+      security: [AccessToken:[]]
+      summary: 私聊消息历史查询
+      description: |
+        私聊消息历史查询。
+
+        如果返回的消息数组的长度小于 `limit` 请求查询参数值，则代表服务端没有更多的消息不需要继续查询，反之则
+        代表服务端还有更多的消息，客户端需要继续调用些接口拉取私聊信息，直到消息数组的长度小于 `limit`。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PrivateMessage"
+components:
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      description: 访问令牌
+      name: access_token
+      in: query
+  schemas:
+    PrivateMessage:
+      type: object
+      required:
+        - id
+        - sender_id
+        - receiver_id
+        - content
+        - create_time
+      properties:
+        id:
+          type: string
+          description: 消息 ID，全局唯一
+          example: 7K3JDMVTALDF3U
+        sender_id:
+          type: string
+          description: 消息发送者 ID
+        receiver_id:
+          type: string
+          description: 消息接收者 ID
+        kind:
+          type: integer
+          enum: [1, 2, 3, 4]
+          default: 1
+          description: |
+            消息类型
+            - `1` 普通文本消息
+            - `2` 图片消息
+            - `3` 音频消息
+            - `4` 视频消息
+        content:
+          type: string
+          description: 消息内容
+        url:
+          type: string
+          description: 统一资源定位器（图片URL、视频URL）
+        custom_args:
+          type: string
+          description: 自定义参数
+        unread:
+          type: integer
+          default: 1
+          description: |
+            消息是否未读
+            - `1` 未读
+            - `0` 已读
+        create_time:
+          type: string
+          format: date-time
+          description: 消息创建时间
