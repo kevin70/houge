@@ -67,15 +67,16 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
                             // 添加进会话订阅组中
                             session.subGroupIds().add(groupId);
                             return set.add(session);
-                          });
+                          })
+                      // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行，避免使用额外的 Lock
+                      .subscribeOn(Schedulers.single())
+                      .publishOn(Schedulers.parallel());
+
               return notify(session, SessionGroupEvent.GROUP_SUB_BEFORE, groupId)
                   .then(p)
                   .then(notify(session, SessionGroupEvent.GROUP_SUB_AFTER, groupId));
             })
-        .then()
-        // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行，避免使用额外的 Lock
-        .subscribeOn(Schedulers.single())
-        .publishOn(Schedulers.parallel());
+        .then();
   }
 
   @Override
@@ -103,16 +104,16 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
                             if (set.isEmpty()) {
                               groupSessions.synchronous().invalidate(groupId);
                             }
-                          });
+                          })
+                      // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行，避免使用额外的 Lock
+                      .subscribeOn(Schedulers.single())
+                      .publishOn(Schedulers.parallel());
 
               return notify(session, SessionGroupEvent.GROUP_UNSUB_BEFORE, groupId)
                   .then(p)
                   .then(notify(session, SessionGroupEvent.GROUP_UNSUB_AFTER, groupId));
             })
-        .then()
-        // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行，避免使用额外的 Lock
-        .subscribeOn(Schedulers.single())
-        .publishOn(Schedulers.parallel());
+        .then();
   }
 
   @Override
