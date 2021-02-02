@@ -18,6 +18,11 @@ public class MessageIdResource extends AbstractRestSupport {
 
   private final MessageIdGenerator messageIdGenerator;
 
+  /**
+   * 构造函数.
+   *
+   * @param messageIdGenerator 消息 ID 生成器
+   */
   public MessageIdResource(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
   }

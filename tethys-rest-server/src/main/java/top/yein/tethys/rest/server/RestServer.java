@@ -9,7 +9,11 @@ import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.Env;
 import top.yein.tethys.core.http.HttpServerRoutesWrapper;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * REST 服务.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 @Log4j2
 public class RestServer {
 
@@ -19,6 +23,13 @@ public class RestServer {
   private final CustomRouters customRouters;
   private DisposableServer disposableServer;
 
+  /**
+   * 构造函数.
+   *
+   * @param addr 服务访问 IP 及地址
+   * @param customRouters 访问路由
+   * @see HostAndPort
+   */
   public RestServer(String addr, CustomRouters customRouters) {
     this.addr = addr;
     this.customRouters = customRouters;
