@@ -41,6 +41,9 @@ public class RestMain implements Runnable {
           log.info("REST 服务停止中...");
           // 停止操作
           restServer.stop();
+          // 清理应用标识数据信息
+          applicationIdentifier.clean();
+          // 停止 spring 应用上下文
           applicationContext.stop();
           log.info("REST 服务停止成功");
         });

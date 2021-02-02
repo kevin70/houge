@@ -58,6 +58,21 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
     return Version.version();
   }
 
+  @Override
+  public void clean() {
+    var future = serverInstanceRepository.delete(fid).toFuture();
+    try {
+      var n = future.get(5, TimeUnit.SECONDS);
+      if (n != 1) {
+        log.warn("<{}>应用标识[{}]清理受影响的记录为[{}]，预期受影响记录为[1]", applicationName(), fid, n);
+      } else {
+        log.info("<{}>应用标识[{}]清理完成", applicationName(), fid);
+      }
+    } catch (Exception e) {
+      throw new IllegalStateException("<" + applicationName() + ">应用标识[" + fid + "]清理异常", e);
+    }
+  }
+
   // 初始化 Fid
   private int initFid() {
     var ran = new SecureRandom();

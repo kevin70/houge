@@ -29,4 +29,7 @@ public interface ApplicationIdentifier {
    * @return 应用版本
    */
   String version();
+
+  /** 清理应用数据. */
+  void clean();
 }

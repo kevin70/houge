@@ -33,7 +33,8 @@ public class ImMain implements Runnable {
     final var imServer = applicationContext.getBean(ImServer.class);
     imServer.start();
 
-    log.info("{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
+    log.info(
+        "{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
 
     // 停止应用
     registerShutdownHook(
@@ -41,6 +42,9 @@ public class ImMain implements Runnable {
           log.info("IM 服务停止中...");
           // 停止操作
           imServer.stop();
+          // 清理应用标识数据信息
+          applicationIdentifier.clean();
+          // 停止 spring 应用上下文
           applicationContext.stop();
           log.info("IM 服务停止成功");
         });
