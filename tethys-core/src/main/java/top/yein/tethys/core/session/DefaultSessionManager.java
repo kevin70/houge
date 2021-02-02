@@ -56,6 +56,11 @@ public class DefaultSessionManager implements SessionManager {
   // 会话 ID 生成器
   private final SessionIdGenerator sessionIdGenerator;
 
+  /**
+   * 构造函数.
+   *
+   * @param sessionIdGenerator 会话 ID 生成器
+   */
   public DefaultSessionManager(SessionIdGenerator sessionIdGenerator) {
     this.sessionIdGenerator = sessionIdGenerator;
   }
