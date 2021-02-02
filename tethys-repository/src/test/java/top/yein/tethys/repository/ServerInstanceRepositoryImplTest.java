@@ -90,6 +90,33 @@ class ServerInstanceRepositoryImplTest extends AbstractTestRepository {
   }
 
   @Test
+  void delete() throws UnknownHostException {
+    var repo = newServerInstanceRepository();
+
+    var inetAddress = HostNameUtils.getLocalHostLANAddress();
+    var entity = new ServerInstance();
+    entity.setId(1);
+    entity.setAppName("junit-test");
+    entity.setHostName(inetAddress.getHostName());
+    entity.setHostAddress(inetAddress.getHostAddress());
+    entity.setOsName(System.getProperty("os.name"));
+    entity.setOsVersion(System.getProperty("os.version"));
+    entity.setOsArch(System.getProperty("os.arch"));
+    entity.setOsUser(System.getProperty("user.name"));
+    entity.setJavaVmName(System.getProperty("java.vm.name"));
+    entity.setJavaVmVersion(System.getProperty("java.vm.version"));
+    entity.setJavaVmVendor(System.getProperty("java.vm.vendor"));
+    entity.setWorkDir(System.getProperty("user.dir"));
+    entity.setPid(ProcessHandle.current().pid());
+
+    var p = transactional(repo.insert(entity).then(repo.delete(entity.getId())));
+    StepVerifier.create(p)
+        .expectNext(1)
+        .expectComplete()
+        .verify();
+  }
+
+  @Test
   void update() throws UnknownHostException {
     var repo = newServerInstanceRepository();
 

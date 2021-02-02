@@ -19,6 +19,14 @@ public interface ServerInstanceRepository {
   Mono<Integer> insert(ServerInstance entity);
 
   /**
+   * 删除应用服务实例.
+   *
+   * @param id 应用 ID
+   * @return 受影响行数
+   */
+  Mono<Integer> delete(int id);
+
+  /**
    * 更新应用服务实例.
    *
    * @param entity 实体

@@ -25,6 +25,7 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
           + ",:osName,:osVersion,:osArch,:osUser"
           + ",:javaVmName,:javaVmVersion,:javaVmVendor"
           + ",:workDir,:pid,now(),now())";
+  private static final String DELETE_SQL = "delete from t_server_instance where id=:id";
   private static final String UPDATE_SQL =
       "update t_server_instance "
           + "set"
@@ -67,6 +68,11 @@ public class ServerInstanceRepositoryImpl implements ServerInstanceRepository {
         .bind("pid", entity.getPid())
         .fetch()
         .rowsUpdated();
+  }
+
+  @Override
+  public Mono<Integer> delete(int id) {
+    return dc.sql(DELETE_SQL).bind("id", id).fetch().rowsUpdated();
   }
 
   @Override
