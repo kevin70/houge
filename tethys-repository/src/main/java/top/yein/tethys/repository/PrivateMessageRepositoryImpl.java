@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.PrivateMessage;
+import top.yein.tethys.query.PrivateMessageQuery;
 
 /**
  * 私聊消息存储.
@@ -23,8 +24,11 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   private static final String READ_MESSAGE_SQL =
       "UPDATE t_private_message SET unread=0,update_time=now() WHERE id=:id";
   private static final String FIND_BY_ID_SQL = "select * from t_private_message where id=:id";
-  private static final String FIND_BY_RECEIVER_ID_SQL =
-      "select * from t_private_message where receiver_id=$1";
+  private static final String FIND_SQL =
+      "SELECT * FROM t_private_message"
+          + " WHERE receiver_id=:receiverId AND create_time>=:createTime"
+          + " ORDER BY create_time"
+          + " LIMIT :limit OFFSET :offset";
 
   private final DatabaseClient dc;
 
@@ -62,8 +66,14 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   }
 
   @Override
-  public Flux<PrivateMessage> findByReceiverId(String receiverId, int limit) {
-    return null;
+  public Flux<PrivateMessage> find(PrivateMessageQuery query) {
+    return dc.sql(FIND_SQL)
+        .bind("receiverId", query.getReceiverId())
+        .bind("createTime", query.getCreateTime())
+        .bind("limit", query.getLimit())
+        .bind("offset", query.getOffset())
+        .map(this::mapEntity)
+        .all();
   }
 
   private PrivateMessage mapEntity(Row row) {

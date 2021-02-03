@@ -3,6 +3,7 @@ package top.yein.tethys.repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.PrivateMessage;
+import top.yein.tethys.query.PrivateMessageQuery;
 
 /**
  * 私聊消息存储.
@@ -38,9 +39,8 @@ public interface PrivateMessageRepository {
   /**
    * 查询用户私人聊天消息.
    *
-   * @param receiverId 用户 ID
-   * @param limit 返回最大记录数
+   * @param query 查询对象
    * @return 私人消息
    */
-  Flux<PrivateMessage> findByReceiverId(String receiverId, int limit);
+  Flux<PrivateMessage> find(PrivateMessageQuery query);
 }
