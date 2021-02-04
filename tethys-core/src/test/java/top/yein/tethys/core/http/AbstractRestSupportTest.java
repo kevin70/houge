@@ -13,6 +13,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.ReadOnlyHttpHeaders;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -29,9 +30,7 @@ import reactor.netty.http.server.HttpServerResponse;
 import reactor.test.StepVerifier;
 import top.yein.tethys.util.JsonUtils;
 
-/**
- * @author KK (kzou227@qq.com)
- */
+/** @author KK (kzou227@qq.com) */
 class AbstractRestSupportTest {
 
   @Data
@@ -117,6 +116,10 @@ class AbstractRestSupportTest {
 
     var request = mock(HttpServerRequest.class);
     when(request.receiveContent()).thenReturn(Flux.just(httpContent));
+    when(request.requestHeaders())
+        .thenReturn(
+            new ReadOnlyHttpHeaders(
+                true, HttpHeaderNames.CONTENT_TYPE, MediaType.JSON_UTF_8.toString()));
 
     var p = resource.json(request, TestBodyVo.class);
     StepVerifier.create(p)
