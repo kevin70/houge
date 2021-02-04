@@ -4,7 +4,7 @@
 # Tethys
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
-首款响应式（Reactive）开发的 IM 服务端，快速搭建高性能、高可用的 IM 服务。
+响应式（Reactive）开发的 IM 服务端，快速搭建高性能、高可用的 IM 服务。
 
 ## 特点
 - 免费的
@@ -17,6 +17,8 @@
 - [x] 群组聊天
 - [x] 消息存储
 - [x] 容器部署
+- [ ] 好友关系
+- [ ] 离线消息
 - [ ] 集群部署
 - [ ] 系统监控
 - [ ] 黑名单
