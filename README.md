@@ -4,7 +4,7 @@
 # Tethys
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
-响应式（Reactive）开发的 IM 服务端，快速搭建高性能、高可用的 IM 服务。
+Tethys 是采用 [Spring Reactor](https://projectreactor.io/) 开发的 IM Server，致力于服务端响应式技术开发推广与研究，可快速搭建功能完备、高性能且可定制化的 IM 服务。
 
 ## 特点
 - 免费的
