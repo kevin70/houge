@@ -6,6 +6,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import reactor.util.context.Context;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthService;
@@ -48,7 +49,10 @@ public class AuthenticationInterceptor extends AbstractRestSupport {
       }
       return authService
           .authenticate(accessToken)
-          .flatMap((unused) -> Mono.from(next.apply(request, response)));
+          .flatMap(
+              (authContext) ->
+                  Mono.defer(() -> Mono.from(next.apply(request, response)))
+                      .contextWrite(Context.of(AUTH_CONTEXT_KEY, authContext)));
     };
   }
 }
