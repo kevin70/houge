@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.util.ReactorHttpServerUtils;
@@ -27,6 +28,9 @@ import top.yein.tethys.util.ReactorHttpServerUtils;
  */
 @Log4j2
 public abstract class AbstractRestSupport {
+
+  /** 认证上下文存储的键值. */
+  protected static final Class<AuthContext> AUTH_CONTEXT_KEY = AuthContext.class;
 
   /**
    * 获取 {@link HttpServerRequest} 查询参数值.
@@ -113,6 +117,24 @@ public abstract class AbstractRestSupport {
       log.error("http response json 序列化错误 [value={}]", e, value);
       return response.status(HttpResponseStatus.INTERNAL_SERVER_ERROR).send();
     }
+  }
+
+  /**
+   * 返回 {@link reactor.util.context.Context} 中存储的认证上下文信息.
+   *
+   * <p>如果未找到认证上下文将返回 {@link BizCodes#C401} 业务异常.
+   *
+   * @return 认证上下文
+   * @see BizCodeException
+   */
+  protected Mono<AuthContext> authContext() {
+    return Mono.deferContextual(
+        context -> {
+          if (!context.hasKey(AUTH_CONTEXT_KEY)) {
+            return Mono.error(new BizCodeException(BizCodes.C401, "未找到 AuthContext"));
+          }
+          return Mono.just(context.get(AUTH_CONTEXT_KEY));
+        });
   }
 
   private ObjectMapper getObjectMapper() {
