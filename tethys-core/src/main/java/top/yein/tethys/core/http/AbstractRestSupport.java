@@ -69,7 +69,15 @@ public abstract class AbstractRestSupport {
    * @return RS
    */
   protected <T> Mono<T> json(HttpServerRequest request, Class<T> clazz) {
-    // TODO: 校验 content-type
+    var contentType = request.requestHeaders().get(HttpHeaderNames.CONTENT_TYPE);
+    try {
+      if (!MediaType.parse(contentType).is(MediaType.JSON_UTF_8)) {
+        throw new BizCodeException(BizCodes.C406, "不支持的 content-type=" + contentType);
+      }
+    } catch (IllegalArgumentException e) {
+      throw new BizCodeException(BizCodes.C406, "错误的 content-type=" + contentType, e);
+    }
+
     return request
         .receiveContent()
         .map(
