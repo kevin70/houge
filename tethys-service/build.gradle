@@ -1,0 +1,9 @@
+dependencies {
+  api(project(":tethys-repository"))
+
+  testImplementation(project(":tethys-util"))
+  testImplementation("com.typesafe:config")
+  testImplementation("org.apache.logging.log4j:log4j-core")
+  testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
+  testImplementation("org.springframework:spring-test")
+}
