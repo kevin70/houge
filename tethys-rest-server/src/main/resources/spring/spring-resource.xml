@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="authenticationInterceptor" class="top.yein.tethys.core.resource.AuthenticationInterceptor">
+    <constructor-arg name="authService" ref="authService"/>
+  </bean>
+  <bean id="tokenResource" class="top.yein.tethys.core.resource.TokenResource">
+    <constructor-arg name="tokenService" ref="tokenService"/>
+  </bean>
+  <bean id="messageIdResource" class="top.yein.tethys.rest.resource.MessageIdResource">
+    <constructor-arg name="messageIdGenerator" ref="messageIdGenerator"/>
+  </bean>
+  <bean id="privateMessageResource" class="top.yein.tethys.rest.resource.PrivateMessageResource">
+    <constructor-arg name="privateMessageService" ref="privateMessageService"/>
+  </bean>
+
+</beans>

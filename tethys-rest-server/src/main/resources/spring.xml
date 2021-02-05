@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xsi:schemaLocation="
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
@@ -17,38 +17,15 @@
     file:tethys-dev.properties 开发配置，便于开发。
   -->
   <context:property-placeholder
-    location="classpath*:tethys.properties,classpath*:tethys.properties,file:/etc/tethys/tethys.properties,file:tethys-dev.properties"
-    ignore-resource-not-found="true"
-    file-encoding="UTF-8"
-    local-override="true"/>
+      location="classpath*:tethys.properties,classpath*:tethys.properties,file:/etc/tethys/tethys.properties,file:tethys-dev.properties"
+      ignore-resource-not-found="true"
+      file-encoding="UTF-8"
+      local-override="true"/>
 
-  <bean id="connectionFactory" class="io.r2dbc.spi.ConnectionFactories" factory-method="get">
-    <constructor-arg name="url" value="${message-storage.r2dbc.url}"/>
-  </bean>
+  <import resource="classpath*:spring/spring-*.xml"/>
 
-  <bean id="transactionManager"
-    class="org.springframework.r2dbc.connection.R2dbcTransactionManager">
-    <constructor-arg name="connectionFactory" ref="connectionFactory"/>
-  </bean>
-
-  <bean id="databaseClient" class="org.springframework.r2dbc.core.DatabaseClient"
-    factory-method="create">
-    <constructor-arg name="factory" ref="connectionFactory"/>
-  </bean>
-
-  <!-- repository -->
-  <bean id="serverInstanceRepository" class="top.yein.tethys.repository.ServerInstanceRepositoryImpl">
-    <constructor-arg name="dc" ref="databaseClient"/>
-  </bean>
-  <bean id="jwtSecretRepository" class="top.yein.tethys.repository.JwtSecretRepositoryImpl">
-    <constructor-arg name="dc" ref="databaseClient"/>
-  </bean>
-  <bean id="privateMessageRepository"
-    class="top.yein.tethys.repository.PrivateMessageRepositoryImpl">
-    <constructor-arg name="dc" ref="databaseClient"/>
-  </bean>
-  <bean id="groupMessageRepository" class="top.yein.tethys.repository.GroupMessageRepositoryImpl">
-    <constructor-arg name="dc" ref="databaseClient"/>
+  <bean id="applicationIdentifier" class="top.yein.tethys.rest.RestApplicationIdentifier">
+    <constructor-arg name="serverInstanceRepository" ref="serverInstanceRepository"/>
   </bean>
 
   <!-- service -->
@@ -58,30 +35,18 @@
   <bean id="authService" class="top.yein.tethys.core.auth.JwsAuthService">
     <constructor-arg name="jwtSecretRepository" ref="jwtSecretRepository"/>
   </bean>
-  <bean id="messageIdGenerator" class="top.yein.tethys.core.id.YeinGidMessageIdGenerator"/>
-
-  <!-- rest -->
-  <bean id="authenticationInterceptor"
-    class="top.yein.tethys.core.resource.AuthenticationInterceptor">
-    <constructor-arg name="authService" ref="authService"/>
-  </bean>
-  <bean id="tokenResource" class="top.yein.tethys.core.resource.TokenResource">
-    <constructor-arg name="tokenService" ref="tokenService"/>
-  </bean>
-  <bean id="messageIdResource" class="top.yein.tethys.rest.resource.MessageIdResource">
-    <constructor-arg name="messageIdGenerator" ref="messageIdGenerator"/>
+  <bean id="messageIdGenerator" class="top.yein.tethys.core.id.YeinGidMessageIdGenerator">
+    <constructor-arg name="applicationIdentifier" ref="applicationIdentifier"/>
   </bean>
 
-  <bean id="applicationIdentifier" class="top.yein.tethys.rest.RestApplicationIdentifier">
-    <constructor-arg name="serverInstanceRepository" ref="serverInstanceRepository"/>
-  </bean>
   <bean id="restServer" class="top.yein.tethys.rest.server.RestServer">
     <constructor-arg name="addr" value="${rest-server.addr}"/>
     <constructor-arg name="customRouters">
       <bean class="top.yein.tethys.rest.server.CustomRouters">
-        <constructor-arg name="authenticationInterceptor" ref="authenticationInterceptor"/>
+        <constructor-arg name="authInterceptor" ref="authenticationInterceptor"/>
         <constructor-arg name="tokenResource" ref="tokenResource"/>
         <constructor-arg name="messageIdResource" ref="messageIdResource"/>
+        <constructor-arg name="privateMessageResource" ref="privateMessageResource"/>
       </bean>
     </constructor-arg>
   </bean>
