@@ -56,12 +56,6 @@ jobs:
       - run: ./gradlew :flywayMigrate
         ###------------ 项目构建
       - run: ./gradlew build
-        ###------------ Sonarqube
-      - name: sonarqube analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube --info
       - run: ./gradlew jacocoTestReport
       - uses: codecov/codecov-action@v1
         with:
@@ -86,6 +80,12 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        ###------------ Sonarqube
+      - name: sonarqube analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonarqube --info
       - uses: actions/upload-artifact@v2
         with:
           name: Package
