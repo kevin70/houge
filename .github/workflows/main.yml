@@ -57,7 +57,7 @@ jobs:
         ###------------ 项目构建
       - run: ./gradlew build
         ###------------ Sonarqube
-      - name: Build and analyze
+      - name: sonarqube analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
