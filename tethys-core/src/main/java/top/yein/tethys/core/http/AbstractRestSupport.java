@@ -10,8 +10,11 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -181,6 +184,29 @@ public abstract class AbstractRestSupport {
     } catch (NumberFormatException e) {
       throw new BizCodeException(
           BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
+    }
+  }
+
+  /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @param dvSupplier 默认值回调
+   * @return 查询参数值
+   */
+  protected LocalDateTime queryDateTime(
+      HttpServerRequest request, String name, Supplier<LocalDateTime> dvSupplier) {
+    var value = queryParam(request, name);
+    if (Strings.isNullOrEmpty(value)) {
+      return dvSupplier.get();
+    }
+    try {
+      return LocalDateTime.parse(value);
+    } catch (DateTimeParseException e) {
+      throw new BizCodeException(
+          BizCodes.C910,
+          Strings.lenientFormat("QUERY参数[%s=%s]的值格式应该像'2011-12-03T10:15:30'", name, value));
     }
   }
 
