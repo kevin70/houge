@@ -20,6 +20,7 @@ import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
 import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.rest.resource.MessageIdResource;
+import top.yein.tethys.rest.resource.PrivateMessageResource;
 
 /**
  * RESTFul 接口处理器.
@@ -28,23 +29,30 @@ import top.yein.tethys.rest.resource.MessageIdResource;
  */
 public class CustomRouters implements Consumer<HttpServerRoutes> {
 
-  private final AuthenticationInterceptor authenticationInterceptor;
+  private final AuthenticationInterceptor authInterceptor;
   private final TokenResource tokenResource;
   private final MessageIdResource messageIdResource;
+  private final PrivateMessageResource privateMessageResource;
 
   public CustomRouters(
-      AuthenticationInterceptor authenticationInterceptor,
+      AuthenticationInterceptor authInterceptor,
       TokenResource tokenResource,
-      MessageIdResource messageIdResource) {
-    this.authenticationInterceptor = authenticationInterceptor;
+      MessageIdResource messageIdResource,
+      PrivateMessageResource privateMessageResource) {
+    this.authInterceptor = authInterceptor;
     this.tokenResource = tokenResource;
     this.messageIdResource = messageIdResource;
+    this.privateMessageResource = privateMessageResource;
   }
 
   @Override
   public void accept(HttpServerRoutes routes) {
     // 访问令牌
     routes.post("/token/{uid}", tokenResource::generateToken);
-    routes.get("/message-ids", authenticationInterceptor.handle(messageIdResource::getMessageIds));
+    routes.get("/message-ids", authInterceptor.handle(messageIdResource::getMessageIds));
+
+    // 私聊
+    routes.get(
+        "/private-messages/me", authInterceptor.handle(privateMessageResource::findMessages));
   }
 }
