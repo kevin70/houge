@@ -1,13 +1,12 @@
 package top.yein.tethys.rest.resource;
 
-import com.google.common.base.Strings;
 import java.time.LocalDateTime;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import top.yein.tethys.core.http.AbstractRestSupport;
-import top.yein.tethys.service.PrivateMessageService;
 import top.yein.tethys.query.PrivateMessageQuery;
+import top.yein.tethys.service.PrivateMessageService;
 
 /**
  * 私聊消息 REST 接口.
@@ -38,14 +37,8 @@ public class PrivateMessageResource extends AbstractRestSupport {
     return authContext()
         .flatMap(
             ac -> {
-              var createTimeStr = queryParam(request, "create_time");
-              LocalDateTime createTime;
-              if (Strings.isNullOrEmpty(createTimeStr)) {
-                createTime = LocalDateTime.now().minusDays(3);
-              } else {
-                createTime = LocalDateTime.parse(createTimeStr);
-              }
-
+              var createTime =
+                  queryDateTime(request, "create_time", () -> LocalDateTime.now().minusDays(3));
               // 查询对象
               var query = new PrivateMessageQuery();
               query.setReceiverId(ac.uid());
