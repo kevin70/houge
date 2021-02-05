@@ -56,6 +56,12 @@ jobs:
       - run: ./gradlew :flywayMigrate
         ###------------ 项目构建
       - run: ./gradlew build
+        ###------------ Sonarqube
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonarqube --info
       - run: ./gradlew jacocoTestReport
       - uses: codecov/codecov-action@v1
         with:
@@ -66,11 +72,6 @@ jobs:
             tethys-rest-server/build/reports/jacoco/test/jacocoTestReport.xml,
             tethys-repository/build/reports/jacoco/test/jacocoTestReport.xml,
             tethys-util/build/reports/jacoco/test/jacocoTestReport.xml
-      - name: Build and analyze
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          run: ./gradlew sonarqube --info
         ###------------ 构造 Docker 镜像
       - run: ./gradlew :tethys-im-server:buildImage
       - run: ./gradlew :tethys-rest-server:buildImage
