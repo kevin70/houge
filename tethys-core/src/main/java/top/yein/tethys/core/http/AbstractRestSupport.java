@@ -1,6 +1,7 @@
 package top.yein.tethys.core.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.google.common.net.MediaType;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -44,6 +45,41 @@ public abstract class AbstractRestSupport {
   }
 
   /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * <p>如果参数{@code name}值为{@code null}, 则返回{@code defaultValue}.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @param defaultValue 默认值
+   * @return 查询参数值
+   */
+  protected String queryParam(HttpServerRequest request, String name, String defaultValue) {
+    var value = queryParam(request, name);
+    if (Strings.isNullOrEmpty(value)) {
+      return defaultValue;
+    }
+    return value.trim();
+  }
+
+  /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCodes#C912}的业务异常.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @return 查询参数值
+   */
+  protected String requiredQueryParam(HttpServerRequest request, String name) {
+    var value = queryParam(request, name);
+    if (Strings.isNullOrEmpty(value)) {
+      throw new BizCodeException(BizCodes.C912, Strings.lenientFormat("缺少必须的QUERY参数[%s]", name));
+    }
+    return value.trim();
+  }
+
+  /**
    * 获取 {@link HttpServerRequest} 查询参数值列表.
    *
    * @param request HTTP 请求对象
@@ -62,6 +98,90 @@ public abstract class AbstractRestSupport {
    */
   protected Map<String, List<String>> queryParams(HttpServerRequest request) {
     return ReactorHttpServerUtils.queryParams(request);
+  }
+
+  /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * <p>如果参数{@code name}值为{@code null}, 则返回{@code defaultValue}.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @param defaultValue 默认值
+   * @return 查询参数值
+   */
+  protected int queryInt(HttpServerRequest request, String name, int defaultValue) {
+    var value = queryParam(request, name);
+    if (Strings.isNullOrEmpty(value)) {
+      return defaultValue;
+    }
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(
+          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Integer值", name, value));
+    }
+  }
+
+  /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCodes#C912}的业务异常.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @return 查询参数值
+   */
+  protected int requiredQueryInt(HttpServerRequest request, String name) {
+    var value = requiredQueryParam(request, name);
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(
+          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Integer值", name, value));
+    }
+  }
+
+  /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * <p>如果参数{@code name}值为{@code null}, 则返回{@code defaultValue}.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @param defaultValue 默认值
+   * @return 查询参数值
+   */
+  protected long queryLong(HttpServerRequest request, String name, long defaultValue) {
+    var value = queryParam(request, name);
+    if (Strings.isNullOrEmpty(value)) {
+      return defaultValue;
+    }
+    try {
+      return Long.parseLong(value);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(
+          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
+    }
+  }
+
+  /**
+   * 获取{@link HttpServerRequest}查询参数.
+   *
+   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCodes#C912}的业务异常.
+   *
+   * @param request HTTP 请求对象
+   * @param name 查询参数名称
+   * @return 查询参数值
+   */
+  protected long requiredQueryLong(HttpServerRequest request, String name) {
+    var value = requiredQueryParam(request, name);
+    try {
+      return Long.parseLong(value);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(
+          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
+    }
   }
 
   /**

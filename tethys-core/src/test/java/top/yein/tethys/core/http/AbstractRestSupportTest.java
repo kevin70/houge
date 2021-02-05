@@ -1,6 +1,7 @@
 package top.yein.tethys.core.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,6 +29,11 @@ import reactor.netty.NettyOutbound;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.test.StepVerifier;
+import reactor.util.context.Context;
+import top.yein.chaos.biz.BizCode;
+import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.auth.AuthContext;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.util.JsonUtils;
 
 /** @author KK (kzou227@qq.com) */
@@ -40,6 +46,53 @@ class AbstractRestSupportTest {
   }
 
   AbstractRestSupport resource = new AbstractRestSupport() {};
+
+  @Test
+  void combineQueryParam() {
+    var channel = new EmbeddedChannel();
+    var connection = mock(Connection.class);
+    when(connection.channel()).thenReturn(channel);
+
+    var request = mock(HttpServerRequest.class);
+    when(request.withConnection(any()))
+        .then(
+            invocation -> {
+              Consumer<Connection> consumer = invocation.getArgument(0);
+              consumer.accept(connection);
+              return request;
+            });
+    when(request.uri())
+        .thenReturn("/test?q1=K&q2=L&q_int=5&q_long=54&q_int_invalid=a5&q_long_invalid=a7");
+    assertThat(resource.queryParam(request, "q1", "55")).isEqualTo("K");
+    assertThat(resource.queryParam(request, "q_string_no", "55")).isEqualTo("55");
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.requiredQueryParam(request, "q_string_required"))
+        .matches(e -> e.getBizCode() == BizCodes.C912);
+
+    assertThat(resource.queryInt(request, "q_int", 55)).isEqualTo(5);
+    assertThat(resource.queryInt(request, "q_int_no", 55)).isEqualTo(55);
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.requiredQueryInt(request, "q_int_no"))
+        .matches(e -> e.getBizCode() == BizCodes.C912);
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.queryInt(request, "q_int_invalid", 55))
+        .matches(e -> e.getBizCode() == BizCodes.C910);
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.requiredQueryInt(request, "q_int_invalid"))
+        .matches(e -> e.getBizCode() == BizCodes.C910);
+
+    assertThat(resource.queryLong(request, "q_long", 55)).isEqualTo(54);
+    assertThat(resource.queryLong(request, "q_long_no", 55)).isEqualTo(55);
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.requiredQueryLong(request, "q_long_no"))
+        .matches(e -> e.getBizCode() == BizCodes.C912);
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.queryLong(request, "q_long_invalid", 55))
+        .matches(e -> e.getBizCode() == BizCodes.C910);
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> resource.requiredQueryLong(request, "q_long_invalid"))
+        .matches(e -> e.getBizCode() == BizCodes.C910);
+  }
 
   @Test
   void queryParam() {
@@ -163,5 +216,24 @@ class AbstractRestSupportTest {
     assertThat(vo)
         .hasFieldOrPropertyWithValue("firstName", value.getFirstName())
         .hasFieldOrPropertyWithValue("lastName", value.getLastName());
+  }
+
+  @Test
+  void authContext() {
+    StepVerifier.create(resource.authContext())
+        .expectErrorMatches(
+            e -> {
+              var ex = (BizCodeException) e;
+              return ex.getBizCode() == BizCode.C401;
+            })
+        .verify();
+
+    var ac = mock(AuthContext.class);
+    StepVerifier.create(
+            Mono.defer(() -> resource.authContext())
+                .contextWrite(Context.of(AbstractRestSupport.AUTH_CONTEXT_KEY, ac)))
+        .expectNext(ac)
+        .expectComplete()
+        .verify();
   }
 }
