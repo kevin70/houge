@@ -4,7 +4,6 @@ import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.Parameter;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.GroupMessage;
@@ -15,7 +14,6 @@ import top.yein.tethys.query.GroupMessageQuery;
  *
  * @author KK (kzou227@qq.com)
  */
-@Repository
 public class GroupMessageRepositoryImpl implements GroupMessageRepository {
 
   private static final String STORE_SQL =
