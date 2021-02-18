@@ -19,7 +19,7 @@ public interface PrivateMessageRepository {
    * @param entity 数据实体
    * @return RS
    */
-  Mono<Integer> store(PrivateMessage entity);
+  Mono<Integer> insert(PrivateMessage entity);
 
   /**
    * 将消息设置为已读.

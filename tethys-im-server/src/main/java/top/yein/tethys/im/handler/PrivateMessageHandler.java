@@ -77,7 +77,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
             .build();
-    var p2 = privateMessageRepository.store(entity);
+    var p2 = privateMessageRepository.insert(entity);
     return p2.thenMany(p1).then();
   }
 }

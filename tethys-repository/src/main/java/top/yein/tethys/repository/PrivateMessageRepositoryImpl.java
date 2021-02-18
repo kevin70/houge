@@ -17,7 +17,7 @@ import top.yein.tethys.query.PrivateMessageQuery;
  */
 public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
 
-  private static final String STORE_SQL =
+  private static final String INSERT_SQL =
       "INSERT INTO t_private_message(id,sender_id,receiver_id,kind,content,url,custom_args)"
           + " VALUES(:id,:senderId,:receiverId,:kind,:content,:url,:customArgs)";
   private static final String READ_MESSAGE_SQL =
@@ -44,8 +44,8 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   }
 
   @Override
-  public Mono<Integer> store(PrivateMessage entity) {
-    return dc.sql(STORE_SQL)
+  public Mono<Integer> insert(PrivateMessage entity) {
+    return dc.sql(INSERT_SQL)
         .bind("id", entity.getId())
         .bind("senderId", entity.getSenderId())
         .bind("receiverId", entity.getReceiverId())

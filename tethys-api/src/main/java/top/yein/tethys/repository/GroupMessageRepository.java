@@ -18,7 +18,7 @@ public interface GroupMessageRepository {
    * @param entity 数据实体
    * @return RS
    */
-  Mono<Integer> store(GroupMessage entity);
+  Mono<Integer> insert(GroupMessage entity);
 
   /**
    * 根据消息 ID 查询群组信息.

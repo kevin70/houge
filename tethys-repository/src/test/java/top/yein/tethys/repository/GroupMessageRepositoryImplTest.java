@@ -25,7 +25,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
   }
 
   @Test
-  void store() {
+  void insert() {
     var repo = newGroupMessageRepository();
 
     var entity = new GroupMessage();
@@ -38,7 +38,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setCustomArgs("{}");
 
     var fo = findOne("select * from t_group_message where id=:id", Map.of("id", entity.getId()));
-    var tuple = super.transactional(repo.store(entity).zipWith(fo)).block();
+    var tuple = super.transactional(repo.insert(entity).zipWith(fo)).block();
 
     // 校验数据库存储数据
     var dbRow = tuple.getT2();
@@ -70,7 +70,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setUrl("https://via.placeholder.com/150");
     entity.setCustomArgs("{}");
 
-    var p = super.transactional(repo.store(entity).thenMany(repo.findById(entity.getId())));
+    var p = super.transactional(repo.insert(entity).thenMany(repo.findById(entity.getId())));
     StepVerifier.create(p)
         .assertNext(
             dbRow ->
@@ -110,7 +110,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     query.setCreateTime(LocalDateTime.now().minusSeconds(5));
     query.setLimit(10);
 
-    var p = super.transactional(repo.store(entity).thenMany(repo.findByGid(query)));
+    var p = super.transactional(repo.insert(entity).thenMany(repo.findByGid(query)));
     var messages = p.collectList().block(Duration.ofSeconds(5));
     assertThat(messages.size()).isGreaterThanOrEqualTo(1);
 

@@ -16,7 +16,7 @@ import top.yein.tethys.query.GroupMessageQuery;
  */
 public class GroupMessageRepositoryImpl implements GroupMessageRepository {
 
-  private static final String STORE_SQL =
+  private static final String INSERT_SQL =
       "INSERT INTO t_group_message(id,group_id,sender_id,kind,content,url,custom_args)"
           + " VALUES(:id,:groupId,:senderId,:kind,:content,:url,:customArgs)";
   private static final String FIND_BY_ID_SQL = "SELECT * FROM t_group_message WHERE id=:id";
@@ -37,8 +37,8 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
   }
 
   @Override
-  public Mono<Integer> store(GroupMessage entity) {
-    return dc.sql(STORE_SQL)
+  public Mono<Integer> insert(GroupMessage entity) {
+    return dc.sql(INSERT_SQL)
         .bind("id", entity.getId())
         .bind("groupId", entity.getGroupId())
         .bind("senderId", entity.getSenderId())

@@ -26,8 +26,8 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
   Faker faker = new Faker(Locale.SIMPLIFIED_CHINESE);
 
   @Test
-  void store() {
-    var storage = new PrivateMessageRepositoryImpl(dc);
+  void insert() {
+    var repo = new PrivateMessageRepositoryImpl(dc);
 
     var entity = new PrivateMessage();
     entity.setId(TestUtils.newMessageId());
@@ -40,8 +40,8 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
     var tuple =
         super.transactional(
-                storage
-                    .store(entity)
+                repo
+                    .insert(entity)
                     .zipWith(
                         findOne(
                             "select * from t_private_message where id=:id",
@@ -71,7 +71,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void readMessage() {
-    var storage = new PrivateMessageRepositoryImpl(dc);
+    var repo = new PrivateMessageRepositoryImpl(dc);
 
     var entity = new PrivateMessage();
     entity.setId(TestUtils.newMessageId());
@@ -85,7 +85,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
     var fo = findOne("select * from t_private_message where id=:id", Map.of("id", entity.getId()));
     var tuple =
         super.transactional(
-                storage.store(entity).then(storage.readMessage(entity.getId()).zipWith(fo)))
+                repo.insert(entity).then(repo.readMessage(entity.getId()).zipWith(fo)))
             .block();
 
     // 校验数据库存储数据
@@ -100,7 +100,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
   @Test
   void batchReadMessage() {
-    var storage = new PrivateMessageRepositoryImpl(dc);
+    var repo = new PrivateMessageRepositoryImpl(dc);
 
     var list = new ArrayList<PrivateMessage>();
     var receiverId = "TEST-RECEIVER";
@@ -120,14 +120,14 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
     var p =
         super.transactional(
             Flux.fromIterable(list)
-                .flatMap(storage::store)
-                .then(storage.batchReadMessage(ids, receiverId)));
+                .flatMap(repo::insert)
+                .then(repo.batchReadMessage(ids, receiverId)));
     StepVerifier.create(p).expectNext(max).expectComplete().verify();
   }
 
   @Test
   void findById() {
-    var storage = new PrivateMessageRepositoryImpl(dc);
+    var repo = new PrivateMessageRepositoryImpl(dc);
 
     var entity = new PrivateMessage();
     entity.setId(TestUtils.newMessageId());
@@ -138,7 +138,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
     entity.setUrl("https://via.placeholder.com/150");
     entity.setCustomArgs("{}");
 
-    var p = super.transactional(storage.store(entity).thenMany(storage.findById(entity.getId())));
+    var p = super.transactional(repo.insert(entity).thenMany(repo.findById(entity.getId())));
     StepVerifier.create(p)
         .assertNext(
             dbRow ->
@@ -187,7 +187,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
     var p =
         super.transactional(
-            Flux.fromIterable(list).flatMap(repo::store).thenMany(repo.find(query)));
+            Flux.fromIterable(list).flatMap(repo::insert).thenMany(repo.find(query)));
     var messages = new ArrayList<PrivateMessage>();
     StepVerifier.create(p)
         .recordWith(() -> messages)

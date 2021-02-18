@@ -81,7 +81,7 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
             .build();
-    var p2 = groupMessageRepository.store(entity);
+    var p2 = groupMessageRepository.insert(entity);
     return p2.thenMany(p1).then();
   }
 }
