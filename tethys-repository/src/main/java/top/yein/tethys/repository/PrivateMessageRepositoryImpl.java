@@ -2,6 +2,7 @@ package top.yein.tethys.repository;
 
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.Parameter;
 import reactor.core.publisher.Flux;
@@ -21,6 +22,9 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
           + " VALUES(:id,:senderId,:receiverId,:kind,:content,:url,:customArgs)";
   private static final String READ_MESSAGE_SQL =
       "UPDATE t_private_message SET unread=0,update_time=now() WHERE id=:id";
+  private static final String BATCH_READ_MESSAGE_SQL =
+      "UPDATE t_private_message SET unread=0,update_time=now()"
+          + " WHERE id in (:ids) AND receiver_id=:receiverId";
   private static final String FIND_BY_ID_SQL = "select * from t_private_message where id=:id";
   private static final String FIND_SQL =
       "SELECT * FROM t_private_message"
@@ -56,6 +60,15 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   @Override
   public Mono<Integer> readMessage(String id) {
     return dc.sql(READ_MESSAGE_SQL).bind("id", id).fetch().rowsUpdated();
+  }
+
+  @Override
+  public Mono<Integer> batchReadMessage(List<String> ids, String receiverId) {
+    return dc.sql(BATCH_READ_MESSAGE_SQL)
+        .bind("ids", ids)
+        .bind("receiverId", receiverId)
+        .fetch()
+        .rowsUpdated();
   }
 
   @Override

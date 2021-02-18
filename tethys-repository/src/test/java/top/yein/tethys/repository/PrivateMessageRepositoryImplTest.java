@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
@@ -95,6 +96,33 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
           s.assertThat(dbRow.get("unread")).as("unread").isEqualTo((short) 0);
           s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
         });
+  }
+
+  @Test
+  void batchReadMessage() {
+    var storage = new PrivateMessageRepositoryImpl(dc);
+
+    var list = new ArrayList<PrivateMessage>();
+    var receiverId = "TEST-RECEIVER";
+    var max = 100;
+    for (int i = 0; i < max; i++) {
+      var entity = new PrivateMessage();
+      entity.setId(TestUtils.newMessageId());
+      entity.setSenderId("TEST-SENDER");
+      entity.setReceiverId(receiverId);
+      entity.setKind(MessageKind.TEXT.getCode());
+      entity.setContent("unit test");
+      entity.setUrl("https://via.placeholder.com/150");
+      entity.setCustomArgs("{}");
+      list.add(entity);
+    }
+    var ids = list.stream().map(PrivateMessage::getId).collect(Collectors.toList());
+    var p =
+        super.transactional(
+            Flux.fromIterable(list)
+                .flatMap(storage::store)
+                .then(storage.batchReadMessage(ids, receiverId)));
+    StepVerifier.create(p).expectNext(max).expectComplete().verify();
   }
 
   @Test

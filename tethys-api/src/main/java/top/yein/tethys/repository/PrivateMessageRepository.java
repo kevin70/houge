@@ -1,5 +1,6 @@
 package top.yein.tethys.repository;
 
+import java.util.List;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.PrivateMessage;
@@ -27,6 +28,15 @@ public interface PrivateMessageRepository {
    * @return RS
    */
   Mono<Integer> readMessage(String id);
+
+  /**
+   * 批量将接收者的消息设置为已读.
+   *
+   * @param ids 消息 IDs
+   * @param receiverId 接收者
+   * @return 受影响行数
+   */
+  Mono<Integer> batchReadMessage(List<String> ids, String receiverId);
 
   /**
    * 根据消息 ID 查询私聊信息.
