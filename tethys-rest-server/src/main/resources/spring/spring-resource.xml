@@ -15,5 +15,14 @@
   <bean id="privateMessageResource" class="top.yein.tethys.rest.resource.PrivateMessageResource">
     <constructor-arg name="privateMessageService" ref="privateMessageService"/>
   </bean>
-
+  <bean id="groupMessageResource" class="top.yein.tethys.rest.resource.GroupMessageResource">
+    <constructor-arg name="groupMessageService" ref="groupMessageService"/>
+  </bean>
+  <bean id="customRouters" class="top.yein.tethys.rest.server.CustomRouters">
+    <constructor-arg name="authInterceptor" ref="authenticationInterceptor"/>
+    <constructor-arg name="tokenResource" ref="tokenResource"/>
+    <constructor-arg name="messageIdResource" ref="messageIdResource"/>
+    <constructor-arg name="privateMessageResource" ref="privateMessageResource"/>
+    <constructor-arg name="groupMessageResource" ref="groupMessageResource"/>
+  </bean>
 </beans>

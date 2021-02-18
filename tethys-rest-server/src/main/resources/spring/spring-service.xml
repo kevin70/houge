@@ -6,5 +6,8 @@
   <bean id="privateMessageService" class="top.yein.tethys.service.PrivateMessageServiceImpl">
     <constructor-arg name="privateMessageRepository" ref="privateMessageRepository"/>
   </bean>
+  <bean id="groupMessageService" class="top.yein.tethys.service.GroupMessageServiceImpl">
+    <constructor-arg name="groupMessageRepository" ref="groupMessageRepository"/>
+  </bean>
 
 </beans>

@@ -41,14 +41,7 @@
 
   <bean id="restServer" class="top.yein.tethys.rest.server.RestServer">
     <constructor-arg name="addr" value="${rest-server.addr}"/>
-    <constructor-arg name="customRouters">
-      <bean class="top.yein.tethys.rest.server.CustomRouters">
-        <constructor-arg name="authInterceptor" ref="authenticationInterceptor"/>
-        <constructor-arg name="tokenResource" ref="tokenResource"/>
-        <constructor-arg name="messageIdResource" ref="messageIdResource"/>
-        <constructor-arg name="privateMessageResource" ref="privateMessageResource"/>
-      </bean>
-    </constructor-arg>
+    <constructor-arg name="customRouters" ref="customRouters"/>
   </bean>
 
 </beans>

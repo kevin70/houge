@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
 import top.yein.tethys.core.resource.TokenResource;
+import top.yein.tethys.rest.resource.GroupMessageResource;
 import top.yein.tethys.rest.resource.MessageIdResource;
 import top.yein.tethys.rest.resource.PrivateMessageResource;
 
@@ -33,16 +34,19 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
   private final TokenResource tokenResource;
   private final MessageIdResource messageIdResource;
   private final PrivateMessageResource privateMessageResource;
+  private final GroupMessageResource groupMessageResource;
 
   public CustomRouters(
       AuthenticationInterceptor authInterceptor,
       TokenResource tokenResource,
       MessageIdResource messageIdResource,
-      PrivateMessageResource privateMessageResource) {
+      PrivateMessageResource privateMessageResource,
+      GroupMessageResource groupMessageResource) {
     this.authInterceptor = authInterceptor;
     this.tokenResource = tokenResource;
     this.messageIdResource = messageIdResource;
     this.privateMessageResource = privateMessageResource;
+    this.groupMessageResource = groupMessageResource;
   }
 
   @Override
@@ -54,5 +58,8 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
     // 私聊
     routes.get(
         "/private-messages/me", authInterceptor.handle(privateMessageResource::findMessages));
+
+    // 群组聊天
+    routes.get("/group-messages", authInterceptor.handle(groupMessageResource::findMessages));
   }
 }
