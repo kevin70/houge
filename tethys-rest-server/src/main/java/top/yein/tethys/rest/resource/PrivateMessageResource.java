@@ -62,4 +62,15 @@ public class PrivateMessageResource extends AbstractRestSupport {
     //    json(request)
     return Mono.empty();
   }
+
+  /**
+   * 批量将消息设置为已读状态.
+   *
+   * @param request
+   * @param response
+   * @return
+   */
+  public Mono<Void> batchReadMessage(HttpServerRequest request, HttpServerResponse response) {
+    return Mono.empty();
+  }
 }
