@@ -25,6 +25,9 @@
   <Loggers>
     <Logger name="io.netty" level="info"/>
     <Logger name="io.netty.buffer.PooledByteBufAllocator" level="debug"/>
+    <Logger name="org.springframework" level="info"/>
+    <Logger name="reactor.netty" level="info"/>
+    <Logger name="io.r2dbc" level="info"/>
     <Root level="debug">
       <AppenderRef ref="Console"/>
     </Root>
