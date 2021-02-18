@@ -4,4 +4,5 @@ dependencies {
   api("io.projectreactor:reactor-core")
   api("com.fasterxml.jackson.core:jackson-databind")
   api("io.jsonwebtoken:jjwt-api")
+  api("org.mapstruct:mapstruct")
 }
