@@ -4,9 +4,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.PrivateMessage;
 import top.yein.tethys.query.PrivateMessageQuery;
 import top.yein.tethys.repository.PrivateMessageRepository;
+import top.yein.tethys.vo.BatchReadMessageVO;
 
 /**
  * 私聊服务对象.
@@ -55,5 +57,10 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
       query.setCreateTime(newTime);
     }
     return privateMessageRepository.find(query);
+  }
+
+  @Override
+  public Mono<Void> batchReadMessage(BatchReadMessageVO vo, String receiverId) {
+    return privateMessageRepository.batchReadMessage(vo.getIds(), receiverId).then();
   }
 }
