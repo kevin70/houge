@@ -34,5 +34,5 @@ public interface GroupMessageRepository {
    * @param query 查询对象
    * @return 群组消息
    */
-  Flux<GroupMessage> findByGid(GroupMessageQuery query);
+  Flux<GroupMessage> findMessages(GroupMessageQuery query);
 }

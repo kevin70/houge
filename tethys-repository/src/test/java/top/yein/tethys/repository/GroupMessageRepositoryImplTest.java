@@ -93,7 +93,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
   }
 
   @Test
-  void findByGid() {
+  void findMessages() {
     var repo = newGroupMessageRepository();
 
     var entity = new GroupMessage();
@@ -110,7 +110,7 @@ class GroupMessageRepositoryImplTest extends AbstractTestRepository {
     query.setCreateTime(LocalDateTime.now().minusSeconds(5));
     query.setLimit(10);
 
-    var p = super.transactional(repo.insert(entity).thenMany(repo.findByGid(query)));
+    var p = super.transactional(repo.insert(entity).thenMany(repo.findMessages(query)));
     var messages = p.collectList().block(Duration.ofSeconds(5));
     assertThat(messages.size()).isGreaterThanOrEqualTo(1);
 

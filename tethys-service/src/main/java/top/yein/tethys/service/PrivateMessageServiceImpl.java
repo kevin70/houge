@@ -42,7 +42,7 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
    * @param query 查询对象
    */
   @Override
-  public Flux<PrivateMessage> find(PrivateMessageQuery query) {
+  public Flux<PrivateMessage> findRecentMessages(PrivateMessageQuery query) {
     var createTime = query.getCreateTime();
     var now = LocalDateTime.now();
     var d = Duration.between(createTime, now);
@@ -56,7 +56,7 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
           newTime);
       query.setCreateTime(newTime);
     }
-    return privateMessageRepository.find(query);
+    return privateMessageRepository.findMessages(query);
   }
 
   @Override

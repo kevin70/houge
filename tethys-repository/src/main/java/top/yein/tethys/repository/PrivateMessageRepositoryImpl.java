@@ -26,7 +26,7 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
       "UPDATE t_private_message SET unread=0,update_time=now()"
           + " WHERE id in (:ids) AND receiver_id=:receiverId";
   private static final String FIND_BY_ID_SQL = "select * from t_private_message where id=:id";
-  private static final String FIND_SQL =
+  private static final String FIND_MESSAGES_SQL =
       "SELECT * FROM t_private_message"
           + " WHERE receiver_id=:receiverId AND create_time>=:createTime"
           + " ORDER BY create_time"
@@ -77,8 +77,8 @@ public class PrivateMessageRepositoryImpl implements PrivateMessageRepository {
   }
 
   @Override
-  public Flux<PrivateMessage> find(PrivateMessageQuery query) {
-    return dc.sql(FIND_SQL)
+  public Flux<PrivateMessage> findMessages(PrivateMessageQuery query) {
+    return dc.sql(FIND_MESSAGES_SQL)
         .bind("receiverId", query.getReceiverId())
         .bind("createTime", query.getCreateTime())
         .bind("limit", query.getLimit())

@@ -35,7 +35,7 @@ public class PrivateMessageResource extends AbstractRestSupport {
    * @param response 响应对象
    * @return RS
    */
-  public Mono<Void> findMessages(HttpServerRequest request, HttpServerResponse response) {
+  public Mono<Void> findRecentMessages(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
         .flatMap(
             ac -> {
@@ -49,7 +49,7 @@ public class PrivateMessageResource extends AbstractRestSupport {
               query.setOffset(queryInt(request, "offset", 0));
 
               return privateMessageService
-                  .find(query)
+                  .findRecentMessages(query)
                   .collectList()
                   .flatMap(privateMessages -> json(response, privateMessages));
             });

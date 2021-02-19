@@ -20,7 +20,7 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
       "INSERT INTO t_group_message(id,group_id,sender_id,kind,content,url,custom_args)"
           + " VALUES(:id,:groupId,:senderId,:kind,:content,:url,:customArgs)";
   private static final String FIND_BY_ID_SQL = "SELECT * FROM t_group_message WHERE id=:id";
-  private static final String FIND_BY_GID_SQL =
+  private static final String FIND_MESSAGES_SQL =
       "SELECT * FROM t_group_message"
           + " WHERE group_id=:groupId and create_time >= :createTime"
           + " LIMIT :limit OFFSET :offset";
@@ -56,8 +56,8 @@ public class GroupMessageRepositoryImpl implements GroupMessageRepository {
   }
 
   @Override
-  public Flux<GroupMessage> findByGid(GroupMessageQuery query) {
-    return dc.sql(FIND_BY_GID_SQL)
+  public Flux<GroupMessage> findMessages(GroupMessageQuery query) {
+    return dc.sql(FIND_MESSAGES_SQL)
         .bind("groupId", query.getGroupId())
         .bind("createTime", query.getCreateTime())
         .bind("limit", query.getLimit())

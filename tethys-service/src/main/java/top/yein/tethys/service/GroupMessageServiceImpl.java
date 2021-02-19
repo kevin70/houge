@@ -36,7 +36,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
   }
 
   @Override
-  public Flux<GroupMessageDTO> find(GroupMessageQuery query) {
+  public Flux<GroupMessageDTO> findRecentMessages(GroupMessageQuery query) {
     var createTime = query.getCreateTime();
     var now = LocalDateTime.now();
     var d = Duration.between(createTime, now);
@@ -52,7 +52,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     }
 
     return groupMessageRepository
-        .findByGid(query)
+        .findMessages(query)
         .map(GroupMessageMapper.INSTANCE::toGroupMessageDTO);
   }
 }

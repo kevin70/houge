@@ -17,7 +17,7 @@ public interface PrivateMessageService {
    * @param query
    * @return
    */
-  Flux<PrivateMessage> find(PrivateMessageQuery query);
+  Flux<PrivateMessage> findRecentMessages(PrivateMessageQuery query);
 
   /**
    * 批量更新消息已读状态.

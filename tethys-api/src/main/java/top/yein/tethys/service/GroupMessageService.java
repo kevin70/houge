@@ -17,5 +17,5 @@ public interface GroupMessageService {
    * @param query 查询对象
    * @return 消息列表
    */
-  Flux<GroupMessageDTO> find(GroupMessageQuery query);
+  Flux<GroupMessageDTO> findRecentMessages(GroupMessageQuery query);
 }

@@ -57,13 +57,14 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
 
     // 私人聊天
     routes.get(
-        "/private-messages/recent", authInterceptor.handle(privateMessageResource::findMessages));
+        "/private-messages/recent",
+        authInterceptor.handle(privateMessageResource::findRecentMessages));
     routes.put(
         "/private-messages/read-status/batch",
         authInterceptor.handle(privateMessageResource::batchReadMessage));
 
     // 群组聊天
     routes.get(
-        "/group-messages/recent", authInterceptor.handle(groupMessageResource::findMessages));
+        "/group-messages/recent", authInterceptor.handle(groupMessageResource::findRecentMessages));
   }
 }

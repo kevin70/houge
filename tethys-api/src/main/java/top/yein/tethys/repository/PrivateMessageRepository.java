@@ -52,5 +52,5 @@ public interface PrivateMessageRepository {
    * @param query 查询对象
    * @return 私人消息
    */
-  Flux<PrivateMessage> find(PrivateMessageQuery query);
+  Flux<PrivateMessage> findMessages(PrivateMessageQuery query);
 }

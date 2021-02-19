@@ -40,8 +40,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
     var tuple =
         super.transactional(
-                repo
-                    .insert(entity)
+                repo.insert(entity)
                     .zipWith(
                         findOne(
                             "select * from t_private_message where id=:id",
@@ -84,8 +83,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
     var fo = findOne("select * from t_private_message where id=:id", Map.of("id", entity.getId()));
     var tuple =
-        super.transactional(
-                repo.insert(entity).then(repo.readMessage(entity.getId()).zipWith(fo)))
+        super.transactional(repo.insert(entity).then(repo.readMessage(entity.getId()).zipWith(fo)))
             .block();
 
     // 校验数据库存储数据
@@ -165,7 +163,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
   }
 
   @Test
-  void find() {
+  void findMessages() {
     var repo = new PrivateMessageRepositoryImpl(dc);
     var list = new ArrayList<PrivateMessage>();
     var max = 100;
@@ -187,7 +185,7 @@ class PrivateMessageRepositoryImplTest extends AbstractTestRepository {
 
     var p =
         super.transactional(
-            Flux.fromIterable(list).flatMap(repo::insert).thenMany(repo.find(query)));
+            Flux.fromIterable(list).flatMap(repo::insert).thenMany(repo.findMessages(query)));
     var messages = new ArrayList<PrivateMessage>();
     StepVerifier.create(p)
         .recordWith(() -> messages)
