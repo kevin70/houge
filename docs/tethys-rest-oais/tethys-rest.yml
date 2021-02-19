@@ -13,6 +13,11 @@ tags:
     description: 私人消息
   - name: GROUP-MESSAGE
     description: 群组消息
+x-tagGroups:
+  - name: 支持
+    tags: [TEST]
+  - name: 消息
+    tags: [MESSAGE, PRIVATE-MESSAGE, GROUP-MESSAGE]
 paths:
   /token/{uid}:
     parameters:
