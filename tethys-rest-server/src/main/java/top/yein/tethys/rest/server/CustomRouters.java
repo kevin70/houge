@@ -51,20 +51,17 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
 
   @Override
   public void accept(HttpServerRoutes routes) {
+    // @formatter:off
     // 访问令牌
     routes.post("/token/{uid}", tokenResource::generateToken);
     routes.get("/message-ids", authInterceptor.handle(messageIdResource::getMessageIds));
 
     // 私人聊天
-    routes.get(
-        "/private-messages/recent",
-        authInterceptor.handle(privateMessageResource::findRecentMessages));
-    routes.put(
-        "/private-messages/read-status/batch",
-        authInterceptor.handle(privateMessageResource::batchReadMessage));
+    routes.get("/private-messages/recent", authInterceptor.handle(privateMessageResource::findRecentMessages));
+    routes.put("/private-messages/read-status/batch", authInterceptor.handle(privateMessageResource::batchReadMessage));
 
     // 群组聊天
-    routes.get(
-        "/group-messages/recent", authInterceptor.handle(groupMessageResource::findRecentMessages));
+    routes.get( "/group-messages/recent", authInterceptor.handle(groupMessageResource::findRecentMessages));
+    // @formatter:on
   }
 }
