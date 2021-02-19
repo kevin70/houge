@@ -12,5 +12,5 @@ import lombok.Data;
 public class BatchReadMessageVO {
 
   /** 消息 IDs. */
-  private List<String> ids;
+  private List<String> messageIds;
 }
