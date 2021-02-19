@@ -2,7 +2,7 @@ package top.yein.tethys.service;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.entity.PrivateMessage;
+import top.yein.tethys.dto.PrivateMessageDTO;
 import top.yein.tethys.query.PrivateMessageQuery;
 import top.yein.tethys.vo.BatchReadMessageVO;
 
@@ -14,10 +14,12 @@ import top.yein.tethys.vo.BatchReadMessageVO;
 public interface PrivateMessageService {
 
   /**
-   * @param query
-   * @return
+   * 查询最近的私人消息.
+   *
+   * @param query 查询条件
+   * @return 信息列表
    */
-  Flux<PrivateMessage> findRecentMessages(PrivateMessageQuery query);
+  Flux<PrivateMessageDTO> findRecentMessages(PrivateMessageQuery query);
 
   /**
    * 批量更新消息已读状态.

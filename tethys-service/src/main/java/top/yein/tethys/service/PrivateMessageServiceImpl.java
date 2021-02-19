@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.entity.PrivateMessage;
+import top.yein.tethys.dto.PrivateMessageDTO;
+import top.yein.tethys.mapper.PrivateMessageMapper;
 import top.yein.tethys.query.PrivateMessageQuery;
 import top.yein.tethys.repository.PrivateMessageRepository;
 import top.yein.tethys.vo.BatchReadMessageVO;
@@ -42,7 +43,7 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
    * @param query 查询对象
    */
   @Override
-  public Flux<PrivateMessage> findRecentMessages(PrivateMessageQuery query) {
+  public Flux<PrivateMessageDTO> findRecentMessages(PrivateMessageQuery query) {
     var createTime = query.getCreateTime();
     var now = LocalDateTime.now();
     var d = Duration.between(createTime, now);
@@ -56,7 +57,9 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
           newTime);
       query.setCreateTime(newTime);
     }
-    return privateMessageRepository.findMessages(query);
+    return privateMessageRepository
+        .findMessages(query)
+        .map(PrivateMessageMapper.INSTANCE::toPrivateMessageDTO);
   }
 
   @Override
