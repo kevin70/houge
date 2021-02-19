@@ -61,6 +61,10 @@ public class PrivateMessageServiceImpl implements PrivateMessageService {
 
   @Override
   public Mono<Void> batchReadMessage(BatchReadMessageVO vo, String receiverId) {
-    return privateMessageRepository.batchReadMessage(vo.getIds(), receiverId).then();
+    return privateMessageRepository
+        .batchReadMessage(vo.getMessageIds(), receiverId)
+        .doOnSuccess(
+            n -> log.debug("用户[{}]批量将消息{}设置为已读状态，已修改{}行", receiverId, vo.getMessageIds(), n))
+        .then();
   }
 }
