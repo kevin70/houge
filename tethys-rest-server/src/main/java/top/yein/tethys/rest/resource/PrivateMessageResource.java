@@ -1,5 +1,6 @@
 package top.yein.tethys.rest.resource;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.LocalDateTime;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -7,6 +8,7 @@ import reactor.netty.http.server.HttpServerResponse;
 import top.yein.tethys.core.http.AbstractRestSupport;
 import top.yein.tethys.query.PrivateMessageQuery;
 import top.yein.tethys.service.PrivateMessageService;
+import top.yein.tethys.vo.BatchReadMessageVO;
 
 /**
  * 私聊消息 REST 接口.
@@ -71,6 +73,11 @@ public class PrivateMessageResource extends AbstractRestSupport {
    * @return
    */
   public Mono<Void> batchReadMessage(HttpServerRequest request, HttpServerResponse response) {
-    return Mono.empty();
+    return authContext()
+        .flatMap(
+            ac ->
+                json(request, BatchReadMessageVO.class)
+                    .flatMap(vo -> privateMessageService.batchReadMessage(vo, ac.uid())))
+        .then(response.status(HttpResponseStatus.NO_CONTENT).send());
   }
 }
