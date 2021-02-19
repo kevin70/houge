@@ -55,14 +55,15 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
     routes.post("/token/{uid}", tokenResource::generateToken);
     routes.get("/message-ids", authInterceptor.handle(messageIdResource::getMessageIds));
 
-    // 私聊
+    // 私人聊天
     routes.get(
-        "/private-messages/me", authInterceptor.handle(privateMessageResource::findMessages));
+        "/private-messages/recent", authInterceptor.handle(privateMessageResource::findMessages));
     routes.put(
-        "/private-messages/read/batch",
+        "/private-messages/read-status/batch",
         authInterceptor.handle(privateMessageResource::batchReadMessage));
 
     // 群组聊天
-    routes.get("/group-messages", authInterceptor.handle(groupMessageResource::findMessages));
+    routes.get(
+        "/group-messages/recent", authInterceptor.handle(groupMessageResource::findMessages));
   }
 }
