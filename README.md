@@ -30,6 +30,7 @@ Tethys 是采用 [Spring Reactor](https://projectreactor.io/) 开发的 IM Serve
     - [Google Java Format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
     - [SonarLint](https://www.sonarlint.org/intellij)
 - Redis
+- [websocat](https://github.com/vi/websocat) WebSocket 命令行测试工具
 
 ### Google Java Format 配置
 1. 去到 `File → Settings → Editor → Code Style`
