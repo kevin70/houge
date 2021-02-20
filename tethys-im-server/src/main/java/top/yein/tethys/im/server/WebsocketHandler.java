@@ -10,9 +10,11 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.DataInput;
 import java.io.IOException;
+import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -78,38 +80,50 @@ public class WebsocketHandler {
     final Connection[] connVal = new Connection[1];
     in.withConnection(conn -> connVal[0] = conn);
     final Channel channel = connVal[0].channel();
+    final Supplier<Mono<Void>> s =
+        () -> {
+          String accessToken;
+          try {
+            accessToken = getAuthorization(in);
+          } catch (IllegalArgumentException e) {
+            log.debug("[连接关闭] - 错误的认证参数 {} {}", in, e.getMessage());
+            return out.sendClose(WebSocketCloseStatus.INVALID_PAYLOAD_DATA.code(), e.getMessage());
+          }
 
-    return authService
-        .authenticate(getAuthorization(in))
-        .flatMap(
-            ac -> {
-              // 将会话添加至会话管理器
-              var session =
-                  new DefaultSession(sessionManager.sessionIdGenerator().nextId(), in, out, ac);
+          return authService
+              .authenticate(accessToken)
+              .flatMap(
+                  ac -> {
+                    // 将会话添加至会话管理器
+                    var session =
+                        new DefaultSession(
+                            sessionManager.sessionIdGenerator().nextId(), in, out, ac);
 
-              log.info(
-                  "channelId: {} > session add to session manager [sessionId={}, uid={}]",
-                  channel.id(),
-                  session.sessionId(),
-                  session.uid());
+                    log.info(
+                        "channelId: {} > session add to session manager [sessionId={}, uid={}]",
+                        channel.id(),
+                        session.sessionId(),
+                        session.uid());
 
-              // 会话清理
-              session
-                  .onClose()
-                  .doFinally(
-                      signalType -> {
-                        log.debug("会话关闭 session={}, signalType={}", session, signalType);
-                        sessionManager.remove(session).subscribe();
-                      })
-                  .subscribeOn(Schedulers.boundedElastic())
-                  .subscribe();
-              return sessionManager.add(session).thenReturn(session);
-            })
-        .flatMap(
-            session -> {
-              receiveFrames(in, session);
-              return out.neverComplete();
-            });
+                    // 会话清理
+                    session
+                        .onClose()
+                        .doFinally(
+                            signalType -> {
+                              log.debug("会话关闭 session={}, signalType={}", session, signalType);
+                              sessionManager.remove(session).subscribe();
+                            })
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .subscribe();
+                    return sessionManager.add(session).thenReturn(session);
+                  })
+              .flatMap(
+                  session -> {
+                    receiveFrames(in, session);
+                    return out.neverComplete();
+                  });
+        };
+    return Mono.defer(s).doOnError(e -> log.error("未处理的异常 {}", in, e));
   }
 
   private void receiveFrames(final WebsocketInbound in, final Session session) {
@@ -215,22 +229,21 @@ public class WebsocketHandler {
             });
   }
 
-  private String getAuthorization(WebsocketInbound in) {
-    // 认证
+  private String getAuthorization(WebsocketInbound in) throws IllegalArgumentException {
     var bearer = in.headers().get(HttpHeaderNames.AUTHORIZATION);
     if (bearer != null) {
       if (!bearer.startsWith(BEARER_TOKEN_PREFIX)) {
-        // FIXME 不支持的认证类型，响应错误信息
+        throw new IllegalArgumentException("header认证必须使用Bearer模式");
       }
       var token = bearer.substring(BEARER_TOKEN_PREFIX.length());
+      return token;
     }
 
     final var httpInfos = (HttpInfos) in;
     final var queryParams = new QueryStringDecoder(httpInfos.uri());
     final var params = queryParams.parameters().get(ACCESS_TOKEN_QUERY_NAME);
     if (params == null || params.isEmpty()) {
-      // FIXME 缺少认证参数响应错误
-      return null;
+      throw new IllegalArgumentException("QUERY中缺少\"access_token\"认证参数");
     }
     return params.get(0);
   }
