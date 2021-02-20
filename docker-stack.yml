@@ -1,0 +1,31 @@
+version: "3"
+services:
+  db:
+    image: postgres:13
+    networks:
+      - backend
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "123456"
+  im:
+    image: kevin70/tethys-im
+    networks:
+      - backend
+    ports:
+      - 11010:11010
+    environment:
+      MESSAGE_STORAGE_R2DBC_URL: r2dbc:postgresql://postgres:123456@db:5432/tethys
+    depends_on:
+      - db
+  rest:
+    image: kevin70/tethys-rest
+    networks:
+      - backend
+    ports:
+      - 11019:11019
+    environment:
+      MESSAGE_STORAGE_R2DBC_URL: r2dbc:postgresql://postgres:123456@db:5432/tethys
+    depends_on:
+      - db
+networks:
+  backend:
