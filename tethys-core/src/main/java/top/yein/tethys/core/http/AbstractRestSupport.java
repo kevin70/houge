@@ -34,7 +34,7 @@ import top.yein.tethys.util.ReactorHttpServerUtils;
 public abstract class AbstractRestSupport {
 
   /** 认证上下文存储的键值. */
-  protected static final Class<AuthContext> AUTH_CONTEXT_KEY = AuthContext.class;
+  public static final Class<AuthContext> AUTH_CONTEXT_KEY = AuthContext.class;
 
   /**
    * 获取 {@link HttpServerRequest} 查询参数值.
