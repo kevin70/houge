@@ -42,17 +42,19 @@ public class AuthenticationInterceptor extends AbstractRestSupport {
   public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> handle(
       BiFunction<? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>
           next) {
-    return (request, response) -> {
-      var accessToken = queryParam(request, ACCESS_TOKEN_QUERY_NAME);
-      if (accessToken == null || accessToken.isEmpty()) {
-        throw new BizCodeException(BizCode.C401, "缺少 access_token");
-      }
-      return authService
-          .authenticate(accessToken)
-          .flatMap(
-              (authContext) ->
-                  Mono.defer(() -> Mono.from(next.apply(request, response)))
-                      .contextWrite(Context.of(AUTH_CONTEXT_KEY, authContext)));
-    };
+    return (request, response) ->
+        Mono.defer(
+            () -> {
+              var accessToken = queryParam(request, ACCESS_TOKEN_QUERY_NAME);
+              if (accessToken == null || accessToken.isEmpty()) {
+                throw new BizCodeException(BizCode.C401, "缺少 access_token");
+              }
+              return authService
+                  .authenticate(accessToken)
+                  .flatMap(
+                      (authContext) ->
+                          Mono.defer(() -> Mono.from(next.apply(request, response)))
+                              .contextWrite(Context.of(AUTH_CONTEXT_KEY, authContext)));
+            });
   }
 }
