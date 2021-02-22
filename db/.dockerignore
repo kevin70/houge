@@ -1,6 +1,5 @@
 # OSX
 .DS_Store
 
-migrations
 build.gradle
 schema.sql
