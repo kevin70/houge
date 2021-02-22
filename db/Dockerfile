@@ -17,12 +17,15 @@ RUN wget https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY
   && mv flyway-${FLYWAY_VERSION}/* . \
   && rm flyway-commandline-${FLYWAY_VERSION}.tar.gz
 
+# See https://github.com/eficode/wait-for
+ENV WAIT_FOR_VERSION 2.0.0
+RUN wget https://github.com/eficode/wait-for/archive/v${WAIT_FOR_VERSION}.tar.gz \
+  && tar -xzf v${WAIT_FOR_VERSION}.tar.gz \
+  && mv wait-for-${WAIT_FOR_VERSION}/wait-for . \
+  && rm v${WAIT_FOR_VERSION}.tar.gz
+
 # 将所有的 SQL 文件拷贝至 flyway/sql 目录中
 COPY migrations/* sql/
-
-# 添加 wait-for shell
-COPY --chown=flyway:flyway wait-for .
-RUN ["chmod", "+x", "wait-for"]
 
 ENV PATH="/flyway:${PATH}"
 
