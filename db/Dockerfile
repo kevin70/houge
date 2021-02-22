@@ -15,10 +15,11 @@ ENV FLYWAY_VERSION 7.5.3
 RUN wget https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}.tar.gz \
   && tar -xzf flyway-commandline-${FLYWAY_VERSION}.tar.gz \
   && mv flyway-${FLYWAY_VERSION}/* . \
-  && rm flyway-commandline-${FLYWAY_VERSION}.tar.gz \
+  && rm flyway-commandline-${FLYWAY_VERSION}.tar.gz
 
 # 将所有的 SQL 文件拷贝至 flyway/sql 目录中
 COPY migrations/* sql/
+
 # 添加 wait-for shell
 COPY wait-for .
 RUN chmod +x wait-for
