@@ -1,0 +1,7 @@
+apply plugin: "com.bmuschko.docker-remote-api"
+
+task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+  group "docker"
+  inputDir = projectDir
+  images.addAll("kevin70/tethys-db-migration:latest", "kevin70/tethys-db-migration:${version}".toString())
+}

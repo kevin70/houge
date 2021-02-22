@@ -7,3 +7,5 @@ include ":tethys-repository"
 include ":tethys-service"
 include ":tethys-im-server"
 include ":tethys-rest-server"
+
+include ":db"
