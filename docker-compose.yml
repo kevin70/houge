@@ -3,6 +3,7 @@ services:
   # PostgreSQL 数据库
   db:
     image: "postgres:13"
+    container_name: tethys-db
     networks:
       - backend
     environment:
@@ -12,18 +13,21 @@ services:
   # 数据库 schema 更新
   db-migration:
     image: kevin70/tethys-db-migration
+    container_name: tethys-db-migration
     networks:
       - backend
     environment:
       FLYWAY_URL: "jdbc:postgresql://db/tethys"
       FLYWAY_USER: "tethys"
       FLYWAY_PASSWORD: "123456"
+    command: migrate
     depends_on:
       - db
 
   #  IM 推送服务
   im:
     image: kevin70/tethys-im
+    container_name: tethys-im
     networks:
       - backend
     ports:
@@ -36,6 +40,7 @@ services:
   # IM REST 服务
   rest:
     image: kevin70/tethys-rest
+    container_name: tethys-rest
     networks:
       - backend
     ports:
