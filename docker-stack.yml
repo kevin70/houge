@@ -12,6 +12,8 @@ services:
   # 数据库 schema 更新
   db-migration:
     image: kevin70/tethys-db-migration
+    networks:
+      - backend
     environment:
       FLYWAY_URL: "jdbc:postgresql://db/tethys"
       FLYWAY_USER: "tethys"
