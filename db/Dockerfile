@@ -21,7 +21,7 @@ RUN wget https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY
 COPY migrations/* sql/
 
 # 添加 wait-for shell
-COPY wait-for .
+COPY --chown=flyway:flyway wait-for .
 RUN ["chmod", "+x", "wait-for"]
 
 ENV PATH="/flyway:${PATH}"
