@@ -1,12 +1,25 @@
 version: "3"
 services:
+  # PostgreSQL 数据库
   db:
-    image: postgres:13
+    image: "postgres:13"
     networks:
       - backend
     environment:
-      POSTGRES_USER: "postgres"
+      POSTGRES_USER: "tethys"
       POSTGRES_PASSWORD: "123456"
+
+  # 数据库 schema 更新
+  db-migration:
+    image: kevin70/tethys-db-migration
+    environment:
+      FLYWAY_URL: "jdbc:postgresql://db/tethys"
+      FLYWAY_USER: "tethys"
+      FLYWAY_PASSWORD: "123456"
+    depends_on:
+      - db
+
+  #  IM 推送服务
   im:
     image: kevin70/tethys-im
     networks:
@@ -14,9 +27,11 @@ services:
     ports:
       - 11010:11010
     environment:
-      MESSAGE_STORAGE_R2DBC_URL: r2dbc:postgresql://postgres:123456@db:5432/tethys
+      TETHYS_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
     depends_on:
-      - db
+      - db-migration
+
+  # IM REST 服务
   rest:
     image: kevin70/tethys-rest
     networks:
@@ -24,8 +39,8 @@ services:
     ports:
       - 11019:11019
     environment:
-      MESSAGE_STORAGE_R2DBC_URL: r2dbc:postgresql://postgres:123456@db:5432/tethys
+      TETHYS_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
     depends_on:
-      - db
+      - db-migration
 networks:
   backend:
