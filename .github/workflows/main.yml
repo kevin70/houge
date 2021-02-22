@@ -74,8 +74,8 @@ jobs:
         run: |
           PROJECT_VERSION=$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push kevin70/tethys-tethys-db-migration:latest
-          docker push kevin70/tethys-tethys-db-migration:$PROJECT_VERSION
+          docker push kevin70/tethys-db-migration:latest
+          docker push kevin70/tethys-db-migration:$PROJECT_VERSION
           docker push kevin70/tethys-im:latest
           docker push kevin70/tethys-im:$PROJECT_VERSION
           docker push kevin70/tethys-rest:latest
