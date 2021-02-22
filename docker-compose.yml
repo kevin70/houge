@@ -20,7 +20,8 @@ services:
       FLYWAY_URL: "jdbc:postgresql://db/tethys"
       FLYWAY_USER: "tethys"
       FLYWAY_PASSWORD: "123456"
-    command: migrate
+    entrypoint: sh
+    command: -c "wait-for db:5432 && flyway migrate"
     depends_on:
       - db
 
