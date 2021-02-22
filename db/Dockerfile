@@ -22,7 +22,7 @@ COPY migrations/* sql/
 
 # 添加 wait-for shell
 COPY wait-for .
-RUN chmod +x wait-for
+RUN ["chmod", "+x", "wait-for"]
 
 ENV PATH="/flyway:${PATH}"
 
