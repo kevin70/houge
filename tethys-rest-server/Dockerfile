@@ -1,8 +1,6 @@
 FROM openjdk:11-jre-buster
 LABEL maintainer="kzou227@qq.com"
 
-RUN apk --no-cache add --update bash openssl
-
 WORKDIR /app
 COPY app.jar /app/app.jar
 
