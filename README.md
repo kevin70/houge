@@ -42,6 +42,7 @@ Tethys 是采用 [Spring Reactor](https://projectreactor.io/) 开发的 IM Serve
 ## 文档
 - [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
+- [安装部署](docs/deployment/install.md)
 - [分布式消息 ID 设计](docs/design/message_id.md)
 - [REST OpenAPI 接口文档](https://kk70.gitee.io/tethys/tethys-rest-oais/tethys-rest.html)
 
