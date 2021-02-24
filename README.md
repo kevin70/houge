@@ -40,6 +40,7 @@ Tethys 是采用 [Spring Reactor](https://projectreactor.io/) 开发的 IM Serve
 5. 确保选择 GoogleStyle 作为当前方案
 
 ## 文档
+- [使用手册](docs/manual/index.md)
 - [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
 - [安装部署](docs/deployment/install.md)
