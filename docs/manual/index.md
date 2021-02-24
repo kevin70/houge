@@ -42,9 +42,12 @@ $ docker run -d --name postgres -p 5432:5432 \
 > create database tethys;
 > ```
 
-到这里 PostgreSQL 数据库已经安装完成，接下来我们需要安装 Tethys 数据库结构信息。
+到这里 PostgreSQL 数据库已经安装完成。
 
-我们采用 [Flyway](https://flywaydb.org/) 管理数据库结构，并且已发布了 Docker 镜像 `tethys-db-migration`，通过下面的方式可以帮助你快速安装。
+---
+
+接下来我们需要安装 Tethys 数据库结构信息。 我们采用 [Flyway](https://flywaydb.org/) 管理数据库结构，并且已发布了 Docker 镜像 `tethys-db-migration`
+，通过下面的方式可以帮助你快速安装。
 
 ```
 $ docker run --rm \
@@ -61,7 +64,7 @@ $ docker run --rm \
 - `POSTGRES_USER` PostgreSQL 数据库的连接用户名；
 - `POSTGRES_PASSWORD` PostgreSQL 数据库的连接用户密码。
 
-在控制台中打印的日志类似如下信息时数据库结构已经安装完成了。
+---
 
 ```
 Flyway Community Edition 7.5.3 by Redgate
@@ -73,6 +76,8 @@ Creating Schema History table "public"."flyway_schema_history" ...
 ......
 Successfully applied 5 migrations to schema "public" (execution time 00:00.122s)
 ```
+
+在控制台中打印的日志类似如上信息时数据库结构已经安装完成。
 
 ### 安装 IM 服务
 
