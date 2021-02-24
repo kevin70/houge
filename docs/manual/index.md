@@ -81,4 +81,66 @@ Successfully applied 5 migrations to schema "public" (execution time 00:00.122s)
 
 ### 安装 IM 服务
 
+IM 镜像名称是 `kevin70/tethys-im`，通过下面的命令可快速安装启动 IM 服务。
+
+```
+$ docker run -d --name tethys-im \
+    -e TETHYS_MESSAGE_STORAGE_R2DBC_URL=[R2DBC_URL] \
+    -p 11010:11010 \
+    kevin70/tethys-im
+```
+
+- `R2DBC_URL` PostgreSQL 数据库连接 URL。
+
+> **R2DBC URL 格式：**
+> ```
+>  r2dbc:a-driver:pipes://localhost:3306/my_database?locale=en_US
+>  \___/ \______/ \___/   \____________/\__________/\___________/
+>    |       |      |           |           |           |
+>  scheme  driver  protocol  authority    path        query
+> ```
+>
+> **配置示例：**
+> ```
+> r2dbc:postgresql://localhost:123456@postgres:5432/tethys
+> ```
+
+```
+exec java -XX:+ExitOnOutOfMemoryError -cp . -jar /app/app.jar
+......
+...... 省略的日志
+......
+05:21:20.843 [main] INFO  top.yein.tethys.im.server.ImServer 75 - IM Server 启动完成 - 0.0.0.0:11010
+05:21:20.844 [main] INFO  top.yein.tethys.im.main.ImMain 36 - tethys-im 服务启动成功 fid=108932
+```
+
+在控制台中打印的日志类似如上信息时 IM 服务已经安装完成。
+
 ### 安装 REST 服务
+
+REST 镜像名称是 `kevin70/tethys-REST`，通过下面的命令可快速安装启动 REST 服务。
+
+```
+$ docker run -d --name tethys-im \
+    -e TETHYS_MESSAGE_STORAGE_R2DBC_URL=[R2DBC_URL] \
+    -p 11019:11019 \
+    kevin70/tethys-im
+```
+
+- `R2DBC_URL` PostgreSQL 数据库连接 URL。
+
+```
+exec java -XX:+ExitOnOutOfMemoryError -cp . -jar /app/app.jar
+......
+...... 省略的日志
+......
+05:21:23.955 [main] INFO  top.yein.tethys.rest.server.RestServer 53 - REST Server 启动完成 - 0.0.0.0:11019
+05:21:23.956 [main] INFO  top.yein.tethys.rest.main.RestMain 36 - tethys-rest 服务启动成功 fid=30931
+```
+
+在控制台中打印的日志类似如上信息时 REST 服务已经安装完成。
+
+## IM 聊天测试
+
+
+
