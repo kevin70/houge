@@ -1,6 +1,14 @@
-# 使用手册
+使用手册 <!-- omit in toc -->
+===
 
-## 安装
+- [安装部署](#安装部署)
+  - [先决条件](#先决条件)
+  - [安装 PostgreSQL](#安装-postgresql)
+  - [安装 IM 服务](#安装-im-服务)
+  - [安装 REST 服务](#安装-rest-服务)
+- [IM 聊天测试](#im-聊天测试)
+
+## 安装部署
 
 安装说明以 [Docker](https://docs.docker.com) 为基础承载所有 Tethys 服务运行。
 
