@@ -1,5 +1,8 @@
 package top.yein.tethys.im.main;
 
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
+import io.micrometer.core.instrument.logging.LoggingRegistryConfig;
 import java.util.concurrent.CountDownLatch;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -25,6 +28,10 @@ public class ImMain implements Runnable {
 
   @Override
   public void run() {
+    // 程序程序度量
+    var loggingMeterRegistry = LoggingMeterRegistry.builder(LoggingRegistryConfig.DEFAULT).build();
+    Metrics.addRegistry(loggingMeterRegistry);
+
     var applicationContext = new ClassPathXmlApplicationContext("classpath*:spring.xml");
     applicationContext.start();
 

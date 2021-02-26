@@ -21,10 +21,22 @@
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{36} %L - %msg%n"/>
     </Console>
+    <File name="AppMetrics" fileName="logs/tethys-im-metrics.log">
+      <PatternLayout>
+        <Pattern>%m%n</Pattern>
+      </PatternLayout>
+    </File>
+    <Async name="AppMetricsAsync">
+      <AppenderRef ref="AppMetrics"/>
+    </Async>
   </Appenders>
   <Loggers>
     <Logger name="io.netty" level="info"/>
     <Logger name="io.netty.buffer.PooledByteBufAllocator" level="debug"/>
+    <!-- 应用程序度量日志配置 -->
+    <Logger name="io.micrometer.core.instrument.logging.LoggingMeterRegistry" additivity="false">
+      <AppenderRef ref="AppMetricsAsync"/>
+    </Logger>
     <Root level="debug">
       <AppenderRef ref="Console"/>
     </Root>
