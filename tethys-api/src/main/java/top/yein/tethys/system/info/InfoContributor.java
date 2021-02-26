@@ -1,5 +1,7 @@
 package top.yein.tethys.system.info;
 
+import reactor.core.publisher.Mono;
+
 /**
  * 提供其他信息详细信息.
  *
@@ -9,9 +11,9 @@ package top.yein.tethys.system.info;
 public interface InfoContributor {
 
   /**
-   * 使用指定的 {@link Info.Builder} 生成器生成其它详细信息.
+   * 返回应用信息.
    *
-   * @param builder 生成器
+   * @return 应用信息
    */
-  void contribute(Info.Builder builder);
+  Mono<Info> contribute();
 }
