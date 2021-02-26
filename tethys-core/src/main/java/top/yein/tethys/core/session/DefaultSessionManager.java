@@ -17,12 +17,12 @@ package top.yein.tethys.core.session;
 
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
@@ -48,7 +48,8 @@ public class DefaultSessionManager implements SessionManager {
   private final Set<SessionListener> sessionListeners = new LinkedHashSet<>();
 
   // Session 记数器
-  private final Counter sessionCounter = Metrics.counter("xim.session.counter");
+  private final AtomicInteger sessionCounter =
+      Metrics.gauge("tethys.session.counts", new AtomicInteger(0));
   // 所有的 Session
   private final AsyncCache<String, Session> sessions = Caffeine.newBuilder().buildAsync();
   // 所有用户的 Session
@@ -93,7 +94,8 @@ public class DefaultSessionManager implements SessionManager {
                             throw new BizCodeException(BizCodes.C3500)
                                 .addContextValue("sessionId", session.sessionId());
                           }
-                          sessionCounter.increment();
+                          // 增加Session数量
+                          sessionCounter.incrementAndGet();
                         })
                     .filter(s -> !s.isAnonymous())
                     .flatMap(
@@ -117,6 +119,8 @@ public class DefaultSessionManager implements SessionManager {
     final Supplier<Mono<Void>> s =
         () -> {
           sessions.synchronous().invalidate(session.sessionId());
+          // 减少Session数量
+          sessionCounter.decrementAndGet();
           removeFromUidSessions(session);
           return Mono.empty();
         };
