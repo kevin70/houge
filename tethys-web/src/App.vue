@@ -1,10 +1,26 @@
 <template>
-  <chat-panel></chat-panel>
+  <button class="button is-primary">Dark</button>
+  <br />
+  <span class="icon-text">
+    <span class="icon">
+      <i class="iconfont icon-plus"></i>
+    </span>
+    <span>Home</span>
+  </span>
 </template>
 
-<script setup>
-import ChatPanel from "./components/ChatPanel/Index.vue";
+<script lang="ts">
+import { defineComponent } from "vue";
 
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
+export default defineComponent({
+  name: "App",
+});
 </script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+</style>
