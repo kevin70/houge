@@ -2,7 +2,9 @@
   <div class="chat-container">
     <div class="chat-inner">
       <div class="chat-top px-4">这里是头部信息</div>
-      <div class="chat-left">这里是链接的参数配置信息</div>
+      <div class="chat-left">
+        <chat-session-list></chat-session-list>
+      </div>
       <div class="chat-right">
         <div class="chat-msg-body">聊天面板</div>
         <div class="chat-action px-6">
@@ -16,10 +18,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import ChatAction from "./components/ChatAction.vue";
+import ChatSessionList from "./components/ChatSessionList.vue";
 
 export default defineComponent({
   name: "App",
-  components: { ChatAction },
+  components: { ChatAction, ChatSessionList },
 });
 </script>
 
