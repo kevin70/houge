@@ -1,16 +1,16 @@
 <template>
   <div class="session-list">
     <a class="session-item pl-2 is-active">
-      <figure class="image is-48x48 media-left">
+      <figure class="image is-48x48">
         <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
       </figure>
-      <div>我是KK</div>
+      <div class="ml-2">我是KK</div>
     </a>
     <a class="session-item pl-2">
-      <figure class="image is-48x48 media-left">
+      <figure class="image is-48x48">
         <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
       </figure>
-      <div>我是KK</div>
+      <div class="ml-2">我是KK</div>
     </a>
   </div>
 </template>

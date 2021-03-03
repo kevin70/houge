@@ -6,7 +6,9 @@
         <chat-session-list></chat-session-list>
       </div>
       <div class="chat-right">
-        <div class="chat-msg-body">聊天面板</div>
+        <div class="chat-msg-body">
+          <chat-message-list></chat-message-list>
+        </div>
         <div class="chat-action px-6">
           <chat-action></chat-action>
         </div>
@@ -18,11 +20,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import ChatAction from "./components/ChatAction.vue";
+import ChatMessageList from "./components/ChatMessageList.vue";
 import ChatSessionList from "./components/ChatSessionList.vue";
 
 export default defineComponent({
   name: "App",
-  components: { ChatAction, ChatSessionList },
+  components: { ChatAction, ChatSessionList, ChatMessageList },
 });
 </script>
 
@@ -76,7 +79,7 @@ export default defineComponent({
   position: absolute;
   top: var(--chat-top-height);
   left: var(--chat-left-width);
-  height: 100%;
+  height: calc(100% - var(--chat-top-height));
   width: calc(100% - var(--chat-left-width));
   background: #212532;
   transition: 0.3s;
