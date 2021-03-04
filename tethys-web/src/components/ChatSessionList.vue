@@ -1,37 +1,83 @@
 <template>
   <div class="inner-container">
     <div class="session-list">
-      <a class="session-item pl-2 is-active">
+      <a
+        class="session-item pl-2"
+        v-for="session in sessions"
+        :key="session.id"
+        @click="selectSession(session.id)"
+        :class="selectedSessionId == session.id ? 'is-active' : null"
+      >
         <figure class="image is-48x48">
-          <img
-            class="is-rounded"
-            src="https://via.placeholder.com/100?text=KK"
-          />
+          <img class="is-rounded" src="https://via.placeholder.com/100" />
         </figure>
-        <div class="ml-2">我是KK</div>
-      </a>
-      <a class="session-item pl-2">
-        <figure class="image is-48x48">
-          <img
-            class="is-rounded"
-            src="https://via.placeholder.com/100?text=KK"
-          />
-        </figure>
-        <div class="ml-2">我是KK</div>
+        <div class="ml-2">{{ session.id }}</div>
       </a>
     </div>
     <div class="plus-container">
-      <button class="button plus-btn">
+      <button class="button plus-btn" @click="addSessionModal(true)">
         <i class="iconfont icon-plus has-text-white is-size-5"></i>
       </button>
+    </div>
+
+    <!-- 添加会话窗口 -->
+    <div class="modal" :class="addSessionActive ? 'is-active' : null">
+      <div class="modal-background" @click="addSessionModal(false)"></div>
+      <div class="modal-content">
+        <input class="input" placeholder="输入用户 ID" v-model="addSessionId" />
+        <button class="button is-info" @click="addSession()">添加</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
+const sessions = [
+  {
+    id: "kk123",
+  },
+  {
+    id: "kevin",
+  },
+  {
+    id: "邹生",
+  },
+  {
+    id: "王小姐",
+  },
+];
+
 export default defineComponent({
   name: "ChatSessionList",
+  data: () => ({
+    sessions: sessions,
+    selectedSessionId: null,
+    addSessionActive: false,
+    addSessionId: null,
+  }),
+  methods: {
+    addSessionModal(v: boolean) {
+      this.addSessionActive = v;
+    },
+    addSession() {
+      const addSessionId = this.addSessionId;
+      if (!addSessionId) {
+        return;
+      }
+      for (const s in this.sessions) {
+        if (s.id === addSessionId) {
+          return;
+        }
+      }
+      this.sessions = this.sessions.concat({ id: addSessionId });
+      this.addSessionModal(false);
+    },
+    selectSession(sessionId: any) {
+      this.selectedSessionId = sessionId;
+    },
+  },
 });
 </script>
 
