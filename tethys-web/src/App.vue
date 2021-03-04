@@ -1,7 +1,9 @@
 <template>
   <div class="chat-container">
     <div class="chat-inner">
-      <div class="chat-top px-4">这里是头部信息</div>
+      <div class="chat-top px-4">
+        <chat-header></chat-header>
+      </div>
       <div class="chat-left">
         <div class="has-text-centered py-3">
           <h1 class="title">Tethys IM</h1>
@@ -23,12 +25,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import ChatAction from "./components/ChatAction.vue";
+import ChatHeader from "./components/ChatHeader.vue";
 import ChatMessageList from "./components/ChatMessageList.vue";
 import ChatSessionList from "./components/ChatSessionList.vue";
 
 export default defineComponent({
   name: "App",
-  components: { ChatAction, ChatSessionList, ChatMessageList },
+  components: { ChatAction, ChatSessionList, ChatMessageList, ChatHeader },
 });
 </script>
 

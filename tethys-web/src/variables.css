@@ -6,7 +6,7 @@
   --grey: hsl(0, 0%, 48%);
   --grey-light: hsl(0, 0%, 71%);
 
-  --chat-top-height: 60px;
+  --chat-top-height: 128px;
   --chat-left-width: 180px;
   --chat-action-height: 88px;
 }
