@@ -3,6 +3,9 @@
     <div class="chat-inner">
       <div class="chat-top px-4">这里是头部信息</div>
       <div class="chat-left">
+        <div class="has-text-centered py-3">
+          <h1 class="title">Tethys IM</h1>
+        </div>
         <chat-session-list></chat-session-list>
       </div>
       <div class="chat-right">
@@ -40,7 +43,6 @@ export default defineComponent({
   height: 100%;
   max-height: 100vh;
   overflow: hidden;
-  transition: 0.3s;
 }
 
 .chat-container .chat-inner {
@@ -55,13 +57,11 @@ export default defineComponent({
   left: var(--chat-left-width);
   width: calc(100% - var(--chat-left-width));
   height: var(--chat-top-height);
-  background: #191c26;
-  border-bottom: 1px solid #191c26;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 9;
-  transition: 0.3s;
+  background: var(--black);
+  border-bottom: 1px solid var(--grey-dark);
 }
 
 .chat-container .chat-left {
@@ -70,9 +70,8 @@ export default defineComponent({
   left: 0;
   width: var(--chat-left-width);
   height: 100%;
-  z-index: 10;
-  background: #191c26;
-  transition: 0.3s;
+  background: var(--black);
+  border-right: 1px solid var(--grey-dark);
 }
 
 .chat-container .chat-right {
@@ -81,8 +80,6 @@ export default defineComponent({
   left: var(--chat-left-width);
   height: calc(100% - var(--chat-top-height));
   width: calc(100% - var(--chat-left-width));
-  background: #212532;
-  transition: 0.3s;
 }
 
 .chat-container .chat-msg-body {
@@ -100,8 +97,6 @@ export default defineComponent({
   left: var(--chat-left-width);
   width: calc(100% - var(--chat-left-width));
   height: var(--chat-action-height);
-  background: #212532;
   z-index: 1;
-  transition: 0.3s;
 }
 </style>

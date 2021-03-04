@@ -39,6 +39,6 @@ export default defineComponent({
 
 .session-item.is-active,
 .session-item:hover {
-  background: #2d3345;
+  background: var(--grey);
 }
 </style>

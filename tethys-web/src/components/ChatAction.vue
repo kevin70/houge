@@ -2,7 +2,7 @@
   <div class="control">
     <textarea
       placeholder="在此对话中发送消息"
-      class="textarea p-2"
+      class="textarea p-2 send-msg-input"
       rows="2"
     ></textarea>
     <div class="toolbar">
@@ -20,29 +20,24 @@ export default defineComponent({
 
 <style scoped>
 .control {
+  position: relative;
   box-sizing: border-box;
   clear: both;
   font-size: 1rem;
-  position: relative;
   text-align: inherit;
 }
 
-.control textarea {
-  background: #191c26;
-  border-color: #191c26;
-  color: #aeaeae;
-}
-
-textarea::placeholder {
-  color: #aeaeae;
-}
-
-.textarea {
+.send-msg-input {
   resize: none;
   height: 100%;
   line-height: 2;
-  box-shadow: none !important;
-  transition: 0.3s;
+  background: var(--black-ter);
+  border: var(--black-ter);
+  color: var(--grey-light);
+}
+
+.control .send-msg-input::placeholder {
+  color: var(--grey-light);
 }
 
 .toolbar {

@@ -150,10 +150,6 @@ export default defineComponent({
   width: 8px !important;
 }
 
-.message-panel::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0) !important;
-}
-
 .message-item {
   display: flex;
   align-items: flex-start;
@@ -188,7 +184,7 @@ export default defineComponent({
 }
 
 .message-item .message-text {
-  background: #31374b;
-  color: #9195a8;
+  background: var(--black-ter);
+  color: var(--grey-light);
 }
 </style>
