@@ -5,8 +5,10 @@
         <chat-header></chat-header>
       </div>
       <div class="chat-left">
-        <div class="has-text-centered py-3">
-          <h1 class="title">Tethys IM</h1>
+        <div class="brand py-3">
+          <a href="https://gitee.com/kk70/tethys" target="_blank">
+            <div class="is-size-3 has-text-link-light">Tethys IM</div></a
+          >
         </div>
         <chat-session-list></chat-session-list>
       </div>
@@ -46,6 +48,13 @@ export default defineComponent({
   height: 100%;
   max-height: 100vh;
   overflow: hidden;
+}
+
+.brand {
+  display: flex;
+  height: var(--chat-top-height);
+  justify-content: center;
+  align-items: center;
 }
 
 .chat-container .chat-inner {
