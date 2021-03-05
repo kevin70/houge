@@ -6,6 +6,7 @@
           <input
             class="input c-input"
             placeholder="WebSocket URL"
+            v-model="form.wsUrl"
             :readonly="connected.value"
           />
         </div>
@@ -13,6 +14,7 @@
           <input
             class="input c-input"
             placeholder="用户 ID"
+            v-model="form.uid"
             :readonly="connected.value"
           />
         </div>
@@ -21,6 +23,7 @@
         <input
           class="input c-input"
           placeholder="访问令牌"
+          v-model="form.accessToken"
           :readonly="connected"
         />
       </div>
@@ -42,17 +45,75 @@
 
 <script>
 import {} from "vue";
+
+/**
+ * 加载访问令牌.
+ */
+const loadAccessToken = (uid) => {
+  return fetch(`http://127.0.0.1:11010/token/${uid}`, { method: "POST" })
+    .then((resp) => resp.json())
+    .then((json) => json.access_token);
+};
+
 export default {
   name: "ChatHeader",
   inject: ["connected", "updateConnected"],
-  data: () => ({}),
+  data: () => ({
+    form: {
+      wsUrl: "ws://127.0.0.1:11010/im",
+      uid: "111",
+      accessToken: null,
+    },
+    webSocket: null,
+  }),
   methods: {
     connect() {
-      this.updateConnected(true);
+      new Promise((resolve, reject) => {
+        const ac = this.form.accessToken;
+        if (ac) {
+          resolve(ac);
+        } else {
+          loadAccessToken(this.form.uid)
+            .then((ac) => {
+              this.form.accessToken = ac;
+              return ac;
+            })
+            .then(resolve)
+            .catch(reject);
+        }
+      })
+        .then((ac) => {
+          const socket = new WebSocket(`${this.form.wsUrl}?access_token=${ac}`);
+          socket.addEventListener("open", this.socketOpen);
+          socket.addEventListener("close", this.socketClose);
+          socket.addEventListener("message", this.socketMessage);
+          socket.addEventListener("error", this.socketError);
+          this.webSocket = socket;
+          return ac;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     disconnect() {
       this.updateConnected(false);
     },
+    // < WebSocket callback
+    socketOpen(event) {
+      this.updateConnected(true);
+    },
+    socketClose(event) {
+      console.log(`socket closed: ${this.webSocket}`);
+      this.updateConnected(false);
+    },
+    socketMessage(event) {
+      console.log(`=====message ${JSON.stringify(event)}`);
+    },
+    socketError(event) {
+      console.error(`socket error: ${JSON.stringify(event)}`);
+      this.updateConnected(false);
+    },
+    // WebSocket callback >
   },
 };
 </script>

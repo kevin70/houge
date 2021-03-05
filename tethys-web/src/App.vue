@@ -1,5 +1,12 @@
 <template>
   <div class="chat-container">
+    <div class="error-message" v-if="errorMessage.shown">
+      <div class="notification is-danger is-light">
+        <button class="delete" @click="closeErrorMessage()"></button>
+        <div v-html="errorMessage.currentMessage"></div>
+      </div>
+    </div>
+
     <div class="chat-inner">
       <div class="chat-top px-4">
         <chat-header></chat-header>
@@ -34,6 +41,13 @@ import ChatSessionList from "./components/ChatSessionList.vue";
 export default {
   name: "App",
   components: { ChatAction, ChatSessionList, ChatMessageList, ChatHeader },
+  data: () => ({
+    errorMessage: {
+      shown: false,
+      currentMessage: "",
+      messages: ["123456", "64789"],
+    },
+  }),
   setup() {
     // WebSocket 连接状态
     const connected = ref(false);
@@ -51,11 +65,39 @@ export default {
     provide("selectedSessionId", readonly(selectedSessionId));
     provide("updateSelectedSessionId", updateSelectedSessionId);
   },
+  methods: {
+    closeErrorMessage() {
+      this.errorMessage.shown = false;
+    },
+    showErrorMessage() {
+      const messages = this.errorMessage.messages;
+      if (!messages || messages.length == 0) {
+        this.errorMessage.shown = false;
+        return;
+      }
+      const m = messages[0];
+      this.errorMessage.messages = messages.slice(1);
+      this.errorMessage.currentMessage = m;
+      this.errorMessage.shown = true;
+      setTimeout(() => {
+        this.showErrorMessage();
+      }, 2000);
+    },
+  },
 };
 </script>
 
 <style>
 @import "./variables.css";
+
+.error-message {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  width: 400px;
+}
 
 .chat-container {
   position: absolute;
