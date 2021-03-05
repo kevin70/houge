@@ -153,6 +153,7 @@ export default defineComponent({
 .message-item {
   display: flex;
   align-items: flex-start;
+  margin-top: 5px;
 }
 
 .message-item.is-sent {
