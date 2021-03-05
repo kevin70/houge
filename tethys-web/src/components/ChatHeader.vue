@@ -6,14 +6,14 @@
           <input
             class="input c-input"
             placeholder="WebSocket URL"
-            :readonly="connected"
+            :readonly="connected.value"
           />
         </div>
         <div class="uid-div">
           <input
             class="input c-input"
             placeholder="用户 ID"
-            :readonly="connected"
+            :readonly="connected.value"
           />
         </div>
       </div>
@@ -27,7 +27,7 @@
     </div>
     <div class="btn-div is-align-items-end">
       <button
-        v-if="!connected"
+        v-if="!connected.value"
         @click="connect"
         class="button is-size-5 btn is-primary"
       >
@@ -41,21 +41,20 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-export default defineComponent({
+import {} from "vue";
+export default {
   name: "ChatHeader",
-  data: () => ({
-    connected: false,
-  }),
+  inject: ["connected", "updateConnected"],
+  data: () => ({}),
   methods: {
     connect() {
-      this.connected = true;
+      this.updateConnected(true);
     },
     disconnect() {
-      this.connected = false;
+      this.updateConnected(false);
     },
   },
-});
+};
 </script>
 
 <style scoped>

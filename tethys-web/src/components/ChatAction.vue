@@ -6,16 +6,23 @@
       rows="2"
     ></textarea>
     <div class="toolbar">
-      <button class="button is-primary" style="height: 100%">发 送</button>
+      <button
+        class="button is-primary"
+        style="height: 100%"
+        :disabled="!connected.value"
+      >
+        发 送
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from "vue";
-export default defineComponent({
+import {} from "vue";
+export default {
   name: "ChatAction",
-});
+  inject: ["connected"],
+};
 </script>
 
 <style scoped>

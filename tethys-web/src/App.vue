@@ -35,9 +35,18 @@ export default {
   name: "App",
   components: { ChatAction, ChatSessionList, ChatMessageList, ChatHeader },
   setup() {
+    // WebSocket 连接状态
+    const connected = ref(false);
+    const updateConnected = (v) => {
+      connected.value = v;
+    };
+    provide("connected", readonly(connected));
+    provide("updateConnected", updateConnected);
+
+    // 当前选中的会话
     const selectedSessionId = ref(null);
-    const updateSelectedSessionId = (sessionId) => {
-      selectedSessionId.value = sessionId;
+    const updateSelectedSessionId = (v) => {
+      selectedSessionId.value = v;
     };
     provide("selectedSessionId", readonly(selectedSessionId));
     provide("updateSelectedSessionId", updateSelectedSessionId);
