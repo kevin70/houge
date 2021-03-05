@@ -25,16 +25,24 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { provide, readonly, ref } from "vue";
 import ChatAction from "./components/ChatAction.vue";
 import ChatHeader from "./components/ChatHeader.vue";
 import ChatMessageList from "./components/ChatMessageList.vue";
 import ChatSessionList from "./components/ChatSessionList.vue";
 
-export default defineComponent({
+export default {
   name: "App",
   components: { ChatAction, ChatSessionList, ChatMessageList, ChatHeader },
-});
+  setup() {
+    const selectedSessionId = ref(null);
+    const updateSelectedSessionId = (sessionId) => {
+      selectedSessionId.value = sessionId;
+    };
+    provide("selectedSessionId", readonly(selectedSessionId));
+    provide("updateSelectedSessionId", updateSelectedSessionId);
+  },
+};
 </script>
 
 <style>

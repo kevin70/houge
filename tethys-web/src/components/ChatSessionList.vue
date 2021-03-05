@@ -5,8 +5,8 @@
         class="session-item pl-2"
         v-for="session in sessions"
         :key="session.id"
-        @click="selectSession(session.id)"
-        :class="selectedSessionId == session.id ? 'is-active' : null"
+        @click="updateSelectedSessionId(session.id)"
+        :class="selectedSessionId.value == session.id ? 'is-active' : null"
       >
         <figure class="image is-48x48">
           <img class="is-rounded" src="https://via.placeholder.com/100" />
@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-
 const sessions = [
   {
     id: "kk123",
@@ -49,11 +47,11 @@ const sessions = [
   },
 ];
 
-export default defineComponent({
+export default {
   name: "ChatSessionList",
+  inject: ["selectedSessionId", "updateSelectedSessionId"],
   data: () => ({
     sessions: sessions,
-    selectedSessionId: null,
     addSessionActive: false,
     addSessionId: null,
   }),
@@ -74,11 +72,8 @@ export default defineComponent({
       this.sessions = this.sessions.concat({ id: addSessionId });
       this.addSessionModal(false);
     },
-    selectSession(sessionId) {
-      this.selectedSessionId = sessionId;
-    },
   },
-});
+};
 </script>
 
 <style scoped>
