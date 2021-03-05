@@ -1,122 +1,24 @@
 <template>
   <div ref="messagePanel" class="message-panel py-5 px-5">
-    <div class="message-item is-received">
+    <div
+      v-for="message in messages"
+      :key="message"
+      class="message-item"
+      :class="
+        currentLoginUid.value === message.from ? 'is-sent' : 'is-received'
+      "
+    >
       <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
+        <img
+          class="is-rounded"
+          src="https://via.placeholder.com/100"
+          :alt="message.from"
+        />
       </figure>
       <div class="message-block">
         <span>2021-03-03T17:12:33</span>
         <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-sent">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-received">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-sent">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-received">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-sent">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-received">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-sent">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-received">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
-        </div>
-      </div>
-    </div>
-    <div class="message-item is-sent">
-      <figure class="image is-48x48">
-        <img class="is-rounded" src="https://via.placeholder.com/100?text=KK" />
-      </figure>
-      <div class="message-block">
-        <span>2021-03-03T17:12:33</span>
-        <div class="message-text p-2">
-          Does it include the widgets we were discussing the other day? Could
-          come in handy
+          {{ message.content }}
         </div>
       </div>
     </div>
@@ -124,16 +26,37 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
-export default defineComponent({
+import { watch } from "vue";
+export default {
   name: "ChatMessageList",
+  inject: [
+    "currentLoginUid",
+    "selectedSessionId",
+    "registerSendMessageConsumer",
+    "registerReceiveMessageConsumer",
+  ],
+  data: () => ({
+    messages: [],
+  }),
   mounted() {
-    this.$nextTick(() => {
-      const e = this.$refs.messagePanel;
-      e.scrollTop = e.offsetHeight;
+    // ======================
+    this.registerSendMessageConsumer((message) => {
+      this.messages = this.messages.concat(message);
+    });
+    this.registerReceiveMessageConsumer((message) => {
+      console.log(`ChatMessageList 收到消息：${JSON.stringify(message)}`);
+      this.messages = this.messages.concat(message);
+    });
+
+    //
+    watch(this.messages, () => {
+      this.$nextTick(() => {
+        const e = this.$refs.messagePanel;
+        e.scrollTop = e.offsetHeight;
+      });
     });
   },
-});
+};
 </script>
 
 <style scoped>

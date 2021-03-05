@@ -57,6 +57,30 @@ export default {
     provide("connected", readonly(connected));
     provide("updateConnected", updateConnected);
 
+    // WebSocket 发送的消息的消费者
+    const sendMessageConsumers = ref([]);
+    const registerSendMessageConsumer = (v) => {
+      sendMessageConsumers.value = sendMessageConsumers.value.concat(v);
+    };
+    provide("sendMessageConsumers", readonly(sendMessageConsumers));
+    provide("registerSendMessageConsumer", registerSendMessageConsumer);
+
+    // WebSocket 接收到的消息的消费者
+    const receiveMessageConsumers = ref([]);
+    const registerReceiveMessageConsumer = (v) => {
+      receiveMessageConsumers.value = receiveMessageConsumers.value.concat(v);
+    };
+    provide("receiveMessageConsumers", receiveMessageConsumers);
+    provide("registerReceiveMessageConsumer", registerReceiveMessageConsumer);
+
+    // 当前登录的用户 ID
+    const currentLoginUid = ref(null);
+    const updateCurrentLoginUid = (v) => {
+      currentLoginUid.value = v;
+    };
+    provide("currentLoginUid", readonly(currentLoginUid));
+    provide("updateCurrentLoginUid", updateCurrentLoginUid);
+
     // 当前选中的会话
     const selectedSessionId = ref(null);
     const updateSelectedSessionId = (v) => {

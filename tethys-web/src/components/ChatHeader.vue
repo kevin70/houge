@@ -57,7 +57,13 @@ const loadAccessToken = (uid) => {
 
 export default {
   name: "ChatHeader",
-  inject: ["connected", "updateConnected"],
+  inject: [
+    "connected",
+    "updateConnected",
+    "updateCurrentLoginUid",
+    "registerSendMessageConsumer",
+    "receiveMessageConsumers",
+  ],
   data: () => ({
     form: {
       wsUrl: "ws://127.0.0.1:11010/im",
@@ -66,6 +72,22 @@ export default {
     },
     webSocket: null,
   }),
+  mounted() {
+    this.registerSendMessageConsumer((message) => {
+      if (!this.connected) {
+        console.log(`WebSocket 未链接无法发送消息，已自动忽略 ${message}`);
+        return;
+      }
+      if (this.webSocket.readyState !== WebSocket.OPEN) {
+        console.error(
+          `WebSocket.readyState状态为[${this.webSocket.readyState}]，只有当状态为${WebSocket.OPEN}才可通讯 ${message}`
+        );
+        return;
+      }
+      console.log(`发送消息：${message}`);
+      this.webSocket.send(JSON.stringify(message));
+    });
+  },
   methods: {
     connect() {
       new Promise((resolve, reject) => {
@@ -101,13 +123,19 @@ export default {
     // < WebSocket callback
     socketOpen(event) {
       this.updateConnected(true);
+      // 更新当前用户的登录 ID
+      this.updateCurrentLoginUid(this.form.uid);
     },
     socketClose(event) {
       console.log(`socket closed: ${this.webSocket}`);
       this.updateConnected(false);
     },
     socketMessage(event) {
-      console.log(`=====message ${JSON.stringify(event)}`);
+      console.log(`收到消息： ${event.data}`);
+      const message = JSON.parse(event.data);
+      this.receiveMessageConsumers.value.forEach((handle) => {
+        handle(message);
+      });
     },
     socketError(event) {
       console.error(`socket error: ${JSON.stringify(event)}`);

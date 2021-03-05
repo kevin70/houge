@@ -34,16 +34,13 @@
 <script>
 const sessions = [
   {
-    id: "kk123",
+    id: "111",
   },
   {
-    id: "kevin",
+    id: "222",
   },
   {
-    id: "邹生",
-  },
-  {
-    id: "王小姐",
+    id: "333",
   },
 ];
 

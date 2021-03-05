@@ -3,6 +3,7 @@
     <textarea
       placeholder="在此对话中发送消息"
       class="textarea p-2 send-msg-input"
+      v-model="message"
       rows="2"
     ></textarea>
     <div class="toolbar">
@@ -10,6 +11,7 @@
         class="button is-primary"
         style="height: 100%"
         :disabled="!connected.value"
+        @click="send"
       >
         发 送
       </button>
@@ -21,7 +23,40 @@
 import {} from "vue";
 export default {
   name: "ChatAction",
-  inject: ["connected"],
+  inject: [
+    "connected",
+    "sendMessageConsumers",
+    "currentLoginUid",
+    "selectedSessionId",
+  ],
+  data: () => ({
+    message: null,
+  }),
+  methods: {
+    send() {
+      if (!this.message) {
+        return;
+      }
+
+      const sendMessageConsumers = this.sendMessageConsumers.value;
+      if (sendMessageConsumers.length == 0) {
+        console.warn("没有注册发送消息消费者");
+      }
+
+      const m = {
+        "@ns": "p.msg",
+        from: this.currentLoginUid.value,
+        to: this.selectedSessionId.value,
+        kind: 1,
+        content: this.message,
+      };
+      sendMessageConsumers.forEach((handle) => {
+        handle(m);
+      });
+
+      this.message = null;
+    },
+  },
 };
 </script>
 
