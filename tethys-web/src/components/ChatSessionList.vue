@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 
 const sessions = [
@@ -58,7 +58,7 @@ export default defineComponent({
     addSessionId: null,
   }),
   methods: {
-    addSessionModal(v: boolean) {
+    addSessionModal(v) {
       this.addSessionActive = v;
     },
     addSession() {
@@ -74,7 +74,7 @@ export default defineComponent({
       this.sessions = this.sessions.concat({ id: addSessionId });
       this.addSessionModal(false);
     },
-    selectSession(sessionId: any) {
+    selectSession(sessionId) {
       this.selectedSessionId = sessionId;
     },
   },

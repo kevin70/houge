@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 import ChatAction from "./components/ChatAction.vue";
 import ChatHeader from "./components/ChatHeader.vue";

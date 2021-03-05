@@ -123,13 +123,13 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "ChatMessageList",
   mounted() {
     this.$nextTick(() => {
-      const e = this.$refs.messagePanel as HTMLElement;
+      const e = this.$refs.messagePanel;
       e.scrollTop = e.offsetHeight;
     });
   },
