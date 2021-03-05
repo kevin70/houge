@@ -1,5 +1,6 @@
 package top.yein.tethys.core.resource;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -35,6 +36,9 @@ public class TokenResource extends AbstractRestSupport {
    * @return RS
    */
   public Mono<Void> generateToken(HttpServerRequest request, HttpServerResponse response) {
+    // CORS
+    response.header(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+
     var uidStr = request.param("uid");
     if (uidStr == null || uidStr.isEmpty()) {
       throw new BizCodeException(BizCodes.C912);
