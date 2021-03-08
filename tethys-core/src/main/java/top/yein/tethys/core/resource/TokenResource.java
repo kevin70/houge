@@ -44,15 +44,8 @@ public class TokenResource extends AbstractRestSupport {
       throw new BizCodeException(BizCodes.C912);
     }
 
-    long uid;
-    try {
-      uid = Long.parseLong(uidStr);
-    } catch (NumberFormatException e) {
-      throw new BizCodeException(BizCodes.C911, "非法的 uid: " + uidStr)
-          .addContextValue("uid", uidStr);
-    }
     return tokenService
-        .generateToken(uid)
+        .generateToken(uidStr)
         .flatMap(s -> json(response, new AccessTokenDto().setAccessToken(s)));
   }
 }

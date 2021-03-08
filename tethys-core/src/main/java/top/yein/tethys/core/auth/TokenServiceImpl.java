@@ -26,7 +26,7 @@ public class TokenServiceImpl implements TokenService {
   }
 
   @Override
-  public Mono<String> generateToken(long uid) {
+  public Mono<String> generateToken(String uid) {
     return jwtSecretRepository
         .loadNoDeleted()
         .switchIfEmpty(Flux.error(() -> new BizCodeException(BizCodes.C3310)))
@@ -34,7 +34,7 @@ public class TokenServiceImpl implements TokenService {
         .map(
             cachedJwtSecret -> {
               Map<String, Object> header = Jwts.jwsHeader().setKeyId(cachedJwtSecret.getId());
-              var claims = Jwts.claims().setId(String.valueOf(uid));
+              var claims = Jwts.claims().setId(uid);
               var token =
                   Jwts.builder()
                       .signWith(cachedJwtSecret.getSecretKey(), cachedJwtSecret.getAlgorithm())
