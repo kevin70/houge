@@ -52,6 +52,10 @@ Tethys 是采用 [Spring Reactor](https://projectreactor.io/) 开发的 IM Serve
 使用 Chrome 浏览器安装扩展 [Browser-WebSocket-Client
 ](https://github.com/abeade/browser-websocket-client) 用于快速测试 WebSocket。
 
+## 演示
+
+<iframe src="//player.bilibili.com/player.html?aid=502122156&bvid=BV1CN411Q7dX&cid=307515662&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
 ## 私聊演示
 ![](docs/images/p-msg-44.gif)
 ![](docs/images/p-msg-55.gif)
