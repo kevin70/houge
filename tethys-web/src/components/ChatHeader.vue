@@ -12,7 +12,7 @@
         </div>
         <div class="uid-div">
           <input
-            class="input c-input is-danger"
+            class="input c-input"
             placeholder="用户 ID"
             v-model="form.uid"
             :readonly="connected.value"
