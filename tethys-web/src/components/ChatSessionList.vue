@@ -3,7 +3,7 @@
     <div class="session-list">
       <a
         class="session-item pl-2"
-        v-for="session in sessions"
+        v-for="session in getSessions"
         :key="session.id"
         @click="updateSelectedSessionId(session.id)"
         :class="selectedSessionId.value == session.id ? 'is-active' : null"
@@ -46,12 +46,17 @@ const sessions = [
 
 export default {
   name: "ChatSessionList",
-  inject: ["selectedSessionId", "updateSelectedSessionId"],
+  inject: ["currentLoginUid", "selectedSessionId", "updateSelectedSessionId"],
   data: () => ({
     sessions: sessions,
     addSessionActive: false,
     addSessionId: null,
   }),
+  computed: {
+    getSessions() {
+      return this.sessions.filter((v) => v.id !== this.currentLoginUid.value);
+    },
+  },
   methods: {
     addSessionModal(v) {
       this.addSessionActive = v;

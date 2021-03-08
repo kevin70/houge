@@ -10,7 +10,7 @@
       <button
         class="button is-primary"
         style="height: 100%"
-        :disabled="!connected.value"
+        :disabled="!connected.value && selectedSessionId && message"
         @click="send"
       >
         发 送

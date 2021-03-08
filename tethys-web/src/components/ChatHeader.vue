@@ -24,7 +24,7 @@
           class="input c-input"
           placeholder="访问令牌"
           v-model="form.accessToken"
-          :readonly="connected"
+          :readonly="connected.value"
         />
       </div>
     </div>
@@ -67,7 +67,7 @@ export default {
   data: () => ({
     form: {
       wsUrl: "ws://127.0.0.1:11010/im",
-      uid: "111",
+      uid: null,
       accessToken: null,
     },
     webSocket: null,
@@ -114,11 +114,13 @@ export default {
           return ac;
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     },
     disconnect() {
-      this.updateConnected(false);
+      if (this.webSocket) {
+        this.webSocket.close();
+      }
     },
     // < WebSocket callback
     socketOpen(event) {
@@ -129,6 +131,7 @@ export default {
     socketClose(event) {
       console.log(`socket closed: ${this.webSocket}`);
       this.updateConnected(false);
+      this.updateCurrentLoginUid(null);
     },
     socketMessage(event) {
       console.log(`收到消息： ${event.data}`);
