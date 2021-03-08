@@ -1,5 +1,6 @@
 package top.yein.tethys.system.health;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.google.common.collect.ImmutableMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,16 +27,28 @@ import java.util.Objects;
  */
 public final class Health {
 
+  private final String componentName;
+  @JsonUnwrapped
   private final HealthStatus status;
   private final ImmutableMap<String, Object> details;
 
-  private Health(HealthStatus status, Map<String, Object> details) {
+  private Health(String componentName, HealthStatus status, Map<String, Object> details) {
+    this.componentName = componentName;
     this.status = status;
     this.details = ImmutableMap.copyOf(details);
   }
 
   /**
-   * 返回健康状态.
+   * 返回组件名称.
+   *
+   * @return 组件名称
+   */
+  public String getComponentName() {
+    return componentName;
+  }
+
+  /**
+   * 返回健康状况.
    *
    * @return 永远不为空的健康状态
    */
@@ -61,7 +74,7 @@ public final class Health {
     if (this.details.isEmpty()) {
       return this;
     }
-    return new Health(status, ImmutableMap.of());
+    return new Health(componentName, status, ImmutableMap.of());
   }
 
   @Override
@@ -71,7 +84,9 @@ public final class Health {
     }
     if (obj instanceof Health) {
       Health other = (Health) obj;
-      return this.status.equals(other.status) && this.details.equals(other.details);
+      return this.componentName.equals(other.componentName)
+          && this.status.equals(other.status)
+          && this.details.equals(other.details);
     }
     return false;
   }
@@ -90,11 +105,18 @@ public final class Health {
   /** 用于创建不可变的{@link Health}实例的生成器. */
   public static class Builder {
 
+    private String componentName;
     private HealthStatus status;
     private Map<String, Object> details;
 
-    /** 创建{@link Builder}实例. */
-    public Builder() {
+    /**
+     * 创建{@link Builder}实例.
+     *
+     * @param componentName 组件名称
+     */
+    public Builder(String componentName) {
+      Objects.requireNonNull(componentName, "[componentName]不能为null");
+      this.componentName = componentName;
       this.status = HealthStatus.UNKNOWN;
       this.details = new LinkedHashMap<>();
     }
@@ -102,10 +124,13 @@ public final class Health {
     /**
      * 创建{@link Builder}实例, 将健康状态设置为给定的{@code status}.
      *
+     * @param componentName 组件名称
      * @param status 健康状态
      */
-    public Builder(HealthStatus status) {
-      Objects.requireNonNull(status, "HealthStatus must not be null");
+    public Builder(String componentName, HealthStatus status) {
+      Objects.requireNonNull(componentName, "[componentName]不能为null");
+      Objects.requireNonNull(status, "[status]不能为null");
+      this.componentName = componentName;
       this.status = status;
       this.details = new LinkedHashMap<>();
     }
@@ -113,12 +138,14 @@ public final class Health {
     /**
      * 创建新的生成器实例, 将 status 设置为给定的 {@code status}, 将 details 设置为给定的 {@code details}.
      *
+     * @param componentName 组件名称
      * @param status 健康状态
      * @param details 详细信息
      */
-    public Builder(HealthStatus status, Map<String, ?> details) {
-      Objects.requireNonNull(status, "HealthStatus must not be null");
-      Objects.requireNonNull(details, "Details must not be null");
+    public Builder(String componentName, HealthStatus status, Map<String, ?> details) {
+      Objects.requireNonNull(componentName, "[componentName]不能为null");
+      Objects.requireNonNull(status, "[status]不能为null");
+      Objects.requireNonNull(details, "[details]不能为null");
       this.status = status;
       this.details = new LinkedHashMap<>(details);
     }
@@ -238,7 +265,7 @@ public final class Health {
      * @return {@link Health}实例
      */
     public Health build() {
-      return new Health(this.status, this.details);
+      return new Health(this.componentName, this.status, this.details);
     }
   }
 }

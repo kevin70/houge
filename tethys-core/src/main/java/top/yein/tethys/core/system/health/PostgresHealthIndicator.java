@@ -19,6 +19,7 @@ public class PostgresHealthIndicator implements HealthIndicator {
 
   private static final String CHECK_SQL = "SELECT CURRENT_SETTING('SERVER_VERSION')";
 
+  private final String componentName;
   private final ConnectionFactory connectionFactory;
 
   /**
@@ -27,6 +28,17 @@ public class PostgresHealthIndicator implements HealthIndicator {
    * @param connectionFactory 数据库客户端
    */
   public PostgresHealthIndicator(ConnectionFactory connectionFactory) {
+    this("PostgreSQL", connectionFactory);
+  }
+
+  /**
+   * 使用组件名称与数据客户端创建实例.
+   *
+   * @param componentName 组件名称
+   * @param connectionFactory 数据库客户端
+   */
+  public PostgresHealthIndicator(String componentName, ConnectionFactory connectionFactory) {
+    this.componentName = componentName;
     this.connectionFactory = connectionFactory;
   }
 
@@ -39,11 +51,11 @@ public class PostgresHealthIndicator implements HealthIndicator {
                     .flatMap(result -> result.map((row, rowMetadata) -> row.get(0, String.class))),
             Connection::close)
         .last()
-        .map(version -> new Builder().up().withDetail("version", version).build())
+        .map(version -> new Builder(componentName).up().withDetail("version", version).build())
         .onErrorResume(
             ex -> {
               log.error("数据库健康状况异常 {}", connectionFactory, ex);
-              return Mono.just(new Health.Builder().down(ex).build());
+              return Mono.just(new Health.Builder(componentName).down(ex).build());
             });
   }
 }

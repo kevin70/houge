@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean id="authenticationInterceptor" class="top.yein.tethys.core.resource.AuthenticationInterceptor">
     <constructor-arg name="authService" ref="authService"/>
@@ -18,11 +18,31 @@
   <bean id="groupMessageResource" class="top.yein.tethys.rest.resource.GroupMessageResource">
     <constructor-arg name="groupMessageService" ref="groupMessageService"/>
   </bean>
+
+  <!-- 程序运行健康状况 -->
+  <bean id="healthService" class="top.yein.tethys.core.system.service.HealthServiceImpl">
+    <constructor-arg name="healthIndicators">
+      <list>
+        <bean class="top.yein.tethys.core.system.health.DiskSpaceHealthIndicator">
+          <constructor-arg name="path" value="file:D:\\"/>
+          <constructor-arg name="threshold" value="#{T(org.springframework.util.unit.DataSize).parse('500MB')}"/>
+        </bean>
+        <bean class="top.yein.tethys.core.system.health.PostgresHealthIndicator">
+          <constructor-arg name="connectionFactory" ref="connectionFactory"/>
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+  <bean id="healthResource" class="top.yein.tethys.core.system.resource.HealthResource">
+    <constructor-arg name="healthService" ref="healthService"/>
+  </bean>
+
   <bean id="customRouters" class="top.yein.tethys.rest.server.CustomRouters">
     <constructor-arg name="authInterceptor" ref="authenticationInterceptor"/>
     <constructor-arg name="tokenResource" ref="tokenResource"/>
     <constructor-arg name="messageIdResource" ref="messageIdResource"/>
     <constructor-arg name="privateMessageResource" ref="privateMessageResource"/>
     <constructor-arg name="groupMessageResource" ref="groupMessageResource"/>
+    <constructor-arg name="healthResource" ref="healthResource"/>
   </bean>
 </beans>

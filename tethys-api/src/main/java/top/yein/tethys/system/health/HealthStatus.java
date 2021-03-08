@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author KK (kzou227@qq.com)
  */
-public final class HealthStatus {
+public final class HealthStatus implements Comparable<HealthStatus> {
 
   /** {@link HealthStatus} 表示组件或子系统处于未知状态. */
   public static final HealthStatus UNKNOWN = new HealthStatus("UNKNOWN");
@@ -66,6 +66,11 @@ public final class HealthStatus {
    */
   public String getDescription() {
     return this.description;
+  }
+
+  @Override
+  public int compareTo(HealthStatus o) {
+    return this.status.compareTo(o.status);
   }
 
   @Override

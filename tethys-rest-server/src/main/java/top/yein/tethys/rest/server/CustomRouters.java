@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.resource.AuthenticationInterceptor;
 import top.yein.tethys.core.resource.TokenResource;
+import top.yein.tethys.core.system.resource.HealthResource;
 import top.yein.tethys.rest.resource.GroupMessageResource;
 import top.yein.tethys.rest.resource.MessageIdResource;
 import top.yein.tethys.rest.resource.PrivateMessageResource;
@@ -35,33 +36,44 @@ public class CustomRouters implements Consumer<HttpServerRoutes> {
   private final MessageIdResource messageIdResource;
   private final PrivateMessageResource privateMessageResource;
   private final GroupMessageResource groupMessageResource;
+  private final HealthResource healthResource;
 
   public CustomRouters(
       AuthenticationInterceptor authInterceptor,
       TokenResource tokenResource,
       MessageIdResource messageIdResource,
       PrivateMessageResource privateMessageResource,
-      GroupMessageResource groupMessageResource) {
+      GroupMessageResource groupMessageResource,
+      HealthResource healthResource) {
     this.authInterceptor = authInterceptor;
     this.tokenResource = tokenResource;
     this.messageIdResource = messageIdResource;
     this.privateMessageResource = privateMessageResource;
     this.groupMessageResource = groupMessageResource;
+    this.healthResource = healthResource;
   }
 
   @Override
   public void accept(HttpServerRoutes routes) {
     // @formatter:off
+
+    routes.get("/-/health", healthResource::health);
+
     // 访问令牌
     routes.post("/token/{uid}", tokenResource::generateToken);
     routes.get("/message-ids", authInterceptor.handle(messageIdResource::getMessageIds));
 
     // 私人聊天
-    routes.get("/private-messages/recent", authInterceptor.handle(privateMessageResource::findRecentMessages));
-    routes.put("/private-messages/read-status/batch", authInterceptor.handle(privateMessageResource::batchReadMessage));
+    routes.get(
+        "/private-messages/recent",
+        authInterceptor.handle(privateMessageResource::findRecentMessages));
+    routes.put(
+        "/private-messages/read-status/batch",
+        authInterceptor.handle(privateMessageResource::batchReadMessage));
 
     // 群组聊天
-    routes.get( "/group-messages/recent", authInterceptor.handle(groupMessageResource::findRecentMessages));
+    routes.get(
+        "/group-messages/recent", authInterceptor.handle(groupMessageResource::findRecentMessages));
     // @formatter:on
   }
 }
