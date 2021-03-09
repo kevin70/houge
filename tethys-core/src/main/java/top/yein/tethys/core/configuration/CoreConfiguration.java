@@ -39,6 +39,15 @@ public class CoreConfiguration {
   }
 
   /**
+   * @param connectionFactory
+   * @return
+   */
+  @Bean
+  public R2dbcTransactionManager transactionManager(ConnectionFactory connectionFactory) {
+    return new R2dbcTransactionManager(connectionFactory);
+  }
+
+  /**
    * @param autofillId
    * @return
    */
@@ -54,14 +63,6 @@ public class CoreConfiguration {
     return new LocalSessionIdGenerator();
   }
 
-  /**
-   * @param connectionFactory
-   * @return
-   */
-  @Bean
-  public R2dbcTransactionManager transactionManager(ConnectionFactory connectionFactory) {
-    return new R2dbcTransactionManager(connectionFactory);
-  }
   /**
    * @param connectionFactory
    * @return

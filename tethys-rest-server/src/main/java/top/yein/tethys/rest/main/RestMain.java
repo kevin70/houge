@@ -4,6 +4,7 @@ import java.util.concurrent.CountDownLatch;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import top.yein.tethys.ApplicationIdentifier;
+import top.yein.tethys.rest.configuration.RestConfiguration;
 import top.yein.tethys.rest.server.RestServer;
 
 /**
@@ -25,7 +26,7 @@ public class RestMain implements Runnable {
 
   @Override
   public void run() {
-    var applicationContext = new AnnotationConfigApplicationContext("top.yein.tethys");
+    var applicationContext = new AnnotationConfigApplicationContext(RestConfiguration.class);
     applicationContext.start();
 
     // 启动 REST 服务

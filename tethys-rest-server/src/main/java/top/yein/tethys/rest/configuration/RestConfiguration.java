@@ -2,6 +2,7 @@ package top.yein.tethys.rest.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.core.http.Interceptors;
@@ -9,6 +10,7 @@ import top.yein.tethys.core.resource.AuthInterceptor;
 import top.yein.tethys.rest.server.RestServer;
 
 /** @author KK (kzou227@qq.com) */
+@ComponentScan("top.yein.tethys")
 @Configuration(proxyBeanMethods = false)
 public class RestConfiguration {
 

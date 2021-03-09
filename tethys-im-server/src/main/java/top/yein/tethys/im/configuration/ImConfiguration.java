@@ -9,6 +9,7 @@ import static top.yein.tethys.packet.Namespaces.NS_PRIVATE_MESSAGE;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.core.http.Interceptors;
@@ -23,6 +24,7 @@ import top.yein.tethys.im.server.PacketDispatcher;
 import top.yein.tethys.im.server.WebsocketHandler;
 
 /** @author KK (kzou227@qq.com) */
+@ComponentScan("top.yein.tethys")
 @Configuration(proxyBeanMethods = false)
 public class ImConfiguration {
 
