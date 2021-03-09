@@ -1,6 +1,5 @@
 package top.yein.tethys.core.resource;
 
-import io.netty.handler.codec.http.HttpHeaderNames;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -35,7 +34,7 @@ public class TokenResource extends AbstractRestSupport implements RoutingService
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/token/{uid}", interceptors.auth(this::generateToken));
+    routes.post("/token/{uid}", this::generateToken);
   }
 
   /**
@@ -46,9 +45,6 @@ public class TokenResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   public Mono<Void> generateToken(HttpServerRequest request, HttpServerResponse response) {
-    // CORS
-    response.header(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-
     var uidStr = request.param("uid");
     if (uidStr == null || uidStr.isEmpty()) {
       throw new BizCodeException(BizCodes.C912);

@@ -16,6 +16,8 @@
 package top.yein.tethys.im.server;
 
 import com.google.common.net.HostAndPort;
+import io.netty.handler.codec.http.cors.CorsConfigBuilder;
+import io.netty.handler.codec.http.cors.CorsHandler;
 import java.time.Duration;
 import java.util.Map.Entry;
 import lombok.extern.log4j.Log4j2;
@@ -85,10 +87,13 @@ public final class ImServer implements ApplicationContextAware {
         websocketHandler::handle,
         WebsocketServerSpec.builder().handlePing(false).build());
 
+    // Netty CORS 配置
+    var corsConfig = CorsConfigBuilder.forAnyOrigin().build();
     this.disposableServer =
         HttpServer.create()
             .host(hap.getHost())
             .port(hap.getPort())
+            .doOnConnection(connection -> connection.addHandler(new CorsHandler(corsConfig)))
             .wiretap(Env.current() != Env.PROD)
             .idleTimeout(Duration.ofSeconds(IDLE_TIMEOUT_SECS))
             .handle(new HttpServerRoutesWrapper(routes))
