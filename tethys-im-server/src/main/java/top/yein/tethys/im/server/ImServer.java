@@ -17,13 +17,19 @@ package top.yein.tethys.im.server;
 
 import com.google.common.net.HostAndPort;
 import java.time.Duration;
+import java.util.Map.Entry;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRoutes;
 import reactor.netty.http.server.WebsocketServerSpec;
 import top.yein.tethys.core.Env;
 import top.yein.tethys.core.http.HttpServerRoutesWrapper;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
 
 /**
  * IM Server.
@@ -31,25 +37,33 @@ import top.yein.tethys.core.http.HttpServerRoutesWrapper;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public final class ImServer {
+public final class ImServer implements ApplicationContextAware {
 
   private static final int IDLE_TIMEOUT_SECS = 90;
   public static final String IM_WS_PATH = "/im";
 
   private final String addr;
   private final WebsocketHandler websocketHandler;
-  private final RestRegister restRegister;
+  private final Interceptors interceptors;
+  /** spring 应用上下文. */
+  private ApplicationContext applicationContext;
+
   private DisposableServer disposableServer;
 
   /**
    * @param addr
    * @param websocketHandler
-   * @param restRegister
+   * @param interceptors
    */
-  public ImServer(String addr, WebsocketHandler websocketHandler, RestRegister restRegister) {
+  public ImServer(String addr, WebsocketHandler websocketHandler, Interceptors interceptors) {
     this.addr = addr;
     this.websocketHandler = websocketHandler;
-    this.restRegister = restRegister;
+    this.interceptors = interceptors;
+  }
+
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
   }
 
   /** 启动 IM 服务. */
@@ -57,7 +71,14 @@ public final class ImServer {
     var hap = HostAndPort.fromString(addr);
 
     var routes = HttpServerRoutes.newRoutes();
-    restRegister.accept(routes);
+    if (applicationContext != null) {
+      var beans = applicationContext.getBeansOfType(RoutingService.class);
+      for (Entry<String, RoutingService> entry : beans.entrySet()) {
+        log.info("更新 Routes [beanName={}, resource={}]", entry.getKey(), entry.getValue());
+        entry.getValue().update(routes, interceptors);
+      }
+    }
+
     // ws 注册
     routes.ws(
         IM_WS_PATH,

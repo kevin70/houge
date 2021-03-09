@@ -1,12 +1,16 @@
 package top.yein.tethys.rest.resource;
 
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.http.AbstractRestSupport;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.id.MessageIdGenerator;
 
 /**
@@ -14,7 +18,8 @@ import top.yein.tethys.id.MessageIdGenerator;
  *
  * @author KK (kzou227@qq.com)
  */
-public class MessageIdResource extends AbstractRestSupport {
+@Component
+public class MessageIdResource extends AbstractRestSupport implements RoutingService {
 
   private final MessageIdGenerator messageIdGenerator;
 
@@ -25,6 +30,11 @@ public class MessageIdResource extends AbstractRestSupport {
    */
   public MessageIdResource(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
+  }
+
+  @Override
+  public void update(HttpServerRoutes routes, Interceptors interceptors) {
+    routes.get("/message-ids", interceptors.auth(this::getMessageIds));
   }
 
   /**

@@ -1,4 +1,5 @@
 dependencies {
+  compileOnly("org.springframework:spring-beans")
   api(project(":tethys-api"))
   api("io.r2dbc:r2dbc-postgresql")
   api("org.springframework:spring-r2dbc")

@@ -1,9 +1,13 @@
 package top.yein.tethys.core.system.resource;
 
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.http.AbstractRestSupport;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.system.health.HealthService;
 
 /**
@@ -11,7 +15,8 @@ import top.yein.tethys.system.health.HealthService;
  *
  * @author KK (kzou227@qq.com)
  */
-public class HealthResource extends AbstractRestSupport {
+@Component
+public class HealthResource extends AbstractRestSupport implements RoutingService {
 
   private final HealthService healthService;
 
@@ -19,12 +24,17 @@ public class HealthResource extends AbstractRestSupport {
     this.healthService = healthService;
   }
 
+  @Override
+  public void update(HttpServerRoutes routes, Interceptors interceptors) {
+    routes.get("/-/health", this::health);
+  }
+
   /**
    * @param request
    * @param response
    * @return
    */
-  public Mono<Void> health(HttpServerRequest request, HttpServerResponse response) {
+  Mono<Void> health(HttpServerRequest request, HttpServerResponse response) {
     return healthService
         .health(queryParam(request, "debug") != null)
         .flatMap(healthComposite -> json(response, healthComposite));

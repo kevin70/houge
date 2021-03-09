@@ -3,6 +3,7 @@ package top.yein.tethys.im.handler;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.entity.PrivateMessage;
@@ -20,6 +21,7 @@ import top.yein.tethys.session.SessionManager;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
+@Component
 public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket> {
 
   private final SessionManager sessionManager;

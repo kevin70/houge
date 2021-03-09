@@ -1,21 +1,26 @@
 package top.yein.tethys.core.resource;
 
 import io.netty.handler.codec.http.HttpHeaderNames;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.dto.AccessTokenDto;
 import top.yein.tethys.core.http.AbstractRestSupport;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
 
 /**
  * 访问令牌 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-public class TokenResource extends AbstractRestSupport {
+@Component
+public class TokenResource extends AbstractRestSupport implements RoutingService {
 
   private final TokenService tokenService;
 
@@ -26,6 +31,11 @@ public class TokenResource extends AbstractRestSupport {
    */
   public TokenResource(TokenService tokenService) {
     this.tokenService = tokenService;
+  }
+
+  @Override
+  public void update(HttpServerRoutes routes, Interceptors interceptors) {
+    routes.post("/token/{uid}", interceptors.auth(this::generateToken));
   }
 
   /**

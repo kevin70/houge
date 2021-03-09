@@ -1,6 +1,7 @@
 package top.yein.tethys.im.handler;
 
 import javax.annotation.Nonnull;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupUnsubscribePacket;
@@ -12,6 +13,7 @@ import top.yein.tethys.session.SessionGroupManager;
  *
  * @author KK (kzou227@qq.com)
  */
+@Component
 public class GroupUnsubscribeHandler implements PacketHandler<GroupUnsubscribePacket> {
 
   private final SessionGroupManager sessionGroupManager;

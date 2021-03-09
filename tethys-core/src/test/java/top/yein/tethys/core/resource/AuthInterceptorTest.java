@@ -17,11 +17,11 @@ import top.yein.tethys.core.session.TestAuthContext;
 import top.yein.tethys.core.test.MockHttpServerRequest;
 
 /**
- * {@link AuthenticationInterceptor} 单元测试.
+ * {@link AuthInterceptor} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class AuthenticationInterceptorTest {
+class AuthInterceptorTest {
 
   @Test
   void handle() {
@@ -29,7 +29,7 @@ class AuthenticationInterceptorTest {
     var authContext = new TestAuthContext();
     when(authService.authenticate(anyString())).thenReturn(Mono.just(authContext));
 
-    var interceptor = new AuthenticationInterceptor(authService);
+    var interceptor = new AuthInterceptor(authService);
     var fun = interceptor.handle((request, response) -> Mono.empty());
 
     var request =
@@ -52,7 +52,7 @@ class AuthenticationInterceptorTest {
     var authService = mock(AuthService.class);
     when(authService.authenticate(anyString())).thenReturn(Mono.just(new TestAuthContext()));
 
-    var interceptor = new AuthenticationInterceptor(authService);
+    var interceptor = new AuthInterceptor(authService);
     var fun = interceptor.handle((request, response) -> Mono.empty());
 
     var request = MockHttpServerRequest.builder().uri("/test").build();
@@ -67,7 +67,7 @@ class AuthenticationInterceptorTest {
     var authService = mock(AuthService.class);
     when(authService.authenticate(anyString())).thenReturn(Mono.just(new TestAuthContext()));
 
-    var interceptor = new AuthenticationInterceptor(authService);
+    var interceptor = new AuthInterceptor(authService);
     var fun = interceptor.handle((request, response) -> Mono.empty());
 
     var request = MockHttpServerRequest.builder().uri("/test?access_token").build();

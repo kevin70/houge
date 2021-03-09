@@ -6,6 +6,7 @@ dependencies {
   api("io.jsonwebtoken:jjwt-impl")
   api("io.jsonwebtoken:jjwt-jackson")
   api("org.springframework:spring-context")
+  api("org.springframework:spring-r2dbc")
   api("io.projectreactor.netty:reactor-netty")
   api("com.github.ben-manes.caffeine:caffeine")
   api("io.micrometer:micrometer-registry-prometheus")

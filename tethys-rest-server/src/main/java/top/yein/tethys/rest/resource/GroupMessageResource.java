@@ -1,10 +1,14 @@
 package top.yein.tethys.rest.resource;
 
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.http.AbstractRestSupport;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.query.GroupMessageQuery;
 import top.yein.tethys.service.GroupMessageService;
 
@@ -13,7 +17,8 @@ import top.yein.tethys.service.GroupMessageService;
  *
  * @author KK (kzou227@qq.com)
  */
-public class GroupMessageResource extends AbstractRestSupport {
+@Component
+public class GroupMessageResource extends AbstractRestSupport implements RoutingService {
 
   private final GroupMessageService groupMessageService;
 
@@ -24,6 +29,12 @@ public class GroupMessageResource extends AbstractRestSupport {
    */
   public GroupMessageResource(GroupMessageService groupMessageService) {
     this.groupMessageService = groupMessageService;
+  }
+
+  @Override
+  public void update(HttpServerRoutes routes, Interceptors interceptors) {
+    // 群组聊天
+    routes.get("/group-messages/recent", interceptors.auth(this::findRecentMessages));
   }
 
   /**

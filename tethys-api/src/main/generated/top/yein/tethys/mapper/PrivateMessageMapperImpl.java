@@ -6,7 +6,7 @@ import top.yein.tethys.entity.PrivateMessage;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-02-19T14:13:47+0800",
+    date = "2021-03-09T15:23:12+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.8 (Oracle Corporation)"
 )
 public class PrivateMessageMapperImpl implements PrivateMessageMapper {

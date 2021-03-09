@@ -2,10 +2,14 @@ package top.yein.tethys.rest.resource;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.http.AbstractRestSupport;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.query.PrivateMessageQuery;
 import top.yein.tethys.service.PrivateMessageService;
 import top.yein.tethys.vo.BatchReadMessageVO;
@@ -15,7 +19,8 @@ import top.yein.tethys.vo.BatchReadMessageVO;
  *
  * @author KK (kzou227@qq.com)
  */
-public class PrivateMessageResource extends AbstractRestSupport {
+@Component
+public class PrivateMessageResource extends AbstractRestSupport implements RoutingService {
 
   private final PrivateMessageService privateMessageService;
 
@@ -26,6 +31,12 @@ public class PrivateMessageResource extends AbstractRestSupport {
    */
   public PrivateMessageResource(PrivateMessageService privateMessageService) {
     this.privateMessageService = privateMessageService;
+  }
+
+  @Override
+  public void update(HttpServerRoutes routes, Interceptors interceptors) {
+    routes.get("/private-messages/recent", interceptors.auth(this::findRecentMessages));
+    routes.put("/private-messages/read-status/batch", interceptors.auth(this::batchReadMessage));
   }
 
   /**

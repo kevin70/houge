@@ -18,7 +18,7 @@ import top.yein.tethys.core.http.AbstractRestSupport;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class AuthenticationInterceptor extends AbstractRestSupport {
+public class AuthInterceptor extends AbstractRestSupport {
 
   private static final String ACCESS_TOKEN_QUERY_NAME = "access_token";
 
@@ -29,7 +29,7 @@ public class AuthenticationInterceptor extends AbstractRestSupport {
    *
    * @param authService 认证服务
    */
-  public AuthenticationInterceptor(AuthService authService) {
+  public AuthInterceptor(AuthService authService) {
     this.authService = authService;
   }
 

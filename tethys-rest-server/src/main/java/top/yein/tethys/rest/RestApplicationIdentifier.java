@@ -1,5 +1,6 @@
 package top.yein.tethys.rest;
 
+import org.springframework.stereotype.Component;
 import top.yein.tethys.core.AbstractApplicationIdentifier;
 import top.yein.tethys.repository.ServerInstanceRepository;
 
@@ -8,6 +9,7 @@ import top.yein.tethys.repository.ServerInstanceRepository;
  *
  * @author KK (kzou227@qq.com)
  */
+@Component
 public class RestApplicationIdentifier extends AbstractApplicationIdentifier {
 
   /**

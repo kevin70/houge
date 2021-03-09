@@ -2,6 +2,7 @@ package top.yein.tethys.im.handler;
 
 import javax.annotation.Nonnull;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.PingPacket;
@@ -15,6 +16,7 @@ import top.yein.tethys.session.SessionManager;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
+@Component
 public class PingHandler implements PacketHandler<PingPacket> {
 
   private final SessionManager sessionManager;

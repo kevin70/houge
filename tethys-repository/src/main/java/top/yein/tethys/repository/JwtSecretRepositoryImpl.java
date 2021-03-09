@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
@@ -27,6 +28,7 @@ import top.yein.tethys.entity.JwtSecret;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
+@Repository
 public class JwtSecretRepositoryImpl implements JwtSecretRepository {
 
   private static final String INSERT_SQL =

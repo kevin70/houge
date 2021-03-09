@@ -1,5 +1,6 @@
 package top.yein.tethys.core.id;
 
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.id.MessageIdGenerator;
@@ -10,6 +11,7 @@ import top.yein.tethys.util.YeinGid;
  *
  * @author KK (kzou227@qq.com)
  */
+@Component
 public class YeinGidMessageIdGenerator implements MessageIdGenerator {
 
   private final ApplicationIdentifier applicationIdentifier;

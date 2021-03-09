@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -42,6 +43,7 @@ import top.yein.tethys.session.SessionManager;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
+@Component
 public class DefaultSessionManager implements SessionManager {
 
   // 会话监听器

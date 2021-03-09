@@ -3,6 +3,7 @@ package top.yein.tethys.service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.dto.PrivateMessageDTO;
@@ -17,6 +18,7 @@ import top.yein.tethys.vo.BatchReadMessageVO;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
+@Service
 public class PrivateMessageServiceImpl implements PrivateMessageService {
 
   /**

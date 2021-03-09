@@ -1,6 +1,7 @@
 package top.yein.tethys.im;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 import top.yein.tethys.core.AbstractApplicationIdentifier;
 import top.yein.tethys.repository.ServerInstanceRepository;
 
@@ -10,6 +11,7 @@ import top.yein.tethys.repository.ServerInstanceRepository;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
+@Component
 public class ImApplicationIdentifier extends AbstractApplicationIdentifier {
 
   /**
