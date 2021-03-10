@@ -1,6 +1,5 @@
 package top.yein.tethys.core.configuration;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmHeapPressureMetrics;
@@ -10,6 +9,7 @@ import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.r2dbc.spi.ConnectionFactory;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -46,8 +46,31 @@ public class CoreConfiguration {
         new PathResource("/etc/tethys/tethys.properties"),
         new PathResource("tethys-dev.properties"));
     configurer.setIgnoreResourceNotFound(true);
-    configurer.setFileEncoding(Charsets.UTF_8.name());
+    configurer.setFileEncoding(StandardCharsets.UTF_8.name());
     return configurer;
+  }
+
+  /**
+   * @param prometheusMeterRegistry
+   * @return
+   */
+  @Bean
+  public JvmGcMetrics jvmGcMetrics(PrometheusMeterRegistry prometheusMeterRegistry) {
+    var metrics = new JvmGcMetrics();
+    metrics.bindTo(prometheusMeterRegistry);
+    return metrics;
+  }
+
+  /**
+   * @param prometheusMeterRegistry
+   * @return
+   */
+  @Bean
+  public JvmHeapPressureMetrics jvmHeapPressureMetrics(
+      PrometheusMeterRegistry prometheusMeterRegistry) {
+    var metrics = new JvmHeapPressureMetrics();
+    metrics.bindTo(prometheusMeterRegistry);
+    return metrics;
   }
 
   /**
@@ -67,8 +90,6 @@ public class CoreConfiguration {
     // 绑定监控
     new UptimeMetrics().bindTo(prometheusRegistry);
     new JvmMemoryMetrics().bindTo(prometheusRegistry);
-    new JvmGcMetrics().bindTo(prometheusRegistry);
-    new JvmHeapPressureMetrics().bindTo(prometheusRegistry);
     return prometheusRegistry;
   }
 
@@ -120,7 +141,6 @@ public class CoreConfiguration {
     // FIXME 后期完善
     var contributors =
         List.of(new AppInfoContributor(applicationIdentifier), new JavaInfoContributor());
-    var infoService = new InfoServiceImpl(contributors);
-    return infoService;
+    return new InfoServiceImpl(contributors);
   }
 }
