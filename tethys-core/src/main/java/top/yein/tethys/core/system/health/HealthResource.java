@@ -1,4 +1,4 @@
-package top.yein.tethys.core.system.resource;
+package top.yein.tethys.core.system.health;
 
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -20,6 +20,10 @@ public class HealthResource extends AbstractRestSupport implements RoutingServic
 
   private final HealthService healthService;
 
+  /**
+   *
+   * @param healthService
+   */
   public HealthResource(HealthService healthService) {
     this.healthService = healthService;
   }

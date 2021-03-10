@@ -1,4 +1,4 @@
-package top.yein.tethys.core.system.service;
+package top.yein.tethys.core.system.health;
 
 import java.util.Comparator;
 import java.util.List;
