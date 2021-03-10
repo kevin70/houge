@@ -115,10 +115,7 @@ public final class Health {
      * @param componentName 组件名称
      */
     public Builder(String componentName) {
-      Objects.requireNonNull(componentName, "[componentName]不能为null");
-      this.componentName = componentName;
-      this.status = HealthStatus.UNKNOWN;
-      this.details = new LinkedHashMap<>();
+      this(componentName, HealthStatus.UNKNOWN, Map.of());
     }
 
     /**
@@ -128,11 +125,7 @@ public final class Health {
      * @param status 健康状态
      */
     public Builder(String componentName, HealthStatus status) {
-      Objects.requireNonNull(componentName, "[componentName]不能为null");
-      Objects.requireNonNull(status, "[status]不能为null");
-      this.componentName = componentName;
-      this.status = status;
-      this.details = new LinkedHashMap<>();
+      this(componentName, status, Map.of());
     }
 
     /**
@@ -157,7 +150,7 @@ public final class Health {
      * @return {@link Builder} 实例
      */
     public Builder withException(Throwable ex) {
-      Objects.requireNonNull(ex, "Exception must not be null");
+      Objects.requireNonNull(ex, "[ex]不能为null");
       return withDetail("error", ex.getClass().getName() + ": " + ex.getMessage());
     }
 
@@ -171,8 +164,8 @@ public final class Health {
      * @return {@link Builder} 实例
      */
     public Builder withDetail(String key, Object value) {
-      Objects.requireNonNull(key, "Key must not be null");
-      Objects.requireNonNull(value, "Value must not be null");
+      Objects.requireNonNull(key, "[key]不能为null");
+      Objects.requireNonNull(value, "[value]不能为null");
       this.details.put(key, value);
       return this;
     }
@@ -187,7 +180,7 @@ public final class Health {
      * @return {@link Builder} 实例
      */
     public Builder withDetails(Map<String, ?> details) {
-      Objects.requireNonNull(details, "Details must not be null");
+      Objects.requireNonNull(details, "[details]不能为null");
       this.details.putAll(details);
       return this;
     }
