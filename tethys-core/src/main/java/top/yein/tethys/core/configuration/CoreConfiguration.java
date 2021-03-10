@@ -1,6 +1,13 @@
 package top.yein.tethys.core.configuration;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmHeapPressureMetrics;
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
+import io.micrometer.core.instrument.binder.system.UptimeMetrics;
+import io.micrometer.prometheus.PrometheusConfig;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.r2dbc.spi.ConnectionFactory;
 import java.io.File;
 import java.util.List;
@@ -12,11 +19,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.util.unit.DataSize;
+import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.core.session.LocalSessionIdGenerator;
 import top.yein.tethys.core.system.health.DiskSpaceHealthIndicator;
+import top.yein.tethys.core.system.health.HealthServiceImpl;
 import top.yein.tethys.core.system.health.PostgresHealthIndicator;
-import top.yein.tethys.core.system.service.HealthServiceImpl;
 import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.system.health.HealthService;
 
@@ -36,6 +44,28 @@ public class CoreConfiguration {
     configurer.setIgnoreResourceNotFound(true);
     configurer.setFileEncoding(Charsets.UTF_8.name());
     return configurer;
+  }
+
+  /**
+   * @param identifier
+   * @return
+   */
+  @Bean
+  public PrometheusMeterRegistry prometheusMeterRegistry(ApplicationIdentifier identifier) {
+    var prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    var config = prometheusRegistry.config();
+    config.commonTags(
+        "application",
+        Strings.lenientFormat("%s-%s", identifier.applicationName(), identifier.version()),
+        "fid",
+        String.valueOf(identifier.fid()));
+
+    // 绑定监控
+    new UptimeMetrics().bindTo(prometheusRegistry);
+    new JvmMemoryMetrics().bindTo(prometheusRegistry);
+    new JvmGcMetrics().bindTo(prometheusRegistry);
+    new JvmHeapPressureMetrics().bindTo(prometheusRegistry);
+    return prometheusRegistry;
   }
 
   /**
