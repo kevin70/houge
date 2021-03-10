@@ -1,8 +1,8 @@
 package top.yein.tethys.system.info;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 携带应用程序的信息.
@@ -57,7 +57,7 @@ public final class Info {
 
     /** 默认构造函数. */
     public Builder() {
-      this.content = new LinkedHashMap<>();
+      this.content = new ConcurrentHashMap<>();
     }
 
     /**

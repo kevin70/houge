@@ -25,8 +25,12 @@ import top.yein.tethys.core.session.LocalSessionIdGenerator;
 import top.yein.tethys.core.system.health.DiskSpaceHealthIndicator;
 import top.yein.tethys.core.system.health.HealthServiceImpl;
 import top.yein.tethys.core.system.health.PostgresHealthIndicator;
+import top.yein.tethys.core.system.info.AppInfoContributor;
+import top.yein.tethys.core.system.info.InfoServiceImpl;
 import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.system.health.HealthService;
+import top.yein.tethys.system.info.InfoContributor;
+import top.yein.tethys.system.info.InfoService;
 
 /** @author KK (kzou227@qq.com) */
 @Configuration(proxyBeanMethods = false)
@@ -105,5 +109,17 @@ public class CoreConfiguration {
             new DiskSpaceHealthIndicator(new File("").getAbsoluteFile(), DataSize.parse("300MB")),
             new PostgresHealthIndicator(connectionFactory));
     return new HealthServiceImpl(indicators);
+  }
+
+  /**
+   * @param applicationIdentifier
+   * @return
+   */
+  @Bean
+  public InfoService infoService(ApplicationIdentifier applicationIdentifier) {
+    // FIXME 后期完善
+    var contributors = List.<InfoContributor>of(new AppInfoContributor(applicationIdentifier));
+    var infoService = new InfoServiceImpl(contributors);
+    return infoService;
   }
 }

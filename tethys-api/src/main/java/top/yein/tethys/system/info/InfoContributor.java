@@ -13,7 +13,7 @@ public interface InfoContributor {
   /**
    * 返回应用信息.
    *
-   * @return 应用信息
+   * @param builder 应用信息构建器.
    */
-  Mono<Info> contribute();
+  Mono<Void> contribute(Info.Builder builder);
 }

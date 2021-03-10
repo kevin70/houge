@@ -8,6 +8,7 @@ import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.http.AbstractRestSupport;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
+import top.yein.tethys.system.info.InfoService;
 
 /**
  * 系统信息 REST 接口.
@@ -16,6 +17,13 @@ import top.yein.tethys.core.http.RoutingService;
  */
 @Component
 public class InfoResource extends AbstractRestSupport implements RoutingService {
+
+  private final InfoService infoService;
+
+  /** @param infoService */
+  public InfoResource(InfoService infoService) {
+    this.infoService = infoService;
+  }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
@@ -28,8 +36,6 @@ public class InfoResource extends AbstractRestSupport implements RoutingService 
    * @return
    */
   Mono<Void> info(HttpServerRequest request, HttpServerResponse response) {
-
-
-    return Mono.empty();
+    return infoService.info().flatMap(info -> json(response, info.getDetails()));
   }
 }
