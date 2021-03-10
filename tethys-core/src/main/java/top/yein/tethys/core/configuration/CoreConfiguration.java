@@ -32,11 +32,28 @@ import top.yein.tethys.session.SessionIdGenerator;
 import top.yein.tethys.system.health.HealthService;
 import top.yein.tethys.system.info.InfoService;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * Tethys Spring 公共的基础配置.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 @Configuration(proxyBeanMethods = false)
 public class CoreConfiguration {
 
-  /** @return */
+  /**
+   * 创建 Tethys Spring 基础配置对象.
+   *
+   * <p>配置文件按照如下的顺序加载, 如果有相同的配置项越后加载的配置将覆盖先前的配置内容.
+   *
+   * <ul>
+   *   <li>classpath:tethys.properties
+   *   <li>file:/opt/tethys.properties
+   *   <li>file:/etc/tethys/tethys.properties
+   *   <li>file:tethys-dev.properties
+   * </ul>
+   *
+   * @return Spring 配置对象
+   */
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
     var configurer = new PropertySourcesPlaceholderConfigurer();
@@ -51,8 +68,10 @@ public class CoreConfiguration {
   }
 
   /**
-   * @param prometheusMeterRegistry
-   * @return
+   * 创建 JVM GC 度量指标对象并与 {@link PrometheusMeterRegistry} 绑定.
+   *
+   * @param prometheusMeterRegistry prometheus 注册表
+   * @return JVM GC 度量指标对象
    */
   @Bean
   public JvmGcMetrics jvmGcMetrics(PrometheusMeterRegistry prometheusMeterRegistry) {
@@ -62,8 +81,10 @@ public class CoreConfiguration {
   }
 
   /**
-   * @param prometheusMeterRegistry
-   * @return
+   * 创建 JVM 堆内存压力度量指示对象并与 {@link PrometheusMeterRegistry} 绑定.
+   *
+   * @param prometheusMeterRegistry prometheus 注册表
+   * @return JVM 堆内存压力度量指标对象
    */
   @Bean
   public JvmHeapPressureMetrics jvmHeapPressureMetrics(
@@ -74,8 +95,17 @@ public class CoreConfiguration {
   }
 
   /**
-   * @param identifier
-   * @return
+   * 创建 Prometheus 注册表对象.
+   *
+   * <p>默认绑定的度量指标:
+   *
+   * <ul>
+   *   <li>{@link UptimeMetrics}
+   *   <li>{@link JvmMemoryMetrics}
+   * </ul>
+   *
+   * @param identifier 应用程序标识
+   * @return Prometheus 注册表对象
    */
   @Bean
   public PrometheusMeterRegistry prometheusMeterRegistry(ApplicationIdentifier identifier) {
@@ -94,8 +124,10 @@ public class CoreConfiguration {
   }
 
   /**
-   * @param connectionFactory
-   * @return
+   * 创建 R2DBC 事务管理对象.
+   *
+   * @param connectionFactory 数据库连接工厂
+   * @return R2DBC 事务管理对象
    */
   @Bean
   public R2dbcTransactionManager transactionManager(ConnectionFactory connectionFactory) {
@@ -103,8 +135,10 @@ public class CoreConfiguration {
   }
 
   /**
-   * @param autofillId
-   * @return
+   * 创建消息配置对象.
+   *
+   * @param autofillId 是否开启自动填充消息 ID
+   * @return 消息配置对象
    */
   @Bean
   public MessageProperties messageProperties(
@@ -112,15 +146,21 @@ public class CoreConfiguration {
     return new MessageProperties(autofillId);
   }
 
-  /** @return */
+  /**
+   * 创建会话 ID 生成器对象.
+   *
+   * @return 会话 ID 生成器
+   */
   @Bean
   public SessionIdGenerator sessionIdGenerator() {
     return new LocalSessionIdGenerator();
   }
 
   /**
-   * @param connectionFactory
-   * @return
+   * 创建应用健康状况服务对象.
+   *
+   * @param connectionFactory 数据库连接
+   * @return 应用健康状况服务对象
    */
   @Bean
   public HealthService healthService(ConnectionFactory connectionFactory) {
@@ -133,8 +173,10 @@ public class CoreConfiguration {
   }
 
   /**
-   * @param applicationIdentifier
-   * @return
+   * 创建应用信息服务对象.
+   *
+   * @param applicationIdentifier 应用程序标识对象
+   * @return 应用信息服务对象
    */
   @Bean
   public InfoService infoService(ApplicationIdentifier applicationIdentifier) {
