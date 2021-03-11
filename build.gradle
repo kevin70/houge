@@ -36,6 +36,7 @@ allprojects {
   apply plugin: "io.spring.dependency-management"
   apply plugin: "com.github.johnrengelman.shadow"
   apply plugin: "me.champeau.gradle.jmh"
+  apply plugin: "com.github.hierynomus.license"
 
   version = "1.0.0-SNAPSHOT"
   sourceCompatibility = "11"
@@ -67,7 +68,7 @@ allprojects {
       java = "SLASHSTAR_STYLE"
     }
     ext {
-      year = "2019-2020"
+      year = "2019-${Calendar.instance.get(Calendar.YEAR)}"
       author = "the original author or authors"
     }
   }
