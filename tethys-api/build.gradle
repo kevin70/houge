@@ -5,4 +5,6 @@ dependencies {
   api("com.fasterxml.jackson.core:jackson-databind")
   api("io.jsonwebtoken:jjwt-api")
   api("org.mapstruct:mapstruct")
+  api("com.google.inject:guice")
+  api("com.typesafe:config")
 }
