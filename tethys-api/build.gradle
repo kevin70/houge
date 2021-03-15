@@ -7,4 +7,5 @@ dependencies {
   api("org.mapstruct:mapstruct")
   api("com.google.inject:guice")
   api("com.typesafe:config")
+  api("io.r2dbc:r2dbc-spi")
 }
