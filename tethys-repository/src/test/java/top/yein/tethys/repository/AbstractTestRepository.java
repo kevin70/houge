@@ -49,8 +49,17 @@ public abstract class AbstractTestRepository {
   static void setUp() {
     var config = ConfigFactory.parseResources("tethys-test.conf");
     log.debug("单元测试配置\n{}", config.root().render());
-    var connectionFactory = ConnectionFactories.get(config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL));
+    var connectionFactory =
+        ConnectionFactories.get(config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL));
     r2dbcClient = new DefaultR2dbcClient(connectionFactory);
+  }
+
+  /**
+   * @param sql
+   * @param parameters
+   */
+  protected void clean(String sql, Object[] parameters) {
+    r2dbcClient.sql(sql).bind(parameters).rowsUpdated().block();
   }
 
   /**
