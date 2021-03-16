@@ -5,6 +5,7 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -63,6 +64,15 @@ public interface R2dbcClient {
      * @return self
      */
     ExecuteSpec bind(Object[] parameters);
+
+    /**
+     * 返回获取数据规范并绑定数据结果映射函数.
+     *
+     * @param mappingFunction 数据映射函数
+     * @param <R> 映射的数据类型
+     * @return 获取数据规范
+     */
+    <R> FetchSpec<R> map(Function<Row, R> mappingFunction);
 
     /**
      * 返回获取数据规范并绑定数据结果映射函数.

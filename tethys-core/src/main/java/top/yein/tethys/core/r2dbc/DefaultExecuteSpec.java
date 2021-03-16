@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.r2dbc.Parameter;
 import top.yein.tethys.r2dbc.R2dbcClient.ExecuteSpec;
@@ -65,6 +66,11 @@ class DefaultExecuteSpec implements ExecuteSpec {
       bind(i, v);
     }
     return this;
+  }
+
+  @Override
+  public <R> FetchSpec<R> map(Function<Row, R> mappingFunction) {
+    return this.map((row, rowMetadata) -> mappingFunction.apply(row));
   }
 
   @Override
