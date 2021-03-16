@@ -8,8 +8,11 @@
 build
 # Ignore IDEA build output directory
 out
+
 # 忽略日志
 logs
+
 # Tethys 开发配置
+tethys-dev.conf
 tethys-dev.properties
 flyway.conf
