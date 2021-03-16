@@ -21,6 +21,7 @@ import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
@@ -48,7 +49,7 @@ public abstract class AbstractTestRepository {
   static void setUp() {
     var config = ConfigFactory.parseResources("tethys-test.conf");
     log.debug("单元测试配置\n{}", config.root().render());
-    var connectionFactory = ConnectionFactories.get(config.getString("message-storage.r2dbc-url"));
+    var connectionFactory = ConnectionFactories.get(config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL));
     r2dbcClient = new DefaultR2dbcClient(connectionFactory);
   }
 
