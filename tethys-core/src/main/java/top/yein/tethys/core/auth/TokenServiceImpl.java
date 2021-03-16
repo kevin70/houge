@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretRepository;
+import top.yein.tethys.repository.JwtSecretDAO;
 
 /**
  * 访问令牌实现.
@@ -20,16 +20,16 @@ import top.yein.tethys.repository.JwtSecretRepository;
 @Service
 public class TokenServiceImpl implements TokenService {
 
-  private final JwtSecretRepository jwtSecretRepository;
+  private final JwtSecretDAO jwtSecretDao;
 
-  /** @param jwtSecretRepository */
-  public TokenServiceImpl(JwtSecretRepository jwtSecretRepository) {
-    this.jwtSecretRepository = jwtSecretRepository;
+  /** @param jwtSecretDao */
+  public TokenServiceImpl(JwtSecretDAO jwtSecretDao) {
+    this.jwtSecretDao = jwtSecretDao;
   }
 
   @Override
   public Mono<String> generateToken(String uid) {
-    return jwtSecretRepository
+    return jwtSecretDao
         .loadNoDeleted()
         .switchIfEmpty(Flux.error(() -> new BizCodeException(BizCodes.C3310)))
         .next()

@@ -13,14 +13,13 @@ import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.r2dbc.core.DatabaseClient;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 import reactor.util.context.ContextView;
 import top.yein.tethys.domain.CachedJwtSecret;
 import top.yein.tethys.entity.JwtSecret;
+import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**
  * JWT 密钥存储 - PostgreSQL.
@@ -28,25 +27,24 @@ import top.yein.tethys.entity.JwtSecret;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Repository
-public class JwtSecretRepositoryImpl implements JwtSecretRepository {
+public class JwtSecretDAOImpl implements JwtSecretDAO {
 
   private static final String INSERT_SQL =
-      "INSERT INTO t_jwt_secret(id,algorithm,secret_key) VALUES(:id,:algorithm,:secretKey)";
-  private static final String DELETE_SQL = "UPDATE t_jwt_secret SET deleted=:deleted WHERE id=:id";
-  private static final String FIND_BY_ID_SQL = "SELECT * FROM t_jwt_secret WHERE id=:id";
-  private static final String FIND_ALL_SQL = "SELECT * FROM t_jwt_secret";
+      "INSERT INTO jwt_secrets(id,algorithm,secret_key) VALUES($1,$2,$3)";
+  private static final String DELETE_SQL = "UPDATE jwt_secrets SET deleted=$1 WHERE id=$2";
+  private static final String FIND_BY_ID_SQL = "SELECT * FROM jwt_secrets WHERE id=$1";
+  private static final String FIND_ALL_SQL = "SELECT * FROM jwt_secrets";
 
-  private final DatabaseClient dc;
+  private final R2dbcClient rc;
   private final AsyncCache<String, CachedJwtSecret> jwtSecretCache;
 
   /**
-   * 构造函数.
+   * 使用 R2DBC 客户端构造对象.
    *
-   * @param dc 数据访问客户端
+   * @param rc R2DBC 客户端
    */
-  public JwtSecretRepositoryImpl(DatabaseClient dc) {
-    this.dc = dc;
+  public JwtSecretDAOImpl(R2dbcClient rc) {
+    this.rc = rc;
     this.jwtSecretCache =
         Caffeine.newBuilder()
             .recordStats()
@@ -57,32 +55,28 @@ public class JwtSecretRepositoryImpl implements JwtSecretRepository {
 
   @Override
   public Mono<Integer> insert(JwtSecret entity) {
-    return dc.sql(INSERT_SQL)
-        .bind("id", entity.getId())
-        .bind("algorithm", entity.getAlgorithm())
-        .bind("secretKey", entity.getSecretKey())
-        .fetch()
+    return rc.sql(INSERT_SQL)
+        .bind(new Object[] {entity.getId(), entity.getAlgorithm(), entity.getSecretKey()})
         .rowsUpdated();
   }
 
   @Override
   public Mono<Integer> delete(String id) {
-    return dc.sql(DELETE_SQL)
-        .bind("deleted", System.currentTimeMillis() / 1000)
-        .bind("id", id)
-        .fetch()
+    return rc.sql(DELETE_SQL)
+        .bind(0, System.currentTimeMillis() / 1000)
+        .bind(1, id)
         .rowsUpdated()
         .doOnSuccess(unused -> jwtSecretCache.synchronous().invalidate(id));
   }
 
   @Override
   public Mono<JwtSecret> findById(String id) {
-    return dc.sql(FIND_BY_ID_SQL).bind("id", id).map(this::mapEntity).first();
+    return rc.sql(FIND_BY_ID_SQL).bind(0, id).map(this::mapEntity).one();
   }
 
   @Override
   public Flux<JwtSecret> findAll() {
-    return dc.sql(FIND_ALL_SQL).map(this::mapEntity).all();
+    return rc.sql(FIND_ALL_SQL).map(this::mapEntity).all();
   }
 
   @Override
@@ -131,7 +125,7 @@ public class JwtSecretRepositoryImpl implements JwtSecretRepository {
       log.debug("加载 jwt secret [kid={}]", s);
       return findById(s)
           .map(this::toCachedJwtSecret)
-          // context 用于 spring 事务传递
+          // context 用于事务传递
           .contextWrite(context)
           .toFuture();
     };

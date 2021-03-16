@@ -11,7 +11,7 @@ import top.yein.tethys.entity.JwtSecret;
  *
  * @author KK (kzou227@qq.com)
  */
-public interface JwtSecretRepository {
+public interface JwtSecretDAO {
 
   /** 缓存默认刷新周期. */
   Duration REFRESH_CACHE_DURATION = Duration.ofMinutes(5);

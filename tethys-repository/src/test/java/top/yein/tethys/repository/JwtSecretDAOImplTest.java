@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
 import org.reactivestreams.Publisher;
@@ -19,50 +18,55 @@ import top.yein.tethys.domain.CachedJwtSecret;
 import top.yein.tethys.entity.JwtSecret;
 
 /**
- * {@link JwtSecretRepositoryImpl} 单元测试.
+ * {@link JwtSecretDAOImpl} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class JwtSecretRepositoryImplTest extends AbstractTestRepository {
+class JwtSecretDAOImplTest extends AbstractTestRepository {
 
   private Faker faker = new Faker(Locale.SIMPLIFIED_CHINESE);
 
-  private JwtSecretRepository newJwtSecretRepository() {
-    return new JwtSecretRepositoryImpl(dc);
+  private JwtSecretDAO newJwtSecretRepository() {
+    return new JwtSecretDAOImpl(r2dbcClient);
   }
 
   @Test
   void insert() {
     var repo = newJwtSecretRepository();
     var entity = new JwtSecret();
-    entity.setId("00");
+    entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var fo = findOne("select * from t_jwt_secret where id=:id", Map.of("id", entity.getId()));
-    var p = transactional(repo.insert(entity).zipWith(fo));
-    StepVerifier.create(p)
-        .consumeNextWith(
-            tuple -> {
-              assertThat(tuple.getT1()).isEqualTo(1);
+    var p = repo.insert(entity);
+    StepVerifier.create(p).expectNext(1).expectComplete().verify();
 
-              var dbRow = tuple.getT2();
-              assertSoftly(
-                  s -> {
-                    s.assertThat(dbRow.get("id")).as("id").isEqualTo(entity.getId());
-                    s.assertThat(dbRow.get("algorithm"))
-                        .as("algorithm")
-                        .isEqualTo(entity.getAlgorithm());
-                    s.assertThat(dbRow.get("secret_key"))
-                        .as("secret_key")
-                        .isEqualTo(entity.getSecretKey());
-                    s.assertThat(dbRow.get("deleted")).as("deleted").isEqualTo(0);
-                    s.assertThat(dbRow.get("create_time")).as("create_time").isNotNull();
-                    s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
-                  });
-            })
+    StepVerifier.create(
+            r2dbcClient
+                .sql("select * from jwt_secrets where id=$1")
+                .bind(0, entity.getId())
+                .fetch()
+                .one())
+        .consumeNextWith(
+            dbRow ->
+                assertSoftly(
+                    s -> {
+                      s.assertThat(dbRow.get("id")).as("id").isEqualTo(entity.getId());
+                      s.assertThat(dbRow.get("algorithm"))
+                          .as("algorithm")
+                          .isEqualTo(entity.getAlgorithm());
+                      s.assertThat(dbRow.get("secret_key"))
+                          .as("secret_key")
+                          .isEqualTo(entity.getSecretKey());
+                      s.assertThat(dbRow.get("deleted")).as("deleted").isEqualTo(0);
+                      s.assertThat(dbRow.get("create_time")).as("create_time").isNotNull();
+                      s.assertThat(dbRow.get("update_time")).as("update_time").isNotNull();
+                    }))
         .expectComplete()
         .verify();
+
+    // 清理数据
+    clean("delete from jwt_secrets where id=$1", new Object[] {entity.getId()});
   }
 
   @Test

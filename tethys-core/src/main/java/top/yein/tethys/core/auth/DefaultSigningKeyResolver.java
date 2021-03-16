@@ -26,7 +26,7 @@ import java.util.concurrent.TimeoutException;
 import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretRepository;
+import top.yein.tethys.repository.JwtSecretDAO;
 
 /**
  * JWT Key 查找实现.
@@ -35,10 +35,10 @@ import top.yein.tethys.repository.JwtSecretRepository;
  */
 class DefaultSigningKeyResolver implements SigningKeyResolver {
 
-  private final JwtSecretRepository jwtSecretRepository;
+  private final JwtSecretDAO jwtSecretDao;
 
-  DefaultSigningKeyResolver(JwtSecretRepository jwtSecretRepository) {
-    this.jwtSecretRepository = jwtSecretRepository;
+  DefaultSigningKeyResolver(JwtSecretDAO jwtSecretDao) {
+    this.jwtSecretDao = jwtSecretDao;
   }
 
   @Override
@@ -73,7 +73,7 @@ class DefaultSigningKeyResolver implements SigningKeyResolver {
 
   private Key lookupVerificationKey(String kid) {
     var future =
-        jwtSecretRepository.loadById(kid).subscribeOn(Schedulers.boundedElastic()).toFuture();
+        jwtSecretDao.loadById(kid).subscribeOn(Schedulers.boundedElastic()).toFuture();
     try {
       // 这里是阻塞逻辑，后续可能需要单独优化
       var k = future.get(5, TimeUnit.SECONDS);
