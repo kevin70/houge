@@ -32,13 +32,13 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
 
   @Test
   void insert() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     var entity = new JwtSecret();
     entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var p = repo.insert(entity);
+    var p = dao.insert(entity);
     StepVerifier.create(p).expectNext(1).expectComplete().verify();
 
     StepVerifier.create(
@@ -71,49 +71,25 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
 
   @Test
   void delete() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     var entity = new JwtSecret();
-    entity.setId("00");
+    entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var p =
-        transactional(
-            repo.insert(entity)
-                .then(repo.delete(entity.getId()).zipWith(repo.findById(entity.getId()))));
-    StepVerifier.create(p)
-        .consumeNextWith(
-            tuple -> {
-              assertThat(tuple.getT1()).isEqualTo(1);
-
-              var dbRow = tuple.getT2();
-              assertSoftly(
-                  s -> {
-                    s.assertThat(dbRow.getId()).as("id").isEqualTo(entity.getId());
-                    s.assertThat(dbRow.getAlgorithm())
-                        .as("algorithm")
-                        .isEqualTo(entity.getAlgorithm());
-                    s.assertThat(dbRow.getSecretKey())
-                        .as("secret_key")
-                        .isEqualTo(entity.getSecretKey());
-                    s.assertThat(dbRow.getDeleted()).as("deleted").isGreaterThan(1);
-                    s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
-                    s.assertThat(dbRow.getUpdateTime()).as("update_time").isNotNull();
-                  });
-            })
-        .expectComplete()
-        .verify();
+    var p = dao.insert(entity).then(dao.delete(entity.getId()));
+    StepVerifier.create(p).expectNext(1).expectComplete().verify();
   }
 
   @Test
   void findById() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     var entity = new JwtSecret();
-    entity.setId("00");
+    entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var p = transactional(repo.insert(entity).then(repo.findById(entity.getId())));
+    var p = dao.insert(entity).then(dao.findById(entity.getId()));
     StepVerifier.create(p)
         .consumeNextWith(
             dbRow -> {
@@ -133,22 +109,25 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
             })
         .expectComplete()
         .verify();
+
+    // 清理数据
+    clean("delete from jwt_secrets where id=$1", new Object[] {entity.getId()});
   }
 
   @Test
   void findAll() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     var entity1 = new JwtSecret();
-    entity1.setId("00");
+    entity1.setId(faker.random().hex());
     entity1.setAlgorithm("HS512");
     entity1.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var entity2 = new JwtSecret();
-    entity2.setId("01");
+    entity2.setId(faker.random().hex());
     entity2.setAlgorithm("HS512");
     entity2.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var p = transactional(repo.insert(entity1).then(repo.insert(entity2)).thenMany(repo.findAll()));
+    var p = dao.insert(entity1).then(dao.insert(entity2)).thenMany(dao.findAll());
     StepVerifier.create(p)
         .recordWith(ArrayList::new)
         .thenConsumeWhile(unused -> true)
@@ -157,26 +136,30 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
                 assertThat(jwtSecrets).extracting("id").contains(entity1.getId(), entity2.getId()))
         .expectComplete()
         .verify();
+
+    // 清理数据
+    clean(
+        "delete from jwt_secrets where id in ($1,$2)",
+        new Object[] {entity1.getId(), entity2.getId()});
   }
 
   @Test
   void refreshAll() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     AsyncCache<String, CachedJwtSecret> jwtSecretCache =
-        Whitebox.getInternalState(repo, "jwtSecretCache");
+        Whitebox.getInternalState(dao, "jwtSecretCache");
 
     var entity1 = new JwtSecret();
-    entity1.setId("00");
+    entity1.setId(faker.random().hex());
     entity1.setAlgorithm("HS512");
     entity1.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var entity2 = new JwtSecret();
-    entity2.setId("01");
+    entity2.setId(faker.random().hex());
     entity2.setAlgorithm("HS512");
     entity2.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var p =
-        transactional(repo.insert(entity1).then(repo.insert(entity2)).thenMany(repo.refreshAll()));
+    var p = dao.insert(entity1).then(dao.insert(entity2)).thenMany(dao.refreshAll());
     var cachedJwtSecrets = new ArrayList<CachedJwtSecret>();
     StepVerifier.create(p)
         .recordWith(() -> cachedJwtSecrets)
@@ -189,22 +172,27 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
     for (CachedJwtSecret cachedJwtSecret : cachedJwtSecrets) {
       assertThat(cachedJwtSecret).isEqualTo(syncCache.getIfPresent(cachedJwtSecret.getId()));
     }
+
+    // 清理数据
+    clean(
+        "delete from jwt_secrets where id in ($1,$2)",
+        new Object[] {entity1.getId(), entity2.getId()});
   }
 
   @Test
   void loadById() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     var entity = new JwtSecret();
-    entity.setId("00");
+    entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var loadByIdPublishers = new ArrayList<Publisher<CachedJwtSecret>>();
     for (int i = 0; i < 10; i++) {
-      loadByIdPublishers.add(repo.loadById(entity.getId()));
+      loadByIdPublishers.add(dao.loadById(entity.getId()));
     }
 
-    var p = transactional(repo.insert(entity).then(Flux.concat(loadByIdPublishers).collectList()));
+    var p = dao.insert(entity).then(Flux.concat(loadByIdPublishers).collectList());
     StepVerifier.create(p)
         .consumeNextWith(
             cachedJwtSecrets -> {
@@ -216,26 +204,27 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
             })
         .expectComplete()
         .verify();
+
+    // 清理数据
+    clean("delete from jwt_secrets where id in ($1)", new Object[] {entity.getId()});
   }
 
   @Test
   void loadNoDeleted() {
-    var repo = newJwtSecretRepository();
+    var dao = newJwtSecretRepository();
     AsyncCache<String, CachedJwtSecret> jwtSecretCache =
-        Whitebox.getInternalState(repo, "jwtSecretCache");
+        Whitebox.getInternalState(dao, "jwtSecretCache");
 
     var entity1 = new JwtSecret();
-    entity1.setId("00");
+    entity1.setId(faker.random().hex());
     entity1.setAlgorithm("HS512");
     entity1.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var entity2 = new JwtSecret();
-    entity2.setId("01");
+    entity2.setId(faker.random().hex());
     entity2.setAlgorithm("HS512");
     entity2.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
-    var p =
-        transactional(
-            repo.insert(entity1).then(repo.insert(entity2)).thenMany(repo.loadNoDeleted()));
+    var p = dao.insert(entity1).then(dao.insert(entity2)).thenMany(dao.loadNoDeleted());
     StepVerifier.create(p)
         .recordWith(ArrayList::new)
         .thenConsumeWhile(unused -> true)
@@ -247,5 +236,13 @@ class JwtSecretDAOImplTest extends AbstractTestRepository {
             })
         .expectComplete()
         .verify();
+
+    // 清理数据
+    clean(
+        "delete from jwt_secrets where id in ($1,$2)",
+        new Object[] {entity1.getId(), entity2.getId()});
+    //    clean(
+    //        "delete from jwt_secrets where id in ($1)",
+    //        new Object[] {new String[] {entity1.getId(), entity2.getId()}});
   }
 }
