@@ -10,7 +10,7 @@ import top.yein.tethys.entity.Message;
  *
  * @author KK (kzou227@qq.com)
  */
-public interface MessageRepository {
+public interface MessageDAO {
 
   /**
    * 保存消息.
