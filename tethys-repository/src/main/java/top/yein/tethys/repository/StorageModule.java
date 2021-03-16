@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.typesafe.config.Config;
 import io.r2dbc.spi.ConnectionFactories;
+import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
@@ -33,7 +34,7 @@ public class StorageModule extends AbstractModule {
 
   @Provides
   public R2dbcClient r2dbcClient() {
-    var r2dbcUrl = config.getString("message-storage.r2dbc-url");
+    var r2dbcUrl = config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL);
     return new DefaultR2dbcClient(ConnectionFactories.get(r2dbcUrl));
   }
 }
