@@ -1,6 +1,7 @@
 package top.yein.tethys.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,10 @@ class UidMappingDaoImplTest extends AbstractTestDao {
     return new UidMappingDaoImpl(r2dbcClient);
   }
 
+  private void cleanByMappedUid(String mappedUid) {
+    clean("delete from uid_mappings where mapped_uid=$1", new Object[] {mappedUid});
+  }
+
   @Test
   void insert() {
     var dao = newUidMappingDao();
@@ -30,6 +35,31 @@ class UidMappingDaoImplTest extends AbstractTestDao {
         .verify();
 
     // 清理数据
-    clean("delete from uid_mappings where mapped_uid=$1", new Object[] {entity.getMappedUid()});
+    cleanByMappedUid(entity.getMappedUid());
+  }
+
+  @Test
+  void findByMappedUid() {
+    var dao = newUidMappingDao();
+    var entity = new UidMapping();
+    entity.setMappedUid(UUID.randomUUID().toString());
+    var p = dao.insert(entity).then(dao.findByMappedUid(entity.getMappedUid()));
+
+    StepVerifier.create(p)
+        .consumeNextWith(
+            dbRow ->
+                assertSoftly(
+                    s -> {
+                      s.assertThat(dbRow.getId()).as("id").isGreaterThanOrEqualTo(1);
+                      s.assertThat(dbRow.getMappedUid())
+                          .as("mapped_uid")
+                          .isEqualTo(entity.getMappedUid());
+                      s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
+                    }))
+        .expectComplete()
+        .verify();
+
+    // 清理数据
+    cleanByMappedUid(entity.getMappedUid());
   }
 }

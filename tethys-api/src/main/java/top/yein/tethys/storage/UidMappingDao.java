@@ -24,5 +24,5 @@ public interface UidMappingDao {
    * @param mappedUid 被映射的用户 ID
    * @return 映射实体
    */
-  Mono<UidMapping> findByMappedId(String mappedUid);
+  Mono<UidMapping> findByMappedUid(String mappedUid);
 }
