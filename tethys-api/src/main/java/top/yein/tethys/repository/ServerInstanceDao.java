@@ -8,7 +8,7 @@ import top.yein.tethys.entity.ServerInstance;
  *
  * @author KK (kzou227@qq.com)
  */
-public interface ServerInstanceRepository {
+public interface ServerInstanceDao {
 
   /**
    * 新增应用服务实例.

@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.entity.ServerInstance;
-import top.yein.tethys.repository.ServerInstanceRepository;
+import top.yein.tethys.repository.ServerInstanceDao;
 import top.yein.tethys.util.HostNameUtils;
 import top.yein.tethys.util.YeinGid;
 
@@ -39,11 +39,11 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   // 健康检查的周期
   private static final Duration CHECK_HEALTH_PERIOD = Duration.ofMinutes(5);
 
-  private final ServerInstanceRepository serverInstanceRepository;
+  private final ServerInstanceDao serverInstanceDao;
   private final int fid;
 
-  protected AbstractApplicationIdentifier(ServerInstanceRepository serverInstanceRepository) {
-    this.serverInstanceRepository = serverInstanceRepository;
+  protected AbstractApplicationIdentifier(ServerInstanceDao serverInstanceDao) {
+    this.serverInstanceDao = serverInstanceDao;
     this.fid = initFid();
     this.checkHealth();
   }
@@ -60,7 +60,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
 
   @Override
   public void clean() {
-    var future = serverInstanceRepository.delete(fid).toFuture();
+    var future = serverInstanceDao.delete(fid).toFuture();
     try {
       var n = future.get(5, TimeUnit.SECONDS);
       if (n != 1) {
@@ -94,7 +94,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                     var entity = newServerInstance(tempFid);
                     log.info("新增 ServerInstance: {}", entity);
 
-                    return serverInstanceRepository
+                    return serverInstanceDao
                         .insert(entity)
                         .doOnNext(
                             rowsUpdated -> {
@@ -105,7 +105,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                             });
                   });
 
-          return serverInstanceRepository
+          return serverInstanceDao
               .findById(tempFid)
               .filter(
                   si -> {
@@ -120,7 +120,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                     var entity = newServerInstance(tempFid);
                     entity.setVer(si.getVer());
                     log.info("修改 ServerInstance: {}", entity);
-                    return serverInstanceRepository.update(entity);
+                    return serverInstanceDao.update(entity);
                   })
               .doOnNext(
                   rowsUpdated -> {
@@ -180,7 +180,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   }
 
   private void checkHealth() {
-    serverInstanceRepository
+    serverInstanceDao
         .updateCheckTime(fid)
         .doOnNext(
             rowsUpdated -> {
