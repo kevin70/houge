@@ -1,6 +1,7 @@
 package top.yein.tethys.core.system.info;
 
 import com.google.common.collect.ImmutableMap;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.system.info.Info.Builder;
@@ -11,6 +12,7 @@ public class AppInfoContributor implements InfoContributor {
 
   private final ApplicationIdentifier applicationIdentifier;
 
+  @Inject
   public AppInfoContributor(ApplicationIdentifier applicationIdentifier) {
     this.applicationIdentifier = applicationIdentifier;
   }

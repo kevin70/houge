@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.typesafe.config.Config;
 import io.r2dbc.spi.ConnectionFactories;
+import io.r2dbc.spi.ConnectionFactory;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
@@ -35,8 +36,13 @@ public class StorageModule extends AbstractModule {
   }
 
   @Provides
-  public R2dbcClient r2dbcClient() {
+  public ConnectionFactory connectionFactory() {
     var r2dbcUrl = config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL);
-    return new DefaultR2dbcClient(ConnectionFactories.get(r2dbcUrl));
+    return ConnectionFactories.get(r2dbcUrl);
+  }
+
+  @Provides
+  public R2dbcClient r2dbcClient(ConnectionFactory connectionFactory) {
+    return new DefaultR2dbcClient(connectionFactory);
   }
 }

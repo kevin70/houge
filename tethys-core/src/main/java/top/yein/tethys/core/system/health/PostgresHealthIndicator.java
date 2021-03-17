@@ -2,6 +2,7 @@ package top.yein.tethys.core.system.health;
 
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,6 +28,7 @@ public class PostgresHealthIndicator implements HealthIndicator {
    *
    * @param connectionFactory 数据库客户端
    */
+  @Inject
   public PostgresHealthIndicator(ConnectionFactory connectionFactory) {
     this("PostgreSQL", connectionFactory);
   }

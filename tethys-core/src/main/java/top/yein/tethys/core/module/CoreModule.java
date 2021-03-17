@@ -18,6 +18,17 @@ import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.resource.AuthInterceptor;
 import top.yein.tethys.core.resource.TokenResource;
+import top.yein.tethys.core.system.health.HealthResource;
+import top.yein.tethys.core.system.health.HealthServiceImpl;
+import top.yein.tethys.core.system.health.PostgresHealthIndicator;
+import top.yein.tethys.core.system.info.AppInfoContributor;
+import top.yein.tethys.core.system.info.InfoResource;
+import top.yein.tethys.core.system.info.InfoServiceImpl;
+import top.yein.tethys.core.system.info.JavaInfoContributor;
+import top.yein.tethys.system.health.HealthIndicator;
+import top.yein.tethys.system.health.HealthService;
+import top.yein.tethys.system.info.InfoContributor;
+import top.yein.tethys.system.info.InfoService;
 
 /**
  * Tethys Guice 基础模块.
@@ -42,10 +53,23 @@ public class CoreModule extends AbstractModule {
     bind(AuthService.class).to(JwsAuthService.class).in(Scopes.SINGLETON);
     bind(TokenService.class).to(TokenServiceImpl.class).in(Scopes.SINGLETON);
 
+    // 应用信息
+    bind(InfoService.class).to(InfoServiceImpl.class).in(Scopes.SINGLETON);
+    var infoContributorsBinder = Multibinder.newSetBinder(binder(), InfoContributor.class);
+    infoContributorsBinder.addBinding().to(AppInfoContributor.class).in(Scopes.SINGLETON);
+    infoContributorsBinder.addBinding().to(JavaInfoContributor.class).in(Scopes.SINGLETON);
+
+    // 健康状况
+    bind(HealthService.class).to(HealthServiceImpl.class).in(Scopes.SINGLETON);
+    var healthIndicatorsBinder = Multibinder.newSetBinder(binder(), HealthIndicator.class);
+    healthIndicatorsBinder.addBinding().to(PostgresHealthIndicator.class).in(Scopes.SINGLETON);
+
+    // resources
     bind(AuthInterceptor.class).in(Scopes.SINGLETON);
     var routingServicesBinder = Multibinder.newSetBinder(binder(), RoutingService.class);
+    routingServicesBinder.addBinding().to(InfoResource.class).in(Scopes.SINGLETON);
+    routingServicesBinder.addBinding().to(HealthResource.class).in(Scopes.SINGLETON);
     routingServicesBinder.addBinding().to(TokenResource.class).in(Scopes.SINGLETON);
-    //    bind(RoutingService.class).to(TokenResource.class).in(Scopes.SINGLETON);
   }
 
   @Provides

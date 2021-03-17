@@ -2,6 +2,8 @@ package top.yein.tethys.core.system.health;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import javax.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.system.health.Health;
@@ -29,14 +31,15 @@ public class HealthServiceImpl implements HealthService {
         return (i1 < i2) ? -1 : (i1 != i2) ? 1 : o1.getStatus().compareTo(o2.getStatus());
       };
 
-  private final List<HealthIndicator> healthIndicators;
+  private final Set<HealthIndicator> healthIndicators;
 
   /**
    * 使用 {@link HealthIndicator} 创建对象.
    *
    * @param healthIndicators 运行健康状况指示器实现
    */
-  public HealthServiceImpl(List<HealthIndicator> healthIndicators) {
+  @Inject
+  public HealthServiceImpl(Set<HealthIndicator> healthIndicators) {
     this.healthIndicators = healthIndicators;
   }
 
