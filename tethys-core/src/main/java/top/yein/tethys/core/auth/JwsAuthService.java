@@ -27,7 +27,7 @@ import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretDAO;
+import top.yein.tethys.repository.JwtSecretDao;
 
 /**
  * <a href="https://tools.ietf.org/html/rfc7515">JWS</a> 用户认证服务实现.
@@ -40,7 +40,7 @@ public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
 
-  public JwsAuthService(JwtSecretDAO jwtSecretDao) {
+  public JwsAuthService(JwtSecretDao jwtSecretDao) {
     this.jwtParser =
         Jwts.parserBuilder()
             .setSigningKeyResolver(new DefaultSigningKeyResolver(jwtSecretDao))

@@ -13,7 +13,7 @@ import top.yein.tethys.r2dbc.R2dbcClient;
  *
  * @author KK (kzou227@qq.com)
  */
-public class MessageDAOImpl implements MessageDAO {
+public class MessageDaoImpl implements MessageDao {
 
   private static final String INSERT_SQL =
       "INSERT INTO messages("
@@ -27,7 +27,7 @@ public class MessageDAOImpl implements MessageDAO {
    *
    * @param rc R2DBC 客户端
    */
-  public MessageDAOImpl(R2dbcClient rc) {
+  public MessageDaoImpl(R2dbcClient rc) {
     this.rc = rc;
   }
 

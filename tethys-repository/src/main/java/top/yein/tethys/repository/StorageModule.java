@@ -29,7 +29,8 @@ public class StorageModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(MessageDAO.class).to(MessageDAOImpl.class).in(Scopes.SINGLETON);
+    bind(JwtSecretDao.class).to(JwtSecretDaoImpl.class).in(Scopes.SINGLETON);
+    bind(MessageDao.class).to(MessageDaoImpl.class).in(Scopes.SINGLETON);
   }
 
   @Provides

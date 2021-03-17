@@ -39,7 +39,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.domain.CachedJwtSecret;
-import top.yein.tethys.repository.JwtSecretDAO;
+import top.yein.tethys.repository.JwtSecretDao;
 
 /**
  * {@link JwsAuthService} 单元测试.
@@ -63,7 +63,7 @@ class JwsAuthServiceTest {
   }
 
   private JwsAuthService newJwsAuthService(boolean anonymousEnabled) {
-    var jwtSecretRepository = mock(JwtSecretDAO.class);
+    var jwtSecretRepository = mock(JwtSecretDao.class);
     var cachedJwtSecret =
         CachedJwtSecret.builder()
             .id(kid)

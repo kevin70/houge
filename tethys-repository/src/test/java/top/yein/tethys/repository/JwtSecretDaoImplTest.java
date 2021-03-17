@@ -18,16 +18,16 @@ import top.yein.tethys.domain.CachedJwtSecret;
 import top.yein.tethys.entity.JwtSecret;
 
 /**
- * {@link JwtSecretDAOImpl} 单元测试.
+ * {@link JwtSecretDaoImpl} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class JwtSecretDAOImplTest extends AbstractTestRepository {
+class JwtSecretDaoImplTest extends AbstractTestRepository {
 
   private Faker faker = new Faker(Locale.SIMPLIFIED_CHINESE);
 
-  private JwtSecretDAO newJwtSecretRepository() {
-    return new JwtSecretDAOImpl(r2dbcClient);
+  private JwtSecretDao newJwtSecretRepository() {
+    return new JwtSecretDaoImpl(r2dbcClient);
   }
 
   @Test

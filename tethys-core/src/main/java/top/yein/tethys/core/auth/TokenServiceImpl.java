@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretDAO;
+import top.yein.tethys.repository.JwtSecretDao;
 
 /**
  * 访问令牌实现.
@@ -20,10 +20,10 @@ import top.yein.tethys.repository.JwtSecretDAO;
 @Service
 public class TokenServiceImpl implements TokenService {
 
-  private final JwtSecretDAO jwtSecretDao;
+  private final JwtSecretDao jwtSecretDao;
 
   /** @param jwtSecretDao */
-  public TokenServiceImpl(JwtSecretDAO jwtSecretDao) {
+  public TokenServiceImpl(JwtSecretDao jwtSecretDao) {
     this.jwtSecretDao = jwtSecretDao;
   }
 

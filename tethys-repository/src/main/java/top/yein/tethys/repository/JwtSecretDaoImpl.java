@@ -27,7 +27,7 @@ import top.yein.tethys.r2dbc.R2dbcClient;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class JwtSecretDAOImpl implements JwtSecretDAO {
+public class JwtSecretDaoImpl implements JwtSecretDao {
 
   private static final String INSERT_SQL =
       "INSERT INTO jwt_secrets(id,algorithm,secret_key) VALUES($1,$2,$3)";
@@ -43,7 +43,7 @@ public class JwtSecretDAOImpl implements JwtSecretDAO {
    *
    * @param rc R2DBC 客户端
    */
-  public JwtSecretDAOImpl(R2dbcClient rc) {
+  public JwtSecretDaoImpl(R2dbcClient rc) {
     this.rc = rc;
     this.jwtSecretCache =
         Caffeine.newBuilder()

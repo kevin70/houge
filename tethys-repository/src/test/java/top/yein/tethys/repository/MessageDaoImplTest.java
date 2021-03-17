@@ -6,11 +6,11 @@ import reactor.test.StepVerifier;
 import top.yein.tethys.entity.Message;
 
 /**
- * {@link MessageDAOImpl} 单元测试.
+ * {@link MessageDaoImpl} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class MessageDAOImplTest extends AbstractTestRepository {
+class MessageDaoImplTest extends AbstractTestRepository {
 
   @Test
   void insert() {
@@ -27,7 +27,7 @@ class MessageDAOImplTest extends AbstractTestRepository {
     entity.setCreateTime(LocalDateTime.now());
     entity.setUpdateTime(LocalDateTime.now());
 
-    var dao = new MessageDAOImpl(r2dbcClient);
+    var dao = new MessageDaoImpl(r2dbcClient);
     var p = dao.insert(entity);
     StepVerifier.create(p).expectNext(1).expectComplete().verify();
   }

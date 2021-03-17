@@ -26,7 +26,7 @@ import java.util.concurrent.TimeoutException;
 import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretDAO;
+import top.yein.tethys.repository.JwtSecretDao;
 
 /**
  * JWT Key 查找实现.
@@ -35,9 +35,9 @@ import top.yein.tethys.repository.JwtSecretDAO;
  */
 class DefaultSigningKeyResolver implements SigningKeyResolver {
 
-  private final JwtSecretDAO jwtSecretDao;
+  private final JwtSecretDao jwtSecretDao;
 
-  DefaultSigningKeyResolver(JwtSecretDAO jwtSecretDao) {
+  DefaultSigningKeyResolver(JwtSecretDao jwtSecretDao) {
     this.jwtSecretDao = jwtSecretDao;
   }
 
