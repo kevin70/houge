@@ -26,6 +26,7 @@ class DefaultExecuteSpec implements ExecuteSpec {
   final ConnectionFactory connectionFactory;
   final String sql;
   final Map<Integer, Parameter> parameters;
+  String[] returnGeneratedColumns;
 
   DefaultExecuteSpec(ConnectionFactory connectionFactory, String sql) {
     this.connectionFactory = connectionFactory;
@@ -65,6 +66,12 @@ class DefaultExecuteSpec implements ExecuteSpec {
       }
       bind(i, v);
     }
+    return this;
+  }
+
+  @Override
+  public ExecuteSpec returnGeneratedValues(String... columns) {
+    this.returnGeneratedColumns = columns;
     return this;
   }
 
@@ -115,6 +122,9 @@ class DefaultExecuteSpec implements ExecuteSpec {
       } else {
         statement.bind(i, v.value());
       }
+    }
+    if (returnGeneratedColumns != null) {
+      statement.returnGeneratedValues(returnGeneratedColumns);
     }
     return statement;
   }

@@ -66,6 +66,14 @@ public interface R2dbcClient {
     ExecuteSpec bind(Object[] parameters);
 
     /**
+     * 执行指定 SQL 并返回数据库自动生成的值.
+     *
+     * @param columns 返回列的名称
+     * @return self
+     */
+    ExecuteSpec returnGeneratedValues(String... columns);
+
+    /**
      * 返回获取数据规范并绑定数据结果映射函数.
      *
      * @param mappingFunction 数据映射函数
