@@ -17,7 +17,7 @@ import top.yein.tethys.core.module.CoreModule;
 import top.yein.tethys.im.module.ImModule;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.WebsocketHandler;
-import top.yein.tethys.repository.StorageModule;
+import top.yein.tethys.storage.StorageModule;
 
 /**
  * 主程序.

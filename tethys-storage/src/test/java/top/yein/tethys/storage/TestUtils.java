@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import top.yein.tethys.util.YeinGid;
 

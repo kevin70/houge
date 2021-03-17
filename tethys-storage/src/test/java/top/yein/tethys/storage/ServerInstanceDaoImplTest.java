@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -14,7 +14,7 @@ import top.yein.tethys.util.HostNameUtils;
  *
  * @author KK (kzou227@qq.com)
  */
-class ServerInstanceDaoImplTest extends AbstractTestRepository {
+class ServerInstanceDaoImplTest extends AbstractTestDao {
 
   private final Faker faker = new Faker();
 

@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;

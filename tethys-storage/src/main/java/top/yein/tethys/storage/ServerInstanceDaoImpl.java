@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;

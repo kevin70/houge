@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import java.time.Duration;
 import reactor.core.publisher.Flux;

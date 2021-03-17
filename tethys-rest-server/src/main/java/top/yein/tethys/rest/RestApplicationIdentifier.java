@@ -2,7 +2,7 @@ package top.yein.tethys.rest;
 
 import javax.inject.Inject;
 import top.yein.tethys.core.AbstractApplicationIdentifier;
-import top.yein.tethys.repository.ServerInstanceDao;
+import top.yein.tethys.storage.ServerInstanceDao;
 
 /**
  * REST 应用程序标识接口的实现.

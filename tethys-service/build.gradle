@@ -1,6 +1,5 @@
 dependencies {
-  api(project(":tethys-repository"))
-
+  api(project(":tethys-storage"))
   testImplementation(project(":tethys-util"))
   testImplementation("com.typesafe:config")
   testImplementation("org.apache.logging.log4j:log4j-core")

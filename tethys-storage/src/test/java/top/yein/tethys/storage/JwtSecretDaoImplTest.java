@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -22,7 +22,7 @@ import top.yein.tethys.entity.JwtSecret;
  *
  * @author KK (kzou227@qq.com)
  */
-class JwtSecretDaoImplTest extends AbstractTestRepository {
+class JwtSecretDaoImplTest extends AbstractTestDao {
 
   private Faker faker = new Faker(Locale.SIMPLIFIED_CHINESE);
 

@@ -39,7 +39,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.domain.CachedJwtSecret;
-import top.yein.tethys.repository.JwtSecretDao;
+import top.yein.tethys.storage.JwtSecretDao;
 
 /**
  * {@link JwsAuthService} 单元测试.

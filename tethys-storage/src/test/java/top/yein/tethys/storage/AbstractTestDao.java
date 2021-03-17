@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import com.typesafe.config.ConfigFactory;
 import io.r2dbc.spi.ConnectionFactories;
@@ -14,7 +14,7 @@ import top.yein.tethys.r2dbc.R2dbcClient;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public abstract class AbstractTestRepository {
+public abstract class AbstractTestDao {
 
   protected static R2dbcClient r2dbcClient;
 

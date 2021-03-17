@@ -26,7 +26,7 @@ import java.util.concurrent.TimeoutException;
 import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretDao;
+import top.yein.tethys.storage.JwtSecretDao;
 
 /**
  * JWT Key 查找实现.

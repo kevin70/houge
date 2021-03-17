@@ -37,7 +37,7 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 
 dependencies {
   implementation(project(":tethys-core"))
-  implementation(project(":tethys-repository"))
+  implementation(project(":tethys-storage"))
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
   implementation("io.projectreactor:reactor-tools")

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import top.yein.tethys.dto.PrivateMessageDTO;
 import top.yein.tethys.mapper.PrivateMessageMapper;
 import top.yein.tethys.query.PrivateMessageQuery;
-import top.yein.tethys.repository.PrivateMessageRepository;
+import top.yein.tethys.storage.PrivateMessageRepository;
 import top.yein.tethys.vo.BatchReadMessageVO;
 
 /**

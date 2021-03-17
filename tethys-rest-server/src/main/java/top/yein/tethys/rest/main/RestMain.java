@@ -14,7 +14,7 @@ import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.module.CoreModule;
-import top.yein.tethys.repository.StorageModule;
+import top.yein.tethys.storage.StorageModule;
 import top.yein.tethys.rest.module.RestModule;
 import top.yein.tethys.rest.server.RestServer;
 

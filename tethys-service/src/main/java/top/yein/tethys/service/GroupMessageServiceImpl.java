@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux;
 import top.yein.tethys.dto.GroupMessageDTO;
 import top.yein.tethys.mapper.GroupMessageMapper;
 import top.yein.tethys.query.GroupMessageQuery;
-import top.yein.tethys.repository.GroupMessageRepository;
+import top.yein.tethys.storage.GroupMessageRepository;
 
 /**
  * 群组消息服务服务实现.

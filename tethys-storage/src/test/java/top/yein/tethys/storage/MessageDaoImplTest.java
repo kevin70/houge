@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import top.yein.tethys.entity.Message;
  *
  * @author KK (kzou227@qq.com)
  */
-class MessageDaoImplTest extends AbstractTestRepository {
+class MessageDaoImplTest extends AbstractTestDao {
 
   @Test
   void insert() {

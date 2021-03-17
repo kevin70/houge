@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.ServerInstance;

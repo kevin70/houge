@@ -1,4 +1,4 @@
-package top.yein.tethys.repository;
+package top.yein.tethys.storage;
 
 import java.util.List;
 import reactor.core.publisher.Flux;

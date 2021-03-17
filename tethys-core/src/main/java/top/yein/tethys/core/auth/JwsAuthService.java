@@ -27,7 +27,7 @@ import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.repository.JwtSecretDao;
+import top.yein.tethys.storage.JwtSecretDao;
 
 /**
  * <a href="https://tools.ietf.org/html/rfc7515">JWS</a> 用户认证服务实现.

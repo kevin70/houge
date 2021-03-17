@@ -3,7 +3,7 @@ package top.yein.tethys.im;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import top.yein.tethys.core.AbstractApplicationIdentifier;
-import top.yein.tethys.repository.ServerInstanceDao;
+import top.yein.tethys.storage.ServerInstanceDao;
 
 /**
  * 应用程序标识符接口.

@@ -11,7 +11,7 @@ import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.PrivateMessagePacket;
-import top.yein.tethys.repository.PrivateMessageRepository;
+import top.yein.tethys.storage.PrivateMessageRepository;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionManager;
 

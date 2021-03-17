@@ -11,7 +11,7 @@ import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupMessagePacket;
-import top.yein.tethys.repository.GroupMessageRepository;
+import top.yein.tethys.storage.GroupMessageRepository;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupManager;
 
