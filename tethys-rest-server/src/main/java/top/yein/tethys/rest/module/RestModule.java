@@ -7,9 +7,7 @@ import com.google.inject.multibindings.Multibinder;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
-import top.yein.tethys.core.id.YeinGidMessageIdGenerator;
 import top.yein.tethys.core.resource.AuthInterceptor;
-import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.rest.RestApplicationIdentifier;
 import top.yein.tethys.rest.resource.MessageIdResource;
 
@@ -23,11 +21,11 @@ public class RestModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(ApplicationIdentifier.class).to(RestApplicationIdentifier.class).in(Scopes.SINGLETON);
-    bind(MessageIdGenerator.class).to(YeinGidMessageIdGenerator.class).in(Scopes.SINGLETON);
-//    bind(TypeLiteral.get(RoutingService.class)).to(MessageIdResource.class).in(Scopes.SINGLETON);
 
     var routingServicesBinder = Multibinder.newSetBinder(binder(), RoutingService.class);
     routingServicesBinder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
+//    routingServicesBinder.addBinding().to(PrivateMessageResource.class).in(Scopes.SINGLETON);
+//    routingServicesBinder.addBinding().to(GroupMessageResource.class).in(Scopes.SINGLETON);
   }
 
   @Provides
