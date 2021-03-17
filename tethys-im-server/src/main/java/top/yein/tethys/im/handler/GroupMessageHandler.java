@@ -11,9 +11,9 @@ import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupMessagePacket;
-import top.yein.tethys.storage.GroupMessageRepository;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupManager;
+import top.yein.tethys.storage.MessageDao;
 
 /**
  * 群组消息处理器.
@@ -24,7 +24,7 @@ import top.yein.tethys.session.SessionGroupManager;
 public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
 
   private final SessionGroupManager sessionGroupManager;
-  private final GroupMessageRepository groupMessageRepository;
+  private final MessageDao messageDao;
   private final MessageProperties messageProperties;
   private final MessageIdGenerator messageIdGenerator;
 
@@ -32,18 +32,18 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
    * 构造函数.
    *
    * @param sessionGroupManager 群组会话管理对象
-   * @param groupMessageRepository 群组消息存储器
+   * @param messageDao
    * @param messageProperties 聊天消息静态配置
    * @param messageIdGenerator 消息 ID 生成器
    */
   @Inject
   public GroupMessageHandler(
-      SessionGroupManager sessionGroupManager,
-      GroupMessageRepository groupMessageRepository,
-      MessageProperties messageProperties,
-      MessageIdGenerator messageIdGenerator) {
+    SessionGroupManager sessionGroupManager,
+    MessageDao messageDao,
+    MessageProperties messageProperties,
+    MessageIdGenerator messageIdGenerator) {
     this.sessionGroupManager = sessionGroupManager;
-    this.groupMessageRepository = groupMessageRepository;
+    this.messageDao = messageDao;
     this.messageProperties = messageProperties;
     this.messageIdGenerator = messageIdGenerator;
   }
@@ -83,7 +83,9 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
             .build();
-    var p2 = groupMessageRepository.insert(entity);
+    // FIXME 消息存储重构
+//    var p2 = groupMessageRepository.insert(entity);
+    var p2 = Mono.empty();
     return p2.thenMany(p1).then();
   }
 }

@@ -78,4 +78,9 @@ public final class ConfigKeys {
    * <p>{@code r2dbc:postgresql://[<username>:<password>@]<host>:5432/<database>}
    */
   public static final String MESSAGE_STORAGE_R2DBC_URL = "message-storage.r2dbc.url";
+
+  /**
+   * 自动填充消息 ID 的配置开关.
+   */
+  public static final String MESSAGE_AUTOFILL_ID = "message.autofill.id";
 }

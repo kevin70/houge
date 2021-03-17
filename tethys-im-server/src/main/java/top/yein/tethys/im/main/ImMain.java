@@ -42,7 +42,7 @@ public class ImMain implements Runnable {
     final var config = loadConfig();
     // 初始化 Guice
     final var injector =
-        Guice.createInjector(new StorageModule(config), new CoreModule(config), new ImModule());
+        Guice.createInjector(new StorageModule(config), new CoreModule(config), new ImModule(config));
     // 应用程序监控
     var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
     Metrics.addRegistry(prometheusMeterRegistry);

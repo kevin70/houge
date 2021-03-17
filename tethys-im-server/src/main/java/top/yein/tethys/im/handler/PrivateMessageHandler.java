@@ -11,9 +11,9 @@ import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.PrivateMessagePacket;
-import top.yein.tethys.storage.PrivateMessageRepository;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionManager;
+import top.yein.tethys.storage.MessageDao;
 
 /**
  * 私聊处理器.
@@ -24,7 +24,7 @@ import top.yein.tethys.session.SessionManager;
 public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket> {
 
   private final SessionManager sessionManager;
-  private final PrivateMessageRepository privateMessageRepository;
+  private final MessageDao messageDao;
   private final MessageProperties messageProperties;
   private final MessageIdGenerator messageIdGenerator;
 
@@ -32,18 +32,18 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
    * 构造函数.
    *
    * @param sessionManager 会话管理器
-   * @param privateMessageRepository 私聊消息存储器
+   * @param messageDao
    * @param messageProperties 聊天消息静态配置
    * @param messageIdGenerator 消息 ID 生成器
    */
   @Inject
   public PrivateMessageHandler(
       SessionManager sessionManager,
-      PrivateMessageRepository privateMessageRepository,
+      MessageDao messageDao,
       MessageProperties messageProperties,
       MessageIdGenerator messageIdGenerator) {
     this.sessionManager = sessionManager;
-    this.privateMessageRepository = privateMessageRepository;
+    this.messageDao = messageDao;
     this.messageProperties = messageProperties;
     this.messageIdGenerator = messageIdGenerator;
   }
@@ -79,7 +79,9 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
             .build();
-    var p2 = privateMessageRepository.insert(entity);
+    // FIXME 重构存储逻辑
+    //    var p2 = privateMessageRepository.insert(entity);
+    var p2 = Mono.empty();
     return p2.thenMany(p1).then();
   }
 }
