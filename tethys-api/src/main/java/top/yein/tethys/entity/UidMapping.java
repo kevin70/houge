@@ -11,9 +11,9 @@ import lombok.Data;
 @Data
 public class UidMapping {
 
-  /** 主键用户 ID. */
+  /** 用户 ID. */
   private Long id;
-  /** 映射的用户 ID. */
+  /** 被映射的用户 ID. */
   private String mappedUid;
   /** 创建时间. */
   private LocalDateTime createTime;
