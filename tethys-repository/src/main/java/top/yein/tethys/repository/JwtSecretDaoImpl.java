@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -43,6 +44,7 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
    *
    * @param rc R2DBC 客户端
    */
+  @Inject
   public JwtSecretDaoImpl(R2dbcClient rc) {
     this.rc = rc;
     this.jwtSecretCache =

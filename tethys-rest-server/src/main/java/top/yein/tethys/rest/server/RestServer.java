@@ -2,11 +2,8 @@ package top.yein.tethys.rest.server;
 
 import com.google.common.net.HostAndPort;
 import java.time.Duration;
-import java.util.Map.Entry;
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRoutes;
@@ -21,14 +18,13 @@ import top.yein.tethys.core.http.RoutingService;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class RestServer implements ApplicationContextAware {
+public class RestServer {
 
   private static final int IDLE_TIMEOUT_SECS = 90;
 
   private final String addr;
   private final Interceptors interceptors;
-  /** spring 应用上下文. */
-  private ApplicationContext applicationContext;
+  private final List<RoutingService> routingServices;
 
   private DisposableServer disposableServer;
 
@@ -37,28 +33,22 @@ public class RestServer implements ApplicationContextAware {
    *
    * @param addr 服务访问 IP 及地址
    * @param interceptors
+   * @param routingServices
    * @see HostAndPort
    */
-  public RestServer(String addr, Interceptors interceptors) {
+  public RestServer(String addr, Interceptors interceptors, List<RoutingService> routingServices) {
     this.addr = addr;
     this.interceptors = interceptors;
-  }
-
-  @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
+    this.routingServices = routingServices;
   }
 
   /** 启动 REST 服务. */
   public void start() {
     var hap = HostAndPort.fromString(addr);
     var routes = HttpServerRoutes.newRoutes();
-    if (applicationContext != null) {
-      var beans = applicationContext.getBeansOfType(RoutingService.class);
-      for (Entry<String, RoutingService> entry : beans.entrySet()) {
-        log.info("更新 Routes [beanName={}, resource={}]", entry.getKey(), entry.getValue());
-        entry.getValue().update(routes, interceptors);
-      }
+    for (RoutingService routingService : routingServices) {
+      log.info("更新 Routes [resource={}]", routingService);
+      routingService.update(routes, interceptors);
     }
 
     this.disposableServer =

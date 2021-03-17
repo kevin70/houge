@@ -2,10 +2,10 @@ dependencies {
   api("com.google.guava:guava")
   api("io.netty:netty-buffer")
   api("io.projectreactor:reactor-core")
-  api("com.fasterxml.jackson.core:jackson-databind")
-  api("io.jsonwebtoken:jjwt-api")
   api("org.mapstruct:mapstruct")
   api("com.google.inject:guice")
   api("com.typesafe:config")
   api("io.r2dbc:r2dbc-spi")
+  api("io.jsonwebtoken:jjwt-api")
+  api("com.fasterxml.jackson.core:jackson-databind")
 }

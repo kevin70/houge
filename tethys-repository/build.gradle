@@ -1,14 +1,10 @@
 dependencies {
-  compileOnly("org.springframework:spring-beans")
-  api(project(":tethys-core"))
-  api("io.r2dbc:r2dbc-postgresql")
-  api("org.springframework:spring-r2dbc")
-  api("org.springframework:spring-context")
-  api("com.github.ben-manes.caffeine:caffeine")
+    api(project(":tethys-core"))
+    api("io.r2dbc:r2dbc-postgresql")
+    api("com.github.ben-manes.caffeine:caffeine")
 
-  testImplementation(project(":tethys-util"))
-  testImplementation("com.typesafe:config")
-  testImplementation("org.apache.logging.log4j:log4j-core")
-  testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
-  testImplementation("org.springframework:spring-test")
+    testImplementation(project(":tethys-util"))
+    testImplementation("com.typesafe:config")
+    testImplementation("org.apache.logging.log4j:log4j-core")
+    testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
 }

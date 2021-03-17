@@ -2,8 +2,8 @@ package top.yein.tethys.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import top.yein.tethys.dto.GroupMessageDTO;
 import top.yein.tethys.mapper.GroupMessageMapper;
@@ -16,7 +16,6 @@ import top.yein.tethys.repository.GroupMessageRepository;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Service
 public class GroupMessageServiceImpl implements GroupMessageService {
 
   /**
@@ -33,6 +32,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
    *
    * @param groupMessageRepository 群组消息数据访问对象
    */
+  @Inject
   public GroupMessageServiceImpl(GroupMessageRepository groupMessageRepository) {
     this.groupMessageRepository = groupMessageRepository;
   }

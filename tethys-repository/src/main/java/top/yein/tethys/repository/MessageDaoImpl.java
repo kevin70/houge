@@ -3,6 +3,7 @@ package top.yein.tethys.repository;
 import static top.yein.tethys.r2dbc.Parameter.fromOrNull;
 
 import java.util.List;
+import javax.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.Message;
@@ -27,6 +28,7 @@ public class MessageDaoImpl implements MessageDao {
    *
    * @param rc R2DBC 客户端
    */
+  @Inject
   public MessageDaoImpl(R2dbcClient rc) {
     this.rc = rc;
   }

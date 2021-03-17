@@ -15,8 +15,8 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.DataInput;
 import java.io.IOException;
 import java.util.function.Supplier;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import reactor.netty.Connection;
@@ -41,7 +41,6 @@ import top.yein.tethys.util.JsonUtils;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Component
 public class WebsocketHandler {
 
   private static final String BEARER_TOKEN_PREFIX = "Bearer ";
@@ -63,6 +62,7 @@ public class WebsocketHandler {
    * @param sessionManager 会话管理
    * @param packetDispatcher 包分发器
    */
+  @Inject
   public WebsocketHandler(
       AuthService authService, SessionManager sessionManager, PacketDispatcher packetDispatcher) {
     this.authService = authService;

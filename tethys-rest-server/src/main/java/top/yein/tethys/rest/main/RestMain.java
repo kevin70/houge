@@ -1,10 +1,21 @@
 package top.yein.tethys.rest.main;
 
+import com.google.inject.Guice;
+import com.google.inject.TypeLiteral;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import top.yein.tethys.ApplicationIdentifier;
-import top.yein.tethys.rest.configuration.RestConfiguration;
+import top.yein.tethys.ConfigKeys;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
+import top.yein.tethys.core.module.CoreModule;
+import top.yein.tethys.repository.StorageModule;
+import top.yein.tethys.rest.module.RestModule;
 import top.yein.tethys.rest.server.RestServer;
 
 /**
@@ -26,14 +37,25 @@ public class RestMain implements Runnable {
 
   @Override
   public void run() {
-    var applicationContext = new AnnotationConfigApplicationContext(RestConfiguration.class);
-    applicationContext.start();
+    // 初始化配置
+    final var config = loadConfig();
+    // 初始化 Guice
+    final var injector =
+        Guice.createInjector(new StorageModule(config), new CoreModule(config), new RestModule());
+    // 应用程序监控
+    var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
+    Metrics.addRegistry(prometheusMeterRegistry);
+    // 启动 IM 服务
+    var applicationIdentifier = injector.getInstance(ApplicationIdentifier.class);
+    var restServer =
+        new RestServer(
+            config.getString(ConfigKeys.REST_SERVER_ADDR),
+            injector.getInstance(Interceptors.class),
+            injector.findBindingsByType(TypeLiteral.get(RoutingService.class)).stream()
+                .map(b -> b.getProvider().get())
+                .collect(Collectors.toList()));
 
-    // 启动 REST 服务
-    final var applicationIdentifier = applicationContext.getBean(ApplicationIdentifier.class);
-    final var restServer = applicationContext.getBean(RestServer.class);
     restServer.start();
-
     log.info(
         "{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
 
@@ -45,10 +67,16 @@ public class RestMain implements Runnable {
           restServer.stop();
           // 清理应用标识数据信息
           applicationIdentifier.clean();
-          // 停止 spring 应用上下文
-          applicationContext.stop();
           log.info("REST 服务停止成功");
         });
+  }
+
+  private Config loadConfig() {
+    var config = ConfigFactory.parseResources("tethys.conf");
+    log.info(
+        "已加载的应用配置 \n=========================================================>>>\n{}<<<=========================================================",
+        config.root().render());
+    return config;
   }
 
   private void registerShutdownHook(final Runnable callback) {

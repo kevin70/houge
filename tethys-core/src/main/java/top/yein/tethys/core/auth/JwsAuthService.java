@@ -20,8 +20,8 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
@@ -35,11 +35,11 @@ import top.yein.tethys.repository.JwtSecretDao;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Service
 public class JwsAuthService implements AuthService {
 
   private final JwtParser jwtParser;
 
+  @Inject
   public JwsAuthService(JwtSecretDao jwtSecretDao) {
     this.jwtParser =
         Jwts.parserBuilder()

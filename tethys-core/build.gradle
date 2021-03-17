@@ -5,14 +5,10 @@ dependencies {
   api("io.lettuce:lettuce-core")
   api("io.jsonwebtoken:jjwt-impl")
   api("io.jsonwebtoken:jjwt-jackson")
-  api("org.springframework:spring-context")
-  api("org.springframework:spring-r2dbc")
   api("io.projectreactor.netty:reactor-netty")
   api("com.github.ben-manes.caffeine:caffeine")
   api("io.micrometer:micrometer-registry-prometheus")
-  api("io.r2dbc:r2dbc-spi")
 
   testImplementation("org.apache.commons:commons-lang3")
-  testImplementation("org.springframework:spring-test")
   testImplementation("io.r2dbc:r2dbc-postgresql")
 }

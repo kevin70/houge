@@ -103,8 +103,8 @@ allprojects {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     compileOnly("com.google.code.findbugs:jsr305")
-    annotationProcessor("org.mapstruct:mapstruct-processor")
     compileOnly("org.apache.logging.log4j:log4j-api")
+    annotationProcessor("org.mapstruct:mapstruct-processor")
 
     // Test
     testCompileOnly("org.projectlombok:lombok")

@@ -1,7 +1,7 @@
 package top.yein.tethys.rest.resource;
 
 import java.util.Optional;
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -18,7 +18,6 @@ import top.yein.tethys.id.MessageIdGenerator;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class MessageIdResource extends AbstractRestSupport implements RoutingService {
 
   private final MessageIdGenerator messageIdGenerator;
@@ -28,6 +27,7 @@ public class MessageIdResource extends AbstractRestSupport implements RoutingSer
    *
    * @param messageIdGenerator 消息 ID 生成器
    */
+  @Inject
   public MessageIdResource(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
   }

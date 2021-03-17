@@ -1,6 +1,6 @@
 package top.yein.tethys.core.system.info;
 
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -15,12 +15,12 @@ import top.yein.tethys.system.info.InfoService;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class InfoResource extends AbstractRestSupport implements RoutingService {
 
   private final InfoService infoService;
 
   /** @param infoService */
+  @Inject
   public InfoResource(InfoService infoService) {
     this.infoService = infoService;
   }

@@ -1,7 +1,7 @@
 package top.yein.tethys.rest.resource;
 
 import java.time.LocalDateTime;
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -17,7 +17,6 @@ import top.yein.tethys.service.GroupMessageService;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class GroupMessageResource extends AbstractRestSupport implements RoutingService {
 
   private final GroupMessageService groupMessageService;
@@ -27,6 +26,7 @@ public class GroupMessageResource extends AbstractRestSupport implements Routing
    *
    * @param groupMessageService 群组消息服务
    */
+  @Inject
   public GroupMessageResource(GroupMessageService groupMessageService) {
     this.groupMessageService = groupMessageService;
   }

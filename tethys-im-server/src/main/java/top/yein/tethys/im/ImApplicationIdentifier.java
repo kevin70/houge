@@ -1,7 +1,7 @@
 package top.yein.tethys.im;
 
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 import top.yein.tethys.core.AbstractApplicationIdentifier;
 import top.yein.tethys.repository.ServerInstanceDao;
 
@@ -11,7 +11,6 @@ import top.yein.tethys.repository.ServerInstanceDao;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Component
 public class ImApplicationIdentifier extends AbstractApplicationIdentifier {
 
   /**
@@ -19,6 +18,7 @@ public class ImApplicationIdentifier extends AbstractApplicationIdentifier {
    *
    * @param serverInstanceDao 应用实例数据访问对象
    */
+  @Inject
   public ImApplicationIdentifier(ServerInstanceDao serverInstanceDao) {
     super(serverInstanceDao);
   }

@@ -24,8 +24,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -43,7 +43,6 @@ import top.yein.tethys.session.SessionManager;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Component
 public class DefaultSessionManager implements SessionManager {
 
   // 会话监听器
@@ -64,6 +63,7 @@ public class DefaultSessionManager implements SessionManager {
    *
    * @param sessionIdGenerator 会话 ID 生成器
    */
+  @Inject
   public DefaultSessionManager(SessionIdGenerator sessionIdGenerator) {
     this.sessionIdGenerator = sessionIdGenerator;
   }

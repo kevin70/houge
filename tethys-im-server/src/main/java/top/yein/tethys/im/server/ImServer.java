@@ -18,11 +18,9 @@ package top.yein.tethys.im.server;
 import com.google.common.net.HostAndPort;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
-import java.util.Map.Entry;
+import java.util.List;
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRoutes;
@@ -38,15 +36,14 @@ import top.yein.tethys.core.http.RoutingService;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public final class ImServer implements ApplicationContextAware {
+public final class ImServer {
 
   public static final String IM_WS_PATH = "/im";
 
   private final String addr;
   private final WebsocketHandler websocketHandler;
   private final Interceptors interceptors;
-  /** spring 应用上下文. */
-  private ApplicationContext applicationContext;
+  private final List<RoutingService> routingServices;
 
   private DisposableServer disposableServer;
 
@@ -55,28 +52,27 @@ public final class ImServer implements ApplicationContextAware {
    * @param websocketHandler
    * @param interceptors
    */
-  public ImServer(String addr, WebsocketHandler websocketHandler, Interceptors interceptors) {
+  @Inject
+  public ImServer(
+      String addr,
+      WebsocketHandler websocketHandler,
+      Interceptors interceptors,
+      List<RoutingService> routingServices) {
     this.addr = addr;
     this.websocketHandler = websocketHandler;
     this.interceptors = interceptors;
-  }
-
-  @Override
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
+    this.routingServices = routingServices;
   }
 
   /** 启动 IM 服务. */
   public void start() {
     var hap = HostAndPort.fromString(addr);
 
+    // 注册 HTTP 路由
     var routes = HttpServerRoutes.newRoutes();
-    if (applicationContext != null) {
-      var beans = applicationContext.getBeansOfType(RoutingService.class);
-      for (Entry<String, RoutingService> entry : beans.entrySet()) {
-        log.info("更新 Routes [beanName={}, resource={}]", entry.getKey(), entry.getValue());
-        entry.getValue().update(routes, interceptors);
-      }
+    for (RoutingService routingService : routingServices) {
+      log.info("更新 Routes [resource={}]", routingService);
+      routingService.update(routes, interceptors);
     }
 
     // ws 注册

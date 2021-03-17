@@ -2,7 +2,6 @@ package top.yein.tethys.core.system.health;
 
 import java.io.File;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.unit.DataSize;
 import reactor.test.StepVerifier;
 import top.yein.tethys.system.health.HealthStatus;
 
@@ -16,7 +15,7 @@ class DiskSpaceHealthIndicatorTest {
   @Test
   void health() {
     var path = new File("").getAbsoluteFile();
-    var indicator = new DiskSpaceHealthIndicator(path, DataSize.ofBytes(1));
+    var indicator = new DiskSpaceHealthIndicator(path, 1);
     var p = indicator.health();
     StepVerifier.create(p)
         .expectNextMatches(health -> health.getStatus() == HealthStatus.UP)
@@ -27,7 +26,7 @@ class DiskSpaceHealthIndicatorTest {
   @Test
   void healthDown() {
     var path = new File("").getAbsoluteFile();
-    var indicator = new DiskSpaceHealthIndicator(path, DataSize.ofBytes(path.getTotalSpace()));
+    var indicator = new DiskSpaceHealthIndicator(path, path.getTotalSpace());
     var p = indicator.health();
     StepVerifier.create(p)
         .expectNextMatches(health -> health.getStatus() == HealthStatus.DOWN)

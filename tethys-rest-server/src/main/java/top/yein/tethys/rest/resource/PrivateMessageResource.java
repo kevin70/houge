@@ -2,7 +2,7 @@ package top.yein.tethys.rest.resource;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.LocalDateTime;
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -19,7 +19,6 @@ import top.yein.tethys.vo.BatchReadMessageVO;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class PrivateMessageResource extends AbstractRestSupport implements RoutingService {
 
   private final PrivateMessageService privateMessageService;
@@ -29,6 +28,7 @@ public class PrivateMessageResource extends AbstractRestSupport implements Routi
    *
    * @param privateMessageService 私聊消息服务
    */
+  @Inject
   public PrivateMessageResource(PrivateMessageService privateMessageService) {
     this.privateMessageService = privateMessageService;
   }

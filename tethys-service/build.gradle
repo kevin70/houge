@@ -5,5 +5,4 @@ dependencies {
   testImplementation("com.typesafe:config")
   testImplementation("org.apache.logging.log4j:log4j-core")
   testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
-  testImplementation("org.springframework:spring-test")
 }

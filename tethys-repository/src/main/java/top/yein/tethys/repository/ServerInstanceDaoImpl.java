@@ -2,6 +2,7 @@ package top.yein.tethys.repository;
 
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.ServerInstance;
 import top.yein.tethys.r2dbc.R2dbcClient;
@@ -41,6 +42,7 @@ public class ServerInstanceDaoImpl implements ServerInstanceDao {
    *
    * @param rc R2DBC 客户端
    */
+  @Inject
   public ServerInstanceDaoImpl(R2dbcClient rc) {
     this.rc = rc;
   }

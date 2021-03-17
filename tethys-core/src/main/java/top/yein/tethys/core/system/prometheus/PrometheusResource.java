@@ -1,7 +1,7 @@
 package top.yein.tethys.core.system.prometheus;
 
 import io.micrometer.prometheus.PrometheusMeterRegistry;
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -10,12 +10,12 @@ import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 
 /** @author KK (kzou227@qq.com) */
-@Component
 public class PrometheusResource implements RoutingService {
 
   private final PrometheusMeterRegistry prometheusMeterRegistry;
 
   /** @param prometheusMeterRegistry */
+  @Inject
   public PrometheusResource(PrometheusMeterRegistry prometheusMeterRegistry) {
     this.prometheusMeterRegistry = prometheusMeterRegistry;
   }

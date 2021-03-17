@@ -1,6 +1,6 @@
 package top.yein.tethys.core.system.health;
 
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -15,15 +15,12 @@ import top.yein.tethys.system.health.HealthService;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class HealthResource extends AbstractRestSupport implements RoutingService {
 
   private final HealthService healthService;
 
-  /**
-   *
-   * @param healthService
-   */
+  /** @param healthService */
+  @Inject
   public HealthResource(HealthService healthService) {
     this.healthService = healthService;
   }

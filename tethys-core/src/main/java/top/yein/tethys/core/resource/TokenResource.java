@@ -1,6 +1,6 @@
 package top.yein.tethys.core.resource;
 
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -18,7 +18,6 @@ import top.yein.tethys.core.http.RoutingService;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class TokenResource extends AbstractRestSupport implements RoutingService {
 
   private final TokenService tokenService;
@@ -28,6 +27,7 @@ public class TokenResource extends AbstractRestSupport implements RoutingService
    *
    * @param tokenService 令牌服务
    */
+  @Inject
   public TokenResource(TokenService tokenService) {
     this.tokenService = tokenService;
   }

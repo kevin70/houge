@@ -1,6 +1,6 @@
 package top.yein.tethys.rest;
 
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import top.yein.tethys.core.AbstractApplicationIdentifier;
 import top.yein.tethys.repository.ServerInstanceDao;
 
@@ -9,7 +9,6 @@ import top.yein.tethys.repository.ServerInstanceDao;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class RestApplicationIdentifier extends AbstractApplicationIdentifier {
 
   /**
@@ -17,6 +16,7 @@ public class RestApplicationIdentifier extends AbstractApplicationIdentifier {
    *
    * @param serverInstanceDao 应用实例数据访问对象
    */
+  @Inject
   public RestApplicationIdentifier(ServerInstanceDao serverInstanceDao) {
     super(serverInstanceDao);
   }

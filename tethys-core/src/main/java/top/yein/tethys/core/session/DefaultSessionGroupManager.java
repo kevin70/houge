@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -36,7 +35,6 @@ import top.yein.tethys.session.SessionGroupManager;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-@Component
 public class DefaultSessionGroupManager implements SessionGroupManager {
 
   private final Set<SessionGroupListener> sessionGroupListeners = new LinkedHashSet<>();

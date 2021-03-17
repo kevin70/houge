@@ -1,7 +1,7 @@
 package top.yein.tethys.im.handler;
 
 import javax.annotation.Nonnull;
-import org.springframework.stereotype.Component;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.GroupSubscribePacket;
@@ -13,11 +13,11 @@ import top.yein.tethys.session.SessionGroupManager;
  *
  * @author KK (kzou227@qq.com)
  */
-@Component
 public class GroupSubscribeHandler implements PacketHandler<GroupSubscribePacket> {
 
   private final SessionGroupManager sessionGroupManager;
 
+  @Inject
   public GroupSubscribeHandler(SessionGroupManager sessionGroupManager) {
     this.sessionGroupManager = sessionGroupManager;
   }

@@ -48,7 +48,7 @@ class DefaultFetchSpec<R> implements FetchSpec<R> {
               }
               return Mono.just(list.get(0));
             })
-        .last();
+        .next();
   }
 
   @Override

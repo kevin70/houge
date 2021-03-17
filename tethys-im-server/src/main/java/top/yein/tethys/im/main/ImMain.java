@@ -1,13 +1,23 @@
 package top.yein.tethys.im.main;
 
+import com.google.inject.Guice;
+import com.google.inject.TypeLiteral;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import top.yein.tethys.ApplicationIdentifier;
-import top.yein.tethys.im.configuration.ImConfiguration;
+import top.yein.tethys.ConfigKeys;
+import top.yein.tethys.core.http.Interceptors;
+import top.yein.tethys.core.http.RoutingService;
+import top.yein.tethys.core.module.CoreModule;
+import top.yein.tethys.im.module.ImModule;
 import top.yein.tethys.im.server.ImServer;
+import top.yein.tethys.im.server.WebsocketHandler;
+import top.yein.tethys.repository.StorageModule;
 
 /**
  * 主程序.
@@ -28,16 +38,24 @@ public class ImMain implements Runnable {
 
   @Override
   public void run() {
-    var applicationContext = new AnnotationConfigApplicationContext(ImConfiguration.class);
-    applicationContext.start();
-
+    // 初始化配置
+    final var config = loadConfig();
+    // 初始化 Guice
+    final var injector =
+        Guice.createInjector(new StorageModule(config), new CoreModule(config), new ImModule());
     // 应用程序监控
-    final var prometheusMeterRegistry = applicationContext.getBean(PrometheusMeterRegistry.class);
+    var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
     Metrics.addRegistry(prometheusMeterRegistry);
-
     // 启动 IM 服务
-    final var applicationIdentifier = applicationContext.getBean(ApplicationIdentifier.class);
-    final var imServer = applicationContext.getBean(ImServer.class);
+    var applicationIdentifier = injector.getInstance(ApplicationIdentifier.class);
+    var imServer =
+        new ImServer(
+            config.getString(ConfigKeys.IM_SERVER_ADDR),
+            injector.getInstance(WebsocketHandler.class),
+            injector.getInstance(Interceptors.class),
+            injector.findBindingsByType(TypeLiteral.get(RoutingService.class)).stream()
+                .map(b -> b.getProvider().get())
+                .collect(Collectors.toList()));
     imServer.start();
 
     log.info(
@@ -51,10 +69,16 @@ public class ImMain implements Runnable {
           imServer.stop();
           // 清理应用标识数据信息
           applicationIdentifier.clean();
-          // 停止 spring 应用上下文
-          applicationContext.stop();
           log.info("IM 服务停止成功");
         });
+  }
+
+  private Config loadConfig() {
+    var config = ConfigFactory.parseResources("tethys.conf");
+    log.info(
+        "已加载的应用配置 \n=========================================================>>>\n{}<<<=========================================================",
+        config.root().render());
+    return config;
   }
 
   private void registerShutdownHook(final Runnable callback) {
