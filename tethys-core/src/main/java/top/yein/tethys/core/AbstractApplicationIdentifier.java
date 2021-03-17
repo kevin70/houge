@@ -133,7 +133,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
         };
 
     Mono.defer(makeFidFunc)
-        .repeat(() -> isRun.get())
+        .repeat(isRun::get)
         .onErrorContinue(
             throwable -> {
               // TODO: 主键冲突 - 继续执行
