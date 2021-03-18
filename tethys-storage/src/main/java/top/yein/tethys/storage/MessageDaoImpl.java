@@ -2,6 +2,7 @@ package top.yein.tethys.storage;
 
 import static top.yein.tethys.r2dbc.Parameter.fromOrNull;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import reactor.core.publisher.Flux;
@@ -19,7 +20,7 @@ public class MessageDaoImpl implements MessageDao {
   private static final String INSERT_SQL =
       "INSERT INTO messages("
           + "id,sender_id,receiver_id,group_id,kind,content,content_kind,url,custom_args,create_time,update_time)"
-          + " VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)";
+          + " VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())";
 
   private final R2dbcClient rc;
 
@@ -46,11 +47,32 @@ public class MessageDaoImpl implements MessageDao {
               entity.getContent(),
               entity.getContentKind(),
               fromOrNull(entity.getUrl(), String.class),
-              fromOrNull(entity.getCustomArgs(), String.class),
-              entity.getCreateTime(),
-              entity.getUpdateTime()
+              fromOrNull(entity.getCustomArgs(), String.class)
             })
         .rowsUpdated();
+  }
+
+  @Override
+  public Mono<Void> insert(Message entity, List<Long> uids) {
+    if (uids == null || uids.isEmpty()) {
+      throw new IllegalArgumentException("[uids]不能为NULL或者EMPTY");
+    }
+
+    var sql = new StringBuilder(128 * uids.size());
+    for (Long uid : uids) {
+      if (uid == null) {
+        throw new IllegalArgumentException(
+            "正将消息[id:" + entity.getId() + "]与NULL关联 - uids: " + Arrays.toString(uids.toArray()));
+      }
+
+      sql.append("INSERT INTO user_messages(uid,message_id,create_time) VALUES(")
+          .append(uid)
+          .append(",'")
+          .append(entity.getId())
+          .append("'")
+          .append(",now());");
+    }
+    return Mono.zip(insert(entity), rc.batchSql(sql.toString()).rowsUpdated()).then();
   }
 
   @Override

@@ -21,6 +21,15 @@ public interface MessageDao {
   Mono<Integer> insert(Message entity);
 
   /**
+   * 保存消息并与用户进行关联.
+   *
+   * @param entity 消息实体
+   * @param uids 关联的用户 IDs
+   * @return 受影响行数
+   */
+  Mono<Void> insert(Message entity, List<Long> uids);
+
+  /**
    * 更新消息 {@code unread} 列的值.
    *
    * @param id 消息 ID
