@@ -20,10 +20,10 @@ class MessagePacketCheckerTest {
   @Test
   void checkPrivateMessagePacket() {
     var packet = new PrivateMessagePacket();
-    packet.setMsgId(new YeinGid(0).toHexString());
-    packet.setFrom("zs");
-    packet.setTo("ls");
-    packet.setKind(MessageKind.TEXT.getCode());
+    packet.setMessageId(new YeinGid(0).toHexString());
+    packet.setFrom(1L);
+    packet.setTo(2L);
+    packet.setContentKind(MessageKind.TEXT.getCode());
     packet.setContent("hello world");
     packet.setUrl("https://tethys.yein.top");
     packet.setCustomArgs("{}");

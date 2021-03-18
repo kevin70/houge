@@ -21,9 +21,10 @@ public class MessagePacketChecker {
    * @param packet 私聊消息
    */
   public static void check(PrivateMessagePacket packet) {
-    checkMsgId(packet.getMsgId());
-    checkTo(packet.getTo());
-    checkKind(packet.getKind());
+    checkMsgId(packet.getMessageId());
+    // FIXME
+    //    checkTo(packet.getTo());
+    checkKind(packet.getContentKind());
     checkContent(packet.getContent());
   }
 

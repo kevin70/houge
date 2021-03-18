@@ -1,12 +1,16 @@
 package top.yein.tethys.im.handler;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
-import top.yein.tethys.entity.PrivateMessage;
+import top.yein.tethys.entity.Message;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
@@ -50,40 +54,39 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
 
   @Override
   public Mono<Void> handle(@Nonnull Session session, @Nonnull PrivateMessagePacket packet) {
-    if (packet.getMsgId() == null && messageProperties.isAutofillId()) {
-      packet.setMsgId(messageIdGenerator.nextId());
+    if (packet.getMessageId() == null && messageProperties.isAutofillId()) {
+      packet.setMessageId(messageIdGenerator.nextId());
       log.debug("自动填充私聊消息 ID, packet={}, session={}", packet, session);
+    }
+
+    // 校验私聊消息与当前会话是否匹配
+    if (packet.getFrom() != null && !Objects.equals(packet.getFrom(), session.uid())) {
+      throw new BizCodeException(BizCodes.C3501);
     }
 
     // 校验消息
     MessagePacketChecker.check(packet);
-    var from =
-        Optional.ofNullable(packet.getFrom())
-            .orElseGet(
-                () -> {
-                  packet.setFrom(session.authContext().originUid());
-                  return session.authContext().originUid();
-                });
-    // FIXME 这里需要重新映射用户 ID
-    //    var to = packet.getTo();
-    var to = 0L;
+    var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
+    var to = packet.getTo();
+
+    // FIXME 校验 to 用户是否存在
 
     var p1 = sessionManager.findByUid(to).delayUntil(toSession -> toSession.sendPacket(packet));
 
     // 存储的消息实体
     var entity =
-        PrivateMessage.builder()
-            .id(packet.getMsgId())
+        Message.builder()
+            .id(packet.getMessageId())
             .senderId(from)
-//            .receiverId(to)
-            .kind(packet.getKind())
+            .receiverId(to)
+            .kind(Message.KIND_PRIVATE)
             .content(packet.getContent())
+            .contentKind(packet.getContentKind())
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
+            .unread(Message.MESSAGE_UNREAD)
             .build();
-    // FIXME 重构存储逻辑
-    //    var p2 = privateMessageRepository.insert(entity);
-    var p2 = Mono.empty();
+    var p2 = messageDao.insert(entity, List.of(from, to));
     return p2.thenMany(p1).then();
   }
 }

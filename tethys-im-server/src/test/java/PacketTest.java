@@ -19,7 +19,7 @@ public class PacketTest {
     var privateMsgJson = "{\"@ns\":\"p.msg\",\"content\":\"Hello World!\"}";
     Packet packet = objectReader.readValue(privateMsgJson);
     System.out.println(packet);
-    ((PrivateMessagePacket) packet).setTo("123");
+    ((PrivateMessagePacket) packet).setTo(123);
 
     System.out.println(objectWriter.writeValueAsString(packet));
 

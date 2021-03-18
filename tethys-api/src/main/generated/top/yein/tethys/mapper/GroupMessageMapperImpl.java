@@ -6,7 +6,7 @@ import top.yein.tethys.entity.GroupMessage;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-03-18T14:29:27+0800",
+    date = "2021-03-18T17:42:46+0800",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.8 (Oracle Corporation)"
 )
 public class GroupMessageMapperImpl implements GroupMessageMapper {
