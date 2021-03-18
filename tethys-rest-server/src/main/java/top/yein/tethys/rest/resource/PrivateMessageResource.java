@@ -1,6 +1,5 @@
 package top.yein.tethys.rest.resource;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
@@ -12,7 +11,6 @@ import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.query.PrivateMessageQuery;
 import top.yein.tethys.service.PrivateMessageService;
-import top.yein.tethys.vo.BatchReadMessageVO;
 
 /**
  * 私聊消息 REST 接口.
@@ -54,7 +52,8 @@ public class PrivateMessageResource extends AbstractRestSupport implements Routi
                   queryDateTime(request, "create_time", () -> LocalDateTime.now().minusDays(3));
               // 查询对象
               var query = new PrivateMessageQuery();
-              query.setReceiverId(ac.uid());
+              // FIXME
+//              query.setReceiverId(ac.uid());
               query.setCreateTime(createTime);
               query.setLimit(queryInt(request, "limit", 500));
               query.setOffset(queryInt(request, "offset", 0));
@@ -84,11 +83,13 @@ public class PrivateMessageResource extends AbstractRestSupport implements Routi
    * @return
    */
   public Mono<Void> batchReadMessage(HttpServerRequest request, HttpServerResponse response) {
-    return authContext()
-        .flatMap(
-            ac ->
-                json(request, BatchReadMessageVO.class)
-                    .flatMap(vo -> privateMessageService.batchReadMessage(vo, ac.uid())))
-        .then(response.status(HttpResponseStatus.NO_CONTENT).send());
+//    return authContext()
+//        .flatMap(
+//            ac ->
+//                json(request, BatchReadMessageVO.class)
+//                    .flatMap(vo -> privateMessageService.batchReadMessage(vo, ac.uid())))
+//        .then(response.status(HttpResponseStatus.NO_CONTENT).send());
+    // FIXME
+    return Mono.empty();
   }
 }

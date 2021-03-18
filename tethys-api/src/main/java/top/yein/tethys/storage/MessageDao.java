@@ -1,7 +1,6 @@
 package top.yein.tethys.storage;
 
 import java.util.List;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.Message;
 
@@ -37,20 +36,4 @@ public interface MessageDao {
    * @return 受影响行数
    */
   Mono<Integer> updateUnread(String id, int v);
-
-  /**
-   * 使用消息 ID 查询消息.
-   *
-   * @param id 消息 ID
-   * @return 消息实体
-   */
-  Mono<Message> findById(String id);
-
-  /**
-   * 使用消息 ID 列表批量查询消息.
-   *
-   * @param ids 消息 ID 列表
-   * @return 消息实体
-   */
-  Flux<Message> findByIds(List<String> ids);
 }

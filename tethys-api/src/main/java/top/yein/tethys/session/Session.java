@@ -39,7 +39,7 @@ public interface Session {
   String sessionId();
 
   /**
-   * 会话认证的上下文信息. 未认证则返回 {@link top.yein.tethys.auth.NoneAuthContext#INSTANCE}.
+   * 会话认证的上下文信息.
    *
    * @return 会话认证的上下文信息
    */
@@ -52,7 +52,7 @@ public interface Session {
    *
    * @return 用户 ID
    */
-  default String uid() {
+  default long uid() {
     return authContext().uid();
   }
 

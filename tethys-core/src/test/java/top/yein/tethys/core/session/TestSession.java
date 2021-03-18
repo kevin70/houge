@@ -41,9 +41,9 @@ public class TestSession implements Session {
   }
 
   @Override
-  public String uid() {
+  public long uid() {
     if (isAnonymous()) {
-      return Long.toHexString(sessionId);
+      return sessionId;
     }
     return authContext().uid();
   }

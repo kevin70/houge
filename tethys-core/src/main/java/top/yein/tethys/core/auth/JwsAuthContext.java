@@ -26,19 +26,27 @@ import top.yein.tethys.auth.AuthContext;
  */
 class JwsAuthContext implements AuthContext {
 
+  private final long uid;
   private final String token;
+  private final String originUid;
   private final Claims claims;
-  private final String uid;
 
-  JwsAuthContext(String token, Claims claims) {
+  JwsAuthContext(long uid, String token, String originUid, Claims claims) {
+    this.uid = uid;
     this.token = token;
+    this.originUid = originUid;
     this.claims = claims;
-    this.uid = claims.getId();
   }
 
   @Override
-  public String uid() {
+  public long uid() {
     return uid;
+  }
+
+  @Nonnull
+  @Override
+  public String originUid() {
+    return originUid;
   }
 
   @Nonnull
@@ -55,14 +63,13 @@ class JwsAuthContext implements AuthContext {
   @Override
   public String toString() {
     return "JwsAuthContext{"
-        + "token='"
-        + token
+        + "uid="
+        + uid
+        + ", originUid='"
+        + originUid
         + '\''
         + ", claims="
         + claims
-        + ", uid='"
-        + uid
-        + '\''
         + '}';
   }
 }

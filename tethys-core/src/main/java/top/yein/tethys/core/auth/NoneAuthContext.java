@@ -34,7 +34,12 @@ public class NoneAuthContext implements AuthContext {
   }
 
   @Override
-  public String uid() {
+  public long uid() {
+    return 0;
+  }
+
+  @Override
+  public String originUid() {
     return null;
   }
 

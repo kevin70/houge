@@ -61,10 +61,12 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
         Optional.ofNullable(packet.getFrom())
             .orElseGet(
                 () -> {
-                  packet.setFrom(session.uid());
-                  return session.uid();
+                  packet.setFrom(session.authContext().originUid());
+                  return session.authContext().originUid();
                 });
-    var to = packet.getTo();
+    // FIXME 这里需要重新映射用户 ID
+    //    var to = packet.getTo();
+    var to = 0L;
 
     var p1 = sessionManager.findByUid(to).delayUntil(toSession -> toSession.sendPacket(packet));
 
@@ -73,7 +75,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
         PrivateMessage.builder()
             .id(packet.getMsgId())
             .senderId(from)
-            .receiverId(to)
+//            .receiverId(to)
             .kind(packet.getKind())
             .content(packet.getContent())
             .url(packet.getUrl())

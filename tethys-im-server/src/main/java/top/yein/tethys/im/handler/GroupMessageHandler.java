@@ -61,8 +61,9 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
         Optional.ofNullable(packet.getFrom())
             .orElseGet(
                 () -> {
-                  packet.setFrom(session.uid());
-                  return session.uid();
+                  // FIXME
+                  packet.setFrom(session.authContext().originUid());
+                  return session.authContext().originUid();
                 });
     var to = packet.getTo();
 

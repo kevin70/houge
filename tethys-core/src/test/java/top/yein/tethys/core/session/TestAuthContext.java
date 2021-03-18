@@ -16,7 +16,6 @@
 package top.yein.tethys.core.session;
 
 import java.security.SecureRandom;
-import javax.annotation.Nonnull;
 import top.yein.tethys.auth.AuthContext;
 
 /**
@@ -29,11 +28,15 @@ public class TestAuthContext implements AuthContext {
   final long uid = new SecureRandom().nextLong();
 
   @Override
-  public String uid() {
-    return Long.toHexString(uid);
+  public long uid() {
+    return uid;
   }
 
-  @Nonnull
+  @Override
+  public String originUid() {
+    return String.valueOf(uid);
+  }
+
   @Override
   public String token() {
     return Long.toHexString(uid);

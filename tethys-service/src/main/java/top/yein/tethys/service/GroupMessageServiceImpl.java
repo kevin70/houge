@@ -6,9 +6,7 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import top.yein.tethys.dto.GroupMessageDTO;
-import top.yein.tethys.mapper.GroupMessageMapper;
 import top.yein.tethys.query.GroupMessageQuery;
-import top.yein.tethys.storage.GroupMessageRepository;
 
 /**
  * 群组消息服务服务实现.
@@ -25,16 +23,12 @@ public class GroupMessageServiceImpl implements GroupMessageService {
    */
   private static final int FIND_MESSAGE_TIME_LIMIT = 72;
 
-  private final GroupMessageRepository groupMessageRepository;
-
   /**
    * 构造函数.
    *
-   * @param groupMessageRepository 群组消息数据访问对象
    */
   @Inject
-  public GroupMessageServiceImpl(GroupMessageRepository groupMessageRepository) {
-    this.groupMessageRepository = groupMessageRepository;
+  public GroupMessageServiceImpl() {
   }
 
   @Override
@@ -53,8 +47,9 @@ public class GroupMessageServiceImpl implements GroupMessageService {
       query.setCreateTime(newTime);
     }
 
-    return groupMessageRepository
-        .findMessages(query)
-        .map(GroupMessageMapper.INSTANCE::toGroupMessageDTO);
+//    return groupMessageRepository
+//        .findMessages(query)
+//        .map(GroupMessageMapper.INSTANCE::toGroupMessageDTO);
+    return Flux.empty();
   }
 }

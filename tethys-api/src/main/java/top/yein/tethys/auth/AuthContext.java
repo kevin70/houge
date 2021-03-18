@@ -15,8 +15,6 @@
  */
 package top.yein.tethys.auth;
 
-import javax.annotation.Nonnull;
-
 /**
  * 认证的上下文信息.
  *
@@ -31,15 +29,20 @@ public interface AuthContext {
    *
    * @return 用户 ID
    */
-  @Nonnull
-  String uid();
+  long uid();
+
+  /**
+   * 返回原用户 ID.
+   *
+   * @return 原用户 ID
+   */
+  String originUid();
 
   /**
    * 返回认证令牌.
    *
    * @return 认证令牌
    */
-  @Nonnull
   String token();
 
   /**

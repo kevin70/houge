@@ -57,7 +57,8 @@ public class JwsAuthService implements AuthService {
         sink -> {
           try {
             var jws = jwtParser.parseClaimsJws(token);
-            var authContext = new JwsAuthContext(token, jws.getBody());
+            // FIXME 待实现
+            var authContext = new JwsAuthContext(0, token, "", jws.getBody());
             sink.success(authContext);
           } catch (MalformedJwtException e) {
             sink.error(new BizCodeException(BizCodes.C3300, e.getMessage()));
