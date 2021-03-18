@@ -31,6 +31,14 @@ public interface R2dbcClient {
    */
   ExecuteSpec sql(String sql);
 
+  /**
+   * 返回批量执行规范并绑定指定的 SQL.
+   *
+   * @param sql 需执行的 SQL
+   * @return 批量执行规范对象
+   */
+  BatchExecuteSpec batchSql(String sql);
+
   /** 用于指定 SQL 的执行规范. */
   interface ExecuteSpec {
 
@@ -97,6 +105,17 @@ public interface R2dbcClient {
      * @return 获取数据规范
      */
     FetchSpec<Map<String, Object>> fetch();
+
+    /**
+     * 返回更新数据库受影响的行数.
+     *
+     * @return 受影响的行数
+     */
+    Mono<Integer> rowsUpdated();
+  }
+
+  /** 批量执行规范. */
+  interface BatchExecuteSpec {
 
     /**
      * 返回更新数据库受影响的行数.

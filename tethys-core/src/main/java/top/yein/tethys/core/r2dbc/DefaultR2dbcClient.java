@@ -32,4 +32,9 @@ public class DefaultR2dbcClient implements R2dbcClient {
   public ExecuteSpec sql(String sql) {
     return new DefaultExecuteSpec(connectionFactory, sql);
   }
+
+  @Override
+  public BatchExecuteSpec batchSql(String sql) {
+    return new DefaultBatchExecuteSpec(connectionFactory, sql);
+  }
 }
