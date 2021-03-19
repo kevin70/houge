@@ -14,9 +14,9 @@ public interface GroupDao {
    * 保存群组信息.
    *
    * @param entity 群实体
-   * @return 受影响行数
+   * @return 群组 ID
    */
-  Mono<Integer> insert(Group entity);
+  Mono<Long> insert(Group entity);
 
   /**
    * 在指定的群中将指定用户设置为群成员.
