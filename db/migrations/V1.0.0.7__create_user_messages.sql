@@ -1,7 +1,7 @@
 create table user_messages
 (
     uid         bigint      not null,
-    message_id  varchar(14) not null,
+    message_id  varchar(15) not null,
     create_time timestamp   not null
 );
 

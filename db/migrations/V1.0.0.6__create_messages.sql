@@ -1,6 +1,6 @@
 create table messages
 (
-    id           char(14)                not null,
+    id           char(15)                not null,
     sender_id    bigint,
     receiver_id  bigint,
     group_id     bigint,
