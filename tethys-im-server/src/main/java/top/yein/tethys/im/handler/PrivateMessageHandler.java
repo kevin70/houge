@@ -12,7 +12,6 @@ import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.entity.Message;
 import top.yein.tethys.id.MessageIdGenerator;
-import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.packet.PrivateMessagePacket;
 import top.yein.tethys.session.Session;
@@ -65,7 +64,8 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
     }
 
     // 校验消息
-    MessagePacketChecker.check(packet);
+    // FIXME
+//    MessagePacketChecker.check(packet);
     var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
     var to = packet.getTo();
 
