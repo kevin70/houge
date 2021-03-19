@@ -27,6 +27,8 @@ public class Group {
   private Long ownerId;
   /** 群成员数量. */
   private Integer memberSize;
+  /** 群成员数量限制. */
+  private Integer memberLimit;
   /** 创建时间. */
   private LocalDateTime createTime;
   /** 更新时间. */

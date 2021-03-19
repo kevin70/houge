@@ -33,6 +33,7 @@ class GroupDaoImplTest extends AbstractTestDao {
     entity.setCreatorId(faker.random().nextLong());
     entity.setOwnerId(entity.getCreatorId());
     entity.setMemberSize(1);
+    entity.setMemberLimit(40);
 
     var p = dao.insert(entity);
     var idVar = new long[1];
