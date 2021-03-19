@@ -47,8 +47,8 @@ export default {
         "@ns": "p.msg",
         from: this.currentLoginUid.value,
         to: this.selectedSessionId.value,
-        kind: 1,
         content: this.message,
+        content_kind: 1,
       };
       sendMessageConsumers.forEach((handle) => {
         handle(m);
