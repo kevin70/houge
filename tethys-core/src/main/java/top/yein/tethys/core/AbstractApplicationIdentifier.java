@@ -1,5 +1,6 @@
 package top.yein.tethys.core;
 
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
@@ -10,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
@@ -78,10 +80,12 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
     var ran = new SecureRandom();
     var fidFuture = new CompletableFuture<Integer>();
     var isRun = new AtomicBoolean(true);
+    var tempFid = new AtomicReference<Integer>();
 
     Supplier<Mono<Integer>> makeFidFunc =
         () -> {
-          var tempFid = ran.nextInt(MAX_FID) + MIN_FID;
+          tempFid.set(ran.nextInt(MAX_FID) + MIN_FID);
+
           // fid 是否存在
           var fidExists = new AtomicBoolean(false);
           var insertMono =
@@ -91,7 +95,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                     if (fidExists.get()) {
                       return Mono.empty();
                     }
-                    var entity = newServerInstance(tempFid);
+                    var entity = newServerInstance(tempFid.get());
                     log.info("新增 ServerInstance: {}", entity);
 
                     return serverInstanceDao
@@ -99,14 +103,14 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                         .doOnNext(
                             rowsUpdated -> {
                               if (rowsUpdated == 1) {
-                                fidFuture.complete(tempFid);
+                                fidFuture.complete(tempFid.get());
                                 isRun.set(false);
                               }
                             });
                   });
 
           return serverInstanceDao
-              .findById(tempFid)
+              .findById(tempFid.get())
               .filter(
                   si -> {
                     fidExists.set(true);
@@ -117,7 +121,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
               .flatMap(
                   si -> {
                     log.info("发现已过期的服务实例: {}", si);
-                    var entity = newServerInstance(tempFid);
+                    var entity = newServerInstance(tempFid.get());
                     entity.setVer(si.getVer());
                     log.info("修改 ServerInstance: {}", entity);
                     return serverInstanceDao.update(entity);
@@ -125,7 +129,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
               .doOnNext(
                   rowsUpdated -> {
                     if (rowsUpdated == 1) {
-                      fidFuture.complete(tempFid);
+                      fidFuture.complete(tempFid.get());
                       isRun.set(false);
                     }
                   })
@@ -135,10 +139,22 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
     Mono.defer(makeFidFunc)
         .repeat(isRun::get)
         .onErrorContinue(
-            throwable -> {
-              // TODO: 主键冲突 - 继续执行
-              log.warn(throwable);
-              return true;
+            ex -> {
+              if (ex instanceof R2dbcDataIntegrityViolationException) {
+                var t = (R2dbcDataIntegrityViolationException) ex;
+                // 数据库唯一索引冲突时继续重试
+                if ("23505".equals(t.getSqlState())) {
+                  log.warn(
+                      "初始化应用实例出现唯一索引冲突 fid:{}, [{}]:{}",
+                      tempFid.get(),
+                      t.getSqlState(),
+                      t.getMessage());
+                  return true;
+                }
+              }
+
+              log.error("初始化应用实例异常 fid:{}", tempFid.get(), ex);
+              return false;
             },
             (ex, o) -> {})
         .subscribe();
@@ -146,10 +162,9 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
     try {
       return fidFuture.get(MAKE_FID_TIMEOUT, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new IllegalStateException("获取服务实例 ID 失败", e);
-    } catch (ExecutionException e) {
-      throw new IllegalStateException(e);
-    } catch (TimeoutException e) {
+    } catch (ExecutionException | TimeoutException e) {
       throw new IllegalStateException(e);
     }
   }
