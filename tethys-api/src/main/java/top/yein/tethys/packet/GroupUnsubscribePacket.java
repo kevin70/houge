@@ -31,7 +31,7 @@ import lombok.Value;
 public class GroupUnsubscribePacket implements Packet {
 
   /** 取消订阅群组的 IDs. */
-  Set<String> groupIds;
+  Set<Long> groupIds;
 
   @Override
   public String getNs() {
