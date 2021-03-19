@@ -50,8 +50,15 @@ public class TokenResource extends AbstractRestSupport implements RoutingService
       throw new BizCodeException(BizCodes.C912);
     }
 
+    Long uid;
+    try {
+      uid = Long.parseLong(uidStr);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(BizCodes.C911, "uid 必须为一个 number 类型");
+    }
+
     return tokenService
-        .generateToken(uidStr)
+        .generateToken(uid)
         .flatMap(s -> json(response, new AccessTokenDto().setAccessToken(s)));
   }
 }
