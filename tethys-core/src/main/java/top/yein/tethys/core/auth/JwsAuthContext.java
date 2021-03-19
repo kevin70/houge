@@ -28,25 +28,17 @@ class JwsAuthContext implements AuthContext {
 
   private final long uid;
   private final String token;
-  private final String originUid;
   private final Claims claims;
 
-  JwsAuthContext(long uid, String token, String originUid, Claims claims) {
+  JwsAuthContext(long uid, String token, Claims claims) {
     this.uid = uid;
     this.token = token;
-    this.originUid = originUid;
     this.claims = claims;
   }
 
   @Override
   public long uid() {
     return uid;
-  }
-
-  @Nonnull
-  @Override
-  public String originUid() {
-    return originUid;
   }
 
   @Nonnull
@@ -65,8 +57,8 @@ class JwsAuthContext implements AuthContext {
     return "JwsAuthContext{"
         + "uid="
         + uid
-        + ", originUid='"
-        + originUid
+        + ", token='"
+        + token
         + '\''
         + ", claims="
         + claims

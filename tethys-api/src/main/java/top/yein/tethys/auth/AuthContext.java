@@ -32,13 +32,6 @@ public interface AuthContext {
   long uid();
 
   /**
-   * 返回原用户 ID.
-   *
-   * @return 原用户 ID
-   */
-  String originUid();
-
-  /**
    * 返回认证令牌.
    *
    * @return 认证令牌

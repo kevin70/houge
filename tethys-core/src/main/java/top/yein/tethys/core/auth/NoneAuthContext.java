@@ -39,11 +39,6 @@ public class NoneAuthContext implements AuthContext {
   }
 
   @Override
-  public String originUid() {
-    return null;
-  }
-
-  @Override
   public String token() {
     throw new IllegalStateException("匿名访问");
   }
