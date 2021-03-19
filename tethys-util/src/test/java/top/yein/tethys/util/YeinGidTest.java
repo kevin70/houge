@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import java.time.Clock;
-import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -40,7 +38,6 @@ class YeinGidTest {
           s.assertThat(parsedGid.getTimestamp()).as("timestamp").isEqualTo(gid.getTimestamp());
           s.assertThat(parsedGid.getSeq()).as("seq").isEqualTo(gid.getSeq());
           s.assertThat(parsedGid.getFid()).as("f2").isEqualTo(gid.getFid());
-          s.assertThat(parsedGid.toString()).as("hexString").isEqualTo(hexString);
         });
   }
 
@@ -57,11 +54,4 @@ class YeinGidTest {
     assertThatIllegalArgumentException().isThrownBy(() -> new YeinGid(-1));
     assertThatIllegalArgumentException().isThrownBy(() -> new YeinGid(131072));
   }
-
-  @Test
-  void examples() {
-    System.out.println(new YeinGid(5432));
-    System.out.println(new YeinGid(12345));
-  }
-
 }
