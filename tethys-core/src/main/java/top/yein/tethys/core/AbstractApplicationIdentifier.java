@@ -39,11 +39,16 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   // INSTANCE 过期的时间
   private static final long INSTANCE_EXPIRES_IN = Duration.ofHours(1).toSeconds();
   // 健康检查的周期
-  private static final Duration CHECK_HEALTH_PERIOD = Duration.ofMinutes(5);
+  private static final Duration CHECK_HEALTH_PERIOD = Duration.ofMinutes(1);
 
   private final ServerInstanceDao serverInstanceDao;
   private final int fid;
 
+  /**
+   * 使用服务实例数据访问对象构造对象.
+   *
+   * @param serverInstanceDao 服务实例数据访问对象
+   */
   protected AbstractApplicationIdentifier(ServerInstanceDao serverInstanceDao) {
     this.serverInstanceDao = serverInstanceDao;
     this.fid = initFid();
@@ -200,12 +205,12 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
         .doOnNext(
             rowsUpdated -> {
               if (rowsUpdated == 1) {
-                log.info("健康检查成功 fid: {}", fid);
+                log.debug("健康检查成功 fid: {}", fid);
               } else {
                 log.error("健康检查失败 fid: {}, rowsUpdated: {}", rowsUpdated);
               }
             })
-        .onErrorContinue((ex, o) -> log.warn("健康检查异常", ex))
+        .onErrorContinue((ex, o) -> log.error("健康检查异常", ex))
         .delaySubscription(CHECK_HEALTH_PERIOD)
         .repeat(() -> true)
         .subscribe();
