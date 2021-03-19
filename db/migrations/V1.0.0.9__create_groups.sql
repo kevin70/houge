@@ -11,6 +11,7 @@ create table groups
     creator_id  bigint    not null,
     owner_id    bigint,
     member_size integer   not null,
+    member_limit integer   not null,
     create_time timestamp not null,
     update_time timestamp not null
 );
@@ -26,6 +27,8 @@ comment on column groups.creator_id is '创建者用户 ID';
 comment on column groups.owner_id is '拥有者用户 ID';
 
 comment on column groups.member_size is '群成员数量';
+
+comment on column groups.member_limit is '群成员数量限制';
 
 comment on column groups.create_time is '创建时间';
 
