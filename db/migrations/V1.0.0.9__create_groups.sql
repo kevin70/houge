@@ -4,7 +4,7 @@ comment on sequence groups_id_seq is '群 ID 生成序列';
 
 create table groups
 (
-    id          bigserial not null
+    id          bigint not null
         constraint groups_pk
             primary key,
     name        varchar(18),
