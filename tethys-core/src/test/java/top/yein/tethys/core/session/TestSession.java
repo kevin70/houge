@@ -33,7 +33,7 @@ import top.yein.tethys.session.Session;
 public class TestSession implements Session {
 
   private final long sessionId = new SecureRandom().nextLong();
-  private final Set<String> subGroupIds = new LinkedHashSet<>();
+  private final Set<Long> subGroupIds = new LinkedHashSet<>();
 
   @Override
   public String sessionId() {
@@ -59,7 +59,7 @@ public class TestSession implements Session {
   }
 
   @Override
-  public Set<String> subGroupIds() {
+  public Set<Long> subGroupIds() {
     return subGroupIds;
   }
 

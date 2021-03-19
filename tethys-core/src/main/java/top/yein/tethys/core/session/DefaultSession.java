@@ -54,7 +54,7 @@ public final class DefaultSession implements Session {
   final WebsocketInbound inbound;
   final WebsocketOutbound outbound;
   final AuthContext authContext;
-  final Set<String> subGroupIds;
+  final Set<Long> subGroupIds;
 
   private final Sinks.Empty<Void> closeSink = Sinks.empty();
   private final AtomicBoolean closed = new AtomicBoolean(false);
@@ -109,7 +109,7 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public Set<String> subGroupIds() {
+  public Set<Long> subGroupIds() {
     return subGroupIds;
   }
 

@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.core.MessageProperties;
-import top.yein.tethys.entity.GroupMessage;
+import top.yein.tethys.entity.Message;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
@@ -14,6 +14,7 @@ import top.yein.tethys.packet.GroupMessagePacket;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.storage.MessageDao;
+import top.yein.tethys.storage.query.GroupQueryDao;
 
 /**
  * 群组消息处理器.
@@ -23,70 +24,72 @@ import top.yein.tethys.storage.MessageDao;
 @Log4j2
 public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
 
-  private final SessionGroupManager sessionGroupManager;
-  private final MessageDao messageDao;
   private final MessageProperties messageProperties;
   private final MessageIdGenerator messageIdGenerator;
+  private final SessionGroupManager sessionGroupManager;
+
+  private final GroupQueryDao groupQueryDao;
+  private final MessageDao messageDao;
 
   /**
    * 构造函数.
    *
-   * @param sessionGroupManager 群组会话管理对象
-   * @param messageDao
    * @param messageProperties 聊天消息静态配置
    * @param messageIdGenerator 消息 ID 生成器
+   * @param sessionGroupManager 群组会话管理对象
+   * @param messageDao 消息存储数据访问对象
+   * @param groupQueryDao 群组查询数据访问对象
    */
   @Inject
   public GroupMessageHandler(
-    SessionGroupManager sessionGroupManager,
-    MessageDao messageDao,
-    MessageProperties messageProperties,
-    MessageIdGenerator messageIdGenerator) {
+      MessageProperties messageProperties,
+      MessageIdGenerator messageIdGenerator,
+      SessionGroupManager sessionGroupManager,
+      MessageDao messageDao,
+      GroupQueryDao groupQueryDao) {
     this.sessionGroupManager = sessionGroupManager;
     this.messageDao = messageDao;
     this.messageProperties = messageProperties;
     this.messageIdGenerator = messageIdGenerator;
+    this.groupQueryDao = groupQueryDao;
   }
 
   @Override
   public Mono<Void> handle(@Nonnull Session session, @Nonnull GroupMessagePacket packet) {
-    if (packet.getMsgId() == null && messageProperties.isAutofillId()) {
-      packet.setMsgId(messageIdGenerator.nextId());
+    if (packet.getMessageId() == null && messageProperties.isAutofillId()) {
+      packet.setMessageId(messageIdGenerator.nextId());
       log.debug("自动填充群组消息 ID, packet={}, session={}", packet, session);
     }
 
+    var groupId = packet.getTo();
     // 校验消息
     MessagePacketChecker.check(packet);
-    var from =
-        Optional.ofNullable(packet.getFrom())
-            .orElseGet(
-                () -> {
-                  // FIXME
-                  packet.setFrom(session.authContext().originUid());
-                  return session.authContext().originUid();
-                });
-    var to = packet.getTo();
+    var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
 
-    var p1 =
+    var sendMono =
         sessionGroupManager
-            .findByGroupId(to)
+            .findByGroupId(groupId)
             .filter(toSession -> toSession != session)
             .flatMap(toSession -> toSession.sendPacket(packet));
 
     // 存储的消息实体
     var entity =
-        GroupMessage.builder()
-            .id(packet.getMsgId())
+        Message.builder()
+            .id(packet.getMessageId())
             .senderId(from)
-            .groupId(to)
-            .kind(packet.getKind())
+            .groupId(groupId)
+            .kind(Message.KIND_GROUP)
             .content(packet.getContent())
+            .contentKind(packet.getContentKind())
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
+            .unread(Message.MESSAGE_UNREAD)
             .build();
-    // FIXME 消息存储重构
-//    var p2 = groupMessageRepository.insert(entity);
-    var p2 = Mono.empty();
-    return p2.thenMany(p1).then();
+    var storageMono =
+        groupQueryDao
+            .queryMembersUid(groupId)
+            .collectList()
+            .flatMap(memberIds -> messageDao.insert(entity, memberIds));
+    return storageMono.thenMany(sendMono).then();
   }
 }

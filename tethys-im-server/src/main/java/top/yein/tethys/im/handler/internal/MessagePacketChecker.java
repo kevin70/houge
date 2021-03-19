@@ -34,9 +34,9 @@ public class MessagePacketChecker {
    * @param packet 群组消息
    */
   public static void check(GroupMessagePacket packet) {
-    checkMsgId(packet.getMsgId());
+    checkMsgId(packet.getMessageId());
     checkTo(packet.getTo());
-    checkKind(packet.getKind());
+    checkKind(packet.getContentKind());
     checkContent(packet.getContent());
   }
 
@@ -46,8 +46,8 @@ public class MessagePacketChecker {
     }
   }
 
-  static void checkTo(String to) {
-    if (to == null || to.isEmpty()) {
+  static void checkTo(Long to) {
+    if (to == null) {
       throw new BizCodeException(BizCodes.C3600, "[to]不能为空");
     }
   }

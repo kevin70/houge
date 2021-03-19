@@ -20,11 +20,8 @@ import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
-import top.yein.tethys.constants.MessageKind;
 
 /**
  * 群组消息.
@@ -39,16 +36,15 @@ import top.yein.tethys.constants.MessageKind;
 public class GroupMessagePacket implements Packet {
 
   /** 消息 ID 全局唯一. */
-  String msgId;
+  String messageId;
   /** 发送消息者. */
-  String from;
+  Long from;
   /** 接收消息者. */
-  String to;
-  /** 消息类型 {@link top.yein.tethys.constants.MessageKind}. */
-  @Default
-  int kind = MessageKind.TEXT.getCode();
+  Long to;
   /** 消息内容. */
   String content;
+  /** 消息类型 {@link top.yein.tethys.constants.MessageKind}. */
+  int contentKind;
   /** 统一资源定位器, 图片URL, 视频URL. */
   String url;
   /** 自定义消息参数. */

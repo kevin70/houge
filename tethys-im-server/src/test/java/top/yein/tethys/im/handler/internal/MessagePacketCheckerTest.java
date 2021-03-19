@@ -33,10 +33,10 @@ class MessagePacketCheckerTest {
   @Test
   void checkGroupMessagePacket() {
     var packet = new GroupMessagePacket();
-    packet.setMsgId(new YeinGid(0).toHexString());
-    packet.setFrom("zs");
-    packet.setTo("ls");
-    packet.setKind(MessageKind.TEXT.getCode());
+    packet.setMessageId(new YeinGid(0).toHexString());
+    packet.setFrom(0L);
+    packet.setTo(1L);
+    packet.setContentKind(MessageKind.TEXT.getCode());
     packet.setContent("hello world");
     packet.setUrl("https://tethys.yein.top");
     packet.setCustomArgs("{}");
@@ -59,7 +59,7 @@ class MessagePacketCheckerTest {
         .isThrownBy(() -> MessagePacketChecker.checkTo(null))
         .matches((ex) -> ex.getBizCode() == BizCodes.C3600);
     assertThatExceptionOfType(BizCodeException.class)
-        .isThrownBy(() -> MessagePacketChecker.checkTo(""))
+        .isThrownBy(() -> MessagePacketChecker.checkTo(null))
         .matches((ex) -> ex.getBizCode() == BizCodes.C3600);
   }
 

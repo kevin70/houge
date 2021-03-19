@@ -77,7 +77,7 @@ public interface Session {
    *
    * @return 订阅群组 IDs
    */
-  Set<String> subGroupIds();
+  Set<Long> subGroupIds();
 
   /**
    * 向客户端发送数据.

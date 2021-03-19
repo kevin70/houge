@@ -30,8 +30,8 @@ public interface SessionGroupListener {
    *
    * @param session 会话信息
    * @param event 事件类型
-   * @param groupId 分组 ID
+   * @param groupId 群组 ID
    * @return {@link Mono#empty()}
    */
-  Mono<Void> handle(Session session, SessionGroupEvent event, String groupId);
+  Mono<Void> handle(Session session, SessionGroupEvent event, Long groupId);
 }

@@ -39,7 +39,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
 
   private final Set<SessionGroupListener> sessionGroupListeners = new LinkedHashSet<>();
   // 缓存组 Session
-  private final AsyncCache<String, Set<Session>> groupSessions = Caffeine.newBuilder().buildAsync();
+  private final AsyncCache<Long, Set<Session>> groupSessions = Caffeine.newBuilder().buildAsync();
 
   @Override
   public boolean registerListener(SessionGroupListener sessionGroupListener) {
@@ -52,7 +52,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
   }
 
   @Override
-  public Mono<Void> subGroups(Session session, Set<String> groupIds) {
+  public Mono<Void> subGroups(Session session, Set<Long> groupIds) {
     if (groupIds == null || groupIds.isEmpty()) {
       return Mono.empty();
     }
@@ -80,7 +80,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
   }
 
   @Override
-  public Mono<Void> unsubGroups(Session session, Set<String> groupIds) {
+  public Mono<Void> unsubGroups(Session session, Set<Long> groupIds) {
     if (groupIds == null || groupIds.isEmpty()) {
       return Mono.empty();
     }
@@ -117,7 +117,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
   }
 
   @Override
-  public Flux<Session> findByGroupId(String groupId) {
+  public Flux<Session> findByGroupId(long groupId) {
     return Flux.defer(
         () -> {
           var cf = groupSessions.getIfPresent(groupId);
@@ -128,7 +128,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
         });
   }
 
-  private Mono<Void> notify(Session session, SessionGroupEvent event, String groupId) {
+  private Mono<Void> notify(Session session, SessionGroupEvent event, long groupId) {
     if (this.sessionGroupListeners.isEmpty()) {
       return Mono.empty();
     }
