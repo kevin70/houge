@@ -9,6 +9,10 @@ import io.r2dbc.spi.ConnectionFactory;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
+import top.yein.tethys.storage.query.GroupQueryDao;
+import top.yein.tethys.storage.query.GroupQueryDaoImpl;
+import top.yein.tethys.storage.query.MessageQueryDao;
+import top.yein.tethys.storage.query.MessageQueryDaoImpl;
 
 /**
  * 消息数据存储模块定义.
@@ -32,7 +36,12 @@ public class StorageModule extends AbstractModule {
   protected void configure() {
     bind(ServerInstanceDao.class).to(ServerInstanceDaoImpl.class).in(Scopes.SINGLETON);
     bind(JwtSecretDao.class).to(JwtSecretDaoImpl.class).in(Scopes.SINGLETON);
+
     bind(MessageDao.class).to(MessageDaoImpl.class).in(Scopes.SINGLETON);
+    bind(MessageQueryDao.class).to(MessageQueryDaoImpl.class).in(Scopes.SINGLETON);
+
+    bind(GroupDao.class).to(GroupDaoImpl.class).in(Scopes.SINGLETON);
+    bind(GroupQueryDao.class).to(GroupQueryDaoImpl.class).in(Scopes.SINGLETON);
   }
 
   @Provides
