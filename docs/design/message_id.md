@@ -18,16 +18,16 @@ UUID(Universally unique identifier) 是一种软件建构的标准，亦为自�
 * 比 UUID 占用更少的存储空间
 * 良好的扩展性
 
-> YeinGid 长度为 70bits **固定**为 14bytes 的全局唯一字符串，无需中央控制端，相比 UUID 少占用 60% 的存储空间。
+> YeinGid 长度为 75bits **固定**为 15bytes 的全局唯一字符串，无需中央控制端，相比 UUID 少占用 60% 的存储空间。
 > YeinGid 版本（version）的设计是为 YeinGid 良好的扩展性服务。
 
 ### 算法
 
-| version | timestamp | sequence | fid    |
-|---------|-----------|----------|--------|
-| 3bits   | 32bits    | 18bits   | 17bits |
+| version | timestamp | fid    | sequence |
+|---------|-----------|--------|----------|
+| 3bits   | 32bits    | 17bits | 23bits   |
 
-在指定机器 & 同一时刻 & 某一并发序列中是唯一的。据些生成 **70bits** 的全局唯一 ID。默认采用上表格字节分配方式：
+在指定机器 & 同一时刻 & 某一并发序列中是唯一的。据些生成 **75bits** 的全局唯一 ID。默认采用上表格字节分配方式：
 
 * version(3bits)
 
@@ -37,13 +37,13 @@ UUID(Universally unique identifier) 是一种软件建构的标准，亦为自�
 
   当前时间戳，单位：秒，可支持到 **2089** 年。
 
-* sequence(18bits)
-
-  第秒下的并发序列，18bits 可支持每秒 **262143** 并发。
-
 * fid(17bits)
 
   标识 ID，用于区分在同一时间不同并发序列的标识，最多同时支持 **131071** 个并发序列。
+
+* sequence(23bits)
+
+  第秒下的并发序列，23bits 可支持每秒 **8388607** 并发。
 
 ### 编码
 
