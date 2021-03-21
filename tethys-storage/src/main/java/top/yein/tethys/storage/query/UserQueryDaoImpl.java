@@ -1,5 +1,7 @@
 package top.yein.tethys.storage.query;
 
+import io.r2dbc.spi.Row;
+import java.time.LocalDateTime;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.User;
@@ -12,8 +14,8 @@ import top.yein.tethys.r2dbc.R2dbcClient;
  */
 public class UserQueryDaoImpl implements UserQueryDao {
 
-  private final static String QUERY_BY_ID_SQL = "SELECT * FROM users WHERE id=$1";
-  private final static String EXISTS_BY_ID_SQL = "SELECT COUNT(*) FROM users WHERE id=$1";
+  private static final String QUERY_BY_ID_SQL = "SELECT * FROM users WHERE id=$1";
+  private static final String EXISTS_BY_ID_SQL = "SELECT COUNT(*) FROM users WHERE id=$1";
 
   private final R2dbcClient rc;
 
@@ -29,11 +31,23 @@ public class UserQueryDaoImpl implements UserQueryDao {
 
   @Override
   public Mono<User> queryById(long id) {
-    return null;
+    return rc.sql(QUERY_BY_ID_SQL).bind(0, id).map(this::mapToEntity).one();
   }
 
   @Override
   public Mono<Boolean> existsById(long id) {
-    return null;
+    return rc.sql(EXISTS_BY_ID_SQL)
+        .bind(0, id)
+        .map(row -> row.get(0, Integer.class) == 1 ? true : false)
+        .one();
+  }
+
+  private User mapToEntity(Row row) {
+    var e = new User();
+    e.setId(row.get("id", Long.class));
+    e.setOriginUid(row.get("origin_uid", String.class));
+    e.setCreateTime(row.get("create_time", LocalDateTime.class));
+    e.setUpdateTime(row.get("update_time", LocalDateTime.class));
+    return e;
   }
 }
