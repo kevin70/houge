@@ -38,7 +38,11 @@ public class UserQueryDaoImpl implements UserQueryDao {
   public Mono<Boolean> existsById(long id) {
     return rc.sql(EXISTS_BY_ID_SQL)
         .bind(0, id)
-        .map(row -> row.get(0, Integer.class) == 1 ? true : false)
+        .map(
+            row -> {
+              var c = row.get(0, Integer.class);
+              return c != null && c == 1 ? true : false;
+            })
         .one();
   }
 
