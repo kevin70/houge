@@ -3,6 +3,7 @@ package top.yein.tethys.service;
 import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import top.yein.tethys.Null;
 import top.yein.tethys.storage.UserDao;
 import top.yein.tethys.storage.query.UserQueryDao;
@@ -52,8 +53,16 @@ public class UserService {
         .flatMap(
             b -> {
               if (b) {
-                existingUidBits.addLong(uid);
-                return Null.toMono();
+                return Null.toMono()
+                    .publishOn(Schedulers.single())
+                    .delayUntil(
+                        unused -> {
+                          // existingUidBits 是非线程安全的对象
+                          // 将对 existingUidBits 所有的操作放置在同一个线程中避免额外的 Lock
+                          existingUidBits.addLong(uid);
+                          return Mono.empty();
+                        })
+                    .publishOn(Schedulers.parallel());
               }
               return Mono.empty();
             });
