@@ -13,6 +13,8 @@ import top.yein.tethys.storage.query.GroupQueryDao;
 import top.yein.tethys.storage.query.GroupQueryDaoImpl;
 import top.yein.tethys.storage.query.MessageQueryDao;
 import top.yein.tethys.storage.query.MessageQueryDaoImpl;
+import top.yein.tethys.storage.query.UserQueryDao;
+import top.yein.tethys.storage.query.UserQueryDaoImpl;
 
 /**
  * 消息数据存储模块定义.
@@ -37,9 +39,15 @@ public class StorageModule extends AbstractModule {
     bind(ServerInstanceDao.class).to(ServerInstanceDaoImpl.class).in(Scopes.SINGLETON);
     bind(JwtSecretDao.class).to(JwtSecretDaoImpl.class).in(Scopes.SINGLETON);
 
+    // 消息
     bind(MessageDao.class).to(MessageDaoImpl.class).in(Scopes.SINGLETON);
     bind(MessageQueryDao.class).to(MessageQueryDaoImpl.class).in(Scopes.SINGLETON);
 
+    // 用户
+    bind(UserDao.class).to(UserDaoImpl.class).in(Scopes.SINGLETON);
+    bind(UserQueryDao.class).to(UserQueryDaoImpl.class).in(Scopes.SINGLETON);
+
+    // 群组
     bind(GroupDao.class).to(GroupDaoImpl.class).in(Scopes.SINGLETON);
     bind(GroupQueryDao.class).to(GroupQueryDaoImpl.class).in(Scopes.SINGLETON);
   }
