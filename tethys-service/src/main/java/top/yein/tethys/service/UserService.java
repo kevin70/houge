@@ -1,6 +1,7 @@
 package top.yein.tethys.service;
 
 import javax.inject.Inject;
+import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.Null;
 import top.yein.tethys.storage.UserDao;
@@ -15,6 +16,9 @@ public class UserService {
 
   private final UserDao userDao;
   private final UserQueryDao userQueryDao;
+
+  /** 已存在的用户 ID 位图. */
+  private Roaring64NavigableMap existingUidBits = Roaring64NavigableMap.bitmapOf();
 
   /**
    * @param userDao
@@ -35,10 +39,23 @@ public class UserService {
    * @return true/false
    */
   public Mono<Null> existsById(long uid) {
+    if (existingUidBits.contains(uid)) {
+      return Null.toMono();
+    }
+
     // 这里需要优化
     // 1. 优先查询 BitSet 判断是否是否存在
     // 2. BitSet 不存在查询 Redis 判断用户是否存在
     // 3. 以上都不存在时查询数据库
-    return userQueryDao.existsById(uid).flatMap(b -> b ? Null.toMono() : Mono.empty());
+    return userQueryDao
+        .existsById(uid)
+        .flatMap(
+            b -> {
+              if (b) {
+                existingUidBits.addLong(uid);
+                return Null.toMono();
+              }
+              return Mono.empty();
+            });
   }
 }
