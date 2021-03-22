@@ -28,7 +28,7 @@ import top.yein.tethys.packet.PrivateMessagePacket;
  */
 public class MessagePacketChecker {
 
-  public static final int MSG_ID_LENGTH = 14;
+  public static final int MSG_ID_LENGTH = 15;
 
   /**
    * 私聊消息校验.
