@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import top.yein.tethys.Null;
+import top.yein.tethys.Nil;
 import top.yein.tethys.storage.UserDao;
 import top.yein.tethys.storage.query.UserQueryDao;
 
@@ -39,9 +39,9 @@ public class UserService {
    * @param uid 用户 ID
    * @return true/false
    */
-  public Mono<Null> existsById(long uid) {
+  public Mono<Nil> existsById(long uid) {
     if (existingUidBits.contains(uid)) {
-      return Null.toMono();
+      return Nil.mono();
     }
 
     // 这里需要优化
@@ -53,7 +53,7 @@ public class UserService {
         .flatMap(
             b -> {
               if (b) {
-                return Null.toMono()
+                return Nil.mono()
                     .publishOn(Schedulers.single())
                     .delayUntil(
                         unused -> {

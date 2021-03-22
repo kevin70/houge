@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.Null;
+import top.yein.tethys.Nil;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.entity.User;
@@ -65,9 +65,9 @@ public class TokenServiceImpl implements TokenService {
                 var entity = new User();
                 entity.setId(uid);
                 entity.setOriginUid(String.valueOf(uid));
-                return userDao.insert(entity).then(Null.toMono());
+                return userDao.insert(entity).then(Nil.mono());
               }
-              return Null.toMono();
+              return Nil.mono();
             })
         .flatMap((unused) -> this.generateToken0(uid));
   }

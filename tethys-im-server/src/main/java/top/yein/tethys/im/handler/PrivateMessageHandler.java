@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.Null;
+import top.yein.tethys.Nil;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.entity.Message;
@@ -77,7 +77,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
     var to = packet.getTo();
 
     // 路由、存储消息
-    Function<Null, Mono<Void>> bizFun =
+    Function<Nil, Mono<Void>> bizFun =
         (unused) -> {
           var p1 =
               sessionManager.findByUid(to).delayUntil(toSession -> toSession.sendPacket(packet));
