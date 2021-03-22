@@ -135,11 +135,6 @@ class DefaultSessionManagerTest {
               }
 
               @Override
-              public String originUid() {
-                return String.valueOf(uid);
-              }
-
-              @Override
               public String token() {
                 return "test";
               }
