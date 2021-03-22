@@ -11,9 +11,12 @@ import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import top.yein.tethys.ApplicationIdentifier;
+import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.auth.JwsAuthService;
+import top.yein.tethys.core.auth.TokenProps;
+import top.yein.tethys.core.auth.TokenProps.Generator;
 import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.resource.AuthInterceptor;
@@ -86,5 +89,20 @@ public class CoreModule extends AbstractModule {
     new UptimeMetrics().bindTo(prometheusRegistry);
     new JvmMemoryMetrics().bindTo(prometheusRegistry);
     return prometheusRegistry;
+  }
+
+  /**
+   * 返回令牌配置对象.
+   *
+   * @return 令牌配置对象
+   */
+  @Provides
+  public TokenProps tokenProps() {
+    boolean testEnabled =
+        config.hasPath(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED)
+            ? config.getBoolean(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED)
+            : false;
+    var generator = new Generator(testEnabled);
+    return new TokenProps(generator);
   }
 }

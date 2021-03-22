@@ -70,6 +70,9 @@ public final class ConfigKeys {
    */
   public static final String REST_SERVER_ADDR = "rest-server.addr";
 
+  /** 测试令牌生成器开关配置. */
+  public static final String TOKEN_GENERATOR_TEST_ENABLED = "token.generator.test-enabled";
+
   /**
    * 消息存储的数据库链接.
    *
@@ -79,8 +82,6 @@ public final class ConfigKeys {
    */
   public static final String MESSAGE_STORAGE_R2DBC_URL = "message-storage.r2dbc.url";
 
-  /**
-   * 自动填充消息 ID 的配置开关.
-   */
+  /** 自动填充消息 ID 的配置开关. */
   public static final String MESSAGE_AUTOFILL_ID = "message.autofill.id";
 }
