@@ -17,6 +17,7 @@ import top.yein.tethys.core.module.CoreModule;
 import top.yein.tethys.im.module.ImModule;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.WebsocketHandler;
+import top.yein.tethys.service.module.ServiceModule;
 import top.yein.tethys.storage.StorageModule;
 
 /**
@@ -42,7 +43,11 @@ public class ImMain implements Runnable {
     final var config = loadConfig();
     // 初始化 Guice
     final var injector =
-        Guice.createInjector(new StorageModule(config), new CoreModule(config), new ImModule(config));
+        Guice.createInjector(
+            new StorageModule(config),
+            new ServiceModule(),
+            new CoreModule(config),
+            new ImModule(config));
     // 应用程序监控
     var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
     Metrics.addRegistry(prometheusMeterRegistry);
