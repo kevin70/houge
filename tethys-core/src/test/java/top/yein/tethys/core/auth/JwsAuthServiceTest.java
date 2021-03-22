@@ -33,6 +33,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Objects;
 import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -80,13 +81,13 @@ class JwsAuthServiceTest {
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, kid)
             .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("test")
+            .setId("0")
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
     var p = authService.authenticate(token);
     StepVerifier.create(p)
-        .expectNextMatches(ac -> "test".equals(ac.uid()) && token.equals(ac.token()))
+        .expectNextMatches(ac -> Objects.equals(0L, ac.uid()) && token.equals(ac.token()))
         .verifyComplete();
   }
 
@@ -115,7 +116,7 @@ class JwsAuthServiceTest {
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, kid)
             .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("test")
+            .setId("0")
             .setExpiration(Date.from(exp))
             .compact();
 
@@ -133,7 +134,7 @@ class JwsAuthServiceTest {
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, kid)
             .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("test")
+            .setId("0")
             .setNotBefore(Date.from(nbf))
             .compact();
 
@@ -150,7 +151,7 @@ class JwsAuthServiceTest {
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, "not-found-kid")
             .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("test")
+            .setId("0")
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
@@ -166,7 +167,7 @@ class JwsAuthServiceTest {
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, "not-found-kid")
             .signWith(illegalSecret, SignatureAlgorithm.HS512)
-            .setId("test")
+            .setId("0")
             .compact();
 
     JwsAuthService authService = newJwsAuthService();
