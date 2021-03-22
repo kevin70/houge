@@ -1,5 +1,7 @@
 dependencies {
   api(project(":tethys-storage"))
+  api("org.roaringbitmap:RoaringBitmap")
+
   testImplementation(project(":tethys-util"))
   testImplementation("com.typesafe:config")
   testImplementation("org.apache.logging.log4j:log4j-core")
