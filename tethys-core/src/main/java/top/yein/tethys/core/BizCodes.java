@@ -44,6 +44,8 @@ public enum BizCodes implements BizCode {
   // 3600 - 3700 >> Packet 相关的错误码
   // ---------------------------------------------------------------------//
   C3600(400, "缺少必须的参数"),
+  C3630(400, "私聊消息的接收方不存在"),
+
   ;
   private final int code;
   private final int status;
