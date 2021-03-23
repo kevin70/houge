@@ -182,6 +182,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
     try {
       return fidFuture.get(MAKE_FID_TIMEOUT, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
+      log.warn("Interrupted", e);
       Thread.currentThread().interrupt();
       throw new IllegalStateException("获取服务实例 ID 失败", e);
     } catch (ExecutionException | TimeoutException e) {
