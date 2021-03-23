@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.Nil;
 import top.yein.tethys.entity.User;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
@@ -51,11 +52,12 @@ public class UserQueryDaoImpl implements UserQueryDao {
   }
 
   @Override
-  public Mono<Boolean> existsById(long id) {
+  public Mono<Nil> existsById(long id) {
     return rc.sql(EXISTS_BY_ID_SQL)
         .bind(0, id)
-        .map(row -> Objects.equals(row.get(0, Integer.class), 1) ? true : false)
-        .one();
+        .map(row -> row.get(0, Integer.class))
+        .one()
+        .flatMap(count -> Objects.equals(count, 1) ? Nil.mono() : Mono.empty());
   }
 
   private User mapToEntity(Row row) {

@@ -16,6 +16,7 @@
 package top.yein.tethys.storage.query;
 
 import reactor.core.publisher.Mono;
+import top.yein.tethys.Nil;
 import top.yein.tethys.entity.User;
 
 /**
@@ -39,5 +40,5 @@ public interface UserQueryDao {
    * @param id 用户 ID
    * @return true/false
    */
-  Mono<Boolean> existsById(long id);
+  Mono<Nil> existsById(long id);
 }
