@@ -27,7 +27,7 @@ import top.yein.tethys.storage.query.GroupQueryDao;
  *
  * @author KK (kzou227@qq.com)
  */
-public class GroupService {
+public class GroupServiceImpl {
 
   private final GroupQueryDao groupQueryDao;
 
@@ -40,7 +40,7 @@ public class GroupService {
    * @param groupQueryDao 群组数据查询接口
    */
   @Inject
-  public GroupService(GroupQueryDao groupQueryDao) {
+  public GroupServiceImpl(GroupQueryDao groupQueryDao) {
     this.groupQueryDao = groupQueryDao;
   }
 
