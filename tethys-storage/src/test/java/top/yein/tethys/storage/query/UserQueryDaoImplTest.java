@@ -20,6 +20,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
+import top.yein.tethys.Nil;
 import top.yein.tethys.storage.AbstractTestDao;
 import top.yein.tethys.storage.UserDaoImpl;
 import top.yein.tethys.storage.data.TestData;
@@ -81,7 +82,7 @@ class UserQueryDaoImplTest extends AbstractTestDao {
 
     var userQueryDao = newUserQueryDao();
     var p = initMono.then(userQueryDao.existsById(entity.getId()));
-    StepVerifier.create(p).expectNext(true).expectComplete().verify();
+    StepVerifier.create(p).expectNext(Nil.INSTANCE).expectComplete().verify();
 
     // 清理数据
     delete("users", Map.of("id", entity.getId()));
@@ -91,6 +92,6 @@ class UserQueryDaoImplTest extends AbstractTestDao {
   void existsBy_False() {
     var dao = newUserQueryDao();
     var p = dao.existsById(-1L);
-    StepVerifier.create(p).expectNext(false).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
   }
 }
