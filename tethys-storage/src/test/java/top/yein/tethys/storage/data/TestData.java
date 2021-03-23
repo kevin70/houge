@@ -16,6 +16,7 @@
 package top.yein.tethys.storage.data;
 
 import com.github.javafaker.Faker;
+import top.yein.tethys.entity.Group;
 import top.yein.tethys.entity.User;
 
 /**
@@ -31,6 +32,16 @@ public class TestData {
     var e = new User();
     e.setId(0L);
     e.setOriginUid(FAKER.regexify("[a-zA-Z]{1,64}"));
+    return e;
+  }
+
+  public static Group newGroup() {
+    var e = new Group();
+    e.setName(FAKER.regexify("[a-z]{3,9}"));
+    e.setCreatorId(Long.valueOf(FAKER.random().nextInt(1, 100)));
+    e.setOwnerId(e.getCreatorId());
+    e.setMemberSize(0);
+    e.setMemberLimit(FAKER.random().nextInt(1, 40));
     return e;
   }
 }

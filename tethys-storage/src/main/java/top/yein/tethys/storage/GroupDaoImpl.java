@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.storage;
 
+import com.google.common.annotations.VisibleForTesting;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.entity.Group;
@@ -32,6 +33,10 @@ public class GroupDaoImpl implements GroupDao {
   private static final String INSERT_GROUP_SQL =
       "INSERT INTO groups(id,name,creator_id,owner_id,member_size,member_limit,create_time,update_time)"
           + " VALUES($1,$2,$3,$4,$5,$6,now(),now())";
+  private static final String INC_MEMBER_SIZE_SQL =
+      "UPDATE GROUPS SET member_size=member_size+$1 WHERE id=$2 AND member_limit>=member_size+$1";
+  private static final String DEC_MEMBER_SIZE_SQL =
+      "UPDATE GROUPS SET member_size=member_size-$1 WHERE id=$2 AND member_size>=$1";
   private static final String INSERT_MEMBER_SQL =
       "INSERT INTO groups_member(gid,uid,create_time) VALUES($1,$2,now())";
 
@@ -83,6 +88,16 @@ public class GroupDaoImpl implements GroupDao {
   @Override
   public Mono<Integer> removeMember(long gid, long uid) {
     return null;
+  }
+
+  @VisibleForTesting
+  Mono<Integer> incMemberSize(long id, int size) {
+    return rc.sql(INC_MEMBER_SIZE_SQL).bind(0, size).bind(1, id).rowsUpdated();
+  }
+
+  @VisibleForTesting
+  Mono<Integer> decMemberSize(long id, int size) {
+    return rc.sql(DEC_MEMBER_SIZE_SQL).bind(0, size).bind(1, id).rowsUpdated();
   }
 
   private Mono<Long> nextGroupId() {

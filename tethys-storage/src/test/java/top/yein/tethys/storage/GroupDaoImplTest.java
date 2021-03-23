@@ -18,9 +18,12 @@ package top.yein.tethys.storage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.javafaker.Faker;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.data.TestData;
 
 /**
  * {@link GroupDaoImpl} 单元测试.
@@ -36,8 +39,8 @@ class GroupDaoImplTest extends AbstractTestDao {
   }
 
   private void clean(Long id) {
-    clean("delete from groups where id=$1", new Object[] {id});
-    clean("delete from groups_member where gid=$1", new Object[] {id});
+    delete("groups", Map.of("id", id));
+    delete("groups_member", Map.of("gid", id));
   }
 
   @Test
@@ -60,6 +63,55 @@ class GroupDaoImplTest extends AbstractTestDao {
             })
         .expectComplete()
         .verify();
+
+    // 清理数据
+    clean(idVar[0]);
+  }
+
+  @Test
+  void incMemberSize() {
+    var groupDao = newGroupDao();
+    var entity = TestData.newGroup();
+
+    var idVar = new long[1];
+    var p1 =
+        groupDao
+            .insert(entity)
+            .delayUntil(
+                id -> {
+                  idVar[0] = id;
+                  return Mono.empty();
+                })
+            .flatMap(id -> groupDao.incMemberSize(id, entity.getMemberLimit()));
+    StepVerifier.create(p1).expectNext(1).expectComplete().verify();
+
+    var p2 = groupDao.incMemberSize(idVar[0], entity.getMemberLimit() + 1);
+    StepVerifier.create(p2).expectNext(0).expectComplete().verify();
+
+    // 清理数据
+    clean(idVar[0]);
+  }
+
+  @Test
+  void decMemberSize() {
+    var groupDao = newGroupDao();
+    var entity = TestData.newGroup();
+    entity.setMemberSize(10);
+
+    var idVar = new long[1];
+    var p1 =
+        groupDao
+            .insert(entity)
+            .delayUntil(
+                id -> {
+                  idVar[0] = id;
+                  return Mono.empty();
+                })
+            .flatMap(id -> groupDao.decMemberSize(id, entity.getMemberSize()));
+    StepVerifier.create(p1).expectNext(1).expectComplete().verify();
+
+    var p2 = groupDao.decMemberSize(idVar[0], entity.getMemberSize() + 1);
+    StepVerifier.create(p2).expectNext(0).expectComplete().verify();
 
     // 清理数据
     clean(idVar[0]);
