@@ -38,16 +38,16 @@ public interface GroupDao {
    *
    * @param gid 群组 ID
    * @param uid 用户 ID
-   * @return 受影响行数
+   * @return RS
    */
-  Mono<Integer> joinMember(long gid, long uid);
+  Mono<Void> joinMember(long gid, long uid);
 
   /**
    * 将指定的群组中的指定用户移除.
    *
    * @param gid 群组 ID
    * @param uid 用户 ID
-   * @return 受影响行数
+   * @return RS
    */
-  Mono<Integer> removeMember(long gid, long uid);
+  Mono<Void> removeMember(long gid, long uid);
 }

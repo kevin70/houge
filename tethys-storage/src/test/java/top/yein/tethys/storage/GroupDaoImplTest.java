@@ -16,6 +16,7 @@
 package top.yein.tethys.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.github.javafaker.Faker;
 import java.util.Map;
@@ -69,6 +70,54 @@ class GroupDaoImplTest extends AbstractTestDao {
   }
 
   @Test
+  void joinMember() {
+    var groupDao = newGroupDao();
+    var entity = TestData.newGroup();
+    var idVar = new long[1];
+    var uid = 0;
+    var p =
+        groupDao
+            .insert(entity)
+            .doOnNext(id -> idVar[0] = id)
+            .flatMap(id -> groupDao.joinMember(idVar[0], uid));
+    StepVerifier.create(p).expectComplete().verify();
+
+    // 校验数据
+    StepVerifier.create(
+            r2dbcClient.sql("select * from groups where id=$1").bind(0, idVar[0]).fetch().one())
+        .consumeNextWith(
+            dbRow ->
+                assertSoftly(
+                    s -> {
+                      s.assertThat(dbRow.get("id")).as("id").isEqualTo(idVar[0]);
+                      s.assertThat(dbRow.get("member_size")).as("member_size").isEqualTo(2);
+                    }))
+        .expectComplete()
+        .verify();
+
+    // 清理数据
+    clean(idVar[0]);
+  }
+
+  @Test
+  void removeMember() {
+    var groupDao = newGroupDao();
+    var entity = TestData.newGroup();
+    var idVar = new long[1];
+    var uid = 0;
+    var p =
+        groupDao
+            .insert(entity)
+            .doOnNext(id -> idVar[0] = id)
+            .then(Mono.defer(() -> groupDao.joinMember(idVar[0], uid)))
+            .then(Mono.defer(() -> groupDao.removeMember(idVar[0], uid)));
+    StepVerifier.create(p).expectComplete().verify();
+
+    // 清理数据
+    clean(idVar[0]);
+  }
+
+  @Test
   void incMemberSize() {
     var groupDao = newGroupDao();
     var entity = TestData.newGroup();
@@ -77,11 +126,7 @@ class GroupDaoImplTest extends AbstractTestDao {
     var p1 =
         groupDao
             .insert(entity)
-            .delayUntil(
-                id -> {
-                  idVar[0] = id;
-                  return Mono.empty();
-                })
+            .doOnNext(id -> idVar[0] = id)
             .flatMap(id -> groupDao.incMemberSize(id, entity.getMemberLimit()));
     StepVerifier.create(p1).expectNext(1).expectComplete().verify();
 

@@ -18,6 +18,8 @@ package top.yein.tethys.storage;
 import com.google.common.annotations.VisibleForTesting;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCode;
+import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.entity.Group;
 import top.yein.tethys.r2dbc.Parameter;
 import top.yein.tethys.r2dbc.R2dbcClient;
@@ -39,6 +41,8 @@ public class GroupDaoImpl implements GroupDao {
       "UPDATE GROUPS SET member_size=member_size-$1 WHERE id=$2 AND member_size>=$1";
   private static final String INSERT_MEMBER_SQL =
       "INSERT INTO groups_member(gid,uid,create_time) VALUES($1,$2,now())";
+  private static final String DELETE_MEMBER_SQL =
+      "DELETE FROM groups_member WHERE gid=$1 AND uid=$2";
 
   private final R2dbcClient rc;
 
@@ -81,13 +85,62 @@ public class GroupDaoImpl implements GroupDao {
   }
 
   @Override
-  public Mono<Integer> joinMember(long gid, long uid) {
-    return null;
+  public Mono<Void> joinMember(long gid, long uid) {
+    // 新增群组-用户关系映射
+    var m1 =
+        rc.sql(INSERT_MEMBER_SQL)
+            .bind(new Object[] {gid, uid})
+            .rowsUpdated()
+            .doOnNext(
+                n -> {
+                  if (n != 1) {
+                    throw new BizCodeException(BizCode.C811, "joinMember 增加群成员关系异常")
+                        .addContextValue("gid", gid)
+                        .addContextValue("uid", uid);
+                  }
+                });
+
+    // 增加成员数量
+    var m2 =
+        incMemberSize(gid, 1)
+            .doOnNext(
+                n -> {
+                  if (n != 1) {
+                    throw new BizCodeException(BizCode.C811, "joinMember 增加群成员数量异常")
+                        .addContextValue("gid", gid)
+                        .addContextValue("uid", uid);
+                  }
+                });
+    return Mono.zip(m1, m2).then();
   }
 
   @Override
-  public Mono<Integer> removeMember(long gid, long uid) {
-    return null;
+  public Mono<Void> removeMember(long gid, long uid) {
+    // 移除群组-用户关系映射
+    var m1 =
+        rc.sql(DELETE_MEMBER_SQL)
+            .bind(new Object[] {gid, uid})
+            .rowsUpdated()
+            .doOnNext(
+                n -> {
+                  if (n != 1) {
+                    throw new BizCodeException(BizCode.C811, "removeMember 移除群成员关系异常")
+                        .addContextValue("gid", gid)
+                        .addContextValue("uid", uid);
+                  }
+                });
+    // 减少成员数量
+    var m2 =
+        decMemberSize(gid, 1)
+            .doOnNext(
+                n -> {
+                  if (n != 1) {
+                    throw new BizCodeException(BizCode.C811, "removeMember 减少群成员数量异常")
+                        .addContextValue("gid", gid)
+                        .addContextValue("uid", uid);
+                  }
+                });
+    return Mono.zip(m1, m2).then();
   }
 
   @VisibleForTesting
