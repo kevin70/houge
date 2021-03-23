@@ -29,9 +29,10 @@ import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.module.CoreModule;
-import top.yein.tethys.storage.module.StorageModule;
 import top.yein.tethys.rest.module.RestModule;
 import top.yein.tethys.rest.server.RestServer;
+import top.yein.tethys.service.module.ServiceModule;
+import top.yein.tethys.storage.module.StorageModule;
 
 /**
  * 主程序.
@@ -56,7 +57,11 @@ public class RestMain implements Runnable {
     final var config = loadConfig();
     // 初始化 Guice
     final var injector =
-        Guice.createInjector(new StorageModule(config), new CoreModule(config), new RestModule());
+        Guice.createInjector(
+            new StorageModule(config),
+            new ServiceModule(),
+            new CoreModule(config),
+            new RestModule());
     // 应用程序监控
     var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
     Metrics.addRegistry(prometheusMeterRegistry);
