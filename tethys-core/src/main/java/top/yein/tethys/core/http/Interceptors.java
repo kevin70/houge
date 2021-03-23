@@ -17,7 +17,7 @@ package top.yein.tethys.core.http;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import org.reactivestreams.Publisher;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -30,11 +30,7 @@ import reactor.netty.http.server.HttpServerResponse;
 public class Interceptors {
 
   /** 认证拦截器. */
-  private Function<
-          BiFunction<
-              ? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>,
-          BiFunction<
-              ? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>>
+  private UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>>
       authFunc;
 
   /**
@@ -43,12 +39,7 @@ public class Interceptors {
    * @param authFunc 认证拦截函数
    */
   public Interceptors(
-      Function<
-              BiFunction<
-                  ? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>,
-              BiFunction<
-                  ? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>>
-          authFunc) {
+      UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>> authFunc) {
     Objects.requireNonNull(authFunc, "[authFunc]不能为null");
     this.authFunc = authFunc;
   }
@@ -59,12 +50,8 @@ public class Interceptors {
    * @param next 执行成功后的下一个函数
    * @return
    */
-  public BiFunction<
-          ? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>
-      auth(
-          BiFunction<
-                  ? super HttpServerRequest, ? super HttpServerResponse, ? extends Publisher<Void>>
-              next) {
+  public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> auth(
+      BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> next) {
     return authFunc.apply(next);
   }
 }
