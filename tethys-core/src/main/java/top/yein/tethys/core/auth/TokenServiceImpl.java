@@ -72,19 +72,15 @@ public class TokenServiceImpl implements TokenService {
     return userQueryDao
         .existsById(uid)
         .flatMap(
-            b -> {
-              // 如果用户不存在则向数据库保存用户信息
-              if (!b) {
-                // TIPS: 这里是否需要为自动保存用户信息单独设置开关
-                // TIPS: 这里是否需要增加额外的配置开关, 确认是否开启自动保存用户信息
-                var entity = new User();
-                entity.setId(uid);
-                entity.setOriginUid(String.valueOf(uid));
-                return userDao.insert(entity).then(Nil.mono());
-              }
-              return Nil.mono();
+            unused -> {
+
+              // TIPS: 这里是否需要增加额外的配置开关, 确认是否开启自动保存用户信息
+              var entity = new User();
+              entity.setId(uid);
+              entity.setOriginUid(String.valueOf(uid));
+              return userDao.insert(entity).then(Nil.mono());
             })
-        .flatMap((unused) -> this.generateToken0(uid));
+        .flatMap(unused -> this.generateToken0(uid));
   }
 
   private Mono<String> generateToken0(long uid) {

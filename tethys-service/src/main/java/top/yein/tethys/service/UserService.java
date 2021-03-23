@@ -63,23 +63,14 @@ public class UserService {
     // 1. 优先查询 BitSet 判断是否是否存在
     // 2. BitSet 不存在查询 Redis 判断用户是否存在
     // 3. 以上都不存在时查询数据库
-    return userQueryDao
-        .existsById(uid)
-        .flatMap(
-            b -> {
-              if (b) {
-                return Nil.mono()
-                    .publishOn(Schedulers.single())
-                    .delayUntil(
-                        unused -> {
-                          // existingUidBits 是非线程安全的对象
-                          // 将对 existingUidBits 所有的操作放置在同一个线程中避免额外的 Lock
-                          existingUidBits.addLong(uid);
-                          return Mono.empty();
-                        })
-                    .publishOn(Schedulers.parallel());
-              }
-              return Mono.empty();
-            });
+    return userQueryDao.existsById(uid).doOnNext(unused -> updateUidBits(uid));
+  }
+
+  private void updateUidBits(long uid) {
+    // existingUidBits 是非线程安全的对象
+    // 将对 existingUidBits 所有的更新操作放置在同一个线程中避免额外的 Lock
+    Mono.fromRunnable(() -> existingUidBits.addLong(uid))
+        .subscribeOn(Schedulers.single())
+        .subscribe();
   }
 }
