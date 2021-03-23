@@ -20,38 +20,52 @@ import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.tethys.Nil;
+import top.yein.tethys.dto.GroupCreateDto;
+import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.GroupDao;
 import top.yein.tethys.storage.query.GroupQueryDao;
+import top.yein.tethys.vo.GroupCreateVo;
 
 /**
  * 群组服务实现.
  *
  * @author KK (kzou227@qq.com)
  */
-public class GroupServiceImpl {
+public class GroupServiceImpl implements GroupService {
 
+  private final GroupDao groupDao;
   private final GroupQueryDao groupQueryDao;
 
   /** 已存在的群组 ID 位图. */
   private Roaring64NavigableMap existingGidBits = Roaring64NavigableMap.bitmapOf();
 
   /**
-   * 使用群组数据查询接口构造对象.
+   * 使用群组数据接口、群组数据查询接口构造对象.
    *
+   * @param groupDao 群组数据接口
    * @param groupQueryDao 群组数据查询接口
    */
   @Inject
-  public GroupServiceImpl(GroupQueryDao groupQueryDao) {
+  public GroupServiceImpl(GroupDao groupDao, GroupQueryDao groupQueryDao) {
+    this.groupDao = groupDao;
     this.groupQueryDao = groupQueryDao;
   }
 
-  /**
-   * 判断指定的群组是否存在.
-   *
-   * <p>如果用户存在则返回一个 {@code Mono<Nil>} 实例可用 {@code Mono} 操作符进行消费, 反之则返回 {@code Mono.empty()}.
-   *
-   * @param gid 群组 ID
-   * @return Nil.mono()/Mono.empty()
-   */
+  @Override
+  public Mono<GroupCreateDto> createGroup(long creatorId, GroupCreateVo vo) {
+    var entity =
+        Group.builder()
+            .creatorId(creatorId)
+            .ownerId(creatorId)
+            .name(vo.getName())
+            .memberSize(1)
+            // TODO: 提取配置
+            .memberLimit(40)
+            .build();
+    return groupDao.insert(entity).map(id -> GroupCreateDto.builder().id(id).build());
+  }
+
+  @Override
   public Mono<Nil> existsById(long gid) {
     if (existingGidBits.contains(gid)) {
       return Nil.mono();
