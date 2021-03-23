@@ -39,8 +39,6 @@ public class RestModule extends AbstractModule {
 
     var routingServicesBinder = Multibinder.newSetBinder(binder(), RoutingService.class);
     routingServicesBinder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
-//    routingServicesBinder.addBinding().to(PrivateMessageResource.class).in(Scopes.SINGLETON);
-//    routingServicesBinder.addBinding().to(GroupMessageResource.class).in(Scopes.SINGLETON);
   }
 
   @Provides
