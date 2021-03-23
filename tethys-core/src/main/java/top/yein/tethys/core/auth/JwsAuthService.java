@@ -15,7 +15,9 @@
  */
 package top.yein.tethys.core.auth;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -23,6 +25,7 @@ import io.jsonwebtoken.PrematureJwtException;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.auth.AuthService;
@@ -50,21 +53,14 @@ public class JwsAuthService implements AuthService {
   @Override
   public Mono<AuthContext> authenticate(String token) {
     if (token == null || token.isEmpty()) {
-      return Mono.error(new BizCodeException(BizCodes.C401, "缺少访问令牌"));
+      return Mono.error(new BizCodeException(BizCode.C401, "缺少访问令牌"));
     }
 
     return Mono.create(
         sink -> {
           try {
             var jws = jwtParser.parseClaimsJws(token);
-            long uid;
-            try {
-              uid = Long.parseLong(jws.getBody().getId());
-            } catch (NumberFormatException e) {
-              sink.error(
-                  new BizCodeException(BizCodes.C3300).addContextValue("claims", jws.getBody()));
-              return;
-            }
+            long uid = parseUid(jws);
             var authContext = new JwsAuthContext(uid, token, jws.getBody());
             sink.success(authContext);
           } catch (MalformedJwtException e) {
@@ -73,9 +69,15 @@ public class JwsAuthService implements AuthService {
             sink.error(new BizCodeException(BizCodes.C3301, e.getMessage()));
           } catch (PrematureJwtException e) {
             sink.error(new BizCodeException(BizCodes.C3302, e.getMessage()));
-          } catch (Exception e) {
-            sink.error(new BizCodeException(BizCodes.C3305, e.getMessage()));
           }
         });
+  }
+
+  private long parseUid(Jws<Claims> jws) {
+    try {
+      return Long.parseLong(jws.getBody().getId());
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(BizCodes.C3300).addContextValue("claims", jws.getBody());
+    }
   }
 }
