@@ -22,6 +22,10 @@ package top.yein.tethys.packet;
  */
 public final class Namespaces {
 
+  private Namespaces() {
+    throw new IllegalStateException("Utility class");
+  }
+
   /**
    * 错误消息.
    *
