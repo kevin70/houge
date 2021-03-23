@@ -127,7 +127,8 @@ class GroupDaoImplTest extends AbstractTestDao {
         groupDao
             .insert(entity)
             .doOnNext(id -> idVar[0] = id)
-            .flatMap(id -> groupDao.incMemberSize(id, entity.getMemberLimit()));
+            .flatMap(
+                id -> groupDao.incMemberSize(id, entity.getMemberLimit() - entity.getMemberSize()));
     StepVerifier.create(p1).expectNext(1).expectComplete().verify();
 
     var p2 = groupDao.incMemberSize(idVar[0], entity.getMemberLimit() + 1);
