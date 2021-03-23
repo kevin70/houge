@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.storage;
+package top.yein.tethys.storage.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -24,6 +24,16 @@ import io.r2dbc.spi.ConnectionFactory;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
+import top.yein.tethys.storage.GroupDao;
+import top.yein.tethys.storage.GroupDaoImpl;
+import top.yein.tethys.storage.JwtSecretDao;
+import top.yein.tethys.storage.JwtSecretDaoImpl;
+import top.yein.tethys.storage.MessageDao;
+import top.yein.tethys.storage.MessageDaoImpl;
+import top.yein.tethys.storage.ServerInstanceDao;
+import top.yein.tethys.storage.ServerInstanceDaoImpl;
+import top.yein.tethys.storage.UserDao;
+import top.yein.tethys.storage.UserDaoImpl;
 import top.yein.tethys.storage.query.GroupQueryDao;
 import top.yein.tethys.storage.query.GroupQueryDaoImpl;
 import top.yein.tethys.storage.query.MessageQueryDao;

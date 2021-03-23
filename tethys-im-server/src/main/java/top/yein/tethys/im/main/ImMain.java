@@ -33,7 +33,7 @@ import top.yein.tethys.im.module.ImModule;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.WebsocketHandler;
 import top.yein.tethys.service.module.ServiceModule;
-import top.yein.tethys.storage.StorageModule;
+import top.yein.tethys.storage.module.StorageModule;
 
 /**
  * 主程序.
