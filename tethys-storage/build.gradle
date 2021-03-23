@@ -1,10 +1,11 @@
 dependencies {
-    api(project(":tethys-core"))
-    api("io.r2dbc:r2dbc-postgresql")
-    api("com.github.ben-manes.caffeine:caffeine")
+  api(project(":tethys-core"))
+  api("io.r2dbc:r2dbc-postgresql")
+  api("com.github.ben-manes.caffeine:caffeine")
 
-    testImplementation(project(":tethys-util"))
-    testImplementation("com.typesafe:config")
-    testImplementation("org.apache.logging.log4j:log4j-core")
-    testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
+  testImplementation(project(":tethys-util"))
+  testImplementation("com.typesafe:config")
+  testImplementation("com.google.inject.extensions:guice-testlib")
+  testImplementation("org.apache.logging.log4j:log4j-core")
+  testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
 }
