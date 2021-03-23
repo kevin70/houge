@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.rest.resource;
 
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -22,6 +23,8 @@ import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.tethys.core.http.AbstractRestSupport;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
+import top.yein.tethys.service.GroupService;
+import top.yein.tethys.vo.GroupCreateVo;
 
 /**
  * 群组 REST 接口.
@@ -29,6 +32,17 @@ import top.yein.tethys.core.http.RoutingService;
  * @author KK (kzou227@qq.com)
  */
 public class GroupResource extends AbstractRestSupport implements RoutingService {
+
+  private final GroupService groupService;
+
+  /**
+   *
+   * @param groupService
+   */
+  @Inject
+  public GroupResource(GroupService groupService) {
+    this.groupService = groupService;
+  }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
@@ -45,7 +59,14 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return
    */
   Mono<Void> createGroup(HttpServerRequest request, HttpServerResponse response) {
-    return Mono.empty();
+    return authContext()
+        .zipWith(json(request, GroupCreateVo.class))
+        .flatMap(
+            t -> {
+              var ac = t.getT1();
+              var vo = t.getT2();
+              return groupService.createGroup(ac.uid(), vo).flatMap(dto -> json(response, dto));
+            });
   }
 
   /**
