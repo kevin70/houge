@@ -90,6 +90,9 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
       } else {
         log.info("<{}>应用标识[{}]清理完成", applicationName(), fid);
       }
+    } catch (InterruptedException e) {
+      log.warn("Interrupted", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       throw new IllegalStateException("<" + applicationName() + ">应用标识[" + fid + "]清理异常", e);
     }
