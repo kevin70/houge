@@ -17,6 +17,7 @@ package top.yein.tethys.storage.query;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.Nil;
 import top.yein.tethys.entity.Group;
 
 /**
@@ -41,4 +42,12 @@ public interface GroupQueryDao {
    * @return 成员用户 ID
    */
   Flux<Long> queryMembersUid(long id);
+
+  /**
+   * 使用群组 ID 查询用户是否存在.
+   *
+   * @param id 群组 ID
+   * @return Nil.mono()/Mono.empty()
+   */
+  Mono<Nil> existsById(long id);
 }

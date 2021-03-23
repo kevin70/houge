@@ -17,9 +17,11 @@ package top.yein.tethys.storage.query;
 
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.Nil;
 import top.yein.tethys.entity.Group;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
@@ -32,6 +34,7 @@ public class GroupQueryDaoImpl implements GroupQueryDao {
 
   private static final String QUERY_BY_ID_SQL = "SELECT * FROM groups WHERE id=$1";
   private static final String QUERY_MEMBERS_UID_SQL = "SELECT uid FROM groups_member WHERE gid=$1";
+  private static final String EXISTS_BY_ID_SQL = "SELECT COUNT(*) FROM groups WHERE id=$1";
 
   private final R2dbcClient rc;
 
@@ -53,6 +56,15 @@ public class GroupQueryDaoImpl implements GroupQueryDao {
   @Override
   public Flux<Long> queryMembersUid(long id) {
     return rc.sql(QUERY_MEMBERS_UID_SQL).bind(0, id).map(row -> row.get(0, Long.class)).all();
+  }
+
+  @Override
+  public Mono<Nil> existsById(long id) {
+    return rc.sql(EXISTS_BY_ID_SQL)
+        .bind(0, id)
+        .map(row -> row.get(0, Integer.class))
+        .one()
+        .flatMap(count -> Objects.equals(count, 1) ? Nil.mono() : Mono.empty());
   }
 
   private Group mapToGroup(Row row) {
