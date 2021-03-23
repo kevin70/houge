@@ -21,6 +21,7 @@ import static top.yein.tethys.core.BizCodes.C3300;
 import static top.yein.tethys.core.BizCodes.C3301;
 import static top.yein.tethys.core.BizCodes.C3302;
 import static top.yein.tethys.core.BizCodes.C3305;
+import static top.yein.tethys.core.BizCodes.C3309;
 import static top.yein.tethys.core.BizCodes.C401;
 
 import io.jsonwebtoken.JwsHeader;
@@ -59,20 +60,23 @@ class JwsAuthServiceTest {
           "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764-illegal-secret"
               .getBytes(StandardCharsets.UTF_8));
 
+  private CachedJwtSecret cachedJwtSecret;
+  private JwtSecretDao jwtSecretDao;
+
   private JwsAuthService newJwsAuthService() {
     return newJwsAuthService(false);
   }
 
   private JwsAuthService newJwsAuthService(boolean anonymousEnabled) {
-    var jwtSecretRepository = mock(JwtSecretDao.class);
-    var cachedJwtSecret =
+    this.jwtSecretDao = mock(JwtSecretDao.class);
+    this.cachedJwtSecret =
         CachedJwtSecret.builder()
             .id(kid)
             .algorithm(SignatureAlgorithm.HS512)
             .secretKey(testSecret)
             .build();
-    when(jwtSecretRepository.loadById(kid)).thenReturn(Mono.just(cachedJwtSecret));
-    return new JwsAuthService(jwtSecretRepository);
+    when(jwtSecretDao.loadById(kid)).thenReturn(Mono.just(cachedJwtSecret));
+    return new JwsAuthService(jwtSecretDao);
   }
 
   @Test
@@ -147,6 +151,9 @@ class JwsAuthServiceTest {
 
   @Test
   void notFoundKid() {
+    JwsAuthService authService = newJwsAuthService();
+    when(jwtSecretDao.loadById("not-found-kid")).thenReturn(Mono.empty());
+
     var token =
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, "not-found-kid")
@@ -154,23 +161,23 @@ class JwsAuthServiceTest {
             .setId("0")
             .compact();
 
-    JwsAuthService authService = newJwsAuthService();
     var p = authService.authenticate(token);
     StepVerifier.create(p)
-        .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())
+        .expectErrorMatches(e -> C3309 == ((BizCodeException) e).getBizCode())
         .verify(Duration.ofSeconds(1));
   }
 
   @Test
   void wrongSign() {
+    JwsAuthService authService = newJwsAuthService();
+    when(jwtSecretDao.loadById("not-found-kid")).thenReturn(Mono.just(cachedJwtSecret));
+
     var token =
         Jwts.builder()
             .setHeaderParam(JwsHeader.KEY_ID, "not-found-kid")
             .signWith(illegalSecret, SignatureAlgorithm.HS512)
             .setId("0")
             .compact();
-
-    JwsAuthService authService = newJwsAuthService();
     var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())

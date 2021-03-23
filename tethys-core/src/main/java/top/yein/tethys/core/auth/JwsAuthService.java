@@ -22,6 +22,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.PrematureJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
@@ -69,6 +70,8 @@ public class JwsAuthService implements AuthService {
             sink.error(new BizCodeException(BizCodes.C3301, e.getMessage()));
           } catch (PrematureJwtException e) {
             sink.error(new BizCodeException(BizCodes.C3302, e.getMessage()));
+          } catch (SignatureException e) {
+            sink.error(new BizCodeException(BizCodes.C3305, e.getMessage()));
           }
         });
   }
