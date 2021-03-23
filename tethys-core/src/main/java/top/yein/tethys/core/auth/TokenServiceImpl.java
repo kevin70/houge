@@ -69,17 +69,19 @@ public class TokenServiceImpl implements TokenService {
       return Mono.error(new BizCodeException(BizCodes.C403, "当前运行环境禁止访问测试令牌生成接口"));
     }
 
-    return userQueryDao
-        .existsById(uid)
-        .flatMap(
-            unused -> {
-
+    var emptyInsert =
+        Mono.defer(
+            () -> {
               // TIPS: 这里是否需要增加额外的配置开关, 确认是否开启自动保存用户信息
               var entity = new User();
               entity.setId(uid);
               entity.setOriginUid(String.valueOf(uid));
               return userDao.insert(entity).then(Nil.mono());
-            })
+            });
+
+    return userQueryDao
+        .existsById(uid)
+        .switchIfEmpty(emptyInsert)
         .flatMap(unused -> this.generateToken0(uid));
   }
 
