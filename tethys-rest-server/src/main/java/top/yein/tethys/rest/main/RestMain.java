@@ -59,7 +59,7 @@ public class RestMain implements Runnable {
     final var injector =
         Guice.createInjector(
             new StorageModule(config),
-            new ServiceModule(),
+            new ServiceModule(config),
             new CoreModule(config),
             new RestModule());
     // 应用程序监控

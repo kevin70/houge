@@ -19,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
+import javax.inject.Singleton;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
@@ -28,6 +29,7 @@ import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.rest.RestApplicationIdentifier;
 import top.yein.tethys.rest.resource.GroupResource;
 import top.yein.tethys.rest.resource.MessageIdResource;
+import top.yein.tethys.rest.resource.MessageResource;
 
 /**
  * REST Guice 模块.
@@ -46,10 +48,12 @@ public class RestModule extends AbstractModule {
     // rest
     var routingServicesBinder = Multibinder.newSetBinder(binder(), RoutingService.class);
     routingServicesBinder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
+    routingServicesBinder.addBinding().to(MessageResource.class).in(Scopes.SINGLETON);
     routingServicesBinder.addBinding().to(GroupResource.class).in(Scopes.SINGLETON);
   }
 
   @Provides
+  @Singleton
   public Interceptors interceptors(AuthInterceptor authInterceptor) {
     return new Interceptors(authInterceptor::handle);
   }

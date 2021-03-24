@@ -60,7 +60,7 @@ public class ImMain implements Runnable {
     final var injector =
         Guice.createInjector(
             new StorageModule(config),
-            new ServiceModule(),
+            new ServiceModule(config),
             new CoreModule(config),
             new ImModule(config));
     // 应用程序监控

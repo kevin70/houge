@@ -16,11 +16,18 @@
 package top.yein.tethys.service.module;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.Scopes;
+import com.typesafe.config.Config;
+import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.service.GroupService;
 import top.yein.tethys.service.GroupServiceImpl;
+import top.yein.tethys.service.MessageProps;
+import top.yein.tethys.service.MessageService;
+import top.yein.tethys.service.MessageServiceImpl;
 import top.yein.tethys.service.UserService;
 import top.yein.tethys.service.UserServiceImpl;
+import top.yein.tethys.storage.query.MessageQueryDao;
 
 /**
  * 服务模块定义.
@@ -29,9 +36,27 @@ import top.yein.tethys.service.UserServiceImpl;
  */
 public class ServiceModule extends AbstractModule {
 
+  private final Config config;
+
+  /**
+   * 使用应用配置构建对象.
+   *
+   * @param config 应用配置
+   */
+  public ServiceModule(Config config) {
+    this.config = config;
+  }
+
   @Override
   protected void configure() {
     bind(UserService.class).to(UserServiceImpl.class).in(Scopes.SINGLETON);
     bind(GroupService.class).to(GroupServiceImpl.class).in(Scopes.SINGLETON);
+  }
+
+  @Provides
+  public MessageService messageService(MessageQueryDao messageQueryDao) {
+    var pullBeginTimeLimit = config.getDuration(ConfigKeys.MESSAGE_PULL_BEGIN_TIME_LIMIT);
+    var props = MessageProps.builder().pullBeginTimeLimit(pullBeginTimeLimit).build();
+    return new MessageServiceImpl(props, messageQueryDao);
   }
 }
