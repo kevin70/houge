@@ -19,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.typesafe.config.Config;
+import javax.inject.Singleton;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.service.GroupService;
 import top.yein.tethys.service.GroupServiceImpl;
@@ -27,6 +28,7 @@ import top.yein.tethys.service.MessageService;
 import top.yein.tethys.service.MessageServiceImpl;
 import top.yein.tethys.service.UserService;
 import top.yein.tethys.service.UserServiceImpl;
+import top.yein.tethys.storage.MessageDao;
 import top.yein.tethys.storage.query.MessageQueryDao;
 
 /**
@@ -54,9 +56,10 @@ public class ServiceModule extends AbstractModule {
   }
 
   @Provides
-  public MessageService messageService(MessageQueryDao messageQueryDao) {
+  @Singleton
+  public MessageService messageService(MessageDao messageDao, MessageQueryDao messageQueryDao) {
     var pullBeginTimeLimit = config.getDuration(ConfigKeys.MESSAGE_PULL_BEGIN_TIME_LIMIT);
     var props = MessageProps.builder().pullBeginTimeLimit(pullBeginTimeLimit).build();
-    return new MessageServiceImpl(props, messageQueryDao);
+    return new MessageServiceImpl(props, messageDao, messageQueryDao);
   }
 }
