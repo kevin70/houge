@@ -17,6 +17,7 @@ package top.yein.tethys.storage;
 
 import static top.yein.tethys.r2dbc.Parameter.fromOrNull;
 
+import com.google.common.base.Joiner;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
@@ -35,6 +36,8 @@ public class MessageDaoImpl implements MessageDao {
       "INSERT INTO messages("
           + "id,sender_id,receiver_id,group_id,kind,content,content_kind,url,custom_args,create_time,update_time)"
           + " VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())";
+  private static final String UPDATE_UNREAD_STATUS_SQL =
+      "UPDATE messages SET unread=$1,update_time=now() WHERE id = ANY(string_to_array($2,',')) AND receiver_id=$3";
 
   private final R2dbcClient rc;
 
@@ -90,7 +93,10 @@ public class MessageDaoImpl implements MessageDao {
   }
 
   @Override
-  public Mono<Integer> updateUnread(String id, int v) {
-    return null;
+  public Mono<Void> updateUnreadStatus(long uid, List<String> messageIds, int v) {
+    return rc.sql(UPDATE_UNREAD_STATUS_SQL)
+        .bind(new Object[] {v, Joiner.on(',').join(messageIds), uid})
+        .rowsUpdated()
+        .then();
   }
 }

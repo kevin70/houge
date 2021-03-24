@@ -15,14 +15,20 @@
  */
 package top.yein.tethys.storage;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.github.javafaker.Faker;
 import com.google.common.base.Stopwatch;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
+import top.yein.tethys.constants.MessageReadStatus;
 import top.yein.tethys.entity.Message;
+import top.yein.tethys.storage.data.TestData;
 
 /**
  * {@link MessageDaoImpl} 单元测试.
@@ -32,6 +38,10 @@ import top.yein.tethys.entity.Message;
 class MessageDaoImplTest extends AbstractTestDao {
 
   private Faker faker = new Faker();
+
+  private MessageDaoImpl newMessageDao() {
+    return new MessageDaoImpl(r2dbcClient);
+  }
 
   @Test
   void insert() {
@@ -78,5 +88,52 @@ class MessageDaoImplTest extends AbstractTestDao {
     StepVerifier.create(p).expectComplete().verify();
     stopwatch.stop();
     System.out.println(stopwatch);
+  }
+
+  @Test
+  void updateUnreadStatus() {
+    var messageDao = newMessageDao();
+    var entity1 = TestData.newMessage();
+    var entity2 = TestData.newMessage();
+    var readStatus = MessageReadStatus.READ.getCode();
+
+    // 修改成功
+    var p1 =
+        messageDao
+            .insert(entity1)
+            .then(
+                messageDao.updateUnreadStatus(
+                    entity1.getReceiverId(), List.of(entity1.getId()), readStatus));
+    StepVerifier.create(p1).expectComplete().verify();
+    var findSql = "select * from messages where id=$1";
+    StepVerifier.create(r2dbcClient.sql(findSql).bind(0, entity1.getId()).fetch().one())
+        .consumeNextWith(
+            dbRow -> {
+              var unread = (Short) dbRow.get("unread");
+              assertThat(unread.intValue()).isEqualTo(readStatus);
+            })
+        .expectComplete()
+        .verify();
+
+    // 不能修改成功
+    var p2 =
+        messageDao
+            .insert(entity2)
+            .then(
+                messageDao.updateUnreadStatus(
+                    entity1.getReceiverId(), List.of(entity2.getId()), readStatus));
+    StepVerifier.create(p2).expectComplete().verify();
+    StepVerifier.create(r2dbcClient.sql(findSql).bind(0, entity2.getId()).fetch().one())
+        .consumeNextWith(
+            dbRow -> {
+              var unread = (Short) dbRow.get("unread");
+              assertThat(unread.intValue()).isEqualTo(MessageReadStatus.UNREAD.getCode());
+            })
+        .expectComplete()
+        .verify();
+
+    // 清理数据
+    delete("messages", Map.of("id", entity1.getId()));
+    delete("messages", Map.of("id", entity2.getId()));
   }
 }

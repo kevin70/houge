@@ -44,11 +44,12 @@ public interface MessageDao {
   Mono<Void> insert(Message entity, List<Long> uids);
 
   /**
-   * 更新消息 {@code unread} 列的值.
+   * 批量将用户的消息 {@code unread} 修改为指定状态.
    *
-   * @param id 消息 ID
-   * @param v {@code unread} 的值
-   * @return 受影响行数
+   * @param uid 用户 ID
+   * @param messageIds 消息 IDs
+   * @param v 状态
+   * @return RS
    */
-  Mono<Integer> updateUnread(String id, int v);
+  Mono<Void> updateUnreadStatus(long uid, List<String> messageIds, int v);
 }
