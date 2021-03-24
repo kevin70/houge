@@ -20,7 +20,7 @@ package top.yein.tethys.constants;
  *
  * @author KK (kzou227@qq.com)
  */
-public enum MessageKind {
+public enum MessageContentKind {
   /** 普通文本消息. */
   TEXT(1),
   /** 图片消息. */
@@ -32,7 +32,7 @@ public enum MessageKind {
   ;
   private final int code;
 
-  MessageKind(int code) {
+  MessageContentKind(int code) {
     this.code = code;
   }
 
@@ -52,12 +52,12 @@ public enum MessageKind {
    * @return 枚举
    * @throws IllegalArgumentException 非法的消息码
    */
-  public static MessageKind forCode(int code) throws IllegalArgumentException {
-    for (MessageKind v : values()) {
+  public static MessageContentKind forCode(int code) throws IllegalArgumentException {
+    for (MessageContentKind v : values()) {
       if (v.code == code) {
         return v;
       }
     }
-    throw new IllegalArgumentException("非法的 MessageKind 代码 \"" + code + "\"");
+    throw new IllegalArgumentException("非法的 MessageContentKind 代码 \"" + code + "\"");
   }
 }

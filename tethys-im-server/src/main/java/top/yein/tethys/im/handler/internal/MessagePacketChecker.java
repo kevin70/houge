@@ -15,49 +15,53 @@
  */
 package top.yein.tethys.im.handler.internal;
 
+import com.google.common.base.CharMatcher;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.constants.MessageKind;
+import top.yein.tethys.constants.MessageContentKind;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.packet.GroupMessagePacket;
 import top.yein.tethys.packet.PrivateMessagePacket;
+import top.yein.tethys.util.YeinGid;
 
 /**
- * 消息校验器.
+ * 消息包校验器.
  *
  * @author KK (kzou227@qq.com)
  */
 public class MessagePacketChecker {
 
-  public static final int MSG_ID_LENGTH = 15;
+  private static final int MESSAGE_ID_LENGTH = YeinGid.YEIN_GID_LENGTH;
 
   /**
-   * 私聊消息校验.
+   * 私聊消息包校验.
    *
-   * @param packet 私聊消息
+   * @param packet 私聊包消息
    */
   public static void check(PrivateMessagePacket packet) {
-    checkMsgId(packet.getMessageId());
-    // FIXME
-    //    checkTo(packet.getTo());
-    checkKind(packet.getContentKind());
+    checkMessageId(packet.getMessageId());
+    checkTo(packet.getTo());
+    checkContentKind(packet.getContentKind());
     checkContent(packet.getContent());
   }
 
   /**
-   * 群组消息校验.
+   * 群组消息包校验.
    *
-   * @param packet 群组消息
+   * @param packet 群组包消息
    */
   public static void check(GroupMessagePacket packet) {
-    checkMsgId(packet.getMessageId());
+    checkMessageId(packet.getMessageId());
     checkTo(packet.getTo());
-    checkKind(packet.getContentKind());
     checkContent(packet.getContent());
+    checkContentKind(packet.getContentKind());
   }
 
-  static void checkMsgId(String msgId) {
-    if (msgId == null || msgId.length() != MSG_ID_LENGTH) {
-      throw new BizCodeException(BizCodes.C3600, "[msg_id]不能为空且必须是一个长度为14的字符串");
+  static void checkMessageId(String messageId) {
+    if (messageId == null || messageId.length() != MESSAGE_ID_LENGTH) {
+      throw new BizCodeException(BizCodes.C3600, "[message_id]不能为空且必须是一个长度为 15 的字符串");
+    }
+    if (CharMatcher.whitespace().matchesAnyOf(messageId)) {
+      throw new BizCodeException(BizCodes.C3600, "[message_id]不能包含空白字符");
     }
   }
 
@@ -67,17 +71,17 @@ public class MessagePacketChecker {
     }
   }
 
-  static void checkKind(int kind) {
-    try {
-      MessageKind.forCode(kind);
-    } catch (IllegalArgumentException e) {
-      throw new BizCodeException(BizCodes.C3600, "[kind]值不合法");
-    }
-  }
-
   static void checkContent(String content) {
     if (content == null || content.isEmpty()) {
       throw new BizCodeException(BizCodes.C3600, "[content]值能为空");
+    }
+  }
+
+  static void checkContentKind(int kind) {
+    try {
+      MessageContentKind.forCode(kind);
+    } catch (IllegalArgumentException e) {
+      throw new BizCodeException(BizCodes.C3600, "[kind]值不合法");
     }
   }
 }

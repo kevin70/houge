@@ -77,9 +77,10 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
       log.debug("自动填充群组消息 ID, packet={}, session={}", packet, session);
     }
 
-    var groupId = packet.getTo();
     // 校验消息
     MessagePacketChecker.check(packet);
+
+    var groupId = packet.getTo();
     var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
 
     var sendMono =
