@@ -36,7 +36,11 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
 
   private final MessageService messageService;
 
-  /** @param messageService */
+  /**
+   * 使用消息服务构建对象.
+   *
+   * @param messageService 消息服务
+   */
   @Inject
   public MessageResource(MessageService messageService) {
     this.messageService = messageService;
