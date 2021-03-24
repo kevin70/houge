@@ -74,6 +74,15 @@ public final class ConfigKeys {
   public static final String TOKEN_GENERATOR_TEST_ENABLED = "token.generator.test-enabled";
 
   /**
+   * 消息可拉取的最早时间限制.
+   *
+   * <p>最早时间 = 当前时间 - ${pull-begin-time-limit}.
+   *
+   * <p>默认仅可查询与当前时间相差 72 小时内的消息.
+   */
+  public static final String MESSAGE_PULL_BEGIN_TIME_LIMIT = "message.pull-begin-time-limit";
+
+  /**
    * 消息存储的数据库链接.
    *
    * <p>示例：
