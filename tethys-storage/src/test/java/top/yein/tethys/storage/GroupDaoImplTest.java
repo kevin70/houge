@@ -109,8 +109,9 @@ class GroupDaoImplTest extends AbstractTestDao {
         groupDao
             .insert(entity)
             .doOnNext(id -> idVar[0] = id)
-            .then(Mono.defer(() -> groupDao.joinMember(idVar[0], uid)))
-            .then(Mono.defer(() -> groupDao.removeMember(idVar[0], uid)));
+            .then(
+                Mono.defer(() -> groupDao.joinMember(idVar[0], uid))
+                    .then(Mono.defer(() -> groupDao.removeMember(idVar[0], uid))));
     StepVerifier.create(p).expectComplete().verify();
 
     // 清理数据
