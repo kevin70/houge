@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.Nil;
 import top.yein.tethys.auth.TokenService;
@@ -66,7 +67,7 @@ public class TokenServiceImpl implements TokenService {
   @Override
   public Mono<String> generateToken(long uid) {
     if (!tokenProps.getGenerator().isTestEnabled()) {
-      return Mono.error(new BizCodeException(BizCodes.C403, "当前运行环境禁止访问测试令牌生成接口"));
+      return Mono.error(new BizCodeException(BizCode.C403, "当前运行环境禁止访问测试令牌生成接口"));
     }
 
     var emptyInsert =

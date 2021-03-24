@@ -88,16 +88,16 @@ public class HttpExceptionHandler extends AbstractRestSupport {
     }
 
     // 是否打印 DEBUG 日志
-    var debug = this.debug || queryParam(request, "debug") != null;
+    var debugEnabled = this.debug || queryParam(request, "debug") != null;
     if (errorLog) {
       // 服务器内部错误需要记录 ERROR 日志
       log.error("服务器内部异常 uri={}", request.uri(), t);
-    } else if (debug) {
+    } else if (debugEnabled) {
       // debug 模式下将异常错误信息记录为 DEBUG 日志
       log.debug("请求错误 uri={}", request.uri(), t);
     }
 
-    if (debug) {
+    if (debugEnabled) {
       // debug 模式下将异常堆栈输出至客户端
       var stacktrace =
           Arrays.stream(t.getStackTrace()).map(String::valueOf).collect(Collectors.toList());

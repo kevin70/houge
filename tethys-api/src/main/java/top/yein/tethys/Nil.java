@@ -41,11 +41,7 @@ public final class Nil {
   /** 默认 Nil Mono 实例. */
   private static final Mono<Nil> MONO = Mono.just(INSTANCE);
 
-  private Nil() {
-    if (INSTANCE != null) {
-      throw new IllegalStateException("不允许创建 Nil 实例");
-    }
-  }
+  private Nil() {}
 
   /**
    * 返回 Nil 的响应流发布器.

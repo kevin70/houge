@@ -34,6 +34,7 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
+import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.core.BizCodes;
@@ -237,10 +238,10 @@ public abstract class AbstractRestSupport {
     var contentType = request.requestHeaders().get(HttpHeaderNames.CONTENT_TYPE);
     try {
       if (!MediaType.JSON_UTF_8.is(MediaType.parse(contentType))) {
-        throw new BizCodeException(BizCodes.C406, "不支持的 content-type=" + contentType);
+        throw new BizCodeException(BizCode.C406, "不支持的 content-type=" + contentType);
       }
     } catch (IllegalArgumentException e) {
-      throw new BizCodeException(BizCodes.C406, "错误的 content-type=" + contentType, e);
+      throw new BizCodeException(BizCode.C406, "错误的 content-type=" + contentType, e);
     }
 
     return request
@@ -251,7 +252,7 @@ public abstract class AbstractRestSupport {
               try {
                 return getObjectMapper().readValue(in, clazz);
               } catch (IOException e) {
-                throw new BizCodeException(BizCodes.C400, "解析JSON异常", e);
+                throw new BizCodeException(BizCode.C400, "解析JSON异常", e);
               }
             })
         .next();
@@ -292,7 +293,7 @@ public abstract class AbstractRestSupport {
     return Mono.deferContextual(
         context -> {
           if (!context.hasKey(AUTH_CONTEXT_KEY)) {
-            return Mono.error(new BizCodeException(BizCodes.C401, "未找到 AuthContext"));
+            return Mono.error(new BizCodeException(BizCode.C401, "未找到 AuthContext"));
           }
           return Mono.just(context.get(AUTH_CONTEXT_KEY));
         });

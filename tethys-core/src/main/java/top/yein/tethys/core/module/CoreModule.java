@@ -25,6 +25,7 @@ import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import javax.inject.Singleton;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.auth.AuthService;
@@ -91,10 +92,11 @@ public class CoreModule extends AbstractModule {
   }
 
   @Provides
+  @Singleton
   public PrometheusMeterRegistry prometheusMeterRegistry(ApplicationIdentifier identifier) {
     var prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-    var config = prometheusRegistry.config();
-    config.commonTags(
+    var registryConfig = prometheusRegistry.config();
+    registryConfig.commonTags(
         "application",
         Strings.lenientFormat("%s-%s", identifier.applicationName(), identifier.version()),
         "fid",
@@ -112,11 +114,11 @@ public class CoreModule extends AbstractModule {
    * @return 令牌配置对象
    */
   @Provides
+  @Singleton
   public TokenProps tokenProps() {
     boolean testEnabled =
         config.hasPath(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED)
-            ? config.getBoolean(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED)
-            : false;
+            && config.getBoolean(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED);
     var generator = new Generator(testEnabled);
     return new TokenProps(generator);
   }
