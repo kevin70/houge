@@ -17,14 +17,14 @@ package top.yein.tethys.storage.query;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
 /**
  * 查询用户指定起始时间之后的消息.
  *
  * @author KK (kzou227@qq.com)
  */
-@Value
+@Data
 @Builder
 public class UserMessageQuery {
 
