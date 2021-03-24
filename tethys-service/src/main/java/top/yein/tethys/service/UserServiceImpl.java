@@ -28,7 +28,7 @@ import top.yein.tethys.storage.query.UserQueryDao;
  *
  * @author KK (kzou227@qq.com)
  */
-public class UserService {
+public class UserServiceImpl implements UserService {
 
   private final UserDao userDao;
   private final UserQueryDao userQueryDao;
@@ -41,19 +41,12 @@ public class UserService {
    * @param userQueryDao
    */
   @Inject
-  public UserService(UserDao userDao, UserQueryDao userQueryDao) {
+  public UserServiceImpl(UserDao userDao, UserQueryDao userQueryDao) {
     this.userDao = userDao;
     this.userQueryDao = userQueryDao;
   }
 
-  /**
-   * 判断指定用户是否存在.
-   *
-   * <p>如果用户存在则返回一个 {@code Mono<Null>} 实例可用 {@code Mono} 操作符进行消费, 反之则返回 {@code Mono.empty()}.
-   *
-   * @param uid 用户 ID
-   * @return true/false
-   */
+  @Override
   public Mono<Nil> existsById(long uid) {
     if (existingUidBits.contains(uid)) {
       return Nil.mono();

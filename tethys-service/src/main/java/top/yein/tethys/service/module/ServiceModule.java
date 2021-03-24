@@ -20,6 +20,7 @@ import com.google.inject.Scopes;
 import top.yein.tethys.service.GroupService;
 import top.yein.tethys.service.GroupServiceImpl;
 import top.yein.tethys.service.UserService;
+import top.yein.tethys.service.UserServiceImpl;
 
 /**
  * 服务模块定义.
@@ -30,7 +31,7 @@ public class ServiceModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(UserService.class).in(Scopes.SINGLETON);
+    bind(UserService.class).to(UserServiceImpl.class).in(Scopes.SINGLETON);
     bind(GroupService.class).to(GroupServiceImpl.class).in(Scopes.SINGLETON);
   }
 }
