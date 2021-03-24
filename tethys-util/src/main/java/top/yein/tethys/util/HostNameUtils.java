@@ -31,7 +31,9 @@ import lombok.extern.log4j.Log4j2;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class HostNameUtils {
+public final class HostNameUtils {
+
+  private HostNameUtils() {}
 
   /**
    * Gets the address for the local machine.

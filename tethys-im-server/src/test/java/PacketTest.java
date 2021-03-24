@@ -26,7 +26,7 @@ import top.yein.tethys.util.JsonUtils;
  *
  * @author KK (kzou227@qq.com)
  */
-public class PacketTest {
+class PacketTest {
 
   @Test
   void exec() throws IOException {

@@ -40,9 +40,9 @@ import reactor.netty.http.HttpInfos;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.context.Context;
+import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthService;
-import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.session.DefaultSession;
 import top.yein.tethys.packet.ErrorPacket;
 import top.yein.tethys.packet.Packet;
@@ -180,7 +180,7 @@ public class WebsocketHandler {
     if (!(frame instanceof BinaryWebSocketFrame || frame instanceof TextWebSocketFrame)) {
       var ep =
           ErrorPacket.builder()
-              .code(BizCodes.C400.getCode())
+              .code(BizCode.C400.getCode())
               .message("不支持 的 ws frame 类型")
               .details("当前仅支持 binary/text frame 类型")
               .build();
@@ -197,7 +197,7 @@ public class WebsocketHandler {
     } catch (UnrecognizedPropertyException e) {
       var ep =
           ErrorPacket.builder()
-              .code(BizCodes.C912.getCode())
+              .code(BizCode.C912.getCode())
               .message("未知的属性")
               .details(e.getPropertyName())
               .build();
@@ -212,7 +212,7 @@ public class WebsocketHandler {
       log.debug(message, e);
       var ep =
           ErrorPacket.builder()
-              .code(BizCodes.C912.getCode())
+              .code(BizCode.C912.getCode())
               .message(message)
               .details(e.getOriginalMessage())
               .build();
@@ -220,7 +220,7 @@ public class WebsocketHandler {
     } catch (IOException e) {
       // JSON 解析失败
       log.warn("JSON 解析失败 session={}", e);
-      var ep = ErrorPacket.builder().code(BizCodes.C912.getCode()).message("解析请求包错误").build();
+      var ep = ErrorPacket.builder().code(BizCode.C912.getCode()).message("解析请求包错误").build();
       return session.sendPacket(ep).then(session.close());
     }
 
@@ -252,8 +252,7 @@ public class WebsocketHandler {
       if (!bearer.startsWith(BEARER_TOKEN_PREFIX)) {
         throw new IllegalArgumentException("header认证必须使用Bearer模式");
       }
-      var token = bearer.substring(BEARER_TOKEN_PREFIX.length());
-      return token;
+      return bearer.substring(BEARER_TOKEN_PREFIX.length());
     }
 
     final var httpInfos = (HttpInfos) in;

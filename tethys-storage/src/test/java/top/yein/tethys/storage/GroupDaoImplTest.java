@@ -59,7 +59,7 @@ class GroupDaoImplTest extends AbstractTestDao {
     StepVerifier.create(p)
         .consumeNextWith(
             id -> {
-              assertThat(id).isGreaterThanOrEqualTo(1);
+              assertThat(id).isPositive();
               idVar[0] = id;
             })
         .expectComplete()
