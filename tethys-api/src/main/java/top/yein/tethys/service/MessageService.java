@@ -15,7 +15,9 @@
  */
 package top.yein.tethys.service;
 
+import java.util.List;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import top.yein.tethys.domain.Paging;
 import top.yein.tethys.entity.Message;
 import top.yein.tethys.storage.query.UserMessageQuery;
@@ -26,6 +28,15 @@ import top.yein.tethys.storage.query.UserMessageQuery;
  * @author KK (kzou227@qq.com)
  */
 public interface MessageService {
+
+  /**
+   * 将指定用户的消息批量设置为已读状态.
+   *
+   * @param uid 用户 ID
+   * @param messageIds 消息 IDs
+   * @return RS
+   */
+  Mono<Void> readMessages(long uid, List<String> messageIds);
 
   /**
    * 分页查询符合用户指定条件的消息.

@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.rest.resource;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -26,6 +27,7 @@ import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.domain.Paging;
 import top.yein.tethys.service.MessageService;
 import top.yein.tethys.storage.query.UserMessageQuery;
+import top.yein.tethys.vo.MessageReadVo;
 
 /**
  * 消息 REST 接口.
@@ -37,7 +39,7 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
   private final MessageService messageService;
 
   /**
-   * 使用消息服务构建对象.
+   * 可以被 IoC 容器使用的构造函数.
    *
    * @param messageService 消息服务
    */
@@ -49,6 +51,7 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
     routes.get("/messages", interceptors.auth(this::queryByUser));
+    routes.get("/messages/read", interceptors.auth(this::readMessages));
   }
 
   /**
@@ -68,6 +71,24 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
                   .queryByUser(q, Paging.of(offset, limit))
                   .collectList()
                   .flatMap(messages -> json(response, messages));
+            });
+  }
+
+  /**
+   * @param request
+   * @param response
+   * @return
+   */
+  Mono<Void> readMessages(HttpServerRequest request, HttpServerResponse response) {
+    return authContext()
+        .zipWith(json(request, MessageReadVo.class))
+        .flatMap(
+            t -> {
+              var ac = t.getT1();
+              var vo = t.getT2();
+              return messageService
+                  .readMessages(ac.uid(), vo.getMessageIds())
+                  .then(response.status(HttpResponseStatus.NO_CONTENT).send());
             });
   }
 }

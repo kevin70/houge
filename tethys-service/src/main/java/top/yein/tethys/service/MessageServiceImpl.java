@@ -16,11 +16,15 @@
 package top.yein.tethys.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import top.yein.tethys.constants.MessageReadStatus;
 import top.yein.tethys.domain.Paging;
 import top.yein.tethys.entity.Message;
+import top.yein.tethys.storage.MessageDao;
 import top.yein.tethys.storage.query.MessageQueryDao;
 import top.yein.tethys.storage.query.UserMessageQuery;
 
@@ -33,16 +37,27 @@ import top.yein.tethys.storage.query.UserMessageQuery;
 public class MessageServiceImpl implements MessageService {
 
   private final MessageProps messageProps;
+  private final MessageDao messageDao;
   private final MessageQueryDao messageQueryDao;
 
   /**
-   * @param messageProps
-   * @param messageQueryDao
+   * 可以被 IoC 容器使用的构造函数.
+   *
+   * @param messageProps 消息配置
+   * @param messageDao 消息数据接口
+   * @param messageQueryDao 消息查询数据接口
    */
   @Inject
-  public MessageServiceImpl(MessageProps messageProps, MessageQueryDao messageQueryDao) {
+  public MessageServiceImpl(
+      MessageProps messageProps, MessageDao messageDao, MessageQueryDao messageQueryDao) {
     this.messageProps = messageProps;
+    this.messageDao = messageDao;
     this.messageQueryDao = messageQueryDao;
+  }
+
+  @Override
+  public Mono<Void> readMessages(long uid, List<String> messageIds) {
+    return messageDao.updateUnreadStatus(uid, messageIds, MessageReadStatus.READ.getCode());
   }
 
   @Override
@@ -51,7 +66,6 @@ public class MessageServiceImpl implements MessageService {
     if (q.getBeginTime() == null || beginTimeLimit.isAfter(q.getBeginTime())) {
       q.setBeginTime(beginTimeLimit);
     }
-
     return messageQueryDao.queryByUser(q, paging);
   }
 }
