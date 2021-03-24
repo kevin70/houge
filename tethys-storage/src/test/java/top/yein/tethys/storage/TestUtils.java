@@ -22,14 +22,14 @@ import top.yein.tethys.util.YeinGid;
  *
  * @author KK (kzou227@qq.com)
  */
-final class TestUtils {
+public final class TestUtils {
 
   /**
    * 返回消息 ID.
    *
    * @return 消息 ID
    */
-  static String newMessageId() {
+  public static String newMessageId() {
     return new YeinGid(0).toHexString();
   }
 }

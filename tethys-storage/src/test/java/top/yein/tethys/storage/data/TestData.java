@@ -17,7 +17,9 @@ package top.yein.tethys.storage.data;
 
 import com.github.javafaker.Faker;
 import top.yein.tethys.entity.Group;
+import top.yein.tethys.entity.Message;
 import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.TestUtils;
 
 /**
  * 测试数据.
@@ -27,6 +29,20 @@ import top.yein.tethys.entity.User;
 public class TestData {
 
   static final Faker FAKER = new Faker();
+
+  public static Message newMessage() {
+    var e = new Message();
+    e.setId(TestUtils.newMessageId());
+    e.setSenderId(FAKER.random().nextLong());
+    e.setReceiverId(FAKER.random().nextLong());
+    e.setGroupId(0L);
+    e.setKind(1);
+    e.setContent("Hello JUnit Test");
+    e.setContentKind(1);
+    e.setUrl("https://gitee.com/kk70/tethys");
+    e.setCustomArgs("CUSTOM_ARGS");
+    return e;
+  }
 
   public static User newUser() {
     var e = new User();
