@@ -39,11 +39,6 @@ public class Message {
   /** 群组消息类型. */
   public static final int KIND_GROUP = 3;
 
-  /** 消息未读状态值. */
-  public static final int MESSAGE_UNREAD = 1;
-  /** 消息已读状态值. */
-  public static final int MESSAGE_READ = 2;
-
   /** 消息 ID. */
   private String id;
   /** 发送人 ID. */
