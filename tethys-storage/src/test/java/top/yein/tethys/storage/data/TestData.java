@@ -57,7 +57,7 @@ public class TestData {
     e.setCreatorId(Long.valueOf(FAKER.random().nextInt(1, 100)));
     e.setOwnerId(e.getCreatorId());
     e.setMemberSize(1);
-    e.setMemberLimit(FAKER.random().nextInt(1, 40));
+    e.setMemberLimit(FAKER.random().nextInt(10, 40));
     return e;
   }
 }
