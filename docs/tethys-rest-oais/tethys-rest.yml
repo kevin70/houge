@@ -5,16 +5,40 @@ info:
 servers:
   - url: http://localhost:11019/
 tags:
+  - name: SUPPORT
+    description: 系统支撑
   - name: TEST
     description: 测试专用
   - name: MESSAGE
     description: IM 消息
 x-tagGroups:
-  - name: 支持
+  - name: 支撑
+    tags: [SUPPORT]
+  - name: 测试
     tags: [TEST]
   - name: 消息
     tags: [MESSAGE]
 paths:
+  /-/info:
+    get:
+      tags: [SUPPORT]
+      summary: 应用信息
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example: { "app": { "name": "tethys-rest", "version": "unknown", "fid": 98847 }, "java": { "version": "11.0.8", "vendor": "Oracle Corporation" } }
+  /-/health:
+    get:
+      tags: [SUPPORT]
+      summary: 应用健康状况
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example: { "status": "UP" }
   /token/{uid}:
     parameters:
       - name: uid
