@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.constants.MessageReadStatus;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.entity.Message;
 import top.yein.tethys.id.MessageIdGenerator;
@@ -98,7 +99,7 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
             .contentKind(packet.getContentKind())
             .url(packet.getUrl())
             .customArgs(packet.getCustomArgs())
-            .unread(Message.MESSAGE_UNREAD)
+            .unread(MessageReadStatus.NONE.getCode())
             .build();
     var storageMono =
         groupQueryDao
