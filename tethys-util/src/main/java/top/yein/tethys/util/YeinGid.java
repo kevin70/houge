@@ -65,7 +65,7 @@ public class YeinGid {
   private static final int CURRENT_VERSION = 1;
 
   private static final int SEQ_BOUND = SEQ_MASK + 1;
-  private static final AtomicInteger SEQ = new AtomicInteger(new SecureRandom().nextInt(SEQ_MASK));
+  private static final AtomicInteger SEQUENCE = new AtomicInteger(new SecureRandom().nextInt(SEQ_MASK));
 
   private int version;
   private int timestamp;
@@ -92,11 +92,11 @@ public class YeinGid {
     if (fid < 0 || fid > FID_MASK) {
       throw new IllegalArgumentException("非 0-131071 区间内的数字[fid=" + fid + "]");
     }
-    SEQ.compareAndSet(SEQ_BOUND, 0);
+    SEQUENCE.compareAndSet(SEQ_BOUND, 0);
     this.version = CURRENT_VERSION;
     this.timestamp = (int) (System.currentTimeMillis() / 1000);
     this.fid = fid;
-    this.seq = SEQ.incrementAndGet();
+    this.seq = SEQUENCE.incrementAndGet();
   }
 
   /**
