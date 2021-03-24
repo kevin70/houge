@@ -27,6 +27,6 @@ public class LocalSessionIdGenerator implements SessionIdGenerator {
 
   @Override
   public String nextId() {
-    return UUID.randomUUID().toString().replaceAll("-", "");
+    return UUID.randomUUID().toString().replace("-", "");
   }
 }

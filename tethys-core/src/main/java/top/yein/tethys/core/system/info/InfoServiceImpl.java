@@ -41,7 +41,7 @@ public class InfoServiceImpl implements InfoService {
           var builder = new Info.Builder();
           return Flux.fromIterable(infoContributors)
               .flatMap(infoContributor -> infoContributor.contribute(builder))
-              .then(Mono.fromSupplier(() -> builder.build()));
+              .then(Mono.fromSupplier(builder::build));
         });
   }
 }

@@ -23,7 +23,10 @@ import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -88,8 +91,8 @@ public final class DefaultSession implements Session {
                 .doOnTerminate(() -> closed.set(true))
                 .subscribe(
                     unused -> closeSink.tryEmitEmpty(),
-                    e -> closeSink.tryEmitError(e),
-                    () -> closeSink.tryEmitEmpty()));
+                    closeSink::tryEmitError,
+                    closeSink::tryEmitEmpty));
     this.subGroupIds = new ConcurrentSkipListSet<>();
   }
 
@@ -167,6 +170,11 @@ public final class DefaultSession implements Session {
   @Override
   public String toString() {
     HttpServerRequest request = (HttpServerRequest) inbound;
+    var clientIp =
+        Optional.ofNullable(request.remoteAddress())
+            .map(InetSocketAddress::getAddress)
+            .map(InetAddress::getHostAddress)
+            .orElse("[UNKNOWN]");
     return new StringBuilder()
         .append("Session{")
         .append("sessionId=")
@@ -176,7 +184,7 @@ public final class DefaultSession implements Session {
         .append(uid())
         .append(", ")
         .append("clientIp=")
-        .append(request.remoteAddress().getAddress().getHostAddress())
+        .append(clientIp)
         .append("}")
         .toString();
   }

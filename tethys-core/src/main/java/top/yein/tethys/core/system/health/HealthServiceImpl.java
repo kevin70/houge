@@ -43,7 +43,10 @@ public class HealthServiceImpl implements HealthService {
       (o1, o2) -> {
         var i1 = STATUS_ORDER.indexOf(o1.getStatus());
         var i2 = STATUS_ORDER.indexOf(o2.getStatus());
-        return (i1 < i2) ? -1 : (i1 != i2) ? 1 : o1.getStatus().compareTo(o2.getStatus());
+        if (i1 < i2) {
+          return -1;
+        }
+        return i1 != i2 ? 1 : o1.getStatus().compareTo(o2.getStatus());
       };
 
   private final Set<HealthIndicator> healthIndicators;

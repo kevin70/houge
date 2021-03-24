@@ -37,7 +37,6 @@ import reactor.netty.http.server.HttpServerResponse;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthContext;
-import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.util.JsonUtils;
 import top.yein.tethys.util.ReactorHttpServerUtils;
 
@@ -84,7 +83,7 @@ public abstract class AbstractRestSupport {
   /**
    * 获取{@link HttpServerRequest}查询参数.
    *
-   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCodes#C912}的业务异常.
+   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCode#C912}的业务异常.
    *
    * @param request HTTP 请求对象
    * @param name 查询参数名称
@@ -93,7 +92,7 @@ public abstract class AbstractRestSupport {
   protected String requiredQueryParam(HttpServerRequest request, String name) {
     var value = queryParam(request, name);
     if (Strings.isNullOrEmpty(value)) {
-      throw new BizCodeException(BizCodes.C912, Strings.lenientFormat("缺少必须的QUERY参数[%s]", name));
+      throw new BizCodeException(BizCode.C912, Strings.lenientFormat("缺少必须的QUERY参数[%s]", name));
     }
     return value.trim();
   }
@@ -138,14 +137,14 @@ public abstract class AbstractRestSupport {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
       throw new BizCodeException(
-          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Integer值", name, value));
+          BizCode.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Integer值", name, value));
     }
   }
 
   /**
    * 获取{@link HttpServerRequest}查询参数.
    *
-   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCodes#C912}的业务异常.
+   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCode#C912}的业务异常.
    *
    * @param request HTTP 请求对象
    * @param name 查询参数名称
@@ -157,7 +156,7 @@ public abstract class AbstractRestSupport {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
       throw new BizCodeException(
-          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Integer值", name, value));
+          BizCode.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Integer值", name, value));
     }
   }
 
@@ -180,14 +179,14 @@ public abstract class AbstractRestSupport {
       return Long.parseLong(value);
     } catch (NumberFormatException e) {
       throw new BizCodeException(
-          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
+          BizCode.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
     }
   }
 
   /**
    * 获取{@link HttpServerRequest}查询参数.
    *
-   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCodes#C912}的业务异常.
+   * <p>如果参数{@code name}值为{@code null}时将会抛出{@link BizCode#C912}的业务异常.
    *
    * @param request HTTP 请求对象
    * @param name 查询参数名称
@@ -199,7 +198,7 @@ public abstract class AbstractRestSupport {
       return Long.parseLong(value);
     } catch (NumberFormatException e) {
       throw new BizCodeException(
-          BizCodes.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
+          BizCode.C910, Strings.lenientFormat("QUERY参数[%s=%s]的值不是一个有效的Long值", name, value));
     }
   }
 
@@ -221,7 +220,7 @@ public abstract class AbstractRestSupport {
       return LocalDateTime.parse(value);
     } catch (DateTimeParseException e) {
       throw new BizCodeException(
-          BizCodes.C910,
+          BizCode.C910,
           Strings.lenientFormat("QUERY参数[%s=%s]的值格式应该像'2011-12-03T10:15:30'", name, value));
     }
   }
@@ -284,7 +283,7 @@ public abstract class AbstractRestSupport {
   /**
    * 返回 {@link reactor.util.context.Context} 中存储的认证上下文信息.
    *
-   * <p>如果未找到认证上下文将返回 {@link BizCodes#C401} 业务异常.
+   * <p>如果未找到认证上下文将返回 {@link BizCode#C401} 业务异常.
    *
    * @return 认证上下文
    * @see BizCodeException

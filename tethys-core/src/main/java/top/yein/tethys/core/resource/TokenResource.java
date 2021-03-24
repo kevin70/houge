@@ -20,9 +20,9 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
+import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.TokenService;
-import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.dto.AccessTokenDto;
 import top.yein.tethys.core.http.AbstractRestSupport;
 import top.yein.tethys.core.http.Interceptors;
@@ -62,14 +62,14 @@ public class TokenResource extends AbstractRestSupport implements RoutingService
   public Mono<Void> generateToken(HttpServerRequest request, HttpServerResponse response) {
     var uidStr = request.param("uid");
     if (uidStr == null || uidStr.isEmpty()) {
-      throw new BizCodeException(BizCodes.C912);
+      throw new BizCodeException(BizCode.C912);
     }
 
     Long uid;
     try {
       uid = Long.parseLong(uidStr);
     } catch (NumberFormatException e) {
-      throw new BizCodeException(BizCodes.C911, "uid 必须为一个 number 类型");
+      throw new BizCodeException(BizCode.C911, "uid 必须为一个 number 类型");
     }
 
     return tokenService

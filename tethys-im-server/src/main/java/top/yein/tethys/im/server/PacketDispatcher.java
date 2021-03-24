@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.core.BizCodes;
+import top.yein.chaos.biz.BizCode;
 import top.yein.tethys.packet.ErrorPacket;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.session.Session;
@@ -38,7 +38,7 @@ import top.yein.tethys.session.Session;
 @Log4j2
 public class PacketDispatcher {
 
-  private final Map<String, PacketHandler> handlers;
+  private final Map<String, ? extends PacketHandler> handlers;
 
   /**
    * 使用 Guice Injector 构建对象.
@@ -51,7 +51,7 @@ public class PacketDispatcher {
   }
 
   /** @param handlers */
-  public PacketDispatcher(Map<String, PacketHandler> handlers) {
+  public PacketDispatcher(Map<String, ? extends PacketHandler> handlers) {
     this.handlers = handlers;
   }
 
@@ -68,7 +68,7 @@ public class PacketDispatcher {
       log.error("未找到 Packet[@ns={}] 实现 {}", packet.getNs(), packet);
       var error =
           ErrorPacket.builder()
-              .code(BizCodes.C400.getCode())
+              .code(BizCode.C400.getCode())
               .message("未找到 [@ns=" + packet.getNs() + "] 处理器")
               .details(packet.toString())
               .build();
@@ -79,10 +79,10 @@ public class PacketDispatcher {
   }
 
   // 在 Guice Inject 查询符合要求的消息处理器
-  private static Map<String, PacketHandler> findPacketHandlers(Injector injector) {
+  private static Map<String, ? extends PacketHandler> findPacketHandlers(Injector injector) {
     var map = new LinkedHashMap<String, PacketHandler>();
     var bindings = injector.findBindingsByType(TypeLiteral.get(PacketHandler.class));
-    for (Binding<PacketHandler> b : bindings) {
+    for (Binding<? extends PacketHandler> b : bindings) {
       var k = b.getKey();
       Named named = (Named) k.getAnnotation();
       var v = b.getProvider().get();

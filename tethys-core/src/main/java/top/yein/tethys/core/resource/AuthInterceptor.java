@@ -69,7 +69,7 @@ public class AuthInterceptor extends AbstractRestSupport {
               return authService
                   .authenticate(accessToken)
                   .flatMap(
-                      (authContext) ->
+                      authContext ->
                           Mono.defer(() -> Mono.from(next.apply(request, response)))
                               .contextWrite(Context.of(AUTH_CONTEXT_KEY, authContext)));
             });

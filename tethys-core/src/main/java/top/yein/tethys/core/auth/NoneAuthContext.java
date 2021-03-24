@@ -27,11 +27,7 @@ public class NoneAuthContext implements AuthContext {
   /** 默认全局唯一的匿名访问实例. */
   public static final AuthContext INSTANCE = new NoneAuthContext();
 
-  private NoneAuthContext() {
-    if (INSTANCE != null) {
-      throw new IllegalStateException("无法创建实例，使用 NonAuthContext.INSTANCE 静态变量默认实例");
-    }
-  }
+  private NoneAuthContext() {}
 
   @Override
   public long uid() {

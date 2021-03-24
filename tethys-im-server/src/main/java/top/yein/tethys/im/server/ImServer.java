@@ -38,8 +38,6 @@ import top.yein.tethys.core.http.RoutingService;
 @Log4j2
 public final class ImServer {
 
-  public static final String IM_WS_PATH = "/im";
-
   private final String addr;
   private final WebsocketHandler websocketHandler;
   private final Interceptors interceptors;
@@ -75,11 +73,9 @@ public final class ImServer {
       routingService.update(routes, interceptors);
     }
 
-    // ws 注册
+    // IM WebSocket 注册
     routes.ws(
-        IM_WS_PATH,
-        websocketHandler::handle,
-        WebsocketServerSpec.builder().handlePing(false).build());
+        "/im", websocketHandler::handle, WebsocketServerSpec.builder().handlePing(false).build());
 
     // Netty CORS 配置
     var corsConfig = CorsConfigBuilder.forAnyOrigin().build();

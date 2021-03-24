@@ -94,7 +94,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
 
     // 路由、存储消息
     Function<Nil, Mono<Void>> bizFun =
-        (unused) -> {
+        unused -> {
           var p1 =
               sessionManager.findByUid(to).delayUntil(toSession -> toSession.sendPacket(packet));
 

@@ -17,6 +17,7 @@ package top.yein.tethys.core.r2dbc;
 
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import io.r2dbc.spi.Statement;
@@ -122,7 +123,7 @@ class DefaultExecuteSpec implements ExecuteSpec {
             this.sql,
             this.connectionFactory.create(),
             this::statementFunction,
-            result -> result.getRowsUpdated())
+            Result::getRowsUpdated)
         .all()
         .last();
   }

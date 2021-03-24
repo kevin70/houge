@@ -21,6 +21,7 @@ import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValueFactory;
+import javax.inject.Singleton;
 import top.yein.tethys.ApplicationIdentifier;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.MessageProperties;
@@ -96,6 +97,7 @@ public class ImModule extends AbstractModule {
   }
 
   @Provides
+  @Singleton
   public MessageProperties messageProperties() {
     boolean autofillId =
         (boolean)
@@ -103,11 +105,11 @@ public class ImModule extends AbstractModule {
                 .getValue(ConfigKeys.MESSAGE_AUTOFILL_ID)
                 .withFallback(ConfigValueFactory.fromAnyRef(false))
                 .unwrapped();
-    var m = new MessageProperties(autofillId);
-    return m;
+    return new MessageProperties(autofillId);
   }
 
   @Provides
+  @Singleton
   public Interceptors interceptors(AuthInterceptor authInterceptor) {
     return new Interceptors(authInterceptor::handle);
   }

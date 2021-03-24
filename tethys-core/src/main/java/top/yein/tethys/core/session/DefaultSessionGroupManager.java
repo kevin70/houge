@@ -138,18 +138,16 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
             listener ->
                 listener
                     .handle(session, event, groupId)
+                    // 记录监听器处理异常日志
                     .doOnError(
-                        e -> {
-                          // 记录监听器处理异常日志
-                          log.error(
-                              "监听器处理异常 [event={}, groupId={}, session={}, listener={}]",
-                              event,
-                              groupId,
-                              session,
-                              listener,
-                              e);
-                        })
-                    .onErrorResume(RuntimeException.class, e -> Mono.empty()))
+                        e ->
+                            log.error(
+                                "监听器处理异常 [event={}, groupId={}, session={}, listener={}]",
+                                event,
+                                groupId,
+                                session,
+                                listener,
+                                e)))
         .then();
   }
 }
