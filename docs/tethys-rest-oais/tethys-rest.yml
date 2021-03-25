@@ -66,7 +66,7 @@ paths:
                   access_token:
                     type: string
                     description: 访问令牌
-  /message-ids:
+  /p/message-ids:
     get:
       parameters:
         - name: limit
@@ -92,7 +92,7 @@ paths:
                 items:
                   type: string
                   description: IM 消息 ID
-  /messages:
+  /p/messages:
     get:
       tags: [MESSAGE]
       security: [AccessToken:[]]
@@ -133,7 +133,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Message"
-  /messages/read:
+  /p/messages/read:
     put:
       tags: [MESSAGE]
       security: [AccessToken:[]]
