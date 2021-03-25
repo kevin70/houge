@@ -16,8 +16,10 @@
 package top.yein.tethys.core.auth;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import javax.inject.Inject;
@@ -74,6 +76,10 @@ public class JwsAuthService implements AuthService {
                 verifier.verify(decodedJWT);
               } catch (TokenExpiredException e) {
                 throw new BizCodeException(BizCodes.C3301, e);
+              } catch (InvalidClaimException e) {
+                throw new BizCodeException(BizCodes.C3302, e);
+              } catch (SignatureVerificationException e) {
+                throw new BizCodeException(BizCodes.C3305, e);
               } catch (JWTVerificationException e) {
                 throw new BizCodeException(BizCodes.C3300, e);
               }
