@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.core.auth;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static top.yein.tethys.core.BizCodes.C3300;
@@ -24,18 +25,14 @@ import static top.yein.tethys.core.BizCodes.C3305;
 import static top.yein.tethys.core.BizCodes.C3309;
 import static top.yein.tethys.core.BizCodes.C401;
 
-import io.jsonwebtoken.JwsHeader;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Objects;
-import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -51,14 +48,12 @@ import top.yein.tethys.storage.JwtSecretDao;
 class JwsAuthServiceTest {
 
   String kid = "test";
-  SecretKey testSecret =
-      Keys.hmacShaKeyFor(
-          "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764"
-              .getBytes(StandardCharsets.UTF_8));
-  SecretKey illegalSecret =
-      Keys.hmacShaKeyFor(
-          "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764-illegal-secret"
-              .getBytes(StandardCharsets.UTF_8));
+  Algorithm algorithm =
+      Algorithm.HMAC512(
+          "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764");
+  Algorithm illegalAlgorithm =
+      Algorithm.HMAC512(
+          "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764-illegal-secret");
 
   private CachedJwtAlgorithm cachedJwtAlgorithm;
   private JwtSecretDao jwtSecretDao;
@@ -69,24 +64,14 @@ class JwsAuthServiceTest {
 
   private JwsAuthService newJwsAuthService(boolean anonymousEnabled) {
     this.jwtSecretDao = mock(JwtSecretDao.class);
-    this.cachedJwtAlgorithm =
-        CachedJwtAlgorithm.builder()
-            .id(kid)
-            .algorithm(SignatureAlgorithm.HS512)
-            .secretKey(testSecret)
-            .build();
+    this.cachedJwtAlgorithm = CachedJwtAlgorithm.builder().id(kid).algorithm(algorithm).build();
     when(jwtSecretDao.loadById(kid)).thenReturn(Mono.just(cachedJwtAlgorithm));
     return new JwsAuthService(jwtSecretDao);
   }
 
   @Test
   void authorize() {
-    var token =
-        Jwts.builder()
-            .setHeaderParam(JwsHeader.KEY_ID, kid)
-            .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("0")
-            .compact();
+    var token = JWT.create().withKeyId(kid).withJWTId("0").sign(algorithm);
 
     JwsAuthService authService = newJwsAuthService();
     var p = authService.authenticate(token);
@@ -107,22 +92,16 @@ class JwsAuthServiceTest {
   @Test
   void illegalToken() {
     JwsAuthService authService = newJwsAuthService();
-    var p = authService.authenticate("illegal token");
-    StepVerifier.create(p)
-        .expectErrorMatches(e -> C3300 == ((BizCodeException) e).getBizCode())
-        .verify(Duration.ofSeconds(1));
+    assertThatExceptionOfType(BizCodeException.class)
+        .isThrownBy(() -> authService.authenticate("illegal token"))
+        .matches(e -> C3300 == e.getBizCode());
   }
 
   @Test
   void expiredToken() {
     var exp = Instant.now(Clock.systemDefaultZone()).minus(1, ChronoUnit.DAYS);
     var token =
-        Jwts.builder()
-            .setHeaderParam(JwsHeader.KEY_ID, kid)
-            .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("0")
-            .setExpiration(Date.from(exp))
-            .compact();
+        JWT.create().withKeyId(kid).withJWTId("0").withExpiresAt(Date.from(exp)).sign(algorithm);
 
     JwsAuthService authService = newJwsAuthService();
     var p = authService.authenticate(token);
@@ -135,12 +114,7 @@ class JwsAuthServiceTest {
   void tokenNbf() {
     var nbf = Instant.now(Clock.systemDefaultZone()).plus(1, ChronoUnit.DAYS);
     var token =
-        Jwts.builder()
-            .setHeaderParam(JwsHeader.KEY_ID, kid)
-            .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("0")
-            .setNotBefore(Date.from(nbf))
-            .compact();
+        JWT.create().withKeyId(kid).withJWTId("0").withNotBefore(Date.from(nbf)).sign(algorithm);
 
     JwsAuthService authService = newJwsAuthService();
     var p = authService.authenticate(token);
@@ -154,12 +128,7 @@ class JwsAuthServiceTest {
     JwsAuthService authService = newJwsAuthService();
     when(jwtSecretDao.loadById("not-found-kid")).thenReturn(Mono.empty());
 
-    var token =
-        Jwts.builder()
-            .setHeaderParam(JwsHeader.KEY_ID, "not-found-kid")
-            .signWith(testSecret, SignatureAlgorithm.HS512)
-            .setId("0")
-            .compact();
+    var token = JWT.create().withKeyId("not-found-kid").withJWTId("0").sign(algorithm);
 
     var p = authService.authenticate(token);
     StepVerifier.create(p)
@@ -172,12 +141,7 @@ class JwsAuthServiceTest {
     JwsAuthService authService = newJwsAuthService();
     when(jwtSecretDao.loadById("not-found-kid")).thenReturn(Mono.just(cachedJwtAlgorithm));
 
-    var token =
-        Jwts.builder()
-            .setHeaderParam(JwsHeader.KEY_ID, "not-found-kid")
-            .signWith(illegalSecret, SignatureAlgorithm.HS512)
-            .setId("0")
-            .compact();
+    var token = JWT.create().withKeyId("not-found-kid").withJWTId("0").sign(illegalAlgorithm);
     var p = authService.authenticate(token);
     StepVerifier.create(p)
         .expectErrorMatches(e -> C3305 == ((BizCodeException) e).getBizCode())
