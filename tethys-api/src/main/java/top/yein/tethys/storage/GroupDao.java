@@ -34,6 +34,14 @@ public interface GroupDao {
   Mono<Long> insert(Group entity);
 
   /**
+   * 删除群组.
+   *
+   * @param gid 群组 ID
+   * @return RS
+   */
+  Mono<Void> delete(long gid);
+
+  /**
    * 在指定的群中将指定用户设置为群成员.
    *
    * @param gid 群组 ID

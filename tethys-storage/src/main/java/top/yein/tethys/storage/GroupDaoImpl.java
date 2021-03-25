@@ -86,6 +86,11 @@ public class GroupDaoImpl implements GroupDao {
   }
 
   @Override
+  public Mono<Void> delete(long gid) {
+    return null;
+  }
+
+  @Override
   public Mono<Void> joinMember(long gid, long uid) {
     // 新增群组-用户关系映射
     var m1 =
