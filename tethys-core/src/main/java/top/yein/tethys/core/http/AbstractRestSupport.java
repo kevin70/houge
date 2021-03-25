@@ -52,6 +52,55 @@ public abstract class AbstractRestSupport {
   public static final Class<AuthContext> AUTH_CONTEXT_KEY = AuthContext.class;
 
   /**
+   * 获取 {@link HttpServerRequest} 路径参数值.
+   *
+   * @param request HTTP 请求对象
+   * @param name 路径参数名称
+   * @return 路径参数值
+   */
+  protected String pathString(HttpServerRequest request, String name) {
+    var value = request.param(name);
+    if (Strings.isNullOrEmpty(value)) {
+      throw new BizCodeException(BizCode.C912, Strings.lenientFormat("缺少必须的PATH参数[%s]", name));
+    }
+    return value;
+  }
+
+  /**
+   * 获取 {@link HttpServerRequest} 路径参数值.
+   *
+   * @param request HTTP 请求对象
+   * @param name 路径参数名称
+   * @return 路径参数值
+   */
+  protected long pathLong(HttpServerRequest request, String name) {
+    String value = pathString(request, name);
+    try {
+      return Long.parseLong(value);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(
+          BizCode.C910, Strings.lenientFormat("PATH参数[%s=%s]的值不是一个有效的Long值", name, value));
+    }
+  }
+
+  /**
+   * 获取 {@link HttpServerRequest} 路径参数值.
+   *
+   * @param request HTTP 请求对象
+   * @param name 路径参数名称
+   * @return 路径参数值
+   */
+  protected int pathInt(HttpServerRequest request, String name) {
+    String value = pathString(request, name);
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      throw new BizCodeException(
+        BizCode.C910, Strings.lenientFormat("PATH参数[%s=%s]的值不是一个有效的Integer值", name, value));
+    }
+  }
+
+  /**
    * 获取 {@link HttpServerRequest} 查询参数值.
    *
    * @param request HTTP 请求对象
