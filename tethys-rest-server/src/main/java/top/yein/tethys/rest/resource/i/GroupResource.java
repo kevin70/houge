@@ -91,7 +91,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
-              var gid = Long.parseLong(request.param("groupId"));
+              var gid = pathLong(request,"groupId");
               return groupService
                   .joinMember(gid, vo)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
@@ -109,7 +109,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
-              var gid = Long.parseLong(request.param("groupId"));
+              var gid = pathLong(request,"groupId");
               return groupService
                   .removeMember(gid, vo)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
