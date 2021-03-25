@@ -41,13 +41,13 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   private Faker faker = new Faker(Locale.SIMPLIFIED_CHINESE);
 
-  private JwtSecretDao newJwtSecretRepository() {
+  private JwtSecretDaoImpl newJwtSecretDao() {
     return new JwtSecretDaoImpl(r2dbcClient);
   }
 
   @Test
   void insert() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     var entity = new JwtSecret();
     entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
@@ -86,7 +86,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   @Test
   void delete() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     var entity = new JwtSecret();
     entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
@@ -98,7 +98,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   @Test
   void findById() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     var entity = new JwtSecret();
     entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
@@ -131,7 +131,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   @Test
   void findAll() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     var entity1 = new JwtSecret();
     entity1.setId(faker.random().hex());
     entity1.setAlgorithm("HS512");
@@ -160,9 +160,9 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   @Test
   void refreshAll() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     AsyncCache<String, CachedJwtAlgorithm> jwtSecretCache =
-        Whitebox.getInternalState(dao, "jwtSecretCache");
+        Whitebox.getInternalState(dao, "jwtAlgorithmCache");
 
     var entity1 = new JwtSecret();
     entity1.setId(faker.random().hex());
@@ -196,7 +196,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   @Test
   void loadById() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     var entity = new JwtSecret();
     entity.setId(faker.random().hex());
     entity.setAlgorithm("HS512");
@@ -226,7 +226,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
   @Test
   void loadNoDeleted() {
-    var dao = newJwtSecretRepository();
+    var dao = newJwtSecretDao();
     AsyncCache<String, CachedJwtAlgorithm> jwtSecretCache =
         Whitebox.getInternalState(dao, "jwtSecretCache");
 
