@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.rest.resource;
+package top.yein.tethys.rest.resource.p;
 
 import java.util.Optional;
 import javax.inject.Inject;
@@ -49,7 +49,7 @@ public class MessageIdResource extends AbstractRestSupport implements RoutingSer
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/message-ids", interceptors.auth(this::getMessageIds));
+    routes.get("/p/message-ids", interceptors.auth(this::getMessageIds));
   }
 
   /**

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.rest.resource;
+package top.yein.tethys.rest.resource.i;
 
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
@@ -36,8 +36,9 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
   private final GroupService groupService;
 
   /**
+   * 可以被 IoC 容器使用的构造函数.
    *
-   * @param groupService
+   * @param groupService 群组服务
    */
   @Inject
   public GroupResource(GroupService groupService) {
@@ -46,11 +47,11 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/groups", interceptors.auth(this::createGroup));
-    routes.delete("/groups/{groupId}", interceptors.auth(this::deleteGroup));
+    routes.post("/i/groups", interceptors.auth(this::createGroup));
+    routes.delete("/i/groups/{groupId}", interceptors.auth(this::deleteGroup));
 
-    routes.put("/group-members/{groupId}/join", interceptors.auth(this::joinMember));
-    routes.delete("/group-members/{groupId}/join", interceptors.auth(this::removeMember));
+    routes.put("/i/group-members/{groupId}/join", interceptors.auth(this::joinMember));
+    routes.delete("/i/group-members/{groupId}/join", interceptors.auth(this::removeMember));
   }
 
   /**

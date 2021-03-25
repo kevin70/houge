@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.rest.resource;
+package top.yein.tethys.rest.resource.p;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
@@ -50,8 +50,8 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/messages", interceptors.auth(this::queryByUser));
-    routes.get("/messages/read", interceptors.auth(this::readMessages));
+    routes.get("/p/messages", interceptors.auth(this::queryByUser));
+    routes.get("/p/messages/read", interceptors.auth(this::readMessages));
   }
 
   /**

@@ -27,9 +27,9 @@ import top.yein.tethys.core.id.YeinGidMessageIdGenerator;
 import top.yein.tethys.core.resource.AuthInterceptor;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.rest.RestApplicationIdentifier;
-import top.yein.tethys.rest.resource.GroupResource;
-import top.yein.tethys.rest.resource.MessageIdResource;
-import top.yein.tethys.rest.resource.MessageResource;
+import top.yein.tethys.rest.resource.i.GroupResource;
+import top.yein.tethys.rest.resource.p.MessageIdResource;
+import top.yein.tethys.rest.resource.p.MessageResource;
 
 /**
  * REST Guice 模块.
