@@ -15,7 +15,7 @@
  */
 package top.yein.tethys.core.auth;
 
-import io.jsonwebtoken.Claims;
+import com.auth0.jwt.interfaces.Payload;
 import javax.annotation.Nonnull;
 import top.yein.tethys.auth.AuthContext;
 
@@ -28,12 +28,12 @@ class JwsAuthContext implements AuthContext {
 
   private final long uid;
   private final String token;
-  private final Claims claims;
+  private final Payload payload;
 
-  JwsAuthContext(long uid, String token, Claims claims) {
+  JwsAuthContext(long uid, String token, Payload payload) {
     this.uid = uid;
     this.token = token;
-    this.claims = claims;
+    this.payload = payload;
   }
 
   @Override
@@ -60,8 +60,8 @@ class JwsAuthContext implements AuthContext {
         + ", token='"
         + token
         + '\''
-        + ", claims="
-        + claims
+        + ", payload="
+        + payload
         + '}';
   }
 }

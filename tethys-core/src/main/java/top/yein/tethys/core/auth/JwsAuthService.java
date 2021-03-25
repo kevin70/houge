@@ -15,14 +15,11 @@
  */
 package top.yein.tethys.core.auth;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.PrematureJwtException;
-import io.jsonwebtoken.security.SignatureException;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
@@ -41,14 +38,12 @@ import top.yein.tethys.storage.JwtSecretDao;
 @Log4j2
 public class JwsAuthService implements AuthService {
 
-  private final JwtParser jwtParser;
+  private final JwtSecretDao jwtSecretDao;
 
+  /** @param jwtSecretDao */
   @Inject
   public JwsAuthService(JwtSecretDao jwtSecretDao) {
-    this.jwtParser =
-        Jwts.parserBuilder()
-            .setSigningKeyResolver(new DefaultSigningKeyResolver(jwtSecretDao))
-            .build();
+    this.jwtSecretDao = jwtSecretDao;
   }
 
   @Override
@@ -57,30 +52,44 @@ public class JwsAuthService implements AuthService {
       return Mono.error(new BizCodeException(BizCode.C401, "缺少访问令牌"));
     }
 
-    return Mono.create(
-        sink -> {
-          try {
-            var jws = jwtParser.parseClaimsJws(token);
-            long uid = parseUid(jws);
-            var authContext = new JwsAuthContext(uid, token, jws.getBody());
-            sink.success(authContext);
-          } catch (MalformedJwtException e) {
-            sink.error(new BizCodeException(BizCodes.C3300, e.getMessage()));
-          } catch (ExpiredJwtException e) {
-            sink.error(new BizCodeException(BizCodes.C3301, e.getMessage()));
-          } catch (PrematureJwtException e) {
-            sink.error(new BizCodeException(BizCodes.C3302, e.getMessage()));
-          } catch (SignatureException e) {
-            sink.error(new BizCodeException(BizCodes.C3305, e.getMessage()));
-          }
-        });
+    // 解码 JWT
+    DecodedJWT decodedJWT;
+    try {
+      decodedJWT = JWT.decode(token);
+    } catch (JWTDecodeException e) {
+      throw new BizCodeException(BizCodes.C3300, e);
+    }
+
+    return jwtSecretDao
+        .loadById(decodedJWT.getKeyId())
+        .switchIfEmpty(
+            Mono.error(
+                () ->
+                    new BizCodeException(BizCodes.C3309)
+                        .addContextValue("kid", decodedJWT.getId())))
+        .doOnNext(
+            cachedJwtSecret -> {
+              var verifier = JWT.require(cachedJwtSecret.getAlgorithm()).acceptLeeway(90).build();
+              try {
+                verifier.verify(decodedJWT);
+              } catch (TokenExpiredException e) {
+                throw new BizCodeException(BizCodes.C3301, e);
+              } catch (JWTVerificationException e) {
+                throw new BizCodeException(BizCodes.C3300, e);
+              }
+            })
+        .map(
+            unused -> {
+              long uid = parseUid(decodedJWT.getId());
+              return new JwsAuthContext(uid, token, decodedJWT);
+            });
   }
 
-  private long parseUid(Jws<Claims> jws) {
+  private long parseUid(String id) {
     try {
-      return Long.parseLong(jws.getBody().getId());
+      return Long.parseLong(id);
     } catch (NumberFormatException e) {
-      throw new BizCodeException(BizCodes.C3300).addContextValue("claims", jws.getBody());
+      throw new BizCodeException(BizCodes.C3300).addContextValue("jwt_id", id);
     }
   }
 }

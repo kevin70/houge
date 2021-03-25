@@ -29,7 +29,7 @@ import org.powermock.reflect.Whitebox;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import top.yein.tethys.domain.CachedJwtSecret;
+import top.yein.tethys.domain.CachedJwtAlgorithm;
 import top.yein.tethys.entity.JwtSecret;
 
 /**
@@ -161,7 +161,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
   @Test
   void refreshAll() {
     var dao = newJwtSecretRepository();
-    AsyncCache<String, CachedJwtSecret> jwtSecretCache =
+    AsyncCache<String, CachedJwtAlgorithm> jwtSecretCache =
         Whitebox.getInternalState(dao, "jwtSecretCache");
 
     var entity1 = new JwtSecret();
@@ -175,7 +175,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
     entity2.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var p = dao.insert(entity1).then(dao.insert(entity2)).thenMany(dao.refreshAll());
-    var cachedJwtSecrets = new ArrayList<CachedJwtSecret>();
+    var cachedJwtSecrets = new ArrayList<CachedJwtAlgorithm>();
     StepVerifier.create(p)
         .recordWith(() -> cachedJwtSecrets)
         .thenConsumeWhile(unused -> true)
@@ -184,8 +184,8 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
 
     // 校验缓存中的对象
     var syncCache = jwtSecretCache.synchronous();
-    for (CachedJwtSecret cachedJwtSecret : cachedJwtSecrets) {
-      assertThat(cachedJwtSecret).isEqualTo(syncCache.getIfPresent(cachedJwtSecret.getId()));
+    for (CachedJwtAlgorithm cachedJwtAlgorithm : cachedJwtSecrets) {
+      assertThat(cachedJwtAlgorithm).isEqualTo(syncCache.getIfPresent(cachedJwtAlgorithm.getId()));
     }
 
     // 清理数据
@@ -202,7 +202,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
     entity.setAlgorithm("HS512");
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
-    var loadByIdPublishers = new ArrayList<Publisher<CachedJwtSecret>>();
+    var loadByIdPublishers = new ArrayList<Publisher<CachedJwtAlgorithm>>();
     for (int i = 0; i < 10; i++) {
       loadByIdPublishers.add(dao.loadById(entity.getId()));
     }
@@ -214,8 +214,8 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
               System.out.println(cachedJwtSecrets);
               assertThat(cachedJwtSecrets)
                   .allMatch(
-                      cachedJwtSecret ->
-                          cachedJwtSecret == cachedJwtSecrets.stream().findAny().get());
+                      cachedJwtAlgorithm ->
+                          cachedJwtAlgorithm == cachedJwtSecrets.stream().findAny().get());
             })
         .expectComplete()
         .verify();
@@ -227,7 +227,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
   @Test
   void loadNoDeleted() {
     var dao = newJwtSecretRepository();
-    AsyncCache<String, CachedJwtSecret> jwtSecretCache =
+    AsyncCache<String, CachedJwtAlgorithm> jwtSecretCache =
         Whitebox.getInternalState(dao, "jwtSecretCache");
 
     var entity1 = new JwtSecret();

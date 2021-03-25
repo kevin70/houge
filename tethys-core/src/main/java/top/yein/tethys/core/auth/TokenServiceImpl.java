@@ -15,8 +15,7 @@
  */
 package top.yein.tethys.core.auth;
 
-import io.jsonwebtoken.Jwts;
-import java.util.Map;
+import com.auth0.jwt.JWT;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
@@ -92,18 +91,13 @@ public class TokenServiceImpl implements TokenService {
         .switchIfEmpty(Flux.error(() -> new BizCodeException(BizCodes.C3310)))
         .next()
         .map(
-            cachedJwtSecret -> {
-              Map<String, Object> header = Jwts.jwsHeader().setKeyId(cachedJwtSecret.getId());
-              var claims = Jwts.claims().setId(String.valueOf(uid));
+            cachedJwtAlgorithm -> {
               var token =
-                  Jwts.builder()
-                      .signWith(cachedJwtSecret.getSecretKey(), cachedJwtSecret.getAlgorithm())
-                      .setHeader(header)
-                      .setClaims(claims)
-                      .compact();
-
-              log.info(
-                  "生成访问令牌 [kid={}, uid={}, access_token={}]", cachedJwtSecret.getId(), uid, token);
+                  JWT.create()
+                      .withKeyId(cachedJwtAlgorithm.getId())
+                      .withJWTId(String.valueOf(uid))
+                      .sign(cachedJwtAlgorithm.getAlgorithm());
+              log.info("生成访问令牌 [kid={}, uid={}]", cachedJwtAlgorithm.getId(), uid);
               return token;
             });
   }

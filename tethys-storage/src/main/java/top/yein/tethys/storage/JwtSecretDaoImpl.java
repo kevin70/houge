@@ -15,10 +15,10 @@
  */
 package top.yein.tethys.storage;
 
+import com.auth0.jwt.algorithms.Algorithm;
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import com.google.common.annotations.VisibleForTesting;
 import io.r2dbc.spi.Row;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -33,7 +33,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 import reactor.util.context.ContextView;
-import top.yein.tethys.domain.CachedJwtSecret;
+import top.yein.chaos.biz.BizCodeException;
+import top.yein.tethys.core.BizCodes;
+import top.yein.tethys.domain.CachedJwtAlgorithm;
 import top.yein.tethys.entity.JwtSecret;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
@@ -52,7 +54,7 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
   private static final String FIND_ALL_SQL = "SELECT * FROM jwt_secrets";
 
   private final R2dbcClient rc;
-  private final AsyncCache<String, CachedJwtSecret> jwtSecretCache;
+  private final AsyncCache<String, CachedJwtAlgorithm> jwtAlgorithmCache;
 
   /**
    * 使用 R2DBC 客户端构造对象.
@@ -62,7 +64,7 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
   @Inject
   public JwtSecretDaoImpl(R2dbcClient rc) {
     this.rc = rc;
-    this.jwtSecretCache =
+    this.jwtAlgorithmCache =
         Caffeine.newBuilder()
             .recordStats()
             .refreshAfterWrite(REFRESH_CACHE_DURATION)
@@ -83,7 +85,7 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
         .bind(0, System.currentTimeMillis() / 1000)
         .bind(1, id)
         .rowsUpdated()
-        .doOnSuccess(unused -> jwtSecretCache.synchronous().invalidate(id));
+        .doOnSuccess(unused -> jwtAlgorithmCache.synchronous().invalidate(id));
   }
 
   @Override
@@ -97,29 +99,32 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
   }
 
   @Override
-  public Flux<CachedJwtSecret> refreshAll() {
+  public Flux<CachedJwtAlgorithm> refreshAll() {
     return findAll()
-        .map(this::toCachedJwtSecret)
-        .doOnNext(
-            cachedJwtSecret ->
-                jwtSecretCache.put(
-                    cachedJwtSecret.getId(), CompletableFuture.completedFuture(cachedJwtSecret)));
+        .flatMap(
+            jwtSecret -> {
+              var jwtAlgorithm = toCachedJwtAlgorithm(jwtSecret);
+              jwtAlgorithmCache.put(
+                  jwtSecret.getId(), CompletableFuture.completedFuture(jwtAlgorithm));
+              return Mono.just(jwtAlgorithm);
+            });
   }
 
   @Override
-  public Mono<CachedJwtSecret> loadById(String id) {
+  public Mono<CachedJwtAlgorithm> loadById(String id) {
     return Mono.deferContextual(
-        context -> Mono.fromFuture(jwtSecretCache.get(id, cacheMappingFunc(context))));
+        context -> Mono.fromFuture(jwtAlgorithmCache.get(id, cacheMappingFunc(context))));
   }
 
   @Override
-  public Flux<CachedJwtSecret> loadNoDeleted() {
-    var values = jwtSecretCache.asMap().values();
-    var publishers = new ArrayList<Mono<CachedJwtSecret>>(values.size());
-    for (CompletableFuture<CachedJwtSecret> value : values) {
+  public Flux<CachedJwtAlgorithm> loadNoDeleted() {
+    var values = jwtAlgorithmCache.asMap().values();
+    var publishers = new ArrayList<Mono<CachedJwtAlgorithm>>(values.size());
+    for (CompletableFuture<CachedJwtAlgorithm> value : values) {
       publishers.add(Mono.fromFuture(value));
     }
-    Predicate<CachedJwtSecret> filterDeleted = cachedJwtSecret -> cachedJwtSecret.getDeleted() == 0;
+    Predicate<CachedJwtAlgorithm> filterDeleted =
+        cachedJwtAlgorithm -> cachedJwtAlgorithm.getDeleted() == 0;
     return Flux.concat(publishers)
         .filter(filterDeleted)
         .switchIfEmpty(refreshAll().filter(filterDeleted));
@@ -136,30 +141,33 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
     return e;
   }
 
-  private BiFunction<String, Executor, CompletableFuture<CachedJwtSecret>> cacheMappingFunc(
+  private BiFunction<String, Executor, CompletableFuture<CachedJwtAlgorithm>> cacheMappingFunc(
       ContextView context) {
     return (s, executor) -> {
       log.debug("加载 jwt secret [kid={}]", s);
       return findById(s)
-          .map(this::toCachedJwtSecret)
+          .map(this::toCachedJwtAlgorithm)
           // context 用于事务传递
           .contextWrite(context)
           .toFuture();
     };
   }
 
-  private CachedJwtSecret toCachedJwtSecret(JwtSecret e) {
-    var builder = CachedJwtSecret.builder();
-    var algorithm = SignatureAlgorithm.forName(e.getAlgorithm());
-    var secretKey = Keys.hmacShaKeyFor(e.getSecretKey().array());
-
-    return builder
+  @VisibleForTesting
+  CachedJwtAlgorithm toCachedJwtAlgorithm(JwtSecret e) {
+    var name = e.getAlgorithm();
+    Algorithm algorithm;
+    if ("HS256".equals(name)) {
+      algorithm = Algorithm.HMAC256(e.getSecretKey().array());
+    } else if ("HS512".equals(name)) {
+      algorithm = Algorithm.HMAC512(e.getSecretKey().array());
+    } else {
+      throw new BizCodeException(BizCodes.C3311).addContextValue("algorithm", name);
+    }
+    return CachedJwtAlgorithm.builder()
         .id(e.getId())
         .algorithm(algorithm)
-        .secretKey(secretKey)
         .deleted(e.getDeleted())
-        .createTime(e.getCreateTime())
-        .updateTime(e.getUpdateTime())
         .build();
   }
 }

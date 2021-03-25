@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.domain.CachedJwtSecret;
+import top.yein.tethys.domain.CachedJwtAlgorithm;
 import top.yein.tethys.storage.JwtSecretDao;
 
 /**
@@ -60,7 +60,7 @@ class JwsAuthServiceTest {
           "29c5fab077c009b9e6676b2f082a7ab3b0462b41acf75f075b5a7bac5619ec81c9d8bb2e25b6d33800fba279ee492ac7d05220e829464df3ca8e00298c517764-illegal-secret"
               .getBytes(StandardCharsets.UTF_8));
 
-  private CachedJwtSecret cachedJwtSecret;
+  private CachedJwtAlgorithm cachedJwtAlgorithm;
   private JwtSecretDao jwtSecretDao;
 
   private JwsAuthService newJwsAuthService() {
@@ -69,13 +69,13 @@ class JwsAuthServiceTest {
 
   private JwsAuthService newJwsAuthService(boolean anonymousEnabled) {
     this.jwtSecretDao = mock(JwtSecretDao.class);
-    this.cachedJwtSecret =
-        CachedJwtSecret.builder()
+    this.cachedJwtAlgorithm =
+        CachedJwtAlgorithm.builder()
             .id(kid)
             .algorithm(SignatureAlgorithm.HS512)
             .secretKey(testSecret)
             .build();
-    when(jwtSecretDao.loadById(kid)).thenReturn(Mono.just(cachedJwtSecret));
+    when(jwtSecretDao.loadById(kid)).thenReturn(Mono.just(cachedJwtAlgorithm));
     return new JwsAuthService(jwtSecretDao);
   }
 
@@ -170,7 +170,7 @@ class JwsAuthServiceTest {
   @Test
   void wrongSign() {
     JwsAuthService authService = newJwsAuthService();
-    when(jwtSecretDao.loadById("not-found-kid")).thenReturn(Mono.just(cachedJwtSecret));
+    when(jwtSecretDao.loadById("not-found-kid")).thenReturn(Mono.just(cachedJwtAlgorithm));
 
     var token =
         Jwts.builder()

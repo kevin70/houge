@@ -18,7 +18,7 @@ package top.yein.tethys.storage;
 import java.time.Duration;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.domain.CachedJwtSecret;
+import top.yein.tethys.domain.CachedJwtAlgorithm;
 import top.yein.tethys.entity.JwtSecret;
 
 /**
@@ -67,7 +67,7 @@ public interface JwtSecretDao {
    *
    * @return 缓存实体
    */
-  Flux<CachedJwtSecret> refreshAll();
+  Flux<CachedJwtAlgorithm> refreshAll();
 
   /**
    * 优先从缓存中查询数据并返回缓存实体.
@@ -75,12 +75,12 @@ public interface JwtSecretDao {
    * @param id JWT kid
    * @return 缓存实体
    */
-  Mono<CachedJwtSecret> loadById(String id);
+  Mono<CachedJwtAlgorithm> loadById(String id);
 
   /**
    * 加载未被软删除的缓存实体.
    *
    * @return 缓存实体
    */
-  Flux<CachedJwtSecret> loadNoDeleted();
+  Flux<CachedJwtAlgorithm> loadNoDeleted();
 }

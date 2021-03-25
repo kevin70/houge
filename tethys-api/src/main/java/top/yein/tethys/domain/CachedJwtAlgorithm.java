@@ -15,35 +15,34 @@
  */
 package top.yein.tethys.domain;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.time.LocalDateTime;
-import javax.crypto.SecretKey;
+import com.auth0.jwt.algorithms.Algorithm;
 import lombok.Builder;
 import lombok.Value;
 
 /**
- * 缓存的 {@link top.yein.tethys.entity.JwtSecret}.
+ * 缓存的 JWT 算法.
+ *
+ * <p>当前实现已支持的算法:
+ *
+ * <ul>
+ *   <li>HS256
+ *   <li>HS512
+ * </ul>
  *
  * @author KK (kzou227@qq.com)
  */
 @Value
 @Builder
-public class CachedJwtSecret {
+public class CachedJwtAlgorithm {
 
-  /** JWT 密钥. */
+  /** kid 标识仅支持2个字符. */
   private String id;
   /** JWT 签名算法. */
-  private SignatureAlgorithm algorithm;
-  /** HMAC 密钥. */
-  private SecretKey secretKey;
+  private Algorithm algorithm;
   /**
    * 删除数据的时间戳.
    *
    * <p>值不为 0 值表示行数据已被软删除.
    */
   private int deleted;
-  /** 创建时间. */
-  private LocalDateTime createTime;
-  /** 更新时间. */
-  private LocalDateTime updateTime;
 }
