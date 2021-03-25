@@ -111,6 +111,10 @@ public class ImModule extends AbstractModule {
   @Provides
   @Singleton
   public Interceptors interceptors(AuthInterceptor authInterceptor) {
-    return new Interceptors(authInterceptor::handle);
+    return new Interceptors(
+        authInterceptor::handle,
+        unused -> {
+          throw new UnsupportedOperationException("Unsupported serviceAuthFunc");
+        });
   }
 }

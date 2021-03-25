@@ -61,7 +61,7 @@ public class RestMain implements Runnable {
             new StorageModule(config),
             new ServiceModule(config),
             new CoreModule(config),
-            new RestModule());
+            new RestModule(config));
     // 应用程序监控
     var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
     Metrics.addRegistry(prometheusMeterRegistry);
