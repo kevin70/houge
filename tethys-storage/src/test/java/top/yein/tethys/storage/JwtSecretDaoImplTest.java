@@ -227,8 +227,6 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
   @Test
   void loadNoDeleted() {
     var dao = newJwtSecretDao();
-    AsyncCache<String, CachedJwtAlgorithm> jwtSecretCache =
-        Whitebox.getInternalState(dao, "jwtSecretCache");
 
     var entity1 = new JwtSecret();
     entity1.setId(faker.random().hex());
