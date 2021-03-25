@@ -30,28 +30,47 @@ import reactor.netty.http.server.HttpServerResponse;
 public class Interceptors {
 
   /** 认证拦截器. */
-  private UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>>
+  private final UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>>
       authFunc;
+  /** 服务认证拦截器. */
+  private final UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>>
+      serviceAuthFunc;
 
   /**
    * 使用拦截回调函数创建实例.
    *
    * @param authFunc 认证拦截函数
+   * @param serviceAuthFunc 服务认证拦截器
    */
   public Interceptors(
-      UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>> authFunc) {
+      UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>> authFunc,
+      UnaryOperator<BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>>>
+          serviceAuthFunc) {
     Objects.requireNonNull(authFunc, "[authFunc]不能为null");
+    Objects.requireNonNull(serviceAuthFunc, "[serviceAuthFunc]不能为null");
     this.authFunc = authFunc;
+    this.serviceAuthFunc = serviceAuthFunc;
   }
 
   /**
    * 认证拦截器.
    *
    * @param next 执行成功后的下一个函数
-   * @return
+   * @return 认证拦截器
    */
   public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> auth(
       BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> next) {
     return authFunc.apply(next);
+  }
+
+  /**
+   * 返回服务认证拦截器.
+   *
+   * @param next 执行成功后的下一个函数
+   * @return 服务认证拦截器
+   */
+  public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serviceAuth(
+      BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> next) {
+    return serviceAuthFunc.apply(next);
   }
 }
