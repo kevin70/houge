@@ -70,6 +70,9 @@ public final class ConfigKeys {
    */
   public static final String REST_SERVER_ADDR = "rest-server.addr";
 
+  /** 内部服务交互 BASIC 认证配置. */
+  public static final String SERVICE_AUTH_BASIC = "service-auth.basic";
+
   /** 测试令牌生成器开关配置. */
   public static final String TOKEN_GENERATOR_TEST_ENABLED = "token.generator.test-enabled";
 
