@@ -47,32 +47,30 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/groups", interceptors.auth(this::createGroup));
-    routes.delete("/i/groups/{groupId}", interceptors.auth(this::deleteGroup));
+    routes.post("/i/groups", interceptors.serviceAuth(this::createGroup));
+    routes.delete("/i/groups/{groupId}", interceptors.serviceAuth(this::deleteGroup));
 
-    routes.put("/i/group-members/{groupId}/join", interceptors.auth(this::joinMember));
-    routes.delete("/i/group-members/{groupId}/join", interceptors.auth(this::removeMember));
+    routes.put("/i/group-members/{groupId}/join", interceptors.serviceAuth(this::joinMember));
+    routes.delete("/i/group-members/{groupId}/join", interceptors.serviceAuth(this::removeMember));
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 创建群组.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   Mono<Void> createGroup(HttpServerRequest request, HttpServerResponse response) {
-    return authContext()
-        .zipWith(json(request, GroupCreateVo.class))
-        .flatMap(
-            t -> {
-              var ac = t.getT1();
-              var vo = t.getT2();
-              return groupService.createGroup(ac.uid(), vo).flatMap(dto -> json(response, dto));
-            });
+    return json(request, GroupCreateVo.class)
+        .flatMap(vo -> groupService.createGroup(vo).flatMap(dto -> json(response, dto)));
   }
 
   /**
-   * @param request
-   * @param response
+   * 删除群组.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
    * @return
    */
   Mono<Void> deleteGroup(HttpServerRequest request, HttpServerResponse response) {

@@ -25,6 +25,12 @@ import lombok.Data;
 @Data
 public class GroupCreateVo {
 
+  /** 群组 ID. */
+  private Long id;
+  /** 创建者用户 ID. */
+  private long creatorId;
   /** 群组名称. */
   private String name;
+  /** 群成员数量限制. */
+  private int memberLimit;
 }

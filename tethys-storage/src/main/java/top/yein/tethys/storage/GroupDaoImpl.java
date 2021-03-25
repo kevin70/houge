@@ -58,8 +58,9 @@ public class GroupDaoImpl implements GroupDao {
 
   @Override
   public Mono<Long> insert(Group entity) {
-    return nextGroupId()
-        .delayUntil(
+    return Mono.justOrEmpty(entity.getId())
+        .switchIfEmpty(nextGroupId())
+        .flatMap(
             id -> {
               // 保存群组信息
               var m1 =
@@ -80,7 +81,7 @@ public class GroupDaoImpl implements GroupDao {
                   rc.sql(INSERT_MEMBER_SQL)
                       .bind(new Object[] {id, entity.getCreatorId()})
                       .rowsUpdated();
-              return Mono.zip(m1, m2);
+              return Mono.zip(m1, m2).thenReturn(id);
             });
   }
 

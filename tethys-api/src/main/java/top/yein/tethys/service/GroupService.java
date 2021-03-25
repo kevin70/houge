@@ -30,11 +30,10 @@ public interface GroupService {
   /**
    * 创建群组.
    *
-   * @param creatorId 创建者用户 ID
    * @param vo VO
    * @return 群组 ID
    */
-  Mono<GroupCreateDto> createGroup(long creatorId, GroupCreateVo vo);
+  Mono<GroupCreateDto> createGroup(GroupCreateVo vo);
 
   /**
    * 判断指定的群组是否存在.

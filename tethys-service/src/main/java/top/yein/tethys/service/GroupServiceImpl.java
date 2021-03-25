@@ -52,15 +52,15 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<GroupCreateDto> createGroup(long creatorId, GroupCreateVo vo) {
+  public Mono<GroupCreateDto> createGroup(GroupCreateVo vo) {
     var entity =
         Group.builder()
-            .creatorId(creatorId)
-            .ownerId(creatorId)
+            .id(vo.getId())
+            .creatorId(vo.getCreatorId())
+            .ownerId(vo.getCreatorId())
             .name(vo.getName())
             .memberSize(1)
-            // TODO: 提取配置
-            .memberLimit(40)
+            .memberLimit(vo.getMemberLimit())
             .build();
     return groupDao.insert(entity).map(id -> GroupCreateDto.builder().id(id).build());
   }
