@@ -15,7 +15,8 @@
  */
 package top.yein.tethys.rest.resource.i;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
+import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
+
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -80,9 +81,11 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 将指定的用户与群组建立关系.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   Mono<Void> joinMember(HttpServerRequest request, HttpServerResponse response) {
     return json(request, GroupJoinMemberVo.class)
@@ -91,21 +94,25 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
               var gid = Long.parseLong(request.param("groupId"));
               return groupService
                   .joinMember(gid, vo)
-                  .then(Mono.defer(() -> response.status(HttpResponseStatus.NO_CONTENT).send()));
+                  .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
             });
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 将指定的用户与群组解除关系.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   Mono<Void> removeMember(HttpServerRequest request, HttpServerResponse response) {
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
               var gid = Long.parseLong(request.param("groupId"));
-              return groupService.removeMember(gid, vo);
+              return groupService
+                  .removeMember(gid, vo)
+                  .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
             });
   }
 }
