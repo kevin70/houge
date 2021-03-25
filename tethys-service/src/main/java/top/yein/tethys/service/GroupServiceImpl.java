@@ -61,7 +61,6 @@ public class GroupServiceImpl implements GroupService {
             .ownerId(vo.getCreatorId())
             .name(vo.getName())
             .memberSize(1)
-            .memberLimit(vo.getMemberLimit())
             .build();
     return groupDao
         .insert(entity)

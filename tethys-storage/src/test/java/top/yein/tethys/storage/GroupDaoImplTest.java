@@ -52,7 +52,6 @@ class GroupDaoImplTest extends AbstractTestDao {
     entity.setCreatorId(faker.random().nextLong());
     entity.setOwnerId(entity.getCreatorId());
     entity.setMemberSize(1);
-    entity.setMemberLimit(40);
 
     var p = dao.insert(entity);
     var idVar = new long[1];
@@ -129,10 +128,10 @@ class GroupDaoImplTest extends AbstractTestDao {
             .insert(entity)
             .doOnNext(id -> idVar[0] = id)
             .flatMap(
-                id -> groupDao.incMemberSize(id, entity.getMemberLimit() - entity.getMemberSize()));
+                id -> groupDao.incMemberSize(id, entity.getMemberSize()));
     StepVerifier.create(p1).expectNext(1).expectComplete().verify();
 
-    var p2 = groupDao.incMemberSize(idVar[0], entity.getMemberLimit() + 1);
+    var p2 = groupDao.incMemberSize(idVar[0], 1);
     StepVerifier.create(p2).expectNext(0).expectComplete().verify();
 
     // 清理数据

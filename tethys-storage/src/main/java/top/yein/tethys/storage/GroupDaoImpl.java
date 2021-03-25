@@ -33,12 +33,12 @@ public class GroupDaoImpl implements GroupDao {
 
   private static final String NEXT_GID_SQL = "select nextval('groups_id_seq')";
   private static final String INSERT_GROUP_SQL =
-      "INSERT INTO groups(id,name,creator_id,owner_id,member_size,member_limit,create_time,update_time)"
-          + " VALUES($1,$2,$3,$4,$5,$6,now(),now())";
+      "INSERT INTO groups(id,name,creator_id,owner_id,member_size,create_time,update_time)"
+          + " VALUES($1,$2,$3,$4,$5,now(),now())";
   private static final String INC_MEMBER_SIZE_SQL =
-      "UPDATE GROUPS SET member_size=member_size+$1 WHERE id=$2 AND member_limit>=member_size+$1";
+      "UPDATE GROUPS SET member_size=member_size+$1 WHERE id=$2";
   private static final String DEC_MEMBER_SIZE_SQL =
-      "UPDATE GROUPS SET member_size=member_size-$1 WHERE id=$2 AND member_size>=$1";
+      "UPDATE GROUPS SET member_size=member_size-$1 WHERE id=$2";
   private static final String INSERT_MEMBER_SQL =
       "INSERT INTO groups_member(gid,uid,create_time) VALUES($1,$2,now())";
   private static final String DELETE_MEMBER_SQL =
@@ -71,8 +71,7 @@ public class GroupDaoImpl implements GroupDao {
                             Parameter.fromOrNull(entity.getName(), String.class),
                             entity.getCreatorId(),
                             entity.getOwnerId(),
-                            entity.getMemberSize(),
-                            entity.getMemberLimit()
+                            entity.getMemberSize()
                           })
                       .rowsUpdated();
 

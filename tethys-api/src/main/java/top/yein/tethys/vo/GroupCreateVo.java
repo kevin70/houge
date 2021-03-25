@@ -31,6 +31,4 @@ public class GroupCreateVo {
   private long creatorId;
   /** 群组名称. */
   private String name;
-  /** 群成员数量限制. */
-  private int memberLimit;
 }
