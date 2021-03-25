@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 import top.yein.tethys.Nil;
 import top.yein.tethys.dto.GroupCreateDto;
 import top.yein.tethys.vo.GroupCreateVo;
+import top.yein.tethys.vo.GroupJoinMemberVo;
 
 /**
  * 群组服务接口.
@@ -44,4 +45,22 @@ public interface GroupService {
    * @return Nil.mono()/Mono.empty()
    */
   Mono<Nil> existsById(long gid);
+
+  /**
+   * 将指定的用户与群组建立关系.
+   *
+   * @param gid 群组 ID
+   * @param vo VO
+   * @return RS
+   */
+  Mono<Void> joinMember(long gid, GroupJoinMemberVo vo);
+
+  /**
+   * 将指定的用户与群组解除关系.
+   *
+   * @param gid 群组 ID
+   * @param vo VO
+   * @return RS
+   */
+  Mono<Void> removeMember(long gid, GroupJoinMemberVo vo);
 }

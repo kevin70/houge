@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.rest.resource.i;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -25,6 +26,7 @@ import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.service.GroupService;
 import top.yein.tethys.vo.GroupCreateVo;
+import top.yein.tethys.vo.GroupJoinMemberVo;
 
 /**
  * 群组 REST 接口.
@@ -83,7 +85,14 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return
    */
   Mono<Void> joinMember(HttpServerRequest request, HttpServerResponse response) {
-    return Mono.empty();
+    return json(request, GroupJoinMemberVo.class)
+        .flatMap(
+            vo -> {
+              var gid = Long.parseLong(request.param("groupId"));
+              return groupService
+                  .joinMember(gid, vo)
+                  .then(Mono.defer(() -> response.status(HttpResponseStatus.NO_CONTENT).send()));
+            });
   }
 
   /**
@@ -92,6 +101,11 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return
    */
   Mono<Void> removeMember(HttpServerRequest request, HttpServerResponse response) {
-    return Mono.empty();
+    return json(request, GroupJoinMemberVo.class)
+        .flatMap(
+            vo -> {
+              var gid = Long.parseLong(request.param("groupId"));
+              return groupService.removeMember(gid, vo);
+            });
   }
 }

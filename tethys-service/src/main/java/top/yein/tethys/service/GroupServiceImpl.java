@@ -25,6 +25,7 @@ import top.yein.tethys.entity.Group;
 import top.yein.tethys.storage.GroupDao;
 import top.yein.tethys.storage.query.GroupQueryDao;
 import top.yein.tethys.vo.GroupCreateVo;
+import top.yein.tethys.vo.GroupJoinMemberVo;
 
 /**
  * 群组服务实现.
@@ -62,7 +63,10 @@ public class GroupServiceImpl implements GroupService {
             .memberSize(1)
             .memberLimit(vo.getMemberLimit())
             .build();
-    return groupDao.insert(entity).map(id -> GroupCreateDto.builder().id(id).build());
+    return groupDao
+        .insert(entity)
+        .doOnSuccess(id -> this.updateGidBits(id, true))
+        .map(id -> GroupCreateDto.builder().id(id).build());
   }
 
   @Override
@@ -71,13 +75,30 @@ public class GroupServiceImpl implements GroupService {
       return Nil.mono();
     }
 
-    return groupQueryDao.existsById(gid).doOnNext(unused -> updateGidBits(gid));
+    return groupQueryDao.existsById(gid).doOnNext(unused -> updateGidBits(gid, true));
   }
 
-  private void updateGidBits(long gid) {
+  @Override
+  public Mono<Void> joinMember(long gid, GroupJoinMemberVo vo) {
+    return groupDao.joinMember(gid, vo.getUid());
+  }
+
+  @Override
+  public Mono<Void> removeMember(long gid, GroupJoinMemberVo vo) {
+    return groupDao.removeMember(gid, vo.getUid());
+  }
+
+  private void updateGidBits(long gid, boolean v) {
     // existingGidBits 是非线程安全的对象
     // 将对 existingGidBits 所有的更新操作放置在同一个线程中避免额外的 Lock
-    Mono.fromRunnable(() -> existingGidBits.addLong(gid))
+    Mono.fromRunnable(
+            () -> {
+              if (v) {
+                existingGidBits.addLong(gid);
+              } else {
+                existingGidBits.removeLong(gid);
+              }
+            })
         .subscribeOn(Schedulers.single())
         .subscribe();
   }
