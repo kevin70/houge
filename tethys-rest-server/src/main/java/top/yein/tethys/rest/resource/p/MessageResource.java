@@ -55,9 +55,11 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 查询用户指定时间之后的消息.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   Mono<Void> queryByUser(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
@@ -75,9 +77,11 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 批量将指定消息设置为已读状态.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   Mono<Void> readMessages(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
