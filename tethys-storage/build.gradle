@@ -4,7 +4,6 @@ dependencies {
 
   testImplementation(project(":tethys-util"))
   testImplementation("com.typesafe:config")
-  testImplementation("com.google.inject.extensions:guice-testlib")
   testImplementation("org.apache.logging.log4j:log4j-core")
   testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")
 }
