@@ -7,15 +7,11 @@ servers:
 tags:
   - name: SUPPORT
     description: 系统支撑
-  - name: TEST
-    description: 测试专用
   - name: MESSAGE
     description: IM 消息
 x-tagGroups:
   - name: 支撑
     tags: [SUPPORT]
-  - name: 测试
-    tags: [TEST]
   - name: 消息
     tags: [MESSAGE]
 paths:
@@ -209,33 +205,6 @@ paths:
       responses:
         "204":
           description: OK
-  /token/{uid}:
-    parameters:
-      - name: uid
-        in: path
-        required: true
-        description: 用户 ID
-        schema:
-          type: integer
-          format: int64
-    post:
-      tags: [TEST]
-      summary: 生成用户访问令牌
-      description: |
-        **测试专用** 快速通过用户 ID 生成访问令牌
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - access_token
-                properties:
-                  access_token:
-                    type: string
-                    description: 访问令牌
   /p/message-ids:
     get:
       parameters:
