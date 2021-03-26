@@ -131,9 +131,6 @@ class GroupDaoImplTest extends AbstractTestDao {
                 id -> groupDao.incMemberSize(id, entity.getMemberSize()));
     StepVerifier.create(p1).expectNext(1).expectComplete().verify();
 
-    var p2 = groupDao.incMemberSize(idVar[0], 1);
-    StepVerifier.create(p2).expectNext(0).expectComplete().verify();
-
     // 清理数据
     clean(idVar[0]);
   }
@@ -155,9 +152,6 @@ class GroupDaoImplTest extends AbstractTestDao {
                 })
             .flatMap(id -> groupDao.decMemberSize(id, entity.getMemberSize()));
     StepVerifier.create(p1).expectNext(1).expectComplete().verify();
-
-    var p2 = groupDao.decMemberSize(idVar[0], entity.getMemberSize() + 1);
-    StepVerifier.create(p2).expectNext(0).expectComplete().verify();
 
     // 清理数据
     clean(idVar[0]);
