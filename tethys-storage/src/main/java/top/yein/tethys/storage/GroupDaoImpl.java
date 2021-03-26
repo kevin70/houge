@@ -21,7 +21,6 @@ import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.entity.Group;
-import top.yein.tethys.r2dbc.Parameter;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**
@@ -33,8 +32,8 @@ public class GroupDaoImpl implements GroupDao {
 
   private static final String NEXT_GID_SQL = "select nextval('groups_id_seq')";
   private static final String INSERT_GROUP_SQL =
-      "INSERT INTO groups(id,name,creator_id,owner_id,member_size,create_time,update_time)"
-          + " VALUES($1,$2,$3,$4,$5,now(),now())";
+      "INSERT INTO groups(id,creator_id,owner_id,member_size,create_time,update_time)"
+          + " VALUES($1,$2,$3,$4,now(),now())";
   private static final String DELETE_GROUP_SQL = "DELETE FROM groups WHERE id=$1";
   private static final String DELETE_MEMBERS_SQL = "DELETE FROM groups_member WHERE gid=$1";
   private static final String INC_MEMBER_SIZE_SQL =
@@ -70,7 +69,6 @@ public class GroupDaoImpl implements GroupDao {
                       .bind(
                           new Object[] {
                             id,
-                            Parameter.fromOrNull(entity.getName(), String.class),
                             entity.getCreatorId(),
                             entity.getOwnerId(),
                             entity.getMemberSize()

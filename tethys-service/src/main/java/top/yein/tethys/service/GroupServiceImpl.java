@@ -59,7 +59,6 @@ public class GroupServiceImpl implements GroupService {
             .id(vo.getId())
             .creatorId(vo.getCreatorId())
             .ownerId(vo.getCreatorId())
-            .name(vo.getName())
             .memberSize(1)
             .build();
     return groupDao

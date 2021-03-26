@@ -53,7 +53,6 @@ public class TestData {
 
   public static Group newGroup() {
     var e = new Group();
-    e.setName(FAKER.regexify("[a-z]{3,9}"));
     e.setCreatorId(Long.valueOf(FAKER.random().nextInt(1, 100)));
     e.setOwnerId(e.getCreatorId());
     e.setMemberSize(1);

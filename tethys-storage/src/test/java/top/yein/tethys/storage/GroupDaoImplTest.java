@@ -48,7 +48,6 @@ class GroupDaoImplTest extends AbstractTestDao {
   void insert() {
     var dao = newGroupDao();
     var entity = new Group();
-    entity.setName("JUnit");
     entity.setCreatorId(faker.random().nextLong());
     entity.setOwnerId(entity.getCreatorId());
     entity.setMemberSize(1);

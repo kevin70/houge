@@ -34,8 +34,6 @@ public class Group {
 
   /** 群组 ID. */
   private Long id;
-  /** 群组名称. */
-  private String name;
   /** 创建群的用户 ID. */
   private Long creatorId;
   /** 群持有者用户 ID. */

@@ -70,7 +70,6 @@ public class GroupQueryDaoImpl implements GroupQueryDao {
   private Group mapToGroup(Row row) {
     var e = new Group();
     e.setId(row.get("id", Long.class));
-    e.setName(row.get("name", String.class));
     e.setCreatorId(row.get("creator_id", Long.class));
     e.setOwnerId(row.get("owner_id", Long.class));
     e.setMemberSize(row.get("member_size", Integer.class));
