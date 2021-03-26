@@ -13,35 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.service;
+package top.yein.tethys.dto;
 
-import reactor.core.publisher.Mono;
-import top.yein.tethys.Nil;
-import top.yein.tethys.dto.UserCreateDto;
-import top.yein.tethys.vo.UserCreateVo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * 用户服务接口.
+ * 创建用户 DTO.
  *
  * @author KK (kzou227@qq.com)
  */
-public interface UserService {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserCreateDto {
 
-  /**
-   * 创建用户.
-   *
-   * @param vo VO
-   * @return 用户 ID
-   */
-  Mono<UserCreateDto> createUser(UserCreateVo vo);
-
-  /**
-   * 判断指定用户是否存在.
-   *
-   * <p>如果用户存在则返回一个 {@code Mono<Null>} 实例可用 {@code Mono} 操作符进行消费, 反之则返回 {@code Mono.empty()}.
-   *
-   * @param uid 用户 ID
-   * @return true/false
-   */
-  Mono<Nil> existsById(long uid);
+  /** 用户 ID. */
+  private Long id;
 }

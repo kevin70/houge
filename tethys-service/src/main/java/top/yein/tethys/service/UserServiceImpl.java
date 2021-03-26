@@ -20,8 +20,11 @@ import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.tethys.Nil;
+import top.yein.tethys.dto.UserCreateDto;
+import top.yein.tethys.entity.User;
 import top.yein.tethys.storage.UserDao;
 import top.yein.tethys.storage.query.UserQueryDao;
+import top.yein.tethys.vo.UserCreateVo;
 
 /**
  * 用户服务实现.
@@ -37,13 +40,23 @@ public class UserServiceImpl implements UserService {
   private Roaring64NavigableMap existingUidBits = Roaring64NavigableMap.bitmapOf();
 
   /**
-   * @param userDao
-   * @param userQueryDao
+   * 可以被 IoC 容器使用的构造函数.
+   *
+   * @param userDao 用户数据访问接口
+   * @param userQueryDao 数据查询数据访问接口
    */
   @Inject
   public UserServiceImpl(UserDao userDao, UserQueryDao userQueryDao) {
     this.userDao = userDao;
     this.userQueryDao = userQueryDao;
+  }
+
+  @Override
+  public Mono<UserCreateDto> createUser(UserCreateVo vo) {
+    return userDao
+        .insert(User.builder().id(vo.getId()).originUid(vo.getOriginUid()).build())
+        .doOnSuccess(id -> updateUidBits(id, true))
+        .map(id -> UserCreateDto.builder().id(id).build());
   }
 
   @Override
@@ -56,13 +69,17 @@ public class UserServiceImpl implements UserService {
     // 1. 优先查询 BitSet 判断是否是否存在
     // 2. BitSet 不存在查询 Redis 判断用户是否存在
     // 3. 以上都不存在时查询数据库
-    return userQueryDao.existsById(uid).doOnNext(unused -> updateUidBits(uid));
+    return userQueryDao.existsById(uid).doOnNext(unused -> updateUidBits(uid, true));
   }
 
-  private void updateUidBits(long uid) {
+  private void updateUidBits(long uid, boolean v) {
     // existingUidBits 是非线程安全的对象
     // 将对 existingUidBits 所有的更新操作放置在同一个线程中避免额外的 Lock
-    Mono.fromRunnable(() -> existingUidBits.addLong(uid))
+    Mono.fromRunnable(
+            () -> {
+              if (v) existingUidBits.addLong(uid);
+              else existingUidBits.removeLong(uid);
+            })
         .subscribeOn(Schedulers.single())
         .subscribe();
   }

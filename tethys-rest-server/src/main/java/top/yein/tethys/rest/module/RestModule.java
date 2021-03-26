@@ -34,6 +34,7 @@ import top.yein.tethys.core.resource.ServiceAuthInterceptor;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.rest.RestApplicationIdentifier;
 import top.yein.tethys.rest.resource.i.GroupResource;
+import top.yein.tethys.rest.resource.i.UserResource;
 import top.yein.tethys.rest.resource.p.MessageIdResource;
 import top.yein.tethys.rest.resource.p.MessageResource;
 
@@ -67,6 +68,7 @@ public class RestModule extends AbstractModule {
     routingServicesBinder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
     routingServicesBinder.addBinding().to(MessageResource.class).in(Scopes.SINGLETON);
     routingServicesBinder.addBinding().to(GroupResource.class).in(Scopes.SINGLETON);
+    routingServicesBinder.addBinding().to(UserResource.class).in(Scopes.SINGLETON);
   }
 
   @Provides
