@@ -1,3 +1,7 @@
+create sequence users_id_seq;
+
+comment on sequence users_id_seq is '用户 ID 生成序列';
+
 create table users
 (
     id          bigint    not null
