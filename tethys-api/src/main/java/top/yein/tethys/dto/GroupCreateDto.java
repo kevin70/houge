@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 创建群主传输对象.
+ * 创建群组 DTO.
  *
  * @author KK (kzou227@qq.com)
  */
