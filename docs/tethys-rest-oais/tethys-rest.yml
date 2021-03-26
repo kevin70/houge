@@ -39,6 +39,32 @@ paths:
           content:
             application/json:
               example: { "status": "UP" }
+  /i/token/{uid}:
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        description: 用户 ID
+        schema:
+          type: integer
+          format: int64
+    post:
+      tags: [SUPPORT]
+      security: [Basic:[]]
+      summary: 为指定用户生成访问令牌
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                properties:
+                  access_token:
+                    type: string
+                    description: 可用于访问 IM 系统接口的认证令牌
   /i/users:
     post:
       tags: [SUPPORT]
