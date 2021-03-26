@@ -27,16 +27,12 @@ import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import javax.inject.Singleton;
 import top.yein.tethys.ApplicationIdentifier;
-import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.auth.AuthService;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.auth.JwsAuthService;
-import top.yein.tethys.core.auth.TokenProps;
-import top.yein.tethys.core.auth.TokenProps.Generator;
 import top.yein.tethys.core.auth.TokenServiceImpl;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.resource.AuthInterceptor;
-import top.yein.tethys.core.resource.TokenResource;
 import top.yein.tethys.core.system.health.HealthResource;
 import top.yein.tethys.core.system.health.HealthServiceImpl;
 import top.yein.tethys.core.system.health.PostgresHealthIndicator;
@@ -88,7 +84,6 @@ public class CoreModule extends AbstractModule {
     var routingServicesBinder = Multibinder.newSetBinder(binder(), RoutingService.class);
     routingServicesBinder.addBinding().to(InfoResource.class).in(Scopes.SINGLETON);
     routingServicesBinder.addBinding().to(HealthResource.class).in(Scopes.SINGLETON);
-    routingServicesBinder.addBinding().to(TokenResource.class).in(Scopes.SINGLETON);
   }
 
   @Provides
@@ -106,20 +101,5 @@ public class CoreModule extends AbstractModule {
     new UptimeMetrics().bindTo(prometheusRegistry);
     new JvmMemoryMetrics().bindTo(prometheusRegistry);
     return prometheusRegistry;
-  }
-
-  /**
-   * 返回令牌配置对象.
-   *
-   * @return 令牌配置对象
-   */
-  @Provides
-  @Singleton
-  public TokenProps tokenProps() {
-    boolean testEnabled =
-        config.hasPath(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED)
-            && config.getBoolean(ConfigKeys.TOKEN_GENERATOR_TEST_ENABLED);
-    var generator = new Generator(testEnabled);
-    return new TokenProps(generator);
   }
 }

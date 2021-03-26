@@ -22,12 +22,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.Nil;
 import top.yein.tethys.auth.TokenService;
 import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.entity.User;
 import top.yein.tethys.storage.JwtSecretDao;
-import top.yein.tethys.storage.UserDao;
 import top.yein.tethys.storage.query.UserQueryDao;
 
 /**
@@ -38,50 +35,26 @@ import top.yein.tethys.storage.query.UserQueryDao;
 @Log4j2
 public class TokenServiceImpl implements TokenService {
 
-  private final TokenProps tokenProps;
   private final JwtSecretDao jwtSecretDao;
-  private final UserDao userDao;
   private final UserQueryDao userQueryDao;
 
   /**
    * 使用 JWT 密钥数据访问对象构建对象.
    *
-   * @param tokenProps 令牌配置.
    * @param jwtSecretDao JWT 密钥数据访问对象
-   * @param userDao 用户访问数据对象
    * @param userQueryDao 用户查询数据访问对象
    */
   @Inject
-  public TokenServiceImpl(
-      TokenProps tokenProps,
-      JwtSecretDao jwtSecretDao,
-      UserDao userDao,
-      UserQueryDao userQueryDao) {
-    this.tokenProps = tokenProps;
+  public TokenServiceImpl(JwtSecretDao jwtSecretDao, UserQueryDao userQueryDao) {
     this.jwtSecretDao = jwtSecretDao;
-    this.userDao = userDao;
     this.userQueryDao = userQueryDao;
   }
 
   @Override
   public Mono<String> generateToken(long uid) {
-    if (!tokenProps.getGenerator().isTestEnabled()) {
-      return Mono.error(new BizCodeException(BizCode.C403, "当前运行环境禁止访问测试令牌生成接口"));
-    }
-
-    var emptyInsert =
-        Mono.defer(
-            () -> {
-              // TIPS: 这里是否需要增加额外的配置开关, 确认是否开启自动保存用户信息
-              var entity = new User();
-              entity.setId(uid);
-              entity.setOriginUid(String.valueOf(uid));
-              return userDao.insert(entity).then(Nil.mono());
-            });
-
     return userQueryDao
         .existsById(uid)
-        .switchIfEmpty(emptyInsert)
+        .switchIfEmpty(Mono.error(() -> new BizCodeException(BizCode.C404, "用户不存在")))
         .flatMap(unused -> this.generateToken0(uid));
   }
 
