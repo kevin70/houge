@@ -4,10 +4,9 @@ comment on sequence groups_id_seq is '群 ID 生成序列';
 
 create table groups
 (
-    id          bigint not null
+    id          bigint    not null
         constraint groups_pk
             primary key,
-    name        varchar(18),
     creator_id  bigint    not null,
     owner_id    bigint,
     member_size integer   not null,
@@ -18,8 +17,6 @@ create table groups
 comment on table groups is '群信息';
 
 comment on column groups.id is '群 ID';
-
-comment on column groups.name is '群名称';
 
 comment on column groups.creator_id is '创建者用户 ID';
 
