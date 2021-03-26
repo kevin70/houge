@@ -74,10 +74,13 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    *
    * @param request 请求对象
    * @param response 响应对象
-   * @return
+   * @return RS
    */
   Mono<Void> deleteGroup(HttpServerRequest request, HttpServerResponse response) {
-    return Mono.empty();
+    var groupId = pathLong(request, "groupId");
+    return groupService
+        .deleteGroup(groupId)
+        .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
   }
 
   /**
@@ -91,9 +94,9 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
-              var gid = pathLong(request,"groupId");
+              var groupId = pathLong(request, "groupId");
               return groupService
-                  .joinMember(gid, vo)
+                  .joinMember(groupId, vo)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
             });
   }
@@ -109,9 +112,9 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
-              var gid = pathLong(request,"groupId");
+              var groupId = pathLong(request, "groupId");
               return groupService
-                  .removeMember(gid, vo)
+                  .removeMember(groupId, vo)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
             });
   }

@@ -37,6 +37,14 @@ public interface GroupService {
   Mono<GroupCreateDto> createGroup(GroupCreateVo vo);
 
   /**
+   * 删除群组.
+   *
+   * @param gid 群组 ID
+   * @return RS
+   */
+  Mono<Void> deleteGroup(long gid);
+
+  /**
    * 判断指定的群组是否存在.
    *
    * <p>如果用户存在则返回一个 {@code Mono<Nil>} 实例可用 {@code Mono} 操作符进行消费, 反之则返回 {@code Mono.empty()}.

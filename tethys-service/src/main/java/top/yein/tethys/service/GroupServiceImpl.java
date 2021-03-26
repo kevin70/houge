@@ -69,6 +69,11 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
+  public Mono<Void> deleteGroup(long gid) {
+    return groupDao.delete(gid).doOnSuccess(unused -> updateGidBits(gid, false));
+  }
+
+  @Override
   public Mono<Nil> existsById(long gid) {
     if (existingGidBits.contains(gid)) {
       return Nil.mono();

@@ -35,6 +35,8 @@ public class GroupDaoImpl implements GroupDao {
   private static final String INSERT_GROUP_SQL =
       "INSERT INTO groups(id,name,creator_id,owner_id,member_size,create_time,update_time)"
           + " VALUES($1,$2,$3,$4,$5,now(),now())";
+  private static final String DELETE_GROUP_SQL = "DELETE FROM groups WHERE id=$1";
+  private static final String DELETE_MEMBERS_SQL = "DELETE FROM groups_member WHERE gid=$1";
   private static final String INC_MEMBER_SIZE_SQL =
       "UPDATE GROUPS SET member_size=member_size+$1 WHERE id=$2";
   private static final String DEC_MEMBER_SIZE_SQL =
@@ -86,7 +88,9 @@ public class GroupDaoImpl implements GroupDao {
 
   @Override
   public Mono<Void> delete(long gid) {
-    return null;
+    var m1 = rc.sql(DELETE_GROUP_SQL).bind(0, gid).rowsUpdated();
+    var m2 = rc.sql(DELETE_MEMBERS_SQL).bind(0, gid).rowsUpdated();
+    return m1.zipWith(m2).then();
   }
 
   @Override
