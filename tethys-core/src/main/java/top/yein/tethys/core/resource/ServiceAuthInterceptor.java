@@ -67,7 +67,7 @@ public class ServiceAuthInterceptor extends AbstractRestSupport {
       }
       var beginIndex = AUTH_BASIC_SCHEME.length() + 1;
       if (authorization.length() <= beginIndex) {
-        throw new BizCodeException(BizCode.C401, "错误的 authorization");
+        throw new BizCodeException(BizCode.C401, "不符合规范的 basic authorization");
       }
 
       // 解码
@@ -85,12 +85,12 @@ public class ServiceAuthInterceptor extends AbstractRestSupport {
       var password = basicUsers.get(pass[0]);
       if (password == null) {
         log.debug("服务认证用户不存在 [user={}]", pass[0]);
-        throw new BizCodeException(BizCode.C401, "错误的 authorization")
+        throw new BizCodeException(BizCode.C401, "认证失败")
             .addContextValue("user", pass[0]);
       }
       if (!password.equals(pass[1])) {
         log.debug("服务认证密码不匹配 [user={}]", pass[0]);
-        throw new BizCodeException(BizCode.C401, "错误的 authorization")
+        throw new BizCodeException(BizCode.C401, "认证失败")
             .addContextValue("user", pass[0]);
       }
       return next.apply(request, response);
