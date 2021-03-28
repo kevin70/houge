@@ -42,6 +42,8 @@ import top.yein.tethys.domain.Problem;
  */
 class HttpExceptionHandlerTest {
 
+  String debugQueryName = "debug";
+
   @Test
   void applyEnabledDebug() {
     var request = mock(HttpServerRequest.class);
@@ -51,7 +53,7 @@ class HttpExceptionHandlerTest {
 
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler());
-    doReturn("").when(httpExceptionHandler).queryParam(eq(request), eq("debug"));
+    doReturn("").when(httpExceptionHandler).queryParam(eq(request), eq(debugQueryName));
     doReturn(Mono.empty()).when(httpExceptionHandler).json(eq(response), any());
 
     var p = httpExceptionHandler.apply(request, response, new IllegalStateException());
@@ -81,7 +83,7 @@ class HttpExceptionHandlerTest {
 
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler(false));
-    doReturn(null).when(httpExceptionHandler).queryParam(eq(request), eq("debug"));
+    doReturn(null).when(httpExceptionHandler).queryParam(eq(request), eq(debugQueryName));
     doReturn(Mono.empty()).when(httpExceptionHandler).json(eq(response), any());
 
     var p = httpExceptionHandler.apply(request, response, new IllegalStateException());
@@ -111,7 +113,7 @@ class HttpExceptionHandlerTest {
 
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler());
-    doReturn("").when(httpExceptionHandler).queryParam(eq(request), eq("debug"));
+    doReturn("").when(httpExceptionHandler).queryParam(eq(request), eq(debugQueryName));
     doReturn(Mono.empty()).when(httpExceptionHandler).json(eq(response), any());
 
     var ex = new BizCodeException(BizCode.C401).addContextValue("hello", "test");

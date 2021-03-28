@@ -38,7 +38,7 @@ import top.yein.tethys.session.Session;
 @Log4j2
 public class PacketDispatcher {
 
-  private final Map<String, ? extends PacketHandler> handlers;
+  private final Map<String, ? extends PacketHandler<Packet>> handlers;
 
   /**
    * 使用 Guice Injector 构建对象.
@@ -50,8 +50,12 @@ public class PacketDispatcher {
     this(findPacketHandlers(injector));
   }
 
-  /** @param handlers */
-  public PacketDispatcher(Map<String, ? extends PacketHandler> handlers) {
+  /**
+   * 使用 {@code PacketHandler} 集合构建对象.
+   *
+   * @param handlers IM 消息包体处理器
+   */
+  public PacketDispatcher(Map<String, ? extends PacketHandler<Packet>> handlers) {
     this.handlers = handlers;
   }
 
@@ -79,8 +83,9 @@ public class PacketDispatcher {
   }
 
   // 在 Guice Inject 查询符合要求的消息处理器
-  private static Map<String, ? extends PacketHandler> findPacketHandlers(Injector injector) {
-    var map = new LinkedHashMap<String, PacketHandler>();
+  private static Map<String, ? extends PacketHandler<Packet>> findPacketHandlers(
+      Injector injector) {
+    var map = new LinkedHashMap<String, PacketHandler<Packet>>();
     var bindings = injector.findBindingsByType(TypeLiteral.get(PacketHandler.class));
     for (Binding<? extends PacketHandler> b : bindings) {
       var k = b.getKey();

@@ -32,6 +32,8 @@ public class MessagePacketChecker {
 
   private static final int MESSAGE_ID_LENGTH = YeinGid.YEIN_GID_LENGTH;
 
+  private MessagePacketChecker() {}
+
   /**
    * 私聊消息包校验.
    *
