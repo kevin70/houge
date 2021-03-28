@@ -15,8 +15,21 @@
  */
 package top.yein.tethys.storage.query;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+import top.yein.tethys.domain.Paging;
+import top.yein.tethys.entity.Message;
 import top.yein.tethys.storage.AbstractTestDao;
+import top.yein.tethys.storage.MessageDaoImpl;
+import top.yein.tethys.storage.data.TestData;
 
 /**
  * {@link MessageQueryDaoImpl} 单元测试.
@@ -25,17 +38,98 @@ import top.yein.tethys.storage.AbstractTestDao;
  */
 class MessageQueryDaoImplTest extends AbstractTestDao {
 
-  MessageQueryDao newMessageQueryDao() {
+  MessageDaoImpl newMessageDao() {
+    return new MessageDaoImpl(r2dbcClient);
+  }
+
+  MessageQueryDaoImpl newMessageQueryDao() {
     return new MessageQueryDaoImpl(r2dbcClient);
   }
 
   @Test
   void queryById() {
-    var dao = newMessageQueryDao();
+    var messageDao = newMessageDao();
+    var messageQueryDao = newMessageQueryDao();
+    var entity = TestData.newMessage();
+    var p =
+        messageDao
+            .insert(entity, List.of(entity.getSenderId(), entity.getReceiverId()))
+            .then(messageQueryDao.queryById(entity.getId()));
+    StepVerifier.create(p)
+        .consumeNextWith(
+            dbRow ->
+                assertSoftly(
+                    s -> {
+                      s.assertThat(dbRow.getId()).as("id").isEqualTo(entity.getId());
+                      s.assertThat(dbRow.getSenderId())
+                          .as("sender_id")
+                          .isEqualTo(entity.getSenderId());
+                      s.assertThat(dbRow.getReceiverId())
+                          .as("receiver_id")
+                          .isEqualTo(entity.getReceiverId());
+                      s.assertThat(dbRow.getGroupId())
+                          .as("group_id")
+                          .isEqualTo(entity.getGroupId());
+                      s.assertThat(dbRow.getKind()).as("kind").isEqualTo(entity.getKind());
+                      s.assertThat(dbRow.getContent()).as("content").isEqualTo(entity.getContent());
+                      s.assertThat(dbRow.getContentKind())
+                          .as("content_kind")
+                          .isEqualTo(entity.getContentKind());
+                      s.assertThat(dbRow.getUrl()).as("url").isEqualTo(entity.getUrl());
+                      s.assertThat(dbRow.getCustomArgs())
+                          .as("custom_args")
+                          .isEqualTo(entity.getCustomArgs());
+                      s.assertThat(dbRow.getUnread()).as("unread").isZero();
+                      s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
+                      s.assertThat(dbRow.getUpdateTime()).as("update_time").isNotNull();
+                    }));
+
+    // 清理数据
+    delete("messages", Map.of("id", entity.getId()));
+    delete("user_messages", Map.of("message_id", entity.getId()));
   }
 
   @Test
   void queryByUser() {
+    var messageDao = newMessageDao();
+    var messageQueryDao = newMessageQueryDao();
+    var uid = TestData.FAKER.random().nextLong();
+    var entities = new ArrayList<Message>();
+    var count = 30;
+    for (int i = 0; i < count; i++) {
+      var e = TestData.newMessage();
+      e.setReceiverId(uid);
+      entities.add(e);
+    }
 
+    var q =
+        new UserMessageQuery.Builder()
+            .uid(uid)
+            .beginTime(LocalDateTime.now().minusHours(1))
+            .build();
+    var paging = Paging.of(0, 10);
+    var p =
+        Flux.fromIterable(entities)
+            .flatMap(
+                entity ->
+                    messageDao.insert(
+                        entity, List.of(entity.getSenderId(), entity.getReceiverId())))
+            .thenMany(Flux.defer(() -> messageQueryDao.queryByUser(q, paging)));
+
+    var messages = new ArrayList<Message>();
+    StepVerifier.create(p)
+        .recordWith(() -> messages)
+        .thenConsumeWhile(message -> true)
+        .expectComplete()
+        .verify();
+
+    assertThat(messages).as("messages_size").hasSize(paging.getLimit());
+    assertThat(messages).flatExtracting(Message::getReceiverId).containsOnly(uid);
+
+    // 清理数据
+    for (Message message : messages) {
+      delete("messages", Map.of("id", message.getId()));
+      delete("user_messages", Map.of("message_id", message.getId()));
+    }
   }
 }

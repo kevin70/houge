@@ -28,7 +28,7 @@ import top.yein.tethys.storage.TestUtils;
  */
 public class TestData {
 
-  static final Faker FAKER = new Faker();
+  public static final Faker FAKER = new Faker();
 
   public static Message newMessage() {
     var e = new Message();

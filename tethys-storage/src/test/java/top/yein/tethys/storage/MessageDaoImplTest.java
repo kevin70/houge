@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.javafaker.Faker;
 import com.google.common.base.Stopwatch;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,22 +44,10 @@ class MessageDaoImplTest extends AbstractTestDao {
 
   @Test
   void insert() {
-    var entity = new Message();
-    entity.setId(TestUtils.newMessageId());
-    entity.setSenderId(0L);
-    entity.setReceiverId(0L);
-    entity.setGroupId(0L);
-    entity.setKind(1);
-    entity.setContent("Hello JUnit Test");
-    entity.setContentKind(1);
-    entity.setUrl("https://gitee.com/kk70/tethys");
-    entity.setCustomArgs("CUSTOM_ARGS");
-    entity.setCreateTime(LocalDateTime.now());
-    entity.setUpdateTime(LocalDateTime.now());
-
-    var dao = new MessageDaoImpl(r2dbcClient);
-    var p = dao.insert(entity);
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    var messageDao = new MessageDaoImpl(r2dbcClient);
+    var entity = TestData.newMessage();
+    var p = messageDao.insert(entity, List.of(entity.getSenderId(), entity.getReceiverId()));
+    StepVerifier.create(p).expectComplete().verify();
   }
 
   @DisplayName("保存消息与用户关系")
@@ -100,7 +87,7 @@ class MessageDaoImplTest extends AbstractTestDao {
     // 修改成功
     var p1 =
         messageDao
-            .insert(entity1)
+            .insert(entity1, List.of(entity1.getSenderId(), entity2.getReceiverId()))
             .then(
                 messageDao.updateUnreadStatus(
                     entity1.getReceiverId(), List.of(entity1.getId()), readStatus));
@@ -118,7 +105,7 @@ class MessageDaoImplTest extends AbstractTestDao {
     // 不能修改成功
     var p2 =
         messageDao
-            .insert(entity2)
+            .insert(entity2, List.of(entity2.getSenderId(), entity2.getReceiverId()))
             .then(
                 messageDao.updateUnreadStatus(
                     entity1.getReceiverId(), List.of(entity2.getId()), readStatus));

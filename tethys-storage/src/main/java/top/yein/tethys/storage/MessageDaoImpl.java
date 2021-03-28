@@ -52,24 +52,6 @@ public class MessageDaoImpl implements MessageDao {
   }
 
   @Override
-  public Mono<Integer> insert(Message entity) {
-    return rc.sql(INSERT_SQL)
-        .bind(
-            new Object[] {
-              entity.getId(),
-              fromOrNull(entity.getSenderId(), Long.class),
-              fromOrNull(entity.getReceiverId(), Long.class),
-              fromOrNull(entity.getGroupId(), Long.class),
-              fromOrNull(entity.getKind(), Integer.class),
-              entity.getContent(),
-              entity.getContentKind(),
-              fromOrNull(entity.getUrl(), String.class),
-              fromOrNull(entity.getCustomArgs(), String.class)
-            })
-        .rowsUpdated();
-  }
-
-  @Override
   public Mono<Void> insert(Message entity, List<Long> uids) {
     if (uids == null || uids.isEmpty()) {
       throw new IllegalArgumentException("[uids]不能为NULL或者EMPTY");
@@ -89,7 +71,7 @@ public class MessageDaoImpl implements MessageDao {
           .append("'")
           .append(",now());");
     }
-    return Mono.zip(insert(entity), rc.batchSql(sql.toString()).rowsUpdated()).then();
+    return Mono.zip(insert0(entity), rc.batchSql(sql.toString()).rowsUpdated()).then();
   }
 
   @Override
@@ -98,5 +80,22 @@ public class MessageDaoImpl implements MessageDao {
         .bind(new Object[] {v, Joiner.on(',').join(messageIds), uid})
         .rowsUpdated()
         .then();
+  }
+
+  private Mono<Integer> insert0(Message entity) {
+    return rc.sql(INSERT_SQL)
+      .bind(
+        new Object[] {
+          entity.getId(),
+          fromOrNull(entity.getSenderId(), Long.class),
+          fromOrNull(entity.getReceiverId(), Long.class),
+          fromOrNull(entity.getGroupId(), Long.class),
+          fromOrNull(entity.getKind(), Integer.class),
+          entity.getContent(),
+          entity.getContentKind(),
+          fromOrNull(entity.getUrl(), String.class),
+          fromOrNull(entity.getCustomArgs(), String.class)
+        })
+      .rowsUpdated();
   }
 }

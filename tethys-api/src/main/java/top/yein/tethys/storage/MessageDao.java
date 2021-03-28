@@ -27,14 +27,6 @@ import top.yein.tethys.entity.Message;
 public interface MessageDao {
 
   /**
-   * 保存消息.
-   *
-   * @param entity 消息实体
-   * @return 受影响行数
-   */
-  Mono<Integer> insert(Message entity);
-
-  /**
    * 保存消息并与用户进行关联.
    *
    * @param entity 消息实体
