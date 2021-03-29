@@ -164,6 +164,11 @@ public class MockHttpServerRequest implements HttpServerRequest {
   }
 
   @Override
+  public String requestId() {
+    return null;
+  }
+
+  @Override
   public String uri() {
     return uri;
   }
