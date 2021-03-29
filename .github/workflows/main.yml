@@ -58,7 +58,6 @@ jobs:
       - run: ./gradlew :flywayMigrate
         ###------------ 项目构建
       - run: ./gradlew build
-      - run: ./gradlew jacocoTestReport
         ###------------ 构造 Docker 镜像
       - run: ./gradlew :db:buildImage
       - run: ./gradlew :tethys-im-server:buildImage
