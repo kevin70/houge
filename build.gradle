@@ -31,6 +31,7 @@ allprojects {
 
   apply plugin: "java"
   apply plugin: "java-library"
+  apply plugin: "jacoco"
   apply plugin: "checkstyle"
   apply plugin: "io.spring.dependency-management"
   apply plugin: "com.github.johnrengelman.shadow"
@@ -50,6 +51,13 @@ allprojects {
       events "passed", "skipped", "failed"
     }
     workingDir rootProject.rootDir
+  }
+
+  jacocoTestReport {
+    reports {
+      xml.enabled = true
+      html.enabled = true
+    }
   }
 
   license {
