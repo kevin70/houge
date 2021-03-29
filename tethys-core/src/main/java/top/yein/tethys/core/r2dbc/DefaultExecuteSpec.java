@@ -16,7 +16,6 @@
 package top.yein.tethys.core.r2dbc;
 
 import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
@@ -28,6 +27,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.r2dbc.ConnectionAccessor;
 import top.yein.tethys.r2dbc.Parameter;
 import top.yein.tethys.r2dbc.R2dbcClient.ExecuteSpec;
 import top.yein.tethys.r2dbc.R2dbcClient.FetchSpec;
@@ -39,13 +39,13 @@ import top.yein.tethys.r2dbc.R2dbcClient.FetchSpec;
  */
 class DefaultExecuteSpec implements ExecuteSpec {
 
-  final ConnectionFactory connectionFactory;
+  final ConnectionAccessor connectionAccessor;
   final String sql;
   final Map<Integer, Parameter> parameters;
   String[] returnGeneratedColumns;
 
-  DefaultExecuteSpec(ConnectionFactory connectionFactory, String sql) {
-    this.connectionFactory = connectionFactory;
+  DefaultExecuteSpec(ConnectionAccessor connectionAccessor, String sql) {
+    this.connectionAccessor = connectionAccessor;
     this.sql = sql;
     this.parameters = new LinkedHashMap<>();
   }
@@ -100,7 +100,7 @@ class DefaultExecuteSpec implements ExecuteSpec {
   public <R> FetchSpec<R> map(BiFunction<Row, RowMetadata, R> mappingFunction) {
     return new DefaultFetchSpec<>(
         this.sql,
-        this.connectionFactory.create(),
+        this.connectionAccessor,
         this::statementFunction,
         result -> result.map(mappingFunction));
   }
@@ -120,10 +120,7 @@ class DefaultExecuteSpec implements ExecuteSpec {
   @Override
   public Mono<Integer> rowsUpdated() {
     return new DefaultFetchSpec<>(
-            this.sql,
-            this.connectionFactory.create(),
-            this::statementFunction,
-            Result::getRowsUpdated)
+            this.sql, this.connectionAccessor, this::statementFunction, Result::getRowsUpdated)
         .all()
         .last();
   }

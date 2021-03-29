@@ -22,6 +22,7 @@ import java.util.function.Function;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.r2dbc.ConnectionAccessor;
 import top.yein.tethys.r2dbc.IncorrectResultSizeException;
 import top.yein.tethys.r2dbc.R2dbcClient.FetchSpec;
 
@@ -33,17 +34,17 @@ import top.yein.tethys.r2dbc.R2dbcClient.FetchSpec;
 class DefaultFetchSpec<R> implements FetchSpec<R> {
 
   final String sql;
-  final Publisher<? extends Connection> connectionSource;
+  final ConnectionAccessor connectionAccessor;
   final Function<Connection, Statement> statementFunction;
   final Function<Result, Publisher<R>> resultMappingFunction;
 
   DefaultFetchSpec(
       String sql,
-      Publisher<? extends Connection> connectionSource,
+      ConnectionAccessor connectionAccessor,
       Function<Connection, Statement> statementFunction,
       Function<Result, Publisher<R>> resultMappingFunction) {
     this.sql = sql;
-    this.connectionSource = connectionSource;
+    this.connectionAccessor = connectionAccessor;
     this.statementFunction = statementFunction;
     this.resultMappingFunction = resultMappingFunction;
   }
@@ -68,10 +69,9 @@ class DefaultFetchSpec<R> implements FetchSpec<R> {
 
   @Override
   public Flux<R> all() {
-    return Flux.from(connectionSource)
-        .flatMap(
-            connection ->
-                Flux.from(statementFunction.apply(connection).execute())
-                    .flatMap(resultMappingFunction));
+    return this.connectionAccessor.inConnectionMany(
+        connection ->
+            Flux.from(statementFunction.apply(connection).execute())
+                .flatMap(resultMappingFunction));
   }
 }

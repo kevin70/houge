@@ -103,10 +103,7 @@ class MessageQueryDaoImplTest extends AbstractTestDao {
     }
 
     var q =
-        new UserMessageQuery.Builder()
-            .uid(uid)
-            .beginTime(LocalDateTime.now().minusHours(1))
-            .build();
+        UserMessageQuery.builder().uid(uid).beginTime(LocalDateTime.now().minusHours(1)).build();
     var paging = Paging.of(0, 10);
     var p =
         Flux.fromIterable(entities)

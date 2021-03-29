@@ -29,7 +29,7 @@ import reactor.core.publisher.Mono;
  *
  * @author KK (kzou227@qq.com)
  */
-public interface R2dbcClient {
+public interface R2dbcClient extends ConnectionAccessor {
 
   /**
    * 返回 R2DBC 连接工厂对象.

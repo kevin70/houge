@@ -15,8 +15,13 @@
  */
 package top.yein.tethys.core.r2dbc;
 
+import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import io.r2dbc.spi.R2dbcException;
 import java.util.Objects;
+import java.util.function.Function;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**
@@ -45,11 +50,58 @@ public class DefaultR2dbcClient implements R2dbcClient {
 
   @Override
   public ExecuteSpec sql(String sql) {
-    return new DefaultExecuteSpec(connectionFactory, sql);
+    return new DefaultExecuteSpec(this, sql);
   }
 
   @Override
   public BatchExecuteSpec batchSql(String sql) {
-    return new DefaultBatchExecuteSpec(connectionFactory, sql);
+    return new DefaultBatchExecuteSpec(this, sql);
+  }
+
+  @Override
+  public <T> Mono<T> inConnection(Function<Connection, Mono<T>> action) {
+    Mono<Connection> connectionMono = ConnectionFactoryUtils.getConnection(connectionFactory);
+    return Mono.usingWhen(
+        connectionMono,
+        connection -> {
+          try {
+            return action.apply(connection);
+          } catch (R2dbcException e) {
+            // FIXME 优化异常处理
+            return Mono.error(e);
+          }
+        },
+        this::closeConnection,
+        (it, err) -> it.close(),
+        this::closeConnection);
+  }
+
+  @Override
+  public <T> Flux<T> inConnectionMany(Function<Connection, Flux<T>> action) {
+    Mono<Connection> connectionMono = ConnectionFactoryUtils.getConnection(connectionFactory);
+    return Flux.usingWhen(
+        connectionMono,
+        connection -> {
+          try {
+            return action.apply(connection);
+          } catch (R2dbcException e) {
+            // FIXME 优化异常处理
+            return Mono.error(e);
+          }
+        },
+        this::closeConnection,
+        (it, err) -> it.close(),
+        this::closeConnection);
+  }
+
+  private Mono<Object> closeConnection(Connection connection) {
+    return ConnectionFactoryUtils.hasTransaction()
+        .flatMap(
+            v -> {
+              if (v) {
+                return Mono.empty();
+              }
+              return Mono.from(connection.close());
+            });
   }
 }
