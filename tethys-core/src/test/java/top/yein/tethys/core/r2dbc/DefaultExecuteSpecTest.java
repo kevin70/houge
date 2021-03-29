@@ -19,12 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.mockito.Mockito.mock;
 
-import io.r2dbc.spi.ConnectionFactories;
-import io.r2dbc.spi.ConnectionFactory;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
-import reactor.test.StepVerifier;
+import top.yein.tethys.r2dbc.ConnectionAccessor;
 import top.yein.tethys.r2dbc.Parameter;
 
 /**
@@ -34,38 +32,38 @@ import top.yein.tethys.r2dbc.Parameter;
  */
 class DefaultExecuteSpecTest {
 
-//  @Test
-//  void fetch() {
-//    var connectionFactory =
-//        ConnectionFactories.get(
-//            "r2dbc:postgresql://postgres:hellohuixin@192.168.1.106:5432/tethys");
-//    var sql = "select * from names";
-//    var spec = new DefaultExecuteSpec(connectionFactory, sql);
-//    var p = spec.fetch().one();
-//    StepVerifier.create(p)
-//        .consumeNextWith(
-//            map -> {
-//              System.out.println(map);
-//            })
-//        .expectComplete()
-//        .verify();
-//  }
-//
-//  @Test
-//  void rowsUpdated() {
-//    var connectionFactory =
-//        ConnectionFactories.get(
-//            "r2dbc:postgresql://postgres:hellohuixin@192.168.1.106:5432/tethys");
-//    var sql = "insert into names(name) values($1)";
-//    var spec = new DefaultExecuteSpec(connectionFactory, sql);
-//    var p = spec.bind(0, "kk").rowsUpdated();
-//    StepVerifier.create(p).expectNext(1).expectComplete().verify();
-//  }
+  //  @Test
+  //  void fetch() {
+  //    var connectionFactory =
+  //        ConnectionFactories.get(
+  //            "r2dbc:postgresql://postgres:hellohuixin@192.168.1.106:5432/tethys");
+  //    var sql = "select * from names";
+  //    var spec = new DefaultExecuteSpec(connectionFactory, sql);
+  //    var p = spec.fetch().one();
+  //    StepVerifier.create(p)
+  //        .consumeNextWith(
+  //            map -> {
+  //              System.out.println(map);
+  //            })
+  //        .expectComplete()
+  //        .verify();
+  //  }
+  //
+  //  @Test
+  //  void rowsUpdated() {
+  //    var connectionFactory =
+  //        ConnectionFactories.get(
+  //            "r2dbc:postgresql://postgres:hellohuixin@192.168.1.106:5432/tethys");
+  //    var sql = "insert into names(name) values($1)";
+  //    var spec = new DefaultExecuteSpec(connectionFactory, sql);
+  //    var p = spec.bind(0, "kk").rowsUpdated();
+  //    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+  //  }
 
   @Test
   void bind() {
-    var connectionFactory = mock(ConnectionFactory.class);
-    var spec = new DefaultExecuteSpec(connectionFactory, "select version()");
+    var connectionAccessor = mock(ConnectionAccessor.class);
+    var spec = new DefaultExecuteSpec(connectionAccessor, "select version()");
 
     // 绑定单项值
     spec.bind(0, "hello");
