@@ -1,6 +1,7 @@
 dependencies {
   api(project(":tethys-core"))
   api("io.r2dbc:r2dbc-postgresql")
+  api("io.r2dbc:r2dbc-pool")
 
   testImplementation(project(":tethys-util"))
   testImplementation("com.typesafe:config")
