@@ -84,12 +84,8 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   public void clean() {
     var future = serverInstanceDao.delete(fid).toFuture();
     try {
-      var n = future.get(5, TimeUnit.SECONDS);
-      if (n != 1) {
-        log.warn("<{}>应用标识[{}]清理受影响的记录为[{}]，预期受影响记录为[1]", applicationName(), fid, n);
-      } else {
-        log.info("<{}>应用标识[{}]清理完成", applicationName(), fid);
-      }
+      future.get(5, TimeUnit.SECONDS);
+      log.info("<{}>应用标识[{}]清理完成", applicationName(), fid);
     } catch (InterruptedException e) {
       log.warn("Interrupted", e);
       Thread.currentThread().interrupt();
@@ -105,7 +101,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
     var isRun = new AtomicBoolean(true);
     var tempFid = new AtomicReference<Integer>();
 
-    Supplier<Mono<Integer>> makeFidFunc =
+    Supplier<Mono<Void>> makeFidFunc =
         () -> {
           tempFid.set(ran.nextInt(MAX_FID) + MIN_FID);
 
@@ -123,12 +119,10 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
 
                     return serverInstanceDao
                         .insert(entity)
-                        .doOnNext(
-                            rowsUpdated -> {
-                              if (rowsUpdated == 1) {
-                                fidFuture.complete(tempFid.get());
-                                isRun.set(false);
-                              }
+                        .doOnSuccess(
+                            unused -> {
+                              fidFuture.complete(tempFid.get());
+                              isRun.set(false);
                             });
                   });
 
@@ -149,12 +143,10 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
                     log.info("修改 ServerInstance: {}", entity);
                     return serverInstanceDao.update(entity);
                   })
-              .doOnNext(
-                  rowsUpdated -> {
-                    if (rowsUpdated == 1) {
-                      fidFuture.complete(tempFid.get());
-                      isRun.set(false);
-                    }
+              .doOnSuccess(
+                  unused -> {
+                    fidFuture.complete(tempFid.get());
+                    isRun.set(false);
                   })
               .switchIfEmpty(insertMono);
         };
@@ -221,14 +213,7 @@ public abstract class AbstractApplicationIdentifier implements ApplicationIdenti
   private void checkHealth() {
     serverInstanceDao
         .updateCheckTime(fid)
-        .doOnNext(
-            rowsUpdated -> {
-              if (rowsUpdated == 1) {
-                log.debug("健康检查成功 fid: {}", fid);
-              } else {
-                log.error("健康检查失败 fid: {}, rowsUpdated: {}", rowsUpdated);
-              }
-            })
+        .doOnSuccess(unused -> log.debug("健康检查成功 fid: {}", fid))
         .onErrorContinue((ex, o) -> log.error("健康检查异常", ex))
         .delaySubscription(CHECK_HEALTH_PERIOD)
         .repeat(() -> true)

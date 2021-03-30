@@ -19,6 +19,8 @@ import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCode;
+import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.entity.ServerInstance;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
@@ -63,7 +65,7 @@ public class ServerInstanceDaoImpl implements ServerInstanceDao {
   }
 
   @Override
-  public Mono<Integer> insert(ServerInstance entity) {
+  public Mono<Void> insert(ServerInstance entity) {
     return rc.sql(INSERT_SQL)
         .bind(
             new Object[] {
@@ -81,16 +83,34 @@ public class ServerInstanceDaoImpl implements ServerInstanceDao {
               entity.getWorkDir(),
               entity.getPid()
             })
-        .rowsUpdated();
+        .rowsUpdated()
+        .doOnNext(
+            n -> {
+              if (n != 1) {
+                throw new BizCodeException(BizCode.C811, "保存 server instance 失败")
+                    .addContextValue("entity", entity);
+              }
+            })
+        .then();
   }
 
   @Override
-  public Mono<Integer> delete(int id) {
-    return rc.sql(DELETE_SQL).bind(0, id).rowsUpdated();
+  public Mono<Void> delete(int id) {
+    return rc.sql(DELETE_SQL)
+        .bind(0, id)
+        .rowsUpdated()
+        .doOnNext(
+            n -> {
+              if (n != 1) {
+                throw new BizCodeException(BizCode.C811, "删除 server instance 失败")
+                    .addContextValue("id", id);
+              }
+            })
+        .then();
   }
 
   @Override
-  public Mono<Integer> update(ServerInstance entity) {
+  public Mono<Void> update(ServerInstance entity) {
     return rc.sql(UPDATE_SQL)
         .bind(
             new Object[] {
@@ -109,12 +129,30 @@ public class ServerInstanceDaoImpl implements ServerInstanceDao {
               entity.getId(),
               entity.getVer()
             })
-        .rowsUpdated();
+        .rowsUpdated()
+        .doOnNext(
+            n -> {
+              if (n != 1) {
+                throw new BizCodeException(BizCode.C811, "更新 server instance 失败")
+                    .addContextValue("entity", entity);
+              }
+            })
+        .then();
   }
 
   @Override
-  public Mono<Integer> updateCheckTime(int id) {
-    return rc.sql(UPDATE_CHECK_TIME_SQL).bind(0, id).rowsUpdated();
+  public Mono<Void> updateCheckTime(int id) {
+    return rc.sql(UPDATE_CHECK_TIME_SQL)
+        .bind(0, id)
+        .rowsUpdated()
+        .doOnNext(
+            n -> {
+              if (n != 1) {
+                throw new BizCodeException(BizCode.C811, "更新 server instance `check_time` 失败")
+                    .addContextValue("id", id);
+              }
+            })
+        .then();
   }
 
   @Override

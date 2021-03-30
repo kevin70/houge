@@ -33,6 +33,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 import reactor.util.context.ContextView;
+import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.domain.CachedJwtAlgorithm;
@@ -73,18 +74,34 @@ public class JwtSecretDaoImpl implements JwtSecretDao {
   }
 
   @Override
-  public Mono<Integer> insert(JwtSecret entity) {
+  public Mono<Void> insert(JwtSecret entity) {
     return rc.sql(INSERT_SQL)
         .bind(new Object[] {entity.getId(), entity.getAlgorithm(), entity.getSecretKey()})
-        .rowsUpdated();
+        .rowsUpdated()
+        .doOnNext(
+            n -> {
+              if (n != 1) {
+                throw new BizCodeException(BizCode.C811, "保存 jwt secret 失败")
+                    .addContextValue("entity", entity);
+              }
+            })
+        .then();
   }
 
   @Override
-  public Mono<Integer> delete(String id) {
+  public Mono<Void> delete(String id) {
     return rc.sql(DELETE_SQL)
         .bind(0, System.currentTimeMillis() / 1000)
         .bind(1, id)
         .rowsUpdated()
+        .doOnNext(
+            n -> {
+              if (n != 1) {
+                throw new BizCodeException(BizCode.C811, "删除 jwt secret 失败")
+                    .addContextValue("id", id);
+              }
+            })
+        .then()
         .doOnSuccess(unused -> jwtAlgorithmCache.synchronous().invalidate(id));
   }
 

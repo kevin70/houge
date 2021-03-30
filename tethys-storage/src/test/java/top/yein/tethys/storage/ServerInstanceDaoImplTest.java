@@ -58,7 +58,7 @@ class ServerInstanceDaoImplTest extends AbstractTestDao {
     entity.setPid(ProcessHandle.current().pid());
 
     var p = dao.insert(entity);
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
 
     StepVerifier.create(
             r2dbcClient
@@ -135,7 +135,7 @@ class ServerInstanceDaoImplTest extends AbstractTestDao {
     entity.setPid(ProcessHandle.current().pid());
 
     var p = dao.insert(entity).then(dao.delete(entity.getId()));
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
   }
 
   @Test
@@ -175,7 +175,7 @@ class ServerInstanceDaoImplTest extends AbstractTestDao {
     newEntity.setVer(1);
 
     var p = dao.insert(entity).then(dao.update(newEntity));
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
 
     StepVerifier.create(
             r2dbcClient
@@ -254,7 +254,7 @@ class ServerInstanceDaoImplTest extends AbstractTestDao {
     entity.setPid(ProcessHandle.current().pid());
 
     var p = dao.insert(entity).then(dao.updateCheckTime(entity.getId()));
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
 
     // 清理数据
     clean("delete from server_instances where id=$1", new Object[] {entity.getId()});

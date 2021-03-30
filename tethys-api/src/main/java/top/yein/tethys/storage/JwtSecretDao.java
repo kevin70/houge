@@ -37,7 +37,7 @@ public interface JwtSecretDao {
    * @param entity 实体
    * @return 受影响行记录数
    */
-  Mono<Integer> insert(JwtSecret entity);
+  Mono<Void> insert(JwtSecret entity);
 
   /**
    * 软删除 JWT 密钥.
@@ -45,7 +45,7 @@ public interface JwtSecretDao {
    * @param id JWT kid
    * @return 受影响行记录数
    */
-  Mono<Integer> delete(String id);
+  Mono<Void> delete(String id);
 
   /**
    * 查询数据并返回实体.

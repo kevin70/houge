@@ -54,7 +54,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var p = dao.insert(entity);
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
 
     StepVerifier.create(
             r2dbcClient
@@ -93,7 +93,7 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
     entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
 
     var p = dao.insert(entity).then(dao.delete(entity.getId()));
-    StepVerifier.create(p).expectNext(1).expectComplete().verify();
+    StepVerifier.create(p).expectComplete().verify();
   }
 
   @Test

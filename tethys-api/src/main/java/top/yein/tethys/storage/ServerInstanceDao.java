@@ -31,7 +31,7 @@ public interface ServerInstanceDao {
    * @param entity 实体
    * @return 受影响行数
    */
-  Mono<Integer> insert(ServerInstance entity);
+  Mono<Void> insert(ServerInstance entity);
 
   /**
    * 删除应用服务实例.
@@ -39,7 +39,7 @@ public interface ServerInstanceDao {
    * @param id 应用 ID
    * @return 受影响行数
    */
-  Mono<Integer> delete(int id);
+  Mono<Void> delete(int id);
 
   /**
    * 更新应用服务实例.
@@ -47,7 +47,7 @@ public interface ServerInstanceDao {
    * @param entity 实体
    * @return 受影响行数
    */
-  Mono<Integer> update(ServerInstance entity);
+  Mono<Void> update(ServerInstance entity);
 
   /**
    * 更新最后检查时间.
@@ -55,7 +55,7 @@ public interface ServerInstanceDao {
    * @param id 应用 ID
    * @return 受影响行数
    */
-  Mono<Integer> updateCheckTime(int id);
+  Mono<Void> updateCheckTime(int id);
 
   /**
    * 查询应用服务实例.
