@@ -24,7 +24,7 @@ import reactor.util.context.Context;
 import top.yein.tethys.r2dbc.TransactionOperator;
 
 /**
- * 事务.
+ * R2DBC 事务操作实现.
  *
  * @author KK (kzou227@qq.com)
  */

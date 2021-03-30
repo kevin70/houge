@@ -18,20 +18,28 @@ package top.yein.tethys.r2dbc;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * R2DBC 事务操作接口.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public interface TransactionOperator {
 
   /**
-   * @param flux
-   * @param <T>
-   * @return
+   * 将指定的业务放置在 R2DBC 事务中执行.
+   *
+   * @param flux 业务操作
+   * @param <T> 返回类型
+   * @return 业务响应
    */
   <T> Flux<T> transactional(Flux<T> flux);
 
   /**
-   * @param mono
-   * @param <T>
-   * @return
+   * 将指定的业务放置在 R2DBC 事务中执行.
+   *
+   * @param mono 业务操作
+   * @param <T> 返回类型
+   * @return 业务响应
    */
   <T> Mono<T> transactional(Mono<T> mono);
 }

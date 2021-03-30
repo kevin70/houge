@@ -20,20 +20,28 @@ import java.util.function.Function;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * R2DBC {@link Connection} 访问器.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public interface ConnectionAccessor {
 
   /**
-   * @param action
-   * @param <T>
-   * @return
+   * 在 {@link Connection} 中执行一些操作.
+   *
+   * @param action 执行的操作
+   * @param <T> 返回类型
+   * @return 业务响应
    */
   <T> Mono<T> inConnection(Function<Connection, Mono<T>> action);
 
   /**
-   * @param action
-   * @param <T>
-   * @return
+   * 在 {@link Connection} 中执行一些操作.
+   *
+   * @param action 执行的操作
+   * @param <T> 返回类型
+   * @return 业务响应
    */
   <T> Flux<T> inConnectionMany(Function<Connection, Flux<T>> action);
 }
