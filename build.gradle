@@ -2,7 +2,8 @@ buildscript {
   dependencies {
     // https://github.com/fabric8io-images/run-java-sh
     // run-java.sh 是Java应用程序的通用启动脚本，特别是为从容器中运行而精心编制的。
-    classpath("io.fabric8:run-java-sh:1.3.8")
+//    classpath("io.fabric8:run-java-sh:1.3.8")
+    classpath("org.ow2.asm:asm:9.1")
   }
 }
 
@@ -51,6 +52,10 @@ allprojects {
       events "passed", "skipped", "failed"
     }
     workingDir rootProject.rootDir
+  }
+
+  jacoco {
+    toolVersion = "0.8.3"
   }
 
   jacocoTestReport {
