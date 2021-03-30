@@ -19,7 +19,11 @@
 - 高性能
 - 可靠的
 
-## 流程图
+## 技术栈
+
+![](docs/images/tethys-tech-stack.png)
+
+## 交互流程图
 
 ![](docs/images/flow-20200330.png)
 
@@ -40,9 +44,9 @@
 
 - Java 11
 - IntelliJ IDEA
-    - [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
-    - [Google Java Format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
-    - [SonarLint](https://www.sonarlint.org/intellij)
+  - [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
+  - [Google Java Format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+  - [SonarLint](https://www.sonarlint.org/intellij)
 - Redis
 - [websocat](https://github.com/vi/websocat) WebSocket 命令行测试工具
 
