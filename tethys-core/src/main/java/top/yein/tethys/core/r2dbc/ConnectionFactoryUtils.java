@@ -18,7 +18,6 @@ package top.yein.tethys.core.r2dbc;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
 import reactor.core.publisher.Mono;
-import reactor.util.context.Context;
 
 /**
  * R2DBC {@link io.r2dbc.spi.ConnectionFactory} 工具类.
@@ -36,28 +35,11 @@ public final class ConnectionFactoryUtils {
   public static Mono<Connection> getConnection(ConnectionFactory connectionFactory) {
     return Mono.deferContextual(
         contextView -> {
-          if (contextView.hasKey(ConnectionHolder.class)) {
-            var holder = contextView.get(ConnectionHolder.class);
-            return Mono.just(holder.connection);
+          if (contextView.hasKey(Connection.class)) {
+            return Mono.just(contextView.get(Connection.class));
           }
-
-          var connectionHolder = new ConnectionHolder();
-          var connectionMono =
-              Mono.from(connectionFactory.create())
-                  .doOnNext(
-                      connection -> {
-                        connectionHolder.connection = connection;
-                      });
-          return connectionMono.contextWrite(Context.of(ConnectionHolder.class, connectionHolder));
+          return Mono.from(connectionFactory.create());
         });
-  }
-
-  /**
-   * @param connection
-   * @return
-   */
-  public static Mono<Void> releaseConnection(Connection connection) {
-    return Mono.from(connection.close());
   }
 
   /**
@@ -65,11 +47,7 @@ public final class ConnectionFactoryUtils {
    *
    * @return
    */
-  public static Mono<Boolean> hasTransaction() {
-    return Mono.deferContextual(
-        contextView -> {
-          // FIXME
-          return Mono.just(contextView.hasKey("transaction"));
-        });
+  public static Mono<Boolean> hasContextConnection() {
+    return Mono.deferContextual(contextView -> Mono.just(contextView.hasKey(Connection.class)));
   }
 }

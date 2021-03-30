@@ -94,14 +94,12 @@ public class DefaultR2dbcClient implements R2dbcClient {
         this::closeConnection);
   }
 
-  private Mono<Object> closeConnection(Connection connection) {
-    return ConnectionFactoryUtils.hasTransaction()
-        .flatMap(
-            v -> {
-              if (v) {
-                return Mono.empty();
-              }
-              return Mono.from(connection.close());
-            });
+  private Mono<Void> closeConnection(Connection connection) {
+    return Mono.defer(
+        () ->
+            ConnectionFactoryUtils.hasContextConnection()
+                .filter(it -> !it)
+                .delayUntil(unused -> connection.close())
+                .then());
   }
 }
