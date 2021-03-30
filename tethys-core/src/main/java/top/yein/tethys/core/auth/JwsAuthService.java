@@ -42,7 +42,11 @@ public class JwsAuthService implements AuthService {
 
   private final JwtSecretDao jwtSecretDao;
 
-  /** @param jwtSecretDao */
+  /**
+   * 可以被 IoC 容器使用的构造函数.
+   *
+   * @param jwtSecretDao JWT 密钥存储对象
+   */
   @Inject
   public JwsAuthService(JwtSecretDao jwtSecretDao) {
     this.jwtSecretDao = jwtSecretDao;
