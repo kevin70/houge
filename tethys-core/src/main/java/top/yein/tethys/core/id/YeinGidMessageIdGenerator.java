@@ -30,7 +30,11 @@ public class YeinGidMessageIdGenerator implements MessageIdGenerator {
 
   private final ApplicationIdentifier applicationIdentifier;
 
-  /** @param applicationIdentifier */
+  /**
+   * 可以被 IoC 容器使用的构造函数.
+   *
+   * @param applicationIdentifier 应用标志对象
+   */
   @Inject
   public YeinGidMessageIdGenerator(ApplicationIdentifier applicationIdentifier) {
     this.applicationIdentifier = applicationIdentifier;
