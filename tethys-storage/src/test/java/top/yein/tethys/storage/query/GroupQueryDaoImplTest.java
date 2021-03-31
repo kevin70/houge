@@ -16,6 +16,7 @@
 package top.yein.tethys.storage.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -39,6 +40,69 @@ class GroupQueryDaoImplTest extends AbstractTestDao {
 
   private GroupQueryDaoImpl newGroupQueryDao() {
     return new GroupQueryDaoImpl(r2dbcClient);
+  }
+
+  @Test
+  void queryById() {
+    var groupDao = newGroupDao();
+    var groupQueryDao = newGroupQueryDao();
+    var entity = TestData.newGroup();
+    var idVar = new long[1];
+    var p =
+        groupDao
+            .insert(entity)
+            .flatMap(
+                id -> {
+                  idVar[0] = id;
+                  return groupQueryDao.queryById(id);
+                });
+    StepVerifier.create(p)
+        .consumeNextWith(
+            dbRow ->
+                assertSoftly(
+                    s -> {
+                      s.assertThat(dbRow.getId()).as("id").isEqualTo(idVar[0]);
+                      s.assertThat(dbRow.getCreatorId())
+                          .as("creator_id")
+                          .isEqualTo(entity.getCreatorId());
+                      s.assertThat(dbRow.getOwnerId())
+                          .as("owner_id")
+                          .isEqualTo(entity.getOwnerId());
+                      s.assertThat(dbRow.getMemberSize()).as("member_size").isPositive();
+                      s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
+                      s.assertThat(dbRow.getUpdateTime()).as("update_time").isNotNull();
+                    }));
+
+    // 清理数据
+    delete("groups", Map.of("id", idVar[0]));
+    delete("groups_member", Map.of("gid", idVar[0]));
+  }
+
+  @Test
+  void queryUidByGid() {
+    var groupDao = newGroupDao();
+    var groupQueryDao = newGroupQueryDao();
+    var entity = TestData.newGroup();
+
+    var idVar = new long[1];
+    var p =
+        groupDao
+            .insert(entity)
+            .flatMapMany(
+                id -> {
+                  idVar[0] = id;
+                  return groupQueryDao.queryUidByGid(id);
+                });
+    StepVerifier.create(p)
+        .recordWith(() -> new ArrayList<>())
+        .thenConsumeWhile(uid -> true)
+        .consumeRecordedWith(uids -> assertThat(uids).contains(entity.getCreatorId()))
+        .expectComplete()
+        .verify();
+
+    // 清理数据
+    delete("groups", Map.of("id", idVar[0]));
+    delete("groups_member", Map.of("gid", idVar[0]));
   }
 
   @Test
