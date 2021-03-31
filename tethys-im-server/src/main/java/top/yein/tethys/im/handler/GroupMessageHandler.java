@@ -15,13 +15,19 @@
  */
 package top.yein.tethys.im.handler;
 
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import reactor.netty.ReactorNetty;
+import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.constants.MessageReadStatus;
+import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
+import top.yein.tethys.core.util.PacketUtils;
 import top.yein.tethys.entity.Message;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
@@ -83,11 +89,25 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
     var groupId = packet.getTo();
     var from = Optional.ofNullable(packet.getFrom()).orElseGet(session::uid);
 
+    // ----------------------------------------------------------------------------
+    // TIPS: 针对群组消息优化
+    // 一次序列化并消息推送给群组所有成员
+    ByteBuf byteBuf;
+    try {
+      byteBuf = PacketUtils.toByteBuf(packet);
+    } catch (IOException e) {
+      log.error("[session={}]序列化 Packet 异常 {}", session, packet, e);
+      return Mono.error(new BizCodeException(BizCodes.C3601));
+    }
+
     var sendMono =
         sessionGroupManager
             .findByGroupId(groupId)
             .filter(toSession -> toSession != session)
-            .flatMap(toSession -> toSession.sendPacket(packet));
+            .flatMap(toSession -> toSession.send(Mono.fromSupplier(byteBuf::retainedDuplicate)))
+            // TIPS: 手动释放 Netty ByteBuf
+            .doOnCancel(() -> ReactorNetty.safeRelease(byteBuf))
+            .doOnTerminate(() -> ReactorNetty.safeRelease(byteBuf));
 
     // 存储的消息实体
     var entity =
