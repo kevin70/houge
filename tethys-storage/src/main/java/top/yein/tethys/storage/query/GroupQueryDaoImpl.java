@@ -34,6 +34,7 @@ public class GroupQueryDaoImpl implements GroupQueryDao {
 
   private static final String QUERY_BY_ID_SQL = "SELECT * FROM groups WHERE id=$1";
   private static final String QUERY_MEMBERS_UID_SQL = "SELECT uid FROM groups_member WHERE gid=$1";
+  private static final String QUERY_GID_BY_UID = "SELECT gid FROM groups_member WHERE uid=$1";
   private static final String EXISTS_BY_ID_SQL = "SELECT COUNT(*) FROM groups WHERE id=$1";
 
   private final R2dbcClient rc;
@@ -56,6 +57,11 @@ public class GroupQueryDaoImpl implements GroupQueryDao {
   @Override
   public Flux<Long> queryMembersUid(long id) {
     return rc.sql(QUERY_MEMBERS_UID_SQL).bind(0, id).map(row -> row.get(0, Long.class)).all();
+  }
+
+  @Override
+  public Flux<Long> queryGidByUid(long uid) {
+    return rc.sql(QUERY_GID_BY_UID).bind(0, uid).map(row -> row.get(0, Long.class)).all();
   }
 
   @Override

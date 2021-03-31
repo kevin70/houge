@@ -15,6 +15,9 @@
  */
 package top.yein.tethys.storage.query;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
@@ -39,6 +42,30 @@ class GroupQueryDaoImplTest extends AbstractTestDao {
   }
 
   @Test
+  void queryGidByUid() {
+    var groupDao = newGroupDao();
+    var groupQueryDao = newGroupQueryDao();
+    var entity = TestData.newGroup();
+
+    var idVar = new long[1];
+    var p =
+        groupDao
+            .insert(entity)
+            .doOnNext(id -> idVar[0] = id)
+            .thenMany(groupQueryDao.queryGidByUid(entity.getCreatorId()));
+    StepVerifier.create(p)
+        .recordWith(() -> new ArrayList<>())
+        .thenConsumeWhile(id -> true)
+        .consumeRecordedWith(ids -> assertThat(ids).contains(idVar[0]))
+        .expectComplete()
+        .verify();
+
+    // 清理数据
+    delete("groups", Map.of("id", idVar[0]));
+    delete("groups_member", Map.of("gid", idVar[0]));
+  }
+
+  @Test
   void existsById() {
     var groupDao = newGroupDao();
     var groupQueryDao = newGroupQueryDao();
@@ -53,6 +80,7 @@ class GroupQueryDaoImplTest extends AbstractTestDao {
 
     // 清理数据
     delete("groups", Map.of("id", idVar[0]));
+    delete("groups_member", Map.of("gid", idVar[0]));
   }
 
   @Test
