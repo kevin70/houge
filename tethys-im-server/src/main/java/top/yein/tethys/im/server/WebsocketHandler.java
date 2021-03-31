@@ -18,7 +18,6 @@ package top.yein.tethys.im.server;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -39,7 +38,6 @@ import reactor.netty.channel.AbortedException;
 import reactor.netty.http.HttpInfos;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
-import reactor.util.context.Context;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.auth.AuthService;
@@ -188,12 +186,9 @@ public class WebsocketHandler {
     }
 
     // 解析包内容
-    final ByteBuf content = frame.content();
-    final DataInput input = new ByteBufInputStream(content);
     final Packet packet;
-
     try {
-      packet = objectReader.readValue(input);
+      packet = objectReader.readValue((DataInput) new ByteBufInputStream(frame.content()));
     } catch (UnrecognizedPropertyException e) {
       var ep =
           ErrorPacket.builder()
@@ -226,7 +221,6 @@ public class WebsocketHandler {
 
     // 包处理
     return Mono.defer(() -> packetDispatcher.dispatch(session, packet))
-        .contextWrite(Context.of(ByteBuf.class, packet))
         .onErrorResume(
             t -> {
               // 业务逻辑异常处理
