@@ -124,7 +124,7 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
             .build();
     var storageMono =
         groupQueryDao
-            .queryMembersUid(groupId)
+            .queryUidByGid(groupId)
             .collectList()
             .flatMap(memberIds -> messageDao.insert(entity, memberIds));
     return storageMono.thenMany(sendMono).then();
