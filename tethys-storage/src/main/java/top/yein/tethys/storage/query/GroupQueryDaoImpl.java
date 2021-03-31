@@ -55,7 +55,7 @@ public class GroupQueryDaoImpl implements GroupQueryDao {
   }
 
   @Override
-  public Flux<Long> queryMembersUid(long id) {
+  public Flux<Long> queryUidByGid(long id) {
     return rc.sql(QUERY_MEMBERS_UID_SQL).bind(0, id).map(row -> row.get(0, Long.class)).all();
   }
 

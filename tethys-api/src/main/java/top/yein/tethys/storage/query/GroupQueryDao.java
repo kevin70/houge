@@ -41,7 +41,7 @@ public interface GroupQueryDao {
    * @param id 群 ID
    * @return 成员用户 ID
    */
-  Flux<Long> queryMembersUid(long id);
+  Flux<Long> queryUidByGid(long id);
 
   /**
    * 查询指定用户已经关联的群组 IDs.
