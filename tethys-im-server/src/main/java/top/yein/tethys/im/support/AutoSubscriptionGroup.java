@@ -67,7 +67,7 @@ public class AutoSubscriptionGroup implements SessionListener {
     return groupQueryDao
         .queryGidByUid(session.uid())
         .collect(Collectors.toSet())
-        .doOnNext(groupIds -> log.debug("{}用户订阅群组{}消息", session, groupIds))
+        .doOnNext(groupIds -> log.debug("用户订阅群组{}消息{}", groupIds, session))
         .flatMap(groupIds -> sessionGroupManager.subGroups(session, groupIds));
   }
 }
