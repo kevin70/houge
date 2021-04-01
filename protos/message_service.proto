@@ -1,17 +1,22 @@
 syntax = "proto3";
+import "google/protobuf/empty.proto";
 
 option java_package = "top.yein.tethys.grpc";
 option java_multiple_files = true;
 
-message MessageRequest {
-  bytes content = 1;
-  repeated fixed64 uids = 3;
+// 最终消息请求
+message SafeMessageRequest {
+  // 消息内容
+  bytes message = 1;
+  // 接收消息的用户 ID
+  fixed64 uid = 3;
+  // 接收消息的群组 ID
+  fixed64 gid = 4;
 }
 
-message MessageReplay {
-  string message_id = 1;
-}
-
+// 消息服务
 service MessageService {
-  rpc Send(MessageRequest) returns(MessageReplay){}
+
+  // 发送最终消息
+  rpc SendSafe(SafeMessageRequest) returns(google.protobuf.Empty){}
 }
