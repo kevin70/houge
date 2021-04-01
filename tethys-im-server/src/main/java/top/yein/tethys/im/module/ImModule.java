@@ -97,7 +97,7 @@ public class ImModule extends AbstractModule {
     // PacketHandlers =========================================<<<
 
     // Support =========================================<<<
-    bind(AutoSubscriptionGroup.class).in(Scopes.SINGLETON);
+    bind(AutoSubscriptionGroup.class).asEagerSingleton();
   }
 
   @Provides
