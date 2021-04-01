@@ -41,6 +41,7 @@ import top.yein.tethys.im.handler.PrivateMessageHandler;
 import top.yein.tethys.im.server.PacketDispatcher;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.im.server.WebsocketHandler;
+import top.yein.tethys.im.support.AutoSubscriptionGroup;
 import top.yein.tethys.packet.Namespaces;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.session.SessionIdGenerator;
@@ -94,6 +95,9 @@ public class ImModule extends AbstractModule {
         .to(GroupUnsubscribeHandler.class)
         .in(Scopes.SINGLETON);
     // PacketHandlers =========================================<<<
+
+    // Support =========================================<<<
+    bind(AutoSubscriptionGroup.class).in(Scopes.SINGLETON);
   }
 
   @Provides
