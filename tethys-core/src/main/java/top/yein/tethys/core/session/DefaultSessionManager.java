@@ -230,6 +230,6 @@ public class DefaultSessionManager implements SessionManager {
                                 listener,
                                 e))
                     .onErrorResume(RuntimeException.class, e -> Mono.empty()))
-        .last();
+        .then();
   }
 }
