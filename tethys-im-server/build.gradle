@@ -3,6 +3,15 @@ apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.im.main.ImMain"
 
+sourceSets {
+  main {
+    java {
+      srcDir "${buildDir}/generated/source/proto/main/grpc"
+      srcDir "${buildDir}/generated/source/proto/main/java"
+    }
+  }
+}
+
 protobuf {
   protoc {
     artifact = "com.google.protobuf:protoc:3.12.0"
@@ -12,7 +21,6 @@ protobuf {
       artifact = "io.grpc:protoc-gen-grpc-java:1.36.1"
     }
   }
-  generatedFilesBaseDir = "$projectDir/src/generated"
   generateProtoTasks {
     all()*.plugins {
       grpc {}
@@ -53,6 +61,7 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 }
 
 dependencies {
+  compileOnly("org.apache.tomcat:annotations-api:6.0.53")
   implementation(project(":tethys-core"))
   implementation(project(":tethys-service"))
   implementation("org.apache.logging.log4j:log4j-core")
