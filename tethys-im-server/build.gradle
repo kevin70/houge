@@ -3,6 +3,23 @@ apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.im.main.ImMain"
 
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:3.12.0"
+  }
+  plugins {
+    grpc {
+      artifact = "io.grpc:protoc-gen-grpc-java:1.36.1"
+    }
+  }
+  generatedFilesBaseDir = "$projectDir/src/generated"
+  generateProtoTasks {
+    all()*.plugins {
+      grpc {}
+    }
+  }
+}
+
 File dockerInputDir() {
   def f = file("${buildDir}/docker/")
   if (!f.exists()) {
@@ -41,4 +58,9 @@ dependencies {
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
   implementation("io.projectreactor:reactor-tools")
+  implementation("io.grpc:grpc-netty")
+  implementation("io.grpc:grpc-protobuf")
+  implementation("io.grpc:grpc-stub")
+
+  protobuf files("${rootDir}/protos")
 }

@@ -17,6 +17,7 @@ plugins {
   id "com.github.johnrengelman.shadow" version "5.2.0"
   id "com.bmuschko.docker-remote-api" version "6.7.0"
   id "org.sonarqube" version "3.1.1"
+  id "com.google.protobuf" version "0.8.15"
 }
 
 flyway {
@@ -34,6 +35,7 @@ allprojects {
   apply plugin: "java-library"
   apply plugin: "jacoco"
   apply plugin: "checkstyle"
+  apply plugin: "com.google.protobuf"
   apply plugin: "io.spring.dependency-management"
   apply plugin: "com.github.johnrengelman.shadow"
   apply plugin: "me.champeau.gradle.jmh"
