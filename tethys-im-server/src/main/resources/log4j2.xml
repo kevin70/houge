@@ -33,6 +33,7 @@
   <Loggers>
     <Logger name="io.netty" level="info"/>
     <Logger name="io.netty.buffer.PooledByteBufAllocator" level="debug"/>
+    <Logger name="io.r2dbc.postgresql" level="info"/>
     <!-- 应用程序度量日志配置 -->
     <Logger name="io.micrometer.core.instrument.logging.LoggingMeterRegistry" additivity="false">
       <AppenderRef ref="AppMetricsAsync"/>
