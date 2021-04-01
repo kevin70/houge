@@ -18,5 +18,5 @@ message SafeMessageRequest {
 service MessageService {
 
   // 发送最终消息
-  rpc SendSafe(SafeMessageRequest) returns(google.protobuf.Empty){}
+  rpc SendSafeMessage(SafeMessageRequest) returns(google.protobuf.Empty){}
 }
