@@ -27,6 +27,7 @@ import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.domain.Paging;
 import top.yein.tethys.service.MessageService;
+import top.yein.tethys.service.RemoteMessageService;
 import top.yein.tethys.storage.query.UserMessageQuery;
 import top.yein.tethys.vo.MessageReadVo;
 import top.yein.tethys.vo.MessageSendVo;
@@ -40,15 +41,18 @@ import top.yein.tethys.vo.MessageSendVo;
 public class MessageResource extends AbstractRestSupport implements RoutingService {
 
   private final MessageService messageService;
+  private final RemoteMessageService remoteMessageService;
 
   /**
    * 可以被 IoC 容器使用的构造函数.
    *
    * @param messageService 消息服务
+   * @param remoteMessageService 远程消息服务
    */
   @Inject
-  public MessageResource(MessageService messageService) {
+  public MessageResource(MessageService messageService, RemoteMessageService remoteMessageService) {
     this.messageService = messageService;
+    this.remoteMessageService = remoteMessageService;
   }
 
   @Override
@@ -114,9 +118,10 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
             t -> {
               var ac = t.getT1();
               var vo = t.getT2();
-              //
               log.debug("发送消息[uid={}, vo={}]", ac.uid(), vo);
-              return Mono.empty();
+              return remoteMessageService
+                  .sendMessage(ac.uid(), vo)
+                  .flatMap(result -> json(response, result));
             });
   }
 }
