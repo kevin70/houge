@@ -23,7 +23,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.entity.Group;
 import top.yein.tethys.storage.data.TestData;
 
 /**

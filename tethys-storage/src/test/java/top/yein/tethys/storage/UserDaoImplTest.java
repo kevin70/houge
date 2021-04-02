@@ -19,7 +19,7 @@ import com.github.javafaker.Faker;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.entity.User;
 
 /**
  * {@link UserDaoImpl} 单元测试.

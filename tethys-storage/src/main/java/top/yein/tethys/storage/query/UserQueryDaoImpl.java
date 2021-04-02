@@ -21,7 +21,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.Nil;
-import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.entity.User;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**

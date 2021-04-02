@@ -17,7 +17,7 @@ package top.yein.tethys.storage;
 
 import java.util.List;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.entity.Message;
+import top.yein.tethys.storage.entity.Message;
 
 /**
  * 消息数据访问实体.

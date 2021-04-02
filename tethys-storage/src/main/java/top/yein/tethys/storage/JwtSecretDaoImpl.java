@@ -37,7 +37,7 @@ import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.domain.CachedJwtAlgorithm;
-import top.yein.tethys.entity.JwtSecret;
+import top.yein.tethys.storage.entity.JwtSecret;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**

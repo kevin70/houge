@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors
+ * Copyright 2019-2021 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.constants.message;
+package top.yein.tethys.storage.entity;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Test;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
- * {@link ContentKind} 单元测试.
+ * {@code t_user_message} 用户消息关联表.
  *
  * @author KK (kzou227@qq.com)
  */
-class ContentKindTest {
+@Data
+public class UserMessage {
 
-  @Test
-  void forCode() {
-    for (ContentKind value : ContentKind.values()) {
-      assertThat(ContentKind.forCode(value.getCode())).isEqualTo(value);
-    }
-    assertThat(ContentKind.forCode(null)).isEqualTo(ContentKind.UNRECOGNIZED);
-    assertThat(ContentKind.forCode(9999)).isEqualTo(ContentKind.UNRECOGNIZED);
-  }
+  /** 用户 ID. */
+  private Long uid;
+  /** 消息 ID. */
+  private String messageId;
+  /** 创建时间. */
+  private LocalDateTime createTime;
 }

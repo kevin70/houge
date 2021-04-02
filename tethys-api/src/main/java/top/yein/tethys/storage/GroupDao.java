@@ -16,7 +16,7 @@
 package top.yein.tethys.storage;
 
 import reactor.core.publisher.Mono;
-import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.entity.Group;
 
 /**
  * 群组数据访问接口.

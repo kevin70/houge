@@ -13,35 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package top.yein.tethys.constants.message;
+package top.yein.tethys.constants;
 
 import top.yein.tethys.EnumLite;
 
 /**
- * 消息内容类型枚举定义.
+ * 消息读取状态枚举.
  *
  * <p>{@link #UNRECOGNIZED} 是枚举的空值.
  *
  * @author KK (kzou227@qq.com)
  */
-public enum ContentKind implements EnumLite {
+public enum ReadStatus implements EnumLite {
 
   /** 不认识未被承认的枚举. */
   UNRECOGNIZED(-1),
-  /** 普通文本消息. */
-  TEXT(0),
-  /** 图片消息. */
-  IMAGE(1),
-  /** 语音消息. */
-  VOICE(2),
-  /** 视频消息. */
-  VIDEO(3),
-  /** 系统消息. */
-  SYSTEM(9),
+  /** 已读状态. */
+  READ(0),
+  /** 未读状态. */
+  UNREAD(1),
   ;
+
   private final int code;
 
-  ContentKind(int code) {
+  ReadStatus(int code) {
     this.code = code;
   }
 
@@ -58,24 +53,15 @@ public enum ContentKind implements EnumLite {
    * @param code 对应枚举项的数值
    * @return 与给定数值关联的枚举
    */
-  public static ContentKind forCode(Integer code) {
+  public static ReadStatus forCode(Integer code) {
     if (code == null) {
       return UNRECOGNIZED;
     }
-    if (code == TEXT.code) {
-      return TEXT;
+    if (code == READ.code) {
+      return READ;
     }
-    if (code == IMAGE.code) {
-      return IMAGE;
-    }
-    if (code == VOICE.code) {
-      return VOICE;
-    }
-    if (code == VIDEO.code) {
-      return VIDEO;
-    }
-    if (code == SYSTEM.code) {
-      return SYSTEM;
+    if (code == UNREAD.code) {
+      return UNREAD;
     }
     return UNRECOGNIZED;
   }

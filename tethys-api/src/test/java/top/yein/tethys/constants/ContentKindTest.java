@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors
+ * Copyright 2019-2020 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,24 @@
  */
 package top.yein.tethys.constants;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import top.yein.tethys.constants.ContentKind;
+
 /**
- * 消息读取状态.
+ * {@link ContentKind} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-public enum MessageReadStatus {
+class ContentKindTest {
 
-  /** 没有状态. */
-  NONE(-1),
-  /** 消息已读状态. */
-  READ(0),
-  /** 消息未读状态. */
-  UNREAD(1),
-  ;
-  private final int code;
-
-  MessageReadStatus(int code) {
-    this.code = code;
-  }
-
-  /**
-   * 返回消息读取状态码.
-   *
-   * @return 状态码
-   */
-  public int getCode() {
-    return code;
+  @Test
+  void forCode() {
+    for (ContentKind value : ContentKind.values()) {
+      assertThat(ContentKind.forCode(value.getCode())).isEqualTo(value);
+    }
+    assertThat(ContentKind.forCode(null)).isEqualTo(ContentKind.UNRECOGNIZED);
+    assertThat(ContentKind.forCode(9999)).isEqualTo(ContentKind.UNRECOGNIZED);
   }
 }

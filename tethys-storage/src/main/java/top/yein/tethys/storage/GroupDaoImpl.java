@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.entity.Group;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**

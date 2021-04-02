@@ -30,7 +30,7 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import top.yein.tethys.domain.CachedJwtAlgorithm;
-import top.yein.tethys.entity.JwtSecret;
+import top.yein.tethys.storage.entity.JwtSecret;
 
 /**
  * {@link JwtSecretDaoImpl} 单元测试.

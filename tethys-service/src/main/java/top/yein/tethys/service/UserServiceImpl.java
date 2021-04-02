@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.tethys.Nil;
 import top.yein.tethys.dto.UserCreateDto;
-import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.entity.User;
 import top.yein.tethys.storage.UserDao;
 import top.yein.tethys.storage.query.UserQueryDao;
 import top.yein.tethys.vo.UserCreateVo;

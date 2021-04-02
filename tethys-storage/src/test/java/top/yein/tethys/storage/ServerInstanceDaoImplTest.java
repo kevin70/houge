@@ -21,7 +21,7 @@ import com.github.javafaker.Faker;
 import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import top.yein.tethys.entity.ServerInstance;
+import top.yein.tethys.storage.entity.ServerInstance;
 import top.yein.tethys.util.HostNameUtils;
 
 /**

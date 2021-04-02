@@ -25,10 +25,9 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.Nil;
-import top.yein.tethys.constants.MessageReadStatus;
+import top.yein.tethys.constants.ReadStatus;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
-import top.yein.tethys.entity.Message;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.handler.internal.MessagePacketChecker;
 import top.yein.tethys.im.server.PacketHandler;
@@ -37,6 +36,7 @@ import top.yein.tethys.service.UserService;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionManager;
 import top.yein.tethys.storage.MessageDao;
+import top.yein.tethys.storage.entity.Message;
 
 /**
  * 私聊处理器.
@@ -110,7 +110,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
                   .contentKind(packet.getContentKind())
                   .url(packet.getUrl())
                   .customArgs(packet.getCustomArgs())
-                  .unread(MessageReadStatus.UNREAD.getCode())
+                  .unread(ReadStatus.UNREAD.getCode())
                   .build();
           var p2 = messageDao.insert(entity, List.of(from, to));
           return p2.thenMany(p1).then();

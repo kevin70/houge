@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.Nil;
-import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.entity.Group;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**

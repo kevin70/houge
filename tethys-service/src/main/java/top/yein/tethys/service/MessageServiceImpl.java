@@ -21,10 +21,10 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.constants.MessageReadStatus;
+import top.yein.tethys.constants.ReadStatus;
 import top.yein.tethys.domain.Paging;
-import top.yein.tethys.entity.Message;
 import top.yein.tethys.storage.MessageDao;
+import top.yein.tethys.storage.entity.Message;
 import top.yein.tethys.storage.query.MessageQueryDao;
 import top.yein.tethys.storage.query.UserMessageQuery;
 
@@ -57,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
 
   @Override
   public Mono<Void> readMessages(long uid, List<String> messageIds) {
-    return messageDao.updateUnreadStatus(uid, messageIds, MessageReadStatus.READ.getCode());
+    return messageDao.updateUnreadStatus(uid, messageIds, ReadStatus.READ.getCode());
   }
 
   @Override

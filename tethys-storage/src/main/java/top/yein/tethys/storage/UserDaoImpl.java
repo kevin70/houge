@@ -17,7 +17,7 @@ package top.yein.tethys.storage;
 
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.entity.User;
 import top.yein.tethys.r2dbc.Parameter;
 import top.yein.tethys.r2dbc.R2dbcClient;
 

@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.tethys.Nil;
 import top.yein.tethys.dto.GroupCreateDto;
-import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.entity.Group;
 import top.yein.tethys.storage.GroupDao;
 import top.yein.tethys.storage.query.GroupQueryDao;
 import top.yein.tethys.vo.GroupCreateVo;

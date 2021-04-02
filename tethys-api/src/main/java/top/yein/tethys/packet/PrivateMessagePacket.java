@@ -22,7 +22,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import top.yein.tethys.constants.MessageContentKind;
 
 /**
  * 私人聊天消息.
@@ -44,7 +43,7 @@ public class PrivateMessagePacket implements Packet {
   long to;
   /** 消息内容. */
   String content;
-  /** 消息类型 {@link MessageContentKind}. */
+  /** 消息类型 {@link top.yein.tethys.constants.ContentKind}. */
   int contentKind;
   /** 统一资源定位器, 图片URL, 视频URL. */
   String url;

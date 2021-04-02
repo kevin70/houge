@@ -17,7 +17,7 @@ package top.yein.tethys.storage.query;
 
 import reactor.core.publisher.Mono;
 import top.yein.tethys.Nil;
-import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.entity.User;
 
 /**
  * 用户查询数据访问接口.

@@ -18,7 +18,7 @@ package top.yein.tethys.storage.query;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.Nil;
-import top.yein.tethys.entity.Group;
+import top.yein.tethys.storage.entity.Group;
 
 /**
  * 群组查询数据访问接口.

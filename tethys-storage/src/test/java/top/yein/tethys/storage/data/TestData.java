@@ -16,9 +16,9 @@
 package top.yein.tethys.storage.data;
 
 import com.github.javafaker.Faker;
-import top.yein.tethys.entity.Group;
-import top.yein.tethys.entity.Message;
-import top.yein.tethys.entity.User;
+import top.yein.tethys.storage.entity.Group;
+import top.yein.tethys.storage.entity.Message;
+import top.yein.tethys.storage.entity.User;
 import top.yein.tethys.storage.TestUtils;
 
 /**

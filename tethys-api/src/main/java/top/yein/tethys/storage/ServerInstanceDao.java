@@ -16,7 +16,7 @@
 package top.yein.tethys.storage;
 
 import reactor.core.publisher.Mono;
-import top.yein.tethys.entity.ServerInstance;
+import top.yein.tethys.storage.entity.ServerInstance;
 
 /**
  * 服务实例数据访问对象.

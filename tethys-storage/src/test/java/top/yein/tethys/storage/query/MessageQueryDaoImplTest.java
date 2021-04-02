@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import top.yein.tethys.domain.Paging;
-import top.yein.tethys.entity.Message;
+import top.yein.tethys.storage.entity.Message;
 import top.yein.tethys.storage.AbstractTestDao;
 import top.yein.tethys.storage.MessageDaoImpl;
 import top.yein.tethys.storage.data.TestData;

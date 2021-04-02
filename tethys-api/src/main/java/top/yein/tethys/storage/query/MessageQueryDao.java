@@ -18,7 +18,7 @@ package top.yein.tethys.storage.query;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.domain.Paging;
-import top.yein.tethys.entity.Message;
+import top.yein.tethys.storage.entity.Message;
 
 /**
  * 消息查询数据访问接口.

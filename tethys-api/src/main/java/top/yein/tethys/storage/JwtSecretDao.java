@@ -19,7 +19,7 @@ import java.time.Duration;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.domain.CachedJwtAlgorithm;
-import top.yein.tethys.entity.JwtSecret;
+import top.yein.tethys.storage.entity.JwtSecret;
 
 /**
  * JWT 密钥存储.

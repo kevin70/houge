@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.ApplicationIdentifier;
-import top.yein.tethys.entity.ServerInstance;
+import top.yein.tethys.storage.entity.ServerInstance;
 import top.yein.tethys.storage.ServerInstanceDao;
 import top.yein.tethys.util.HostNameUtils;
 import top.yein.tethys.util.YeinGid;
