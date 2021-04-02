@@ -85,7 +85,7 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
     return Mono.<MessageResponse>create(
             sink -> {
               log.debug("调用远程接口");
-              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver(sink));
+              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver<>(sink));
             })
         .map(response -> MessageSendResult.builder().messageId(response.getMessageId()).build());
   }

@@ -36,6 +36,9 @@ import top.yein.tethys.vo.GroupJoinMemberVo;
  */
 public class GroupResource extends AbstractRestSupport implements RoutingService {
 
+  /** Path 参数名称. */
+  private static final String GROUP_ID_PN = "groupId";
+
   private final GroupService groupService;
 
   /**
@@ -77,7 +80,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> deleteGroup(HttpServerRequest request, HttpServerResponse response) {
-    var groupId = pathLong(request, "groupId");
+    var groupId = pathLong(request, GROUP_ID_PN);
     return groupService
         .deleteGroup(groupId)
         .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
@@ -94,7 +97,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
-              var groupId = pathLong(request, "groupId");
+              var groupId = pathLong(request, GROUP_ID_PN);
               return groupService
                   .joinMember(groupId, vo)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
@@ -112,7 +115,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
     return json(request, GroupJoinMemberVo.class)
         .flatMap(
             vo -> {
-              var groupId = pathLong(request, "groupId");
+              var groupId = pathLong(request, GROUP_ID_PN);
               return groupService
                   .removeMember(groupId, vo)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));

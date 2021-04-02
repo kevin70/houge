@@ -17,7 +17,6 @@ package top.yein.tethys.core.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -53,8 +52,8 @@ class HttpExceptionHandlerTest {
 
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler());
-    doReturn("").when(httpExceptionHandler).queryParam(eq(request), eq(debugQueryName));
-    doReturn(Mono.empty()).when(httpExceptionHandler).json(eq(response), any());
+    doReturn("").when(httpExceptionHandler).queryParam(request, debugQueryName);
+    doReturn(Mono.empty()).when(httpExceptionHandler).json(response, any());
 
     var p = httpExceptionHandler.apply(request, response, new IllegalStateException());
     StepVerifier.create(p).verifyComplete();
@@ -83,8 +82,8 @@ class HttpExceptionHandlerTest {
 
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler(false));
-    doReturn(null).when(httpExceptionHandler).queryParam(eq(request), eq(debugQueryName));
-    doReturn(Mono.empty()).when(httpExceptionHandler).json(eq(response), any());
+    doReturn(null).when(httpExceptionHandler).queryParam(request, debugQueryName);
+    doReturn(Mono.empty()).when(httpExceptionHandler).json(response, any());
 
     var p = httpExceptionHandler.apply(request, response, new IllegalStateException());
     StepVerifier.create(p).verifyComplete();
@@ -113,8 +112,8 @@ class HttpExceptionHandlerTest {
 
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler());
-    doReturn("").when(httpExceptionHandler).queryParam(eq(request), eq(debugQueryName));
-    doReturn(Mono.empty()).when(httpExceptionHandler).json(eq(response), any());
+    doReturn("").when(httpExceptionHandler).queryParam(request, debugQueryName);
+    doReturn(Mono.empty()).when(httpExceptionHandler).json(response, any());
 
     var ex = new BizCodeException(BizCode.C401).addContextValue("hello", "test");
     var p = httpExceptionHandler.apply(request, response, ex);

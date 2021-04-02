@@ -63,7 +63,7 @@ public class ReactorHttpServerUtils {
     Map<String, List<String>> params = queryParams(request);
     var value = params.get(name);
     if (value == null || value.isEmpty()) {
-      return null;
+      return List.of();
     }
     return value;
   }
