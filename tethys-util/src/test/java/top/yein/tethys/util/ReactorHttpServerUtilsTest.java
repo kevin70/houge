@@ -79,7 +79,7 @@ class ReactorHttpServerUtilsTest {
     var q2 = ReactorHttpServerUtils.queryParams(request, "q2");
     assertThat(q2).contains("L");
 
-    assertThat(ReactorHttpServerUtils.queryParams(request, "qx")).isNull();
+    assertThat(ReactorHttpServerUtils.queryParams(request, "qx")).isEmpty();
   }
 
   @Test
