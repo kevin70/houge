@@ -53,6 +53,9 @@ public class ServiceModule extends AbstractModule {
   protected void configure() {
     bind(UserService.class).to(UserServiceImpl.class).in(Scopes.SINGLETON);
     bind(GroupService.class).to(GroupServiceImpl.class).in(Scopes.SINGLETON);
+
+    // 安装 gRPC 存根模块
+    install(new GrpcStubModule(config));
   }
 
   @Provides
