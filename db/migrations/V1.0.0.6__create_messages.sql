@@ -8,8 +8,8 @@ create table messages
     content      varchar(4096),
     content_kind smallint  default 1     not null,
     url          varchar(1024),
-    custom_args  varchar(1024),
-    unread       smallint  default 1,
+    custom_args  varchar(2048),
+    unread       smallint  default 0,
     create_time  timestamp default now() not null,
     update_time  timestamp default now() not null
 );
@@ -29,17 +29,22 @@ comment on column messages.kind is '数据类型
 2: 私聊消息
 3: 群聊消息';
 
-comment on column messages.content is '消息内容
-1：普通文本消息
-2：图片消息
-3：音频消息
-4：视频消息';
+comment on column messages.content is '消息内容';
 
-comment on column messages.content_kind is '消息内容类型';
+comment on column messages.content_kind is '消息内容类型
+0: 普通文本消息
+1: 图片消息
+2: 音频消息
+3: 视频消息
+9: 系统消息';
 
 comment on column messages.url is '统一资源定位器';
 
 comment on column messages.custom_args is '自定义参数';
+
+comment on column messages.unread is '消息是否未读
+0: 已读
+1: 未读';
 
 comment on column messages.create_time is '创建时间';
 
