@@ -272,6 +272,52 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Message"
+  /p/messages/send:
+    post:
+      tags: [MESSAGE]
+      security: [AccessToken:[]]
+      summary: 发送消息
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ns:
+                  type: string
+                  description: |
+                    消息命名空间
+                    - `p.message` 私人消息
+                    - `g.message` 群组消息
+                  enum: ["p.message", "g.message"]
+                content:
+                  type: string
+                  description: 消息内容
+                content_kind:
+                  type: integer
+                  format: int32
+                  default: 1
+                  description: 消息内容类型
+                url:
+                  type: string
+                  description: 统一资源定位器
+                custom_args:
+                  type: object
+                  description: 自定义参数
+                  additionalProperties: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message_id
+                properties:
+                  message_id:
+                    type: string
+                    description: 消息 ID
   /p/messages/read:
     put:
       tags: [MESSAGE]
