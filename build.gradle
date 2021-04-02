@@ -78,7 +78,7 @@ allprojects {
       year = "2019-${Calendar.instance.get(Calendar.YEAR)}"
       author = "the original author or authors"
     }
-    exclude("**/build/generated/*")
+    exclude("${buildDir}/generated/*")
   }
 
   checkstyle {
