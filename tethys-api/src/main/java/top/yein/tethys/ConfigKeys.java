@@ -39,6 +39,20 @@ public final class ConfigKeys {
   public static final String IM_SERVER_ADDR = "im-server.addr";
 
   /**
+   * gRPC 服务开放访问的地址.
+   *
+   * <p>地址中可包含 `IP` 及 `PORT`.
+   *
+   * <p>配置示例:
+   *
+   * <ul>
+   *   <li>:8888
+   *   <li>192.168.1.5:8888
+   * </ul>
+   */
+  public static final String GRPC_SERVER_ADDR = "grpc-server.addr";
+
+  /**
    * REST 服务开放访问的地址.
    *
    * <p>地址中可包含 `IP` 及 `PORT`.
