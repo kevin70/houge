@@ -290,6 +290,13 @@ paths:
                     - `p.message` 私人消息
                     - `g.message` 群组消息
                   enum: ["p.message", "g.message"]
+                to:
+                  type: integer
+                  format: int64
+                  description: |
+                    消息接收者
+
+                    如果是 `p.message` 消息将 `to` 设置为接收消息用户的 ID，如果是 `g.message` 消息将 `to` 设置为接收消息的群组 ID。
                 content:
                   type: string
                   description: 消息内容
