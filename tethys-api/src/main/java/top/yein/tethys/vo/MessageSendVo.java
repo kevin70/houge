@@ -46,7 +46,7 @@ public class MessageSendVo {
   /** 消息内容. */
   private String content;
   /** 消息内容类型. */
-  private int contentKind = 1;
+  private int contentKind = 0;
   /** 统一资源定位器. */
   private String url;
   /** 自定义参数. */
