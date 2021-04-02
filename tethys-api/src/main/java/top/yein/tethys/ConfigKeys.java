@@ -52,6 +52,9 @@ public final class ConfigKeys {
    */
   public static final String GRPC_SERVER_ADDR = "grpc-server.addr";
 
+  /** gRPC 通道目标地址. */
+  public static final String GRPC_CHANNEL_TARGET = "grpc-channel.target";
+
   /**
    * REST 服务开放访问的地址.
    *
