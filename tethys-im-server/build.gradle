@@ -3,31 +3,6 @@ apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.im.main.ImMain"
 
-sourceSets {
-  main {
-    java {
-      srcDir "${buildDir}/generated/source/proto/main/grpc"
-      srcDir "${buildDir}/generated/source/proto/main/java"
-    }
-  }
-}
-
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:3.12.0"
-  }
-  plugins {
-    grpc {
-      artifact = "io.grpc:protoc-gen-grpc-java:1.36.1"
-    }
-  }
-  generateProtoTasks {
-    all()*.plugins {
-      grpc {}
-    }
-  }
-}
-
 File dockerInputDir() {
   def f = file("${buildDir}/docker/")
   if (!f.exists()) {
@@ -61,15 +36,10 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 }
 
 dependencies {
-  compileOnly("org.apache.tomcat:annotations-api:6.0.53")
   implementation(project(":tethys-core"))
   implementation(project(":tethys-service"))
+  implementation(project(":tethys-grpc-service"))
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
   implementation("io.projectreactor:reactor-tools")
-  implementation("io.grpc:grpc-netty")
-  implementation("io.grpc:grpc-protobuf")
-  implementation("io.grpc:grpc-stub")
-
-  protobuf files("${rootDir}/protos")
 }

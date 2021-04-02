@@ -1,6 +1,7 @@
 dependencies {
   api(project(":tethys-api"))
   api(project(":tethys-util"))
+  api(project(":tethys-grpc-gen"))
   api("top.yein.chaos:chaos-core")
   api("io.lettuce:lettuce-core")
   api("io.projectreactor.netty:reactor-netty")
