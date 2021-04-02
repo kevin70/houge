@@ -19,9 +19,9 @@ import com.google.inject.Guice;
 import com.google.inject.TypeLiteral;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import io.grpc.BindableService;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import top.yein.tethys.ApplicationIdentifier;
@@ -29,11 +29,14 @@ import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.module.CoreModule;
+import top.yein.tethys.grpc.service.module.GrpcServiceModule;
 import top.yein.tethys.im.module.ImModule;
+import top.yein.tethys.im.server.GrpcServer;
 import top.yein.tethys.im.server.ImServer;
 import top.yein.tethys.im.server.WebsocketHandler;
 import top.yein.tethys.service.module.ServiceModule;
 import top.yein.tethys.storage.module.StorageModule;
+import top.yein.tethys.util.AppShutdownHelper;
 
 /**
  * 主程序.
@@ -61,6 +64,7 @@ public class ImMain implements Runnable {
         Guice.createInjector(
             new StorageModule(config),
             new ServiceModule(config),
+            new GrpcServiceModule(),
             new CoreModule(config),
             new ImModule(config));
     // 应用程序监控
@@ -81,16 +85,35 @@ public class ImMain implements Runnable {
     log.info(
         "{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
 
-    // 停止应用
-    registerShutdownHook(
-        () -> {
-          log.info("IM 服务停止中...");
-          // 停止操作
-          imServer.stop();
-          // 清理应用标识数据信息
-          applicationIdentifier.clean();
-          log.info("IM 服务停止成功");
-        });
+    var grpcServer =
+        new GrpcServer(
+            config.getString(ConfigKeys.GRPC_SERVER_ADDR),
+            injector.findBindingsByType(TypeLiteral.get(BindableService.class)).stream()
+                .map(b -> b.getProvider().get())
+                .collect(Collectors.toList()));
+    grpcServer.start();
+
+    // 应用停止
+    new AppShutdownHelper()
+        .addCallback(
+            () -> {
+              log.info("停止 gRPC Server");
+              grpcServer.stop();
+              log.info("停止 gRPC Server 完成");
+            })
+        .addCallback(
+            () -> {
+              log.info("停止 IM Server");
+              imServer.stop();
+              log.info("停止 IM Server 完成");
+            })
+        .addCallback(
+            () -> {
+              log.info("清理应用程序标识");
+              applicationIdentifier.clean();
+            })
+        .run();
+    log.info("IM 优雅停止完成...");
   }
 
   private Config loadConfig() {
@@ -99,27 +122,5 @@ public class ImMain implements Runnable {
         "已加载的应用配置 \n=========================================================>>>\n{}<<<=========================================================",
         config.root().render());
     return config;
-  }
-
-  private void registerShutdownHook(final Runnable callback) {
-    final var latch = new CountDownLatch(1);
-    final Runnable r =
-        () -> {
-          try {
-            callback.run();
-          } catch (Exception e) {
-            log.error("IM 服务停止失败", e);
-          } finally {
-            latch.countDown();
-          }
-        };
-    Runtime.getRuntime().addShutdownHook(new Thread(r, "shutdown-hook"));
-
-    try {
-      latch.await();
-    } catch (InterruptedException e) {
-      log.warn("Interrupted!", e);
-      Thread.currentThread().interrupt();
-    }
   }
 }
