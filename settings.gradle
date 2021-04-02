@@ -5,6 +5,8 @@ include ":tethys-core"
 include ":tethys-util"
 include ":tethys-storage"
 include ":tethys-service"
+include ":tethys-grpc-gen"
+include ":tethys-grpc-service"
 include ":tethys-im-server"
 include ":tethys-rest-server"
 
