@@ -1,0 +1,6 @@
+dependencies {
+  compileOnly("org.apache.tomcat:annotations-api:6.0.53")
+  implementation("io.projectreactor:reactor-tools")
+  api(project(":tethys-core"))
+  api(project(":tethys-grpc-gen"))
+}
