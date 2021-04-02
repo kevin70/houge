@@ -17,6 +17,7 @@ package top.yein.tethys.rest.resource.p;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
@@ -28,12 +29,14 @@ import top.yein.tethys.domain.Paging;
 import top.yein.tethys.service.MessageService;
 import top.yein.tethys.storage.query.UserMessageQuery;
 import top.yein.tethys.vo.MessageReadVo;
+import top.yein.tethys.vo.MessageSendVo;
 
 /**
  * 消息 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
+@Log4j2
 public class MessageResource extends AbstractRestSupport implements RoutingService {
 
   private final MessageService messageService;
@@ -52,6 +55,7 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
     routes.get("/p/messages", interceptors.auth(this::queryByUser));
     routes.get("/p/messages/read", interceptors.auth(this::readMessages));
+    routes.post("/p/messages/send", interceptors.auth(this::sendMessage));
   }
 
   /**
@@ -93,6 +97,26 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
               return messageService
                   .readMessages(ac.uid(), vo.getMessageIds())
                   .then(response.status(HttpResponseStatus.NO_CONTENT).send());
+            });
+  }
+
+  /**
+   * 发送消息.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
+   */
+  Mono<Void> sendMessage(HttpServerRequest request, HttpServerResponse response) {
+    return authContext()
+        .zipWith(json(request, MessageSendVo.class))
+        .flatMap(
+            t -> {
+              var ac = t.getT1();
+              var vo = t.getT2();
+              //
+              log.debug("发送消息[uid={}, vo={}]", ac.uid(), vo);
+              return Mono.empty();
             });
   }
 }
