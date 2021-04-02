@@ -1,3 +1,15 @@
+sourceSets {
+  main {
+    java {
+      srcDir "${buildDir}/generated/source/proto/main/grpc"
+      srcDir "${buildDir}/generated/source/proto/main/java"
+    }
+    resources {
+      srcDir "src/main/proto"
+    }
+  }
+}
+
 protobuf {
   protoc {
     artifact = "com.google.protobuf:protoc:3.12.0"
@@ -12,6 +24,10 @@ protobuf {
       grpc {}
     }
   }
+}
+
+license {
+  exclude "**/grpc/*.java"
 }
 
 dependencies {
