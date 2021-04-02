@@ -164,7 +164,7 @@ class AbstractRestSupportTest {
     var q2 = resource.queryParams(request, "q2");
     assertThat(q2).contains("L");
 
-    assertThat(resource.queryParams(request, "qx")).isNull();
+    assertThat(resource.queryParams(request, "qx")).isEmpty();
   }
 
   @Test

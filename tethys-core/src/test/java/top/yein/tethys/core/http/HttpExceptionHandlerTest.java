@@ -53,7 +53,7 @@ class HttpExceptionHandlerTest {
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler());
     doReturn("").when(httpExceptionHandler).queryParam(request, debugQueryName);
-    doReturn(Mono.empty()).when(httpExceptionHandler).json(response, any());
+    doReturn(Mono.empty()).when(httpExceptionHandler).json((HttpServerResponse) any(), any());
 
     var p = httpExceptionHandler.apply(request, response, new IllegalStateException());
     StepVerifier.create(p).verifyComplete();
@@ -83,7 +83,7 @@ class HttpExceptionHandlerTest {
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler(false));
     doReturn(null).when(httpExceptionHandler).queryParam(request, debugQueryName);
-    doReturn(Mono.empty()).when(httpExceptionHandler).json(response, any());
+    doReturn(Mono.empty()).when(httpExceptionHandler).json((HttpServerResponse) any(), any());
 
     var p = httpExceptionHandler.apply(request, response, new IllegalStateException());
     StepVerifier.create(p).verifyComplete();
@@ -113,7 +113,7 @@ class HttpExceptionHandlerTest {
     // SPY
     var httpExceptionHandler = spy(new HttpExceptionHandler());
     doReturn("").when(httpExceptionHandler).queryParam(request, debugQueryName);
-    doReturn(Mono.empty()).when(httpExceptionHandler).json(response, any());
+    doReturn(Mono.empty()).when(httpExceptionHandler).json((HttpServerResponse) any(), any());
 
     var ex = new BizCodeException(BizCode.C401).addContextValue("hello", "test");
     var p = httpExceptionHandler.apply(request, response, ex);
