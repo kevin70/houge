@@ -25,18 +25,6 @@ public final class ConfigKeys {
   private ConfigKeys() {}
 
   /**
-   * JWT HMAC 密钥配置.
-   *
-   * <p>e.g:
-   *
-   * <ul>
-   *   <li>jwt.secrets.[key1]=This is secret of key1
-   *   <li>jwt.secrets.[keyX]=This is secret of keyX
-   * </ul>
-   */
-  public static final String JWT_SECRETS = "jwt.secrets";
-
-  /**
    * IM 服务开放访问的地址.
    *
    * <p>地址中可包含 `IP` 及 `PORT`.
@@ -49,12 +37,6 @@ public final class ConfigKeys {
    * </ul>
    */
   public static final String IM_SERVER_ADDR = "im-server.addr";
-
-  /** 是否启用匿名连接. */
-  public static final String IM_SERVER_ENABLED_ANONYMOUS = "im-server.enabled-anonymous";
-
-  /** JWT 密钥配置前缀. */
-  public static final String IM_SERVER_AUTH_JWT_SECRETS = "im-server.auth-jwt-secrets";
 
   /**
    * REST 服务开放访问的地址.
@@ -72,9 +54,6 @@ public final class ConfigKeys {
 
   /** 内部服务交互 BASIC 认证配置. */
   public static final String SERVICE_AUTH_BASIC = "service-auth.basic";
-
-  /** 测试令牌生成器开关配置. */
-  public static final String TOKEN_GENERATOR_TEST_ENABLED = "token.generator.test-enabled";
 
   /**
    * 消息可拉取的最早时间限制.
