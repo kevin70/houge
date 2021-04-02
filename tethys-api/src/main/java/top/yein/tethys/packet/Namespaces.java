@@ -51,13 +51,13 @@ public final class Namespaces {
    *
    * @see PrivateMessagePacket
    */
-  public static final String NS_PRIVATE_MESSAGE = "p.msg";
+  public static final String NS_PRIVATE_MESSAGE = "p.message";
   /**
    * 群组聊天消息.
    *
    * @see GroupMessagePacket
    */
-  public static final String NS_GROUP_MESSAGE = "g.msg";
+  public static final String NS_GROUP_MESSAGE = "g.message";
 
   // ================================== 操作类消息 ==================================//
 
@@ -66,13 +66,13 @@ public final class Namespaces {
    *
    * @see GroupSubscribePacket
    */
-  public static final String NS_GROUP_SUBSCRIBE = "g.sub";
+  public static final String NS_GROUP_SUBSCRIBE = "g.subscribe";
   /**
    * 取消订阅群组消息.
    *
    * @see GroupUnsubscribePacket
    */
-  public static final String NS_GROUP_UNSUBSCRIBE = "g.unsub";
+  public static final String NS_GROUP_UNSUBSCRIBE = "g.unsubscribe";
 
   // ================================== 操作类消息 ==================================//
 }
