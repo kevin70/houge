@@ -40,8 +40,10 @@ public class AppShutdownHelper implements Runnable {
   }
 
   /**
-   * @param callback
-   * @return
+   * 添加停止应用时执行的清理回调.
+   *
+   * @param callback 回调
+   * @return 当前对象
    */
   public AppShutdownHelper addCallback(Runnable callback) {
     this.callbacks.add(callback);
