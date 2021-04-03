@@ -21,7 +21,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import top.yein.tethys.ApplicationIdentifier;
@@ -33,6 +32,7 @@ import top.yein.tethys.rest.module.RestModule;
 import top.yein.tethys.rest.server.RestServer;
 import top.yein.tethys.service.module.ServiceModule;
 import top.yein.tethys.storage.module.StorageModule;
+import top.yein.tethys.util.AppShutdownHelper;
 
 /**
  * 主程序.
@@ -79,16 +79,16 @@ public class RestMain implements Runnable {
     log.info(
         "{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
 
-    // 停止应用
-    registerShutdownHook(
-        () -> {
-          log.info("REST 服务停止中...");
-          // 停止操作
-          restServer.stop();
-          // 清理应用标识数据信息
-          applicationIdentifier.clean();
-          log.info("REST 服务停止成功");
-        });
+    new AppShutdownHelper()
+        .addCallback(
+            () -> {
+              log.info("REST 服务停止中...");
+              restServer.stop();
+            })
+        // 清理应用标识数据信息
+        .addCallback(applicationIdentifier::clean)
+        .run();
+    log.info("REST 服务停止成功");
   }
 
   private Config loadConfig() {
@@ -97,27 +97,5 @@ public class RestMain implements Runnable {
         "已加载的应用配置 \n=========================================================>>>\n{}<<<=========================================================",
         config.root().render());
     return config;
-  }
-
-  private void registerShutdownHook(final Runnable callback) {
-    final var latch = new CountDownLatch(1);
-    final Runnable r =
-        () -> {
-          try {
-            callback.run();
-          } catch (Exception e) {
-            log.error("REST 服务停止失败", e);
-          } finally {
-            latch.countDown();
-          }
-        };
-    Runtime.getRuntime().addShutdownHook(new Thread(r, "shutdown-hook"));
-
-    try {
-      latch.await();
-    } catch (InterruptedException e) {
-      log.warn("Interrupted!", e);
-      Thread.currentThread().interrupt();
-    }
   }
 }
