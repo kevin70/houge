@@ -36,9 +36,10 @@ class YeinGidTest {
     var gid = new YeinGid(fid);
     var hexString1 = gid.toHexString();
     var hexString2 = gid.toHexString();
-    assertThat(hexString1).hasSize(YeinGid.YEIN_GID_LENGTH);
-    assertThat(hexString1).isEqualTo(hexString2);
-    assertThat(hexString1).isEqualTo(gid.toString());
+    assertThat(hexString1)
+        .isEqualTo(hexString2)
+        .isEqualTo(gid.toString())
+        .hasSize(YeinGid.YEIN_GID_LENGTH);
   }
 
   @ValueSource(ints = {5432, 0, 131071})
