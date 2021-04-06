@@ -38,10 +38,9 @@ class MessagePacketCheckerTest {
     packet.setMessageId(new YeinGid(0).toHexString());
     packet.setFrom(1L);
     packet.setTo(2L);
-    packet.setContentKind(ContentType.TEXT.getCode());
+    packet.setContentType(ContentType.TEXT.getCode());
     packet.setContent("hello world");
-    packet.setUrl("https://tethys.yein.top");
-    packet.setCustomArgs("{}");
+    packet.setExtraArgs("{}");
     MessagePacketChecker.check(packet);
   }
 
@@ -51,10 +50,9 @@ class MessagePacketCheckerTest {
     packet.setMessageId(new YeinGid(0).toHexString());
     packet.setFrom(0L);
     packet.setTo(1L);
-    packet.setContentKind(ContentType.TEXT.getCode());
+    packet.setContentType(ContentType.TEXT.getCode());
     packet.setContent("hello world");
-    packet.setUrl("https://tethys.yein.top");
-    packet.setCustomArgs("{}");
+    packet.setExtraArgs("{}");
     MessagePacketChecker.check(packet);
   }
 

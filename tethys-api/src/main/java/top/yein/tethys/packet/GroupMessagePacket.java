@@ -18,10 +18,7 @@ package top.yein.tethys.packet;
 import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import top.yein.tethys.constants.ContentType;
 
 /**
@@ -31,25 +28,20 @@ import top.yein.tethys.constants.ContentType;
  */
 @JsonTypeName(NS_GROUP_MESSAGE)
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class GroupMessagePacket implements Packet {
+public class GroupMessagePacket implements MessagePacket {
 
   /** 消息 ID 全局唯一. */
   String messageId;
   /** 发送消息者. */
   Long from;
   /** 接收消息者. */
-  Long to;
+  long to;
   /** 消息内容. */
   String content;
   /** 消息类型 {@link ContentType}. */
-  int contentKind;
-  /** 统一资源定位器, 图片URL, 视频URL. */
-  String url;
-  /** 自定义消息参数. */
-  String customArgs;
+  int contentType;
+  /** 扩展参数. */
+  String extraArgs;
 
   @Override
   public String getNs() {

@@ -107,8 +107,8 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
                   .receiverId(to)
                   .kind(Message.KIND_PRIVATE)
                   .content(packet.getContent())
-                  .contentType(packet.getContentKind())
-                  .extraArgs(packet.getCustomArgs())
+                  .contentType(packet.getContentType())
+                  .extraArgs(packet.getExtraArgs())
                   .unread(ReadStatus.UNREAD.getCode())
                   .build();
           var p2 = messageDao.insert(entity, List.of(from, to));

@@ -42,7 +42,7 @@ public class MessagePacketChecker {
   public static void check(PrivateMessagePacket packet) {
     checkMessageId(packet.getMessageId());
     checkTo(packet.getTo());
-    checkContentKind(packet.getContentKind());
+    checkContentKind(packet.getContentType());
     checkContent(packet.getContent());
   }
 
@@ -55,7 +55,7 @@ public class MessagePacketChecker {
     checkMessageId(packet.getMessageId());
     checkTo(packet.getTo());
     checkContent(packet.getContent());
-    checkContentKind(packet.getContentKind());
+    checkContentKind(packet.getContentType());
   }
 
   static void checkMessageId(String messageId) {

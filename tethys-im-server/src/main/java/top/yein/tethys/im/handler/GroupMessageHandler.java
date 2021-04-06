@@ -117,8 +117,8 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
             .groupId(groupId)
             .kind(Message.KIND_GROUP)
             .content(packet.getContent())
-            .contentType(packet.getContentKind())
-            .extraArgs(packet.getCustomArgs())
+            .contentType(packet.getContentType())
+            .extraArgs(packet.getExtraArgs())
             .unread(ReadStatus.UNREAD.getCode())
             .build();
     var storageMono =
