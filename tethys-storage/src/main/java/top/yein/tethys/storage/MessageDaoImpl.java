@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.storage.entity.Message;
 import top.yein.tethys.r2dbc.R2dbcClient;
+import top.yein.tethys.storage.entity.Message;
 
 /**
  * 消息数据仓库实现.
@@ -34,8 +34,8 @@ public class MessageDaoImpl implements MessageDao {
 
   private static final String INSERT_SQL =
       "INSERT INTO messages("
-          + "id,sender_id,receiver_id,group_id,kind,content,content_kind,url,custom_args,create_time,update_time)"
-          + " VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())";
+          + "id,sender_id,receiver_id,group_id,kind,content,content_type,extra_args,create_time,update_time)"
+          + " VALUES($1,$2,$3,$4,$5,$6,$7,$8,now(),now())";
   private static final String UPDATE_UNREAD_STATUS_SQL =
       "UPDATE messages SET unread=$1,update_time=now() WHERE id = ANY(string_to_array($2,',')) AND receiver_id=$3";
 
@@ -92,9 +92,8 @@ public class MessageDaoImpl implements MessageDao {
           fromOrNull(entity.getGroupId(), Long.class),
           fromOrNull(entity.getKind(), Integer.class),
           entity.getContent(),
-          entity.getContentKind(),
-          fromOrNull(entity.getUrl(), String.class),
-          fromOrNull(entity.getCustomArgs(), String.class)
+          entity.getContentType(),
+          fromOrNull(entity.getExtraArgs(), String.class)
         })
       .rowsUpdated();
   }

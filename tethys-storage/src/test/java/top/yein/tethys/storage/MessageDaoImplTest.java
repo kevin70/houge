@@ -60,9 +60,8 @@ class MessageDaoImplTest extends AbstractTestDao {
     entity.setGroupId(0L);
     entity.setKind(1);
     entity.setContent("Hello JUnit Test");
-    entity.setContentKind(1);
-    entity.setUrl("https://gitee.com/kk70/tethys");
-    entity.setCustomArgs("CUSTOM_ARGS");
+    entity.setContentType(1);
+    entity.setExtraArgs("CUSTOM_ARGS");
 
     var uids = new ArrayList<Long>();
     for (int i = 0; i < 10; i++) {

@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import top.yein.tethys.domain.Paging;
-import top.yein.tethys.storage.entity.Message;
 import top.yein.tethys.storage.AbstractTestDao;
 import top.yein.tethys.storage.MessageDaoImpl;
 import top.yein.tethys.storage.data.TestData;
+import top.yein.tethys.storage.entity.Message;
 
 /**
  * {@link MessageQueryDaoImpl} 单元测试.
@@ -72,13 +72,12 @@ class MessageQueryDaoImplTest extends AbstractTestDao {
                           .isEqualTo(entity.getGroupId());
                       s.assertThat(dbRow.getKind()).as("kind").isEqualTo(entity.getKind());
                       s.assertThat(dbRow.getContent()).as("content").isEqualTo(entity.getContent());
-                      s.assertThat(dbRow.getContentKind())
-                          .as("content_kind")
-                          .isEqualTo(entity.getContentKind());
-                      s.assertThat(dbRow.getUrl()).as("url").isEqualTo(entity.getUrl());
-                      s.assertThat(dbRow.getCustomArgs())
-                          .as("custom_args")
-                          .isEqualTo(entity.getCustomArgs());
+                      s.assertThat(dbRow.getContentType())
+                          .as("content_type")
+                          .isEqualTo(entity.getContentType());
+                      s.assertThat(dbRow.getExtraArgs())
+                          .as("extra_args")
+                          .isEqualTo(entity.getExtraArgs());
                       s.assertThat(dbRow.getUnread()).as("unread").isZero();
                       s.assertThat(dbRow.getCreateTime()).as("create_time").isNotNull();
                       s.assertThat(dbRow.getUpdateTime()).as("update_time").isNotNull();

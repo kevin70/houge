@@ -38,9 +38,8 @@ public class TestData {
     e.setGroupId(0L);
     e.setKind(1);
     e.setContent("Hello JUnit Test");
-    e.setContentKind(1);
-    e.setUrl("https://gitee.com/kk70/tethys");
-    e.setCustomArgs("CUSTOM_ARGS");
+    e.setContentType(1);
+    e.setExtraArgs("CUSTOM_ARGS");
     return e;
   }
 

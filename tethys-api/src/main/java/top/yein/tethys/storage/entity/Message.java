@@ -69,18 +69,13 @@ public class Message {
    *   <li>{@code 4}: 视频消息
    * </ul>
    */
-  private Integer contentKind;
-  /** 消息内容资源. */
-  private String url;
-  /** 自定义参数. */
-  private String customArgs;
+  private Integer contentType;
+  /** 扩展参数. */
+  private String extraArgs;
   /**
    * 消息是否未读.
    *
-   * <ul>
-   *   <li>{@code 1}: 未读
-   *   <li>{@code 2}: 已读
-   * </ul>
+   * @see top.yein.tethys.constants.ReadStatus
    */
   private Integer unread;
   /** 创建时间. */

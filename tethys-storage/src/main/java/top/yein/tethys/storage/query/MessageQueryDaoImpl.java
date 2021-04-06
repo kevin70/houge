@@ -21,8 +21,8 @@ import javax.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.domain.Paging;
-import top.yein.tethys.storage.entity.Message;
 import top.yein.tethys.r2dbc.R2dbcClient;
+import top.yein.tethys.storage.entity.Message;
 
 /**
  * 消息查询数据访问实现.
@@ -71,8 +71,8 @@ public class MessageQueryDaoImpl implements MessageQueryDao {
     e.setGroupId(row.get("group_id", Long.class));
     e.setKind(row.get("kind", Integer.class));
     e.setContent(row.get("content", String.class));
-    e.setContentKind(row.get("content_kind", Integer.class));
-    e.setUrl(row.get("url", String.class));
+    e.setContentType(row.get("content_type", Integer.class));
+    e.setExtraArgs(row.get("extra_args", String.class));
     e.setUnread(row.get("unread", Integer.class));
     e.setCreateTime(row.get("create_time", LocalDateTime.class));
     e.setUpdateTime(row.get("update_time", LocalDateTime.class));
