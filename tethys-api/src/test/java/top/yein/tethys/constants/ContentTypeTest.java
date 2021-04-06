@@ -18,21 +18,20 @@ package top.yein.tethys.constants;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import top.yein.tethys.constants.ContentKind;
 
 /**
- * {@link ContentKind} 单元测试.
+ * {@link ContentType} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class ContentKindTest {
+class ContentTypeTest {
 
   @Test
   void forCode() {
-    for (ContentKind value : ContentKind.values()) {
-      assertThat(ContentKind.forCode(value.getCode())).isEqualTo(value);
+    for (ContentType value : ContentType.values()) {
+      assertThat(ContentType.forCode(value.getCode())).isEqualTo(value);
     }
-    assertThat(ContentKind.forCode(null)).isEqualTo(ContentKind.UNRECOGNIZED);
-    assertThat(ContentKind.forCode(9999)).isEqualTo(ContentKind.UNRECOGNIZED);
+    assertThat(ContentType.forCode(null)).isEqualTo(ContentType.UNRECOGNIZED);
+    assertThat(ContentType.forCode(9999)).isEqualTo(ContentType.UNRECOGNIZED);
   }
 }

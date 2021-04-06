@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.Test;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.constants.ContentKind;
+import top.yein.tethys.constants.ContentType;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.packet.GroupMessagePacket;
 import top.yein.tethys.packet.PrivateMessagePacket;
@@ -38,7 +38,7 @@ class MessagePacketCheckerTest {
     packet.setMessageId(new YeinGid(0).toHexString());
     packet.setFrom(1L);
     packet.setTo(2L);
-    packet.setContentKind(ContentKind.TEXT.getCode());
+    packet.setContentKind(ContentType.TEXT.getCode());
     packet.setContent("hello world");
     packet.setUrl("https://tethys.yein.top");
     packet.setCustomArgs("{}");
@@ -51,7 +51,7 @@ class MessagePacketCheckerTest {
     packet.setMessageId(new YeinGid(0).toHexString());
     packet.setFrom(0L);
     packet.setTo(1L);
-    packet.setContentKind(ContentKind.TEXT.getCode());
+    packet.setContentKind(ContentType.TEXT.getCode());
     packet.setContent("hello world");
     packet.setUrl("https://tethys.yein.top");
     packet.setCustomArgs("{}");
