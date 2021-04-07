@@ -4,9 +4,9 @@ create table messages
     sender_id    bigint,
     receiver_id  bigint,
     group_id     bigint,
-    kind         smallint                not null,
+    kind         smallint  default 0     not null,
     content      varchar(4096),
-    content_type smallint  default 1     not null,
+    content_type smallint  default 0     not null,
     extra_args   varchar(2048),
     unread       smallint  default 0,
     create_time  timestamp default now() not null,
@@ -23,19 +23,19 @@ comment on column messages.receiver_id is '接收人 ID';
 
 comment on column messages.group_id is '群 ID';
 
-comment on column messages.kind is '数据类型
-1: 系统消息
-2: 私聊消息
-3: 群聊消息';
+comment on column messages.kind is '消息类型
+0: 私人消息
+1: 群组消息
+8: 系统消息-单人
+9: 系统消息-群组';
 
 comment on column messages.content is '消息内容';
 
 comment on column messages.content_type is '消息内容类型
-0: 普通文本消息
+0: 文本消息
 1: 图片消息
 2: 音频消息
-3: 视频消息
-9: 系统消息';
+3: 视频消息';
 
 comment on column messages.extra_args is '扩展参数';
 
