@@ -1,5 +1,6 @@
 package top.yein.tethys.im.message;
 
+import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,6 +26,7 @@ public class PowerMessageRouter implements MessageRouter {
    * @param sessionManager
    * @param sessionGroupManager
    */
+  @Inject
   public PowerMessageRouter(
       SessionManager sessionManager, SessionGroupManager sessionGroupManager) {
     this.sessionManager = sessionManager;
