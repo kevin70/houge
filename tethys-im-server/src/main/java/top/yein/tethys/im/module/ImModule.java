@@ -33,15 +33,16 @@ import top.yein.tethys.core.session.DefaultSessionManager;
 import top.yein.tethys.core.session.LocalSessionIdGenerator;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.ImApplicationIdentifier;
-import top.yein.tethys.im.handler.GroupMessageHandler;
 import top.yein.tethys.im.handler.GroupSubscribeHandler;
 import top.yein.tethys.im.handler.GroupUnsubscribeHandler;
 import top.yein.tethys.im.handler.PingHandler;
-import top.yein.tethys.im.handler.PrivateMessageHandler;
+import top.yein.tethys.im.handler.SimpleMessageHandler;
+import top.yein.tethys.im.message.PowerMessageRouter;
 import top.yein.tethys.im.server.PacketDispatcher;
 import top.yein.tethys.im.server.PacketHandler;
 import top.yein.tethys.im.server.WebsocketHandler;
 import top.yein.tethys.im.support.AutoSubscriptionGroup;
+import top.yein.tethys.message.MessageRouter;
 import top.yein.tethys.packet.Namespaces;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.session.SessionIdGenerator;
@@ -72,6 +73,8 @@ public class ImModule extends AbstractModule {
 
     // 消息 ID 生成器
     bind(MessageIdGenerator.class).to(YeinGidMessageIdGenerator.class).in(Scopes.SINGLETON);
+    // 消息路由器
+    bind(MessageRouter.class).to(PowerMessageRouter.class).in(Scopes.SINGLETON);
 
     // PacketHandlers =========================================>>>
     bind(PacketHandler.class)
@@ -79,13 +82,10 @@ public class ImModule extends AbstractModule {
         .to(PingHandler.class)
         .in(Scopes.SINGLETON);
     bind(PacketHandler.class)
-        .annotatedWith(Names.named(Namespaces.NS_PRIVATE_MESSAGE))
-        .to(PrivateMessageHandler.class)
+        .annotatedWith(Names.named(Namespaces.NS_MESSAGE))
+        .to(SimpleMessageHandler.class)
         .in(Scopes.SINGLETON);
-    bind(PacketHandler.class)
-        .annotatedWith(Names.named(Namespaces.NS_GROUP_MESSAGE))
-        .to(GroupMessageHandler.class)
-        .in(Scopes.SINGLETON);
+
     bind(PacketHandler.class)
         .annotatedWith(Names.named(Namespaces.NS_GROUP_SUBSCRIBE))
         .to(GroupSubscribeHandler.class)
