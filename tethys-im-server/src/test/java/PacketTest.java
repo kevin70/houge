@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import top.yein.tethys.packet.Packet;
-import top.yein.tethys.packet.PrivateMessagePacket;
+import top.yein.tethys.packet.SimpleMessagePacket;
 import top.yein.tethys.util.JsonUtils;
 
 /**
@@ -36,7 +37,7 @@ class PacketTest {
     var messageJson = "{\"@ns\":\"message\",\"content\":\"Hello World!\"}";
     Packet packet = objectReader.readValue(messageJson);
     System.out.println(packet);
-    ((PrivateMessagePacket) packet).setTo(123);
+    ((SimpleMessagePacket) packet).setTo(123);
     assertThat(objectWriter.writeValueAsString(packet)).isNotNull();
 
     messageJson = "{\"@ns\":\"message\",\"content\":\"Hello World!\"}";
