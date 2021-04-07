@@ -73,6 +73,7 @@ allprojects {
     skipExistingHeaders = true
     mapping {
       java = "SLASHSTAR_STYLE"
+      conf = "SCRIPT_STYLE"
     }
     ext {
       year = "2019-${Calendar.instance.get(Calendar.YEAR)}"
