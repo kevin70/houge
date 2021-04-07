@@ -33,14 +33,14 @@ class PacketTest {
     var objectReader = JsonUtils.objectMapper().readerFor(Packet.class);
     var objectWriter = JsonUtils.objectMapper().writerFor(Packet.class);
 
-    var privateMsgJson = "{\"@ns\":\"p.message\",\"content\":\"Hello World!\"}";
-    Packet packet = objectReader.readValue(privateMsgJson);
+    var messageJson = "{\"@ns\":\"message\",\"content\":\"Hello World!\"}";
+    Packet packet = objectReader.readValue(messageJson);
     System.out.println(packet);
     ((PrivateMessagePacket) packet).setTo(123);
     assertThat(objectWriter.writeValueAsString(packet)).isNotNull();
 
-    privateMsgJson = "{\"@ns\":\"g.message\",\"content\":\"Hello World!\"}";
-    packet = objectReader.readValue(privateMsgJson);
+    messageJson = "{\"@ns\":\"message\",\"content\":\"Hello World!\"}";
+    packet = objectReader.readValue(messageJson);
     assertThat(objectWriter.writeValueAsString(packet)).isNotNull();
   }
 }
