@@ -28,7 +28,7 @@ import top.yein.tethys.constants.MessageContentType;
  */
 @JsonTypeName(NS_PRIVATE_MESSAGE)
 @Data
-public class PrivateMessagePacket implements MessagePacket {
+public class PrivateMessagePacket implements Packet {
 
   /** 消息 ID 全局唯一. */
   String messageId;

@@ -28,7 +28,7 @@ import top.yein.tethys.constants.MessageContentType;
  */
 @JsonTypeName(NS_GROUP_MESSAGE)
 @Data
-public class GroupMessagePacket implements MessagePacket {
+public class GroupMessagePacket implements Packet {
 
   /** 消息 ID 全局唯一. */
   String messageId;
