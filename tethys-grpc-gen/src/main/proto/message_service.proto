@@ -4,34 +4,35 @@ import "google/protobuf/empty.proto";
 option java_package = "top.yein.tethys.grpc";
 option java_multiple_files = true;
 
+// transient 不需要持久化的
 message MessageRequest {
-  // 消息命名空间
-  Namespace ns = 1;
+  // 消息类型
+  Kind kind = 1;
   // 消息发送者
   fixed64 from = 2;
   // 消息接收者
-  repeated fixed64 to = 3;
+  fixed64 to = 3;
   // 消息内容
   string content = 4;
   // 消息内容类型
-  ContentKind content_kind = 5;
-  // 统一资源定位符
-  string url = 6;
-  // 自定义参数会原样转发给客户端
-  string custom_args = 9;
+  ContentType content_type = 5;
+  // 扩展参数会原样转发给客户端
+  string extra_args = 9;
 
   // 消息命名空间
-  enum Namespace {
+  enum Kind {
     // 私人消息
     P_MESSAGE = 0;
     // 群组消息
     G_MESSAGE = 1;
-    // 系统消息
-    S_MESSAGE = 9;
+    // 系统消息 -> 单人
+    SP_MESSAGE = 8;
+    // 系统消息 -> 群组
+    SG_MESSAGE = 9;
   }
 
   // 消息内容
-  enum ContentKind {
+  enum ContentType {
     // 文本消息类型
     TEXT = 0;
   }
@@ -45,5 +46,6 @@ message MessageResponse {
 // 消息服务
 service MessageService {
 
+  // 发送消息并返回消息 ID
   rpc Send(MessageRequest) returns(MessageResponse) {}
 }

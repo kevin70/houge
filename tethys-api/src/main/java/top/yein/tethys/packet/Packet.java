@@ -33,8 +33,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     property = Packet.NS_JSON_PROPERTY_NAME)
 @JsonSubTypes({
   @JsonSubTypes.Type(PingPacket.class),
-  @JsonSubTypes.Type(PrivateMessagePacket.class),
-  @JsonSubTypes.Type(GroupMessagePacket.class),
+  @JsonSubTypes.Type(SimpleMessagePacket.class),
   @JsonSubTypes.Type(GroupSubscribePacket.class),
   @JsonSubTypes.Type(GroupUnsubscribePacket.class)
 })

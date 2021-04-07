@@ -36,8 +36,6 @@ public enum MessageContentType implements EnumLite {
   VOICE(2),
   /** 视频消息. */
   VIDEO(3),
-  /** 系统消息. */
-  SYSTEM(9),
   ;
   private final int code;
 
@@ -73,9 +71,6 @@ public enum MessageContentType implements EnumLite {
     }
     if (code == VIDEO.code) {
       return VIDEO;
-    }
-    if (code == SYSTEM.code) {
-      return SYSTEM;
     }
     return UNRECOGNIZED;
   }
