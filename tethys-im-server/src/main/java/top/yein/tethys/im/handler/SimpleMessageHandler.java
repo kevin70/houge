@@ -29,6 +29,7 @@ import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.im.server.PacketHandler;
+import top.yein.tethys.message.MessageRouter;
 import top.yein.tethys.packet.SimpleMessagePacket;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.util.YeinGid;
@@ -43,18 +44,23 @@ public class SimpleMessageHandler implements PacketHandler<SimpleMessagePacket> 
 
   private final MessageProperties messageProperties;
   private final MessageIdGenerator messageIdGenerator;
+  private final MessageRouter messageRouter;
 
   /**
    * 可被 IoC 容器所使用的构造函数.
    *
    * @param messageProperties 消息配置
    * @param messageIdGenerator 消息 ID 生成器
+   * @param messageRouter 消息路由器
    */
   @Inject
   public SimpleMessageHandler(
-      MessageProperties messageProperties, MessageIdGenerator messageIdGenerator) {
+      MessageProperties messageProperties,
+      MessageIdGenerator messageIdGenerator,
+      MessageRouter messageRouter) {
     this.messageProperties = messageProperties;
     this.messageIdGenerator = messageIdGenerator;
+    this.messageRouter = messageRouter;
   }
 
   @Override
@@ -104,8 +110,6 @@ public class SimpleMessageHandler implements PacketHandler<SimpleMessagePacket> 
       throw new BizCodeException(BizCodes.C3600, "[content_type]值不合法")
           .addContextValue("content_type", packet.getContentType());
     }
-
-    // FIXME 消息路由
-    return null;
+    return messageRouter.route(packet);
   }
 }
