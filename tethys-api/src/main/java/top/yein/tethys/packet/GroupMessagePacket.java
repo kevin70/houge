@@ -19,7 +19,7 @@ import static top.yein.tethys.packet.Namespaces.NS_GROUP_MESSAGE;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Data;
-import top.yein.tethys.constants.ContentType;
+import top.yein.tethys.constants.MessageContentType;
 
 /**
  * 群组消息.
@@ -38,7 +38,7 @@ public class GroupMessagePacket implements MessagePacket {
   long to;
   /** 消息内容. */
   String content;
-  /** 消息类型 {@link ContentType}. */
+  /** 消息类型 {@link MessageContentType}. */
   int contentType;
   /** 扩展参数. */
   String extraArgs;

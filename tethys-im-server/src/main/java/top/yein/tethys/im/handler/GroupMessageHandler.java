@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.ReactorNetty;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.constants.ReadStatus;
+import top.yein.tethys.constants.MessageReadStatus;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.MessageProperties;
 import top.yein.tethys.core.util.PacketUtils;
@@ -119,7 +119,7 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
             .content(packet.getContent())
             .contentType(packet.getContentType())
             .extraArgs(packet.getExtraArgs())
-            .unread(ReadStatus.UNREAD.getCode())
+            .unread(MessageReadStatus.UNREAD.getCode())
             .build();
     var storageMono =
         groupQueryDao

@@ -20,18 +20,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@link ContentType} 单元测试.
+ * {@link MessageContentType} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class ContentTypeTest {
+class MessageContentTypeTest {
 
   @Test
   void forCode() {
-    for (ContentType value : ContentType.values()) {
-      assertThat(ContentType.forCode(value.getCode())).isEqualTo(value);
+    for (MessageContentType value : MessageContentType.values()) {
+      assertThat(MessageContentType.forCode(value.getCode())).isEqualTo(value);
     }
-    assertThat(ContentType.forCode(null)).isEqualTo(ContentType.UNRECOGNIZED);
-    assertThat(ContentType.forCode(9999)).isEqualTo(ContentType.UNRECOGNIZED);
+    assertThat(MessageContentType.forCode(null)).isEqualTo(MessageContentType.UNRECOGNIZED);
+    assertThat(MessageContentType.forCode(9999)).isEqualTo(MessageContentType.UNRECOGNIZED);
   }
 }

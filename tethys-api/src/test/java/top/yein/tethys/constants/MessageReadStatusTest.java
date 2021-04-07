@@ -18,21 +18,20 @@ package top.yein.tethys.constants;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import top.yein.tethys.constants.ReadStatus;
 
 /**
- * {@link ReadStatus} 单元测试.
+ * {@link MessageReadStatus} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class ReadStatusTest {
+class MessageReadStatusTest {
 
   @Test
   void forCode() {
-    for (ReadStatus value : ReadStatus.values()) {
-      assertThat(ReadStatus.forCode(value.getCode())).isEqualTo(value);
+    for (MessageReadStatus value : MessageReadStatus.values()) {
+      assertThat(MessageReadStatus.forCode(value.getCode())).isEqualTo(value);
     }
-    assertThat(ReadStatus.forCode(null)).isEqualTo(ReadStatus.UNRECOGNIZED);
-    assertThat(ReadStatus.forCode(9999)).isEqualTo(ReadStatus.UNRECOGNIZED);
+    assertThat(MessageReadStatus.forCode(null)).isEqualTo(MessageReadStatus.UNRECOGNIZED);
+    assertThat(MessageReadStatus.forCode(9999)).isEqualTo(MessageReadStatus.UNRECOGNIZED);
   }
 }

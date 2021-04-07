@@ -17,7 +17,7 @@ package top.yein.tethys.im.handler.internal;
 
 import com.google.common.base.CharMatcher;
 import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.constants.ContentType;
+import top.yein.tethys.constants.MessageContentType;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.packet.GroupMessagePacket;
 import top.yein.tethys.packet.PrivateMessagePacket;
@@ -80,7 +80,7 @@ public class MessagePacketChecker {
   }
 
   static void checkContentKind(int kind) {
-    if (ContentType.forCode(kind) == ContentType.UNRECOGNIZED) {
+    if (MessageContentType.forCode(kind) == MessageContentType.UNRECOGNIZED) {
       throw new BizCodeException(BizCodes.C3600, "[kind]值不合法");
     }
   }

@@ -24,7 +24,7 @@ import top.yein.tethys.EnumLite;
  *
  * @author KK (kzou227@qq.com)
  */
-public enum ContentType implements EnumLite {
+public enum MessageContentType implements EnumLite {
 
   /** 不认识未被承认的枚举. */
   UNRECOGNIZED(-1),
@@ -41,7 +41,7 @@ public enum ContentType implements EnumLite {
   ;
   private final int code;
 
-  ContentType(int code) {
+  MessageContentType(int code) {
     this.code = code;
   }
 
@@ -58,7 +58,7 @@ public enum ContentType implements EnumLite {
    * @param code 对应枚举项的数值
    * @return 与给定数值关联的枚举
    */
-  public static ContentType forCode(Integer code) {
+  public static MessageContentType forCode(Integer code) {
     if (code == null) {
       return UNRECOGNIZED;
     }

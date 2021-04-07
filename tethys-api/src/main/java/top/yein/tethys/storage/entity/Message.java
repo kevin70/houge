@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.yein.tethys.constants.MessageReadStatus;
 
 /**
  * {@code t_message} 消息表.
@@ -75,7 +76,7 @@ public class Message {
   /**
    * 消息是否未读.
    *
-   * @see top.yein.tethys.constants.ReadStatus
+   * @see MessageReadStatus
    */
   private Integer unread;
   /** 创建时间. */

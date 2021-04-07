@@ -25,7 +25,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import top.yein.tethys.constants.ReadStatus;
+import top.yein.tethys.constants.MessageReadStatus;
 import top.yein.tethys.storage.data.TestData;
 import top.yein.tethys.storage.entity.Message;
 
@@ -81,7 +81,7 @@ class MessageDaoImplTest extends AbstractTestDao {
     var messageDao = newMessageDao();
     var entity1 = TestData.newMessage();
     var entity2 = TestData.newMessage();
-    var readStatus = ReadStatus.READ.getCode();
+    var readStatus = MessageReadStatus.READ.getCode();
 
     // 修改成功
     var p1 =
@@ -113,7 +113,7 @@ class MessageDaoImplTest extends AbstractTestDao {
         .consumeNextWith(
             dbRow -> {
               var unread = (Short) dbRow.get("unread");
-              assertThat(unread.intValue()).isEqualTo(ReadStatus.READ.getCode());
+              assertThat(unread.intValue()).isEqualTo(MessageReadStatus.READ.getCode());
             })
         .expectComplete()
         .verify();

@@ -15,7 +15,7 @@
  */
 package top.yein.tethys.packet;
 
-import top.yein.tethys.constants.ContentType;
+import top.yein.tethys.constants.MessageContentType;
 
 /**
  * 消息包接口.
@@ -56,7 +56,7 @@ public interface MessagePacket extends Packet {
    * 返回消息内容类型.
    *
    * @return 消息内容类型
-   * @see ContentType
+   * @see MessageContentType
    */
   int getContentType();
 
