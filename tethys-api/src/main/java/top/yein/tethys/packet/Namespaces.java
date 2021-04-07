@@ -47,6 +47,10 @@ public final class Namespaces {
    */
   public static final String NS_PONG = "pong";
   /**
+   * 消息.
+   */
+  public static final String NS_MESSAGE = "message";
+  /**
    * 私人聊天消息.
    *
    * @see PrivateMessagePacket
