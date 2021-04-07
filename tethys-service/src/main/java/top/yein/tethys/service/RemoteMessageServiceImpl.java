@@ -18,16 +18,8 @@ package top.yein.tethys.service;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import top.yein.chaos.biz.BizCode;
-import top.yein.chaos.biz.BizCodeException;
-import top.yein.tethys.core.util.MonoSinkStreamObserver;
-import top.yein.tethys.grpc.MessageRequest;
-import top.yein.tethys.grpc.MessageRequest.ContentKind;
-import top.yein.tethys.grpc.MessageRequest.Namespace;
-import top.yein.tethys.grpc.MessageResponse;
 import top.yein.tethys.grpc.MessageServiceGrpc;
 import top.yein.tethys.grpc.MessageServiceGrpc.MessageServiceStub;
-import top.yein.tethys.packet.Namespaces;
 import top.yein.tethys.service.result.MessageSendResult;
 import top.yein.tethys.vo.MessageSendVo;
 
@@ -53,40 +45,6 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
 
   @Override
   public Mono<MessageSendResult> sendMessage(long senderId, MessageSendVo vo) {
-    MessageRequest.Namespace ns;
-    if (Namespaces.NS_PRIVATE_MESSAGE.equals(vo.getNs())) {
-      ns = Namespace.P_MESSAGE;
-    } else if (Namespaces.NS_GROUP_MESSAGE.equals(vo.getNs())) {
-      ns = Namespace.G_MESSAGE;
-    } else {
-      throw new BizCodeException(BizCode.C400, "不支持的 ns").addContextValue("ns", vo.getNs());
-    }
-
-    var contentKind = MessageRequest.ContentKind.forNumber(vo.getContentKind());
-    if (contentKind == null || contentKind == ContentKind.UNRECOGNIZED) {
-      throw new BizCodeException(BizCode.C400, "不支持的 content_kind")
-          .addContextValue("content_kind", vo.getContentKind());
-    }
-
-    var builder =
-        MessageRequest.newBuilder()
-            .setNs(ns)
-            .setFrom(senderId)
-            .addTo(vo.getTo())
-            .setContent(vo.getContent())
-            .setContentKind(contentKind);
-    if (vo.getUrl() != null) {
-      builder.setUrl(vo.getUrl());
-    }
-    if (vo.getCustomArgs() != null) {
-      builder.setCustomArgs(vo.getCustomArgs());
-    }
-
-    return Mono.<MessageResponse>create(
-            sink -> {
-              log.debug("调用远程接口");
-              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver<>(sink));
-            })
-        .map(response -> MessageSendResult.builder().messageId(response.getMessageId()).build());
+    return Mono.empty();
   }
 }
