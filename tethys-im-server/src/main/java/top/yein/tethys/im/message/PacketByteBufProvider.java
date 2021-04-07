@@ -17,47 +17,61 @@ package top.yein.tethys.im.message;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.util.PacketUtils;
 import top.yein.tethys.packet.Packet;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * Packet 的 ByteBuf 提供者.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 class PacketByteBufProvider {
 
   private final Packet packet;
-  private AtomicReference<ByteBuf> byteBufAtomic = new AtomicReference<>();
+  private volatile ByteBuf byteBuf;
 
-  PacketByteBufProvider(Packet packet) {
+  PacketByteBufProvider(@Nonnull Packet packet) {
     this.packet = packet;
   }
 
   /**
-   * @return
-   * @throws IOException
+   * 序列化 Packet 并返回 ByteBuf 引用复制实例.
+   *
+   * @return ByteBuf 引用复制实例
    */
+  @Nonnull
   ByteBuf retainedByteBuf() {
-    if (byteBufAtomic.get() != null) {
-      return byteBufAtomic.get().retainedDuplicate();
+    var bb = this.byteBuf;
+    if (bb != null) {
+      return bb.retainedDuplicate();
     }
-    synchronized (byteBufAtomic) {
-      if (byteBufAtomic.get() != null) {
-        return byteBufAtomic.get();
+
+    synchronized (packet) {
+      if (this.byteBuf != null) {
+        return this.byteBuf;
       }
-      ByteBuf byteBuf;
+
       try {
-        byteBuf = PacketUtils.toByteBuf(packet);
+        ByteBuf byteBuf = PacketUtils.toByteBuf(packet);
+        this.byteBuf = byteBuf;
+        return byteBuf.retainedDuplicate();
       } catch (IOException e) {
         throw new BizCodeException(BizCodes.C3601, e);
       }
-      byteBufAtomic.set(byteBuf);
-      return byteBuf.retainedDuplicate();
     }
   }
 
-  /** @return */
+  /**
+   * 返回 ByteBuf 原始实例.
+   *
+   * @return ByteBuf 原始实例
+   */
+  @Nullable
   ByteBuf obtainByteBuf() {
-    return byteBufAtomic.get();
+    return byteBuf;
   }
 }
