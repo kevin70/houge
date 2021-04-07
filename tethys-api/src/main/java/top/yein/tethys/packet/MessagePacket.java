@@ -46,6 +46,14 @@ public interface MessagePacket extends Packet {
   long getTo();
 
   /**
+   * 返回消息类型.
+   *
+   * @return 消息类型
+   * @see top.yein.tethys.constants.MessageKind
+   */
+  int getKind();
+
+  /**
    * 返回消息内容.
    *
    * @return 消息内容

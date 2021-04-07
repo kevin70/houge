@@ -36,6 +36,8 @@ public class SimpleMessagePacket implements MessagePacket {
   Long from;
   /** 接收消息者. */
   long to;
+  /** 消息类型. */
+  int kind;
   /** 消息内容. */
   String content;
   /** 消息类型 {@link MessageContentType}. */
@@ -56,6 +58,11 @@ public class SimpleMessagePacket implements MessagePacket {
   @Override
   public long getTo() {
     return to;
+  }
+
+  @Override
+  public int getKind() {
+    return kind;
   }
 
   @Override
