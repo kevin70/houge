@@ -40,6 +40,7 @@ public enum BizCodes implements BizCode {
   // ---------------------------------------------------------------------//
   C3500("sessionId 冲突"),
   C3501("私聊消息 from 与当前会话登录用户不匹配"),
+  C3522(400, "不支持的消息类型"),
 
   // ---------------------------------------------------------------------//
   // 3600 - 3700 >> Packet 相关的错误码
@@ -47,7 +48,6 @@ public enum BizCodes implements BizCode {
   C3600(400, "缺少必须的参数"),
   C3601(500, "序列化 Packet 错误"),
   C3630(400, "私聊消息的接收方不存在"),
-
   ;
   private final int code;
   private final int status;
