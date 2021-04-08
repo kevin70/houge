@@ -50,18 +50,6 @@ public final class Namespaces {
    * 消息.
    */
   public static final String NS_MESSAGE = "message";
-  /**
-   * 私人聊天消息.
-   *
-   * @see PrivateMessagePacket
-   */
-  public static final String NS_PRIVATE_MESSAGE = "p.message";
-  /**
-   * 群组聊天消息.
-   *
-   * @see GroupMessagePacket
-   */
-  public static final String NS_GROUP_MESSAGE = "g.message";
 
   // ================================== 操作类消息 ==================================//
 
