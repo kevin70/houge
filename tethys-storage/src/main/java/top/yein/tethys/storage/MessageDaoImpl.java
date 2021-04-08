@@ -71,7 +71,7 @@ public class MessageDaoImpl implements MessageDao {
           .append("'")
           .append(",now());");
     }
-    return Mono.zip(insert0(entity), rc.batchSql(sql.toString()).rowsUpdated()).then();
+    return Mono.when(insert0(entity), rc.batchSql(sql.toString()).rowsUpdated());
   }
 
   @Override
@@ -84,17 +84,17 @@ public class MessageDaoImpl implements MessageDao {
 
   private Mono<Integer> insert0(Message entity) {
     return rc.sql(INSERT_SQL)
-      .bind(
-        new Object[] {
-          entity.getId(),
-          fromOrNull(entity.getSenderId(), Long.class),
-          fromOrNull(entity.getReceiverId(), Long.class),
-          fromOrNull(entity.getGroupId(), Long.class),
-          fromOrNull(entity.getKind(), Integer.class),
-          entity.getContent(),
-          entity.getContentType(),
-          fromOrNull(entity.getExtraArgs(), String.class)
-        })
-      .rowsUpdated();
+        .bind(
+            new Object[] {
+              entity.getId(),
+              fromOrNull(entity.getSenderId(), Long.class),
+              fromOrNull(entity.getReceiverId(), Long.class),
+              fromOrNull(entity.getGroupId(), Long.class),
+              fromOrNull(entity.getKind(), Integer.class),
+              entity.getContent(),
+              entity.getContentType(),
+              fromOrNull(entity.getExtraArgs(), String.class)
+            })
+        .rowsUpdated();
   }
 }
