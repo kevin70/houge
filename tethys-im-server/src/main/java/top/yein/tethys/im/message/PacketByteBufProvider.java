@@ -39,6 +39,15 @@ class PacketByteBufProvider {
   }
 
   /**
+   * 返回消息包.
+   *
+   * @return 消息包
+   */
+  Packet getPacket() {
+    return packet;
+  }
+
+  /**
    * 序列化 Packet 并返回 ByteBuf 引用复制实例.
    *
    * @return ByteBuf 引用复制实例

@@ -38,8 +38,10 @@ public class PowerMessageRouter implements MessageRouter {
   private final SessionGroupManager sessionGroupManager;
 
   /**
-   * @param sessionManager
-   * @param sessionGroupManager
+   * 能被 IoC 容器使用的构造函数.
+   *
+   * @param sessionManager 会话管理
+   * @param sessionGroupManager 会话群组管理
    */
   @Inject
   public PowerMessageRouter(
@@ -60,25 +62,29 @@ public class PowerMessageRouter implements MessageRouter {
 
     // Netty ByteBuf 提供者
     var byteBufProvider = new PacketByteBufProvider(packet);
-    // 释放 Netty ByteBuf 回调函数
-    Runnable releaseByteBufFunc =
-        () -> {
-          var byteBuf = byteBufProvider.obtainByteBuf();
-          if (byteBuf == null) {
-            return;
-          }
-          if (!byteBuf.release()) {
-            log.error(
-                "释放 ByteBuf 失败[packet={}, refCnt={}] {}",
-                packet,
-                byteBuf.refCnt(),
-                byteBuf.touch());
-          }
-        };
+    Runnable releaseByteBufFunc = releaseByteBuf(byteBufProvider);
+
     return sessionFlux
         .flatMap(session -> session.send(Mono.just(byteBufProvider.retainedByteBuf())))
         .doOnCancel(releaseByteBufFunc)
         .doOnTerminate(releaseByteBufFunc)
         .then();
+  }
+
+  // 释放 Netty ByteBuf 回调函数
+  private Runnable releaseByteBuf(PacketByteBufProvider byteBufProvider) {
+    return () -> {
+      var byteBuf = byteBufProvider.obtainByteBuf();
+      if (byteBuf == null) {
+        return;
+      }
+      if (!byteBuf.release()) {
+        log.error(
+            "释放 ByteBuf 失败[packet={}, refCnt={}] {}",
+            byteBufProvider.getPacket(),
+            byteBuf.refCnt(),
+            byteBuf.touch());
+      }
+    };
   }
 }
