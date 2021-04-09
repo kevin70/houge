@@ -105,7 +105,7 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
   }
 
   /**
-   * 发送消息.
+   * 发送聊天消息.
    *
    * @param request 请求对象
    * @param response 响应对象
@@ -118,7 +118,7 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
             t -> {
               var ac = t.getT1();
               var vo = t.getT2();
-              log.debug("发送消息[uid={}, vo={}]", ac.uid(), vo);
+              log.debug("发送聊天消息 uid={} vo={}", ac.uid(), vo);
               return remoteMessageService
                   .sendMessage(ac.uid(), vo)
                   .flatMap(result -> json(response, result));

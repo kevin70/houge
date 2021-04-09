@@ -27,28 +27,21 @@ import lombok.Data;
 public class MessageSendVo {
 
   /**
-   * 消息命名空间.
+   * 消息类型.
    *
-   * <ul>
-   *   <li>{@link top.yein.tethys.packet.Namespaces#NS_PRIVATE_MESSAGE}
-   *   <li>{@link top.yein.tethys.packet.Namespaces#NS_GROUP_MESSAGE}
-   * </ul>
+   * @see top.yein.tethys.constants.MessageKind
    */
-  private String ns;
-  /**
-   * 消息接收者.
-   *
-   * <p>当 {@code ns} 值为 {@link top.yein.tethys.packet.Namespaces#NS_PRIVATE_MESSAGE} 时, {@code to}
-   * 代表<b>用户 ID</b>. 当 {@code ns} 值为 {@link top.yein.tethys.packet.Namespaces#NS_GROUP_MESSAGE} 时,
-   * {@code to} 代表<b>群组 ID</b>.
-   */
+  private int kind;
+  /** 消息接收者. */
   private long to;
   /** 消息内容. */
   private String content;
-  /** 消息内容类型. */
-  private int contentKind = 0;
-  /** 统一资源定位器. */
-  private String url;
-  /** 自定义参数. */
-  private @JsonUnwrapped String customArgs;
+  /**
+   * 消息内容类型.
+   *
+   * @see top.yein.tethys.constants.MessageContentType
+   */
+  private int contentType;
+  /** 扩展参数. */
+  private @JsonUnwrapped String extraArgs;
 }

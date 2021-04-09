@@ -15,9 +15,13 @@
  */
 package top.yein.tethys.service;
 
+import com.google.common.base.Strings;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import top.yein.tethys.core.util.MonoSinkStreamObserver;
+import top.yein.tethys.grpc.MessageRequest;
+import top.yein.tethys.grpc.MessageResponse;
 import top.yein.tethys.grpc.MessageServiceGrpc;
 import top.yein.tethys.grpc.MessageServiceGrpc.MessageServiceStub;
 import top.yein.tethys.service.result.MessageSendResult;
@@ -45,6 +49,28 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
 
   @Override
   public Mono<MessageSendResult> sendMessage(long senderId, MessageSendVo vo) {
-    return Mono.empty();
+    var builder =
+        MessageRequest.newBuilder()
+            .setKindValue(vo.getKind())
+            .setFrom(senderId)
+            .setTo(vo.getTo())
+            .setContent(vo.getContent())
+            .setContentTypeValue(vo.getContentType());
+    if (!Strings.isNullOrEmpty(vo.getExtraArgs())) {
+      builder.setExtraArgs(vo.getExtraArgs());
+    }
+
+    return Mono.<MessageResponse>create(
+            sink -> {
+              log.debug("发送gRPC消息 vo={}", vo);
+              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver(sink));
+            })
+        .map(
+            response -> {
+              if (log.isDebugEnabled()) {
+                log.debug("收到gRPC消息回应 messageId={} vo={}", response.getMessageId(), vo);
+              }
+              return MessageSendResult.builder().messageId(response.getMessageId()).build();
+            });
   }
 }
