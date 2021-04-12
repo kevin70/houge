@@ -59,6 +59,7 @@
 
 ## 文档
 
+- [开发手册](docs/dev/index.md)
 - [使用手册](docs/manual/index.md)
 - [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
