@@ -86,3 +86,35 @@ Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCO
 将 `message-storage.r2dbc.url` 配置为正确的 PostgreSQL 数据库连接信息。
 
 > :warning: 当前配置 r2dbc 连接时必须要将数据库用户名、密码及主机端口信息完整配置在一起。
+
+## 运行服务
+
+在所有基本配置准备工作结束之后，现在我们来启动 Tethys 服务吧。
+
+### IM 服务
+
+![](images/20210413134827.png)
+
+`top.yein.tethys.im.main.ImMain` 是 IM 服务的主程序入口，可直接使用 IDE 运行服务。打印出如下的日志表示 IM 服务已经启动成功。
+
+```
+... 省略的日志
+
+13:53:13.179 [main] INFO  top.yein.tethys.im.server.ImServer 90 - IM Server 启动完成 - 0.0.0.0:11010
+13:53:13.180 [main] INFO  top.yein.tethys.im.main.ImMain 85 - tethys-im 服务启动成功 fid=93106
+13:53:13.353 [main] INFO  top.yein.tethys.im.server.GrpcServer 54 - gRPC 添加服务 top.yein.tethys.grpc.service.MessageServiceGrpcImpl@44114b9f
+13:53:13.406 [main] INFO  top.yein.tethys.im.server.GrpcServer 63 - gRPC 服务 0.0.0.0:11012 启动成功
+```
+
+### REST 服务
+
+![](images/20210413134901.png)
+
+`top.yein.tethys.rest.main.RestMain` 是 REST 服务的主程序入口，可直接使用 IDE 运行服务。打印出如下的日志表示 REST 服务已经启动成功。
+
+```
+... 省略的日志
+
+13:55:54.653 [main] INFO  top.yein.tethys.rest.server.RestServer 77 - REST Server 启动完成 - 0.0.0.0:11019
+13:55:54.653 [main] INFO  top.yein.tethys.rest.main.RestMain 79 - tethys-rest 服务启动成功 fid=99494
+```
