@@ -72,6 +72,6 @@ $ ./gradlew :flywayMigrate
 
 Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 格式文件作为项目配置文件格式。
 
-> :information_source: HOCON，全称 Human-Optimized Config Object Notation（人性化配置对象表示法）是一种人类可读的数据格式，并是 JSON 和 .properties 的一个超集。
+> :information_source: [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 全称 Human-Optimized Config Object Notation（人性化配置对象表示法）是一种人类可读的数据格式，并是 [JSON](https://www.json.org/json-zh.html) 和 [.properties](https://zh.wikipedia.org/wiki/.properties) 的一个超集。
 
 jjj
