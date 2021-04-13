@@ -177,9 +177,9 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 Content-Type: application/json
 
 {
-    "id": 100,
-    "creator_id": 1,
-    "member_limit": 30
+  "id": 100,
+  "creator_id": 1,
+  "member_limit": 30
 }
 ```
 
@@ -196,7 +196,7 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 Content-Type: application/json
 
 {
-    "uid": 9
+  "uid": 9
 }
 ```
 
@@ -224,7 +224,7 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 }
 ```
 
-该接口必须由业务的服务端调用，获取到 `access_token` 之后响应给终端，终端通过 `access_token` 才可访问 Tethys 对外的接口。
+该接口必须由业务服务端调用，获取到 `access_token` 之后响应给终端，终端通过 `access_token` 才可访问 Tethys 对外的接口。
 
 ## 收发消息
 
@@ -233,3 +233,6 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 ### HTTP 发送消息
 
 ### gRPC 发送消息
+
+
+> :warning: 所有以 *S* 结尾的接口，都是 Server to Server 模式，采用 Basic 认证，这些接口应该是在安全可信的环境中调用执行。
