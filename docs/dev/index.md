@@ -74,4 +74,15 @@ Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCO
 
 > :information_source: [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 全称 Human-Optimized Config Object Notation（人性化配置对象表示法）是一种人类可读的数据格式，并是 [JSON](https://www.json.org/json-zh.html) 和 [.properties](https://zh.wikipedia.org/wiki/.properties) 的一个超集。
 
-jjj
+在 tethys 项目**根目录**中手动创建 `tethys.conf` 配置文件。
+
+![](images/20210413132434.png)
+
+**Tethys 配置**
+
+- `message-storage` 消息存储配置
+  - `r2dbc.url` 存储数据库连接配置
+
+将 `message-storage.r2dbc.url` 配置为正确的 PostgreSQL 数据库连接信息。
+
+> :warning: 当前配置 r2dbc 连接时必须要将数据库用户名、密码及主机端口信息完整配置在一起。
