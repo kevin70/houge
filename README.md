@@ -43,7 +43,6 @@
 
 - [开发手册](docs/dev/index.md)
 - [使用手册](docs/manual/index.md)
-- [用户认证](docs/design/authentication.md)
 - [消息协议](docs/design/message_protocol.md)
 - [安装部署](docs/deployment/install.md)
 - [分布式消息 ID 设计](docs/design/message_id.md)
