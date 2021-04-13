@@ -20,15 +20,18 @@ Tethys 是采用 reactor 基于 AdoptOpenJDK 11 的版本开发，消息存储�
 开发工具安装配置结束后需要手动在 PostgreSQL 中创建数据库，可使用下面的 SQL 快速创建数据库。
 
 ```sql
-create database tethys;
+create
+database tethys;
 ```
 
 获取 Tethys 源码：
+
 ```
 $ git clone https://gitee.com/kk70/tethys.git
 ```
 
 ### Tethys 目录介绍
+
 ```
 tethys                    项目根目录
   |- .gitee               存放 gitee 源码托管的配置
@@ -137,3 +140,96 @@ Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCO
 13:55:54.653 [main] INFO  top.yein.tethys.rest.server.RestServer 77 - REST Server 启动完成 - 0.0.0.0:11019
 13:55:54.653 [main] INFO  top.yein.tethys.rest.main.RestMain 79 - tethys-rest 服务启动成功 fid=99494
 ```
+
+## 创建用户 - *S*
+
+Tethys 自身并没有独立的用户系统，业务需要在使用之前需要将用户 ID 同步到 Tethys 中，在用户同步完成之后才可以收发信息。
+
+**[创建用户 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1users/post)**
+
+**Request：**
+
+```
+POST /i/users HTTP/1.1
+Host: 127.0.0.1:11019
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Content-Type: application/json
+
+{
+  "id": 1
+}
+```
+
+使用 `/i/users` 接口同步创建用户。
+
+## 创建群组 - *S*
+
+如果需要使用群组会话公司，业务方也需要将群组同步到 Tethys 中，并绑定群组与用户的关系。
+
+**[创建群组 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1groups/post)**
+
+**Request：**
+
+```
+POST /i/groups HTTP/1.1
+Host: 127.0.0.1:11019
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Content-Type: application/json
+
+{
+    "id": 100,
+    "creator_id": 1,
+    "member_limit": 30
+}
+```
+
+使用 `/i/groups` 接口同步创建群组，其中的 `creator_id` 为创建者的**用户-ID**，`creator_id`的值必须是在 Tethys 系统中已经创建并且存在的用户。
+
+**[群组绑定用户 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1groups-member~1{group_id}~1join/put)**
+
+**Request：**
+
+```
+PUT /i/group-members/100/join HTTP/1.1
+Host: 127.0.0.1:11019
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Content-Type: application/json
+
+{
+    "uid": 9
+}
+```
+
+将用户 **9** 与群组 **100** 建立关系，之后给群组 **100** 发送消息时用户 **9** 才可收到该群组的消息。
+
+## 生成令牌 - *S*
+
+要与 Tethys 创建接口通讯，首先需要访问令牌。
+
+**[生成令牌 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1token~1{uid}/post)**
+
+**Request：**
+
+```
+POST /i/token/3 HTTP/1.1
+Host: 127.0.0.1:11019
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+```
+
+**Response：**
+
+```
+{
+  "access_token": "eyJraWQiOiJBMCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJqdGkiOiIxIn0.Q4ZLkZ9my5KH-nRUQX3zl6dR01XnMH20Zf52RHjHUSnrxI4J-HgDS1ScTNWo_O6LWYwb5ntEi--APQDaH__0IQ"
+}
+```
+
+该接口必须由业务的服务端调用，获取到 `access_token` 之后响应给终端，终端通过 `access_token` 才可访问 Tethys 对外的接口。
+
+## 收发消息
+
+### WebSocket 收发消息
+
+### HTTP 发送消息
+
+### gRPC 发送消息
