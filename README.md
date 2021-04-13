@@ -47,7 +47,7 @@
 - [消息协议](docs/design/message_protocol.md)
 - [安装部署](docs/deployment/install.md)
 - [分布式消息 ID 设计](docs/design/message_id.md)
-- [REST OpenAPI 接口文档](https://kk70.gitee.io/tethys/tethys-rest-oais/tethys-rest.html)
+- [REST 接口文档](https://kk70.gitee.io/tethys/tethys-rest.html)
 
 ## 演示
 
