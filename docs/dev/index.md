@@ -69,9 +69,11 @@ Tethys 默认采用 [FlywayDB](https://flywaydb.org/) 管理数据库 Schema 脚
 
 文件复制成功之后需要将文件内的数据库连接配置修改为自己搭建的数据库连接配置（参考下图标注）。
 
-- `flyway.url` PostgreSQL 数据库连接地址
-- `flyway.user` PostgreSQL 数据库连接用户
-- `flyway.password` PostgreSQL 数据库连接密码
+**FlywayDB 数据库连接配置：**
+
+- `flyway.url` 数据库连接地址
+- `flyway.user` 数据库连接用户
+- `flyway.password` 数据库连接密码
 
 ![](images/20210412184905.png)
 
@@ -233,6 +235,5 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 ### HTTP 发送消息
 
 ### gRPC 发送消息
-
 
 > :warning: 所有以 *S* 结尾的接口，都是 Server to Server 模式，采用 Basic 认证，这些接口应该是在安全可信的环境中调用执行。
