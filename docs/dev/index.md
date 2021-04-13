@@ -23,10 +23,10 @@ Tethys 是采用 reactor 基于 AdoptOpenJDK 11 的版本开发，消息存储�
 create database tethys;
 ```
 
-> 获取 Tethys 源码：
-> ```
-> $ git clone https://gitee.com/kk70/tethys.git
-> ```
+获取 Tethys 源码：
+```
+$ git clone https://gitee.com/kk70/tethys.git
+```
 
 ### Google Java Format 配置
 
@@ -67,3 +67,11 @@ $ ./gradlew :flywayMigrate
 执行成功通过数据库工具可查看到数据表结构：
 
 ![](images/20210413094314.png)
+
+### Tethys 项目配置
+
+Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 格式文件作为项目配置文件格式。
+
+> :information_source: HOCON，全称 Human-Optimized Config Object Notation（人性化配置对象表示法）是一种人类可读的数据格式，并是 JSON 和 .properties 的一个超集。
+
+jjj
