@@ -2,8 +2,15 @@ openapi: "3.0.3"
 info:
   version: 1.0.0
   title: Tethys REST RESTful 接口
+  description: |
+    Tethys REST 所有开放的接口都在本文件内进行定义，文件详细描述了接口的名称、约束及作用范围，请严格按照文档的要求在适合的环境中调用相应的接口。
+
+    - 以 `/-` 为前缀的路径是**系统内部**的 API，用于获取应用基础信息，或者保证应用正常运行的支持接口设计。
+    - 以 `/i` 为前缀的路径是**服务内部**的 API，为业务服务端设计，该路径下的所有接口应该是在安全可信的环境下调用执行。
+    - 以 `/p` 为前缀的路径是**公共**的 API，可在所有环境下调用执行。
+
 servers:
-  - url: http://localhost:11019/
+  - url: http://127.0.0.1:11019/
 tags:
   - name: SUPPORT
     description: 系统支撑
