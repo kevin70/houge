@@ -39,24 +39,6 @@
 - [ ] 系统监控
 - [ ] 黑名单
 
-## 开发准备
-
-- Java 11
-- IntelliJ IDEA
-  - [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
-  - [Google Java Format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
-  - [SonarLint](https://www.sonarlint.org/intellij)
-- Redis
-- [websocat](https://github.com/vi/websocat) WebSocket 命令行测试工具
-
-### Google Java Format 配置
-
-1. 去到 `File → Settings → Editor → Code Style`
-2. 单击带有工具提示的扳手图标显示计划动作
-3. 点击 `Import Scheme`
-4. 选择项目根目录下 `config/intellij-java-google-style.xml` 文件
-5. 确保选择 GoogleStyle 作为当前方案
-
 ## 文档
 
 - [开发手册](docs/dev/index.md)
@@ -66,11 +48,6 @@
 - [安装部署](docs/deployment/install.md)
 - [分布式消息 ID 设计](docs/design/message_id.md)
 - [REST OpenAPI 接口文档](https://kk70.gitee.io/tethys/tethys-rest-oais/tethys-rest.html)
-
-## Browser WebSocket Client
-
-使用 Chrome 浏览器安装扩展 [Browser-WebSocket-Client
-](https://github.com/abeade/browser-websocket-client) 用于快速测试 WebSocket。
 
 ## 演示
 
