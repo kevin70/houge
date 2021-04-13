@@ -1,126 +1,43 @@
 # 消息协议
 
-## 私聊
-### 文本消息
+## 聊天消息
+
 ```json
 {
-  "@ns": "p.msg",
-  "msg_id": "643bf3b250c211ebae930242ac130002",
-  "from": "from user id",
-  "to": "to user id",
-  "kind": 1,
-  "content": "Hello World!",
+  "@ns": "message",
+  "message_id": "7KBCAXS2QCKQJHX",
+  "kind": 0,
+  "from": 1,
+  "to": 2,
+  "content": "消息内容~~~",
+  "content_type": 0,
+  "extra_args": "扩展参数~~~"
 }
 ```
 
 | 属性名称 | 数据类型 | 必选 | 描述 |
 | --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `p.msg` |
-| `msg_id` | `string` | Y | 消息 ID 全局唯一 |
-| `from` | `string` | Y | 发送者用户 ID |
-| `to` | `string` |Y | 接收者用户 ID |
-| `kind` | `int32` | Y | 内容类型，固定取值 `1` |
-| `content` | `string` | Y | 消息内容 |
-| `custom_args` | `string` | N | 扩展参数 |
+| `@ns` | `string` | Y | 命名空间，固定取值 `message` |
+| `message_id` | `string(15)` | Y | 消息 ID 全局唯一 |
+| `from` | `int64` | N | 发送者**用户-ID** |
+| `to` | `int64` |Y | 接收者**用户-ID**、**群组-ID** |
+| `kind` | `int32` | N | 消息类型，默认值 `0`。 |
+| `content` | `string(4096)` | Y | 消息内容 |
+| `content_type` | `int32` | N | 消息内容类型，默认值 `0`。 |
+| `extra_args` | `string(2048)` | N | 扩展参数 |
 
-### 图片消息
-```json
-{
-  "@ns": "p.msg",
-  "msg_id": "643bf3b250c211ebae930242ac130002",
-  "from": "from user id",
-  "to": "to user id",
-  "kind": 2,
-  "url": "https://via.placeholder.com/150",
-  "content": "iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpaqqqq3t7fFxcW+vr6xsbGjo6OcnJyLKnDGAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABAElEQVRoge3SMW+DMBiE4YsxJqMJtHOTITPeOsLQnaodGImEUMZEkZhRUqn92f0MaTubtfeMh/QGHANEREREREREREREtIJJ0xbH299kp8l8FaGtLdTQ19HjofxZlJ0m1+eBKZcikd9PWtXC5DoDotRO04B9YOvFIXmXLy2jEbiqE6Df7DTleA5socLqvEFVxtJyrpZFWz/pHM2CVte0lS8g2eDe6prOyqPglhzROL+Xye4tmT4WvRcQ2/m81p+/rdguOi8Hc5L/8Qk4vhZzy08DduGt9eVQyP2qoTM1zi0/uf4hvBWf5c77e69Gf798y08L7j0RERERERERERH9P99ZpSVRivB/rgAAAABJRU5ErkJggg=="
-}
-```
-
-| 属性名称 | 数据类型 | 必选 | 描述 |
-| --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `p.msg` |
-| `msg_id` | `string` | Y | 消息 ID 全局唯一 |
-| `from` | `string` | Y | 发送者用户 ID |
-| `to` | `string` | Y | 接收者用户 ID |
-| `kind` | `int32` | Y | 内容类型，固定取值 `2` |
-| `url` | `string` | Y | 图片 URL |
-| `content` | `string` | Y | 图片缩略图 **BASE64** 编码 |
-| `custom_args` | `string` | N | 扩展参数 |
-
-## 群组
-### 订阅群组消息
-```json
-{
-  "@ns": "g.sub",
-  "group_ids": ["group id-1", "group id-2"]
-}
-```
-
-| 属性名称 | 数据类型 | 描述 |
-| --- | --- | --- |
-| `@ns` | `string` | 命名空间，固定取值 `g.sub` |
-| `group_ids` | `array[string]` | 群组 ID 列表 |
-
-### 取消订阅群组消息
-```json
-{
-  "@ns": "g.unsub",
-  "group_ids": ["group id-1", "group id-2"]
-}
-```
-
-| 属性名称 | 数据类型 | 描述 |
-| --- | --- | --- |
-| `@ns` | `string` | 命名空间，固定取值 `g.unsub` |
-| `group_ids` | `array[string]` | 群组 ID 列表 |
-
-### 文本消息
-```json
-{
-  "@ns": "g.msg",
-  "msg_id": "643bf3b250c211ebae930242ac130002",
-  "from": "from user id",
-  "to": "to group id",
-  "kind": 1,
-  "content": "Hello World!",
-}
-```
-
-| 属性名称 | 数据类型 | 必选 | 描述 |
-| --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `g.msg` |
-| `msg_id` | `string` | Y | 消息 ID 全局唯一 |
-| `from` | `string` | Y | 发送者用户 ID |
-| `to` | `string` |Y | 接收者用户 ID |
-| `kind` | `int32` | Y | 内容类型，固定取值 `1` |
-| `content` | `string` | Y | 消息内容 |
-| `custom_args` | `string` | N | 扩展参数 |
-
-### 图片消息
-```json
-{
-  "@ns": "g.msg",
-  "msg_id": "643bf3b250c211ebae930242ac130002",
-  "from": "from user id",
-  "to": "to group id",
-  "kind": 2,
-  "url": "https://via.placeholder.com/150",
-  "content": "iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpaqqqq3t7fFxcW+vr6xsbGjo6OcnJyLKnDGAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABAElEQVRoge3SMW+DMBiE4YsxJqMJtHOTITPeOsLQnaodGImEUMZEkZhRUqn92f0MaTubtfeMh/QGHANEREREREREREREtIJJ0xbH299kp8l8FaGtLdTQ19HjofxZlJ0m1+eBKZcikd9PWtXC5DoDotRO04B9YOvFIXmXLy2jEbiqE6Df7DTleA5socLqvEFVxtJyrpZFWz/pHM2CVte0lS8g2eDe6prOyqPglhzROL+Xye4tmT4WvRcQ2/m81p+/rdguOi8Hc5L/8Qk4vhZzy08DduGt9eVQyP2qoTM1zi0/uf4hvBWf5c77e69Gf798y08L7j0RERERERERERH9P99ZpSVRivB/rgAAAABJRU5ErkJggg=="
-}
-```
-
-| 属性名称 | 数据类型 | 必选 | 描述 |
-| --- | --- | --- | --- |
-| `@ns` | `string` | Y | 命名空间，固定取值 `g.msg` |
-| `msg_id` | `string` | Y | 消息 ID 全局唯一 |
-| `from` | `string` | Y | 发送者用户 ID |
-| `to` | `string` | Y | 接收者用户 ID |
-| `kind` | `int32` | Y | 内容类型，固定取值 `2` |
-| `url` | `string` | Y | 图片 URL |
-| `content` | `string` | Y | 图片缩略图 **BASE64** 编码 |
-| `custom_args` | `string` | N | 扩展参数 |
+**消息枚举定义:**
+- `kind` 消息类型枚举：
+  - `0` 私人消息
+  - `1` 群组消息
+- `content_type` 消息内容类型枚举：
+  - `0` 文本消息
+  - `1` 图片消息
+  - `2` 语音消息
+  - `3` 视频消息
 
 ## 错误响应
+
 ```json
 {
   "@ns": "error",
@@ -129,6 +46,7 @@
   "details": "any"
 }
 ```
+
 | 属性名称 | 数据类型 | 必选 | 描述 |
 | --- | --- | --- | --- |
 | `@ns` | `string` | Y | 命名空间，固定取值 `error` |
