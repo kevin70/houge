@@ -36,8 +36,6 @@ create database tethys;
 4. 选择项目根目录下 `config/intellij-java-google-style.xml` 文件
 5. 确保选择 GoogleStyle 作为当前方案
 
-## 开发配置
-
 ### FlywayDB 配置
 
 Tethys 默认采用 [FlywayDB](https://flywaydb.org/) 管理数据库 Schema 脚本，默认已经与 Gradle 集成，我们仅需要配置一次 flyway 数据库连接信息。 在 tethys
