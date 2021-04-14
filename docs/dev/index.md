@@ -241,6 +241,10 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
   - **127.0.0.1:11010** 为 Tethys IM 服务的主机与端口
   - **[access_token]** 替换为访问用户的令牌
 
+- 演示
+
+  ![](images/328994a573dc.gif)
+
 ### HTTP 发送消息
 
 ### gRPC 发送消息

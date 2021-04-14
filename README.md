@@ -48,21 +48,9 @@
 - [分布式消息 ID 设计](docs/design/message_id.md)
 - [REST 接口文档](https://kk70.gitee.io/tethys/tethys-rest.html)
 
-## 演示
+## 私人聊天
 
-![](docs/images/tethys-im-demo1.gif)
-[Tethys IM 演示视频1](https://www.bilibili.com/video/BV1CN411Q7dX)
-
-## 私聊演示
-
-![](docs/images/p-msg-44.gif)
-![](docs/images/p-msg-55.gif)
-
-## 群聊演示
-
-![](docs/images/g-msg-44.gif)
-![](docs/images/g-msg-55.gif)
-![](docs/images/g-msg-66.gif)
+![](docs/dev/images/328994a573dc.gif)
 
 ## 感谢
 
