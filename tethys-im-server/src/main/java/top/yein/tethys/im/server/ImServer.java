@@ -46,9 +46,12 @@ public final class ImServer {
   private DisposableServer disposableServer;
 
   /**
-   * @param addr
-   * @param websocketHandler
-   * @param interceptors
+   * 能被 IoC 容器使用的构造函数.
+   *
+   * @param addr 服务的 IP 和端口
+   * @param websocketHandler WS 处理器
+   * @param interceptors 拦截器
+   * @param routingServices HTTP 路由服务列表
    */
   @Inject
   public ImServer(
