@@ -247,6 +247,14 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 
 ### HTTP 发送消息
 
+- 演示
+
+  ![](images/a21fa82f2da7.gif)
+
 ### gRPC 发送消息
+
+- 演示
+
+  ![](images/4c04babfe553.gif)
 
 > :warning: 所有以 *S* 结尾的接口，都是 Server to Server 模式，采用 Basic 认证，这些接口应该是在安全可信的环境中调用执行。

@@ -48,9 +48,19 @@
 - [分布式消息 ID 设计](docs/design/message_id.md)
 - [REST 接口文档](https://kk70.gitee.io/tethys/tethys-rest.html)
 
-## 私人聊天
+## 演示
 
-![](docs/dev/images/328994a573dc.gif)
+### 私人聊天
+
+![私人聊天](docs/dev/images/328994a573dc.gif)
+
+### HTTP 接口发送消息
+
+![HTTP 接口发送消息](docs/dev/images/a21fa82f2da7.gif)
+
+### gRPC 接口发送消息
+
+![gRPC 接口发送消息](docs/dev/images/4c04babfe553.gif)
 
 ## 感谢
 
