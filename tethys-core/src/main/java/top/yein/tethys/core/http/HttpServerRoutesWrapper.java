@@ -48,8 +48,10 @@ public class HttpServerRoutesWrapper implements HttpServerRoutes {
   }
 
   /**
-   * @param routes
-   * @param httpExceptionHandler
+   * 使用 routes、异常处理器构造对象.
+   *
+   * @param routes HTTP routes
+   * @param httpExceptionHandler 异常处理器
    */
   public HttpServerRoutesWrapper(
       HttpServerRoutes routes, HttpExceptionHandler httpExceptionHandler) {
