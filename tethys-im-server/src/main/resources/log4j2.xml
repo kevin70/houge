@@ -21,7 +21,15 @@
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{36} %L - %msg%n"/>
     </Console>
-    <File name="AppMetrics" fileName="logs/tethys-im-metrics.log">
+
+    <File name="File" fileName="logs/im-server.log">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{36} %L - %msg%n"/>
+    </File>
+    <Async name="FileAsync">
+      <AppenderRef ref="File"/>
+    </Async>
+
+    <File name="AppMetrics" fileName="logs/im-metrics.log">
       <PatternLayout>
         <Pattern>%m%n</Pattern>
       </PatternLayout>
@@ -38,8 +46,9 @@
     <Logger name="io.micrometer.core.instrument.logging.LoggingMeterRegistry" additivity="false">
       <AppenderRef ref="AppMetricsAsync"/>
     </Logger>
-    <Root level="debug">
-      <AppenderRef ref="Console"/>
+    <Root level="info">
+<!--      <AppenderRef ref="Console"/>-->
+      <AppenderRef ref="FileAsync"/>
     </Root>
   </Loggers>
 </Configuration>
