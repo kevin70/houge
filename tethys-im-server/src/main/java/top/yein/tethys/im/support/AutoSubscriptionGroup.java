@@ -60,14 +60,15 @@ public class AutoSubscriptionGroup implements SessionListener {
 
   @Override
   public Mono<Void> handle(Session session, SessionEvent event) {
-    if (event != SessionEvent.SM_ADD_AFTER) {
-      return Mono.empty();
+    if (event == SessionEvent.SM_ADD_AFTER) {
+      return groupQueryDao
+          .queryGidByUid(session.uid())
+          .collect(Collectors.toSet())
+          .doOnNext(groupIds -> log.debug("用户订阅群组{}消息{}", groupIds, session))
+          .flatMap(groupIds -> sessionGroupManager.subGroups(session, groupIds));
+    } else if (event == SessionEvent.SM_REMOVE_AFTER) {
+      return sessionGroupManager.unsubGroups(session, session.subGroupIds());
     }
-
-    return groupQueryDao
-        .queryGidByUid(session.uid())
-        .collect(Collectors.toSet())
-        .doOnNext(groupIds -> log.debug("用户订阅群组{}消息{}", groupIds, session))
-        .flatMap(groupIds -> sessionGroupManager.subGroups(session, groupIds));
+    return Mono.empty();
   }
 }
