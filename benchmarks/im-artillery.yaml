@@ -1,0 +1,18 @@
+config:
+  target: "ws://127.0.0.1:11010/im"
+  processor: "./functions.js"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+  ws:
+    headers:
+      authorization: "Bearer eyJraWQiOiJBMCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJqdGkiOiIxIn0.Q4ZLkZ9my5KH-nRUQX3zl6dR01XnMH20Zf52RHjHUSnrxI4J-HgDS1ScTNWo_O6LWYwb5ntEi--APQDaH__0IQ"
+
+scenarios:
+  - name: Private Message
+    engine: ws
+    flow:
+      - loop:
+          - function: "createTestMessage"
+          - send: "{{ testMessage }}"
+        count: 20000
