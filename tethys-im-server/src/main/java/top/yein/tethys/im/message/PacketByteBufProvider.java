@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.core.BizCodes;
 import top.yein.tethys.core.util.PacketUtils;
@@ -73,6 +74,10 @@ class PacketByteBufProvider {
         throw new BizCodeException(BizCodes.C3601, e);
       }
     }
+  }
+
+  Mono<ByteBuf> retainedByteBufMono() {
+    return Mono.just(retainedByteBuf());
   }
 
   /**
