@@ -28,6 +28,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.DataInput;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.function.Supplier;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
@@ -138,24 +139,30 @@ public class WebsocketHandler {
                     return out.neverComplete();
                   });
         };
-    return Mono.defer(s).doOnError(e -> log.error("未处理的异常 {}", in, e));
+    return Mono.defer(s)
+        .onErrorResume(
+            e -> {
+              if (isConnectionReset(e)) {
+                return Mono.empty();
+              }
+              return Mono.error(e);
+            })
+        .doOnError(e -> log.error("最终的未处理异常 {}", in, e));
   }
 
   private void receiveFrames(final WebsocketInbound in, final Session session) {
     in.aggregateFrames()
         .receiveFrames()
-        .doOnError(
+        .onErrorResume(
             e -> {
               // 异常处理
-              if (AbortedException.isConnectionReset(e)) {
-                return;
+              if (isConnectionReset(e)) {
+                return Mono.empty();
               }
-              if ((e instanceof IOException
-                  && e.getMessage() != null
-                  && e.getMessage().contains("远程主机强迫关闭了一个现有的连接"))) {
-                return;
-              }
-
+              return Mono.error(e);
+            })
+        .doOnError(
+            e -> {
               // 业务逻辑异常处理
               if (e instanceof BizCodeException) {
                 log.debug("业务异常 session={}", session, e);
@@ -166,7 +173,18 @@ public class WebsocketHandler {
               // 连接终止、清理
               if (!session.isClosed()) {
                 log.debug("会话终止 session={}", session);
-                session.close().subscribe();
+
+                session
+                    .close()
+                    .onErrorResume(
+                        e -> {
+                          if (isConnectionReset(e)) {
+                            return Mono.empty();
+                          }
+                          log.error("关闭会话异常 {} ", session, e);
+                          return Mono.error(e);
+                        })
+                    .subscribe();
               }
             })
         .flatMap(frame -> handleFrame(session, frame))
@@ -255,5 +273,17 @@ public class WebsocketHandler {
       throw new IllegalArgumentException("QUERY中缺少\"access_token\"认证参数");
     }
     return params.get(0);
+  }
+
+  private boolean isConnectionReset(Throwable err) {
+    return (err instanceof IOException
+                && (err.getMessage() == null
+                    || err.getMessage().contains("Broken pipe")
+                    || err.getMessage().contains("Connection reset by peer"))
+            || err.getMessage().contains("远程主机强迫关闭了一个现有的连接"))
+        || (err instanceof SocketException
+            && err.getMessage() != null
+            && err.getMessage().contains("Connection reset by peer"))
+        || AbortedException.isConnectionReset(err);
   }
 }
