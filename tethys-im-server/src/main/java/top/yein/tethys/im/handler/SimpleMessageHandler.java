@@ -120,6 +120,6 @@ public class SimpleMessageHandler implements PacketHandler<SimpleMessagePacket> 
         // 消息存储
         messageStorageService.store(packet),
         // 路由消息
-        messageRouter.route(packet));
+        messageRouter.route(packet, inputSession -> inputSession != session));
   }
 }

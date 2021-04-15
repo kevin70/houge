@@ -85,7 +85,9 @@ public final class MessageServiceGrpcImpl extends MessageServiceGrpc.MessageServ
 
     var messageId = messageIdGenerator.nextId();
     var messagePacket = new SingleRequestMessagePacket(messageId, request);
-    return Mono.when(messageStorageService.store(messagePacket), messageRouter.route(messagePacket))
+    return Mono.when(
+            messageStorageService.store(messagePacket),
+            messageRouter.route(messagePacket, inputSession -> true))
         .thenReturn(MessageResponse.newBuilder().setMessageId(messageId).build());
   }
 }

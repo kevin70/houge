@@ -15,8 +15,10 @@
  */
 package top.yein.tethys.message;
 
+import java.util.function.Predicate;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.packet.MessagePacket;
+import top.yein.tethys.session.Session;
 
 /**
  * 消息路由接口.
@@ -29,7 +31,8 @@ public interface MessageRouter {
    * 路由消息.
    *
    * @param packet 消息包
+   * @param p 断言是否向 session 发送消息包
    * @return RS
    */
-  Mono<Void> route(MessagePacket packet);
+  Mono<Void> route(MessagePacket packet, Predicate<Session> p);
 }
