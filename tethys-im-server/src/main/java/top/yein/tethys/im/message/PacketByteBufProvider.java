@@ -17,6 +17,7 @@ package top.yein.tethys.im.message;
 
 import io.netty.buffer.ByteBuf;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import top.yein.chaos.biz.BizCodeException;
@@ -32,7 +33,7 @@ import top.yein.tethys.packet.Packet;
 class PacketByteBufProvider {
 
   private final Packet packet;
-  private volatile ByteBuf byteBuf;
+  private AtomicReference<ByteBuf> byteBufRef = new AtomicReference<>();
 
   PacketByteBufProvider(@Nonnull Packet packet) {
     this.packet = packet;
@@ -54,19 +55,19 @@ class PacketByteBufProvider {
    */
   @Nonnull
   ByteBuf retainedByteBuf() {
-    var bb = this.byteBuf;
+    var bb = this.byteBufRef.get();
     if (bb != null) {
       return bb.retainedDuplicate();
     }
 
     synchronized (packet) {
-      if (this.byteBuf != null) {
-        return this.byteBuf;
+      if (this.byteBufRef.get() != null) {
+        return this.byteBufRef.get();
       }
 
       try {
         ByteBuf byteBuf = PacketUtils.toByteBuf(packet);
-        this.byteBuf = byteBuf;
+        this.byteBufRef.set(byteBuf);
         return byteBuf.retainedDuplicate();
       } catch (IOException e) {
         throw new BizCodeException(BizCodes.C3601, e);
@@ -81,6 +82,6 @@ class PacketByteBufProvider {
    */
   @Nullable
   ByteBuf obtainByteBuf() {
-    return byteBuf;
+    return byteBufRef.get();
   }
 }
