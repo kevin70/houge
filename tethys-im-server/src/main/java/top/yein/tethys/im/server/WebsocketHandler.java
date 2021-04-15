@@ -146,7 +146,6 @@ public class WebsocketHandler {
         .receiveFrames()
         .doOnError(
             e -> {
-              // TODO: 异常处理需要进一步完善
               // 异常处理
               if (AbortedException.isConnectionReset(e)) {
                 return;
