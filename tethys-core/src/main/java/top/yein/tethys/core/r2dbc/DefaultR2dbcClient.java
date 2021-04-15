@@ -67,7 +67,6 @@ public class DefaultR2dbcClient implements R2dbcClient {
           try {
             return action.apply(connection);
           } catch (R2dbcException e) {
-            // FIXME 优化异常处理
             return Mono.error(e);
           }
         },
@@ -85,7 +84,6 @@ public class DefaultR2dbcClient implements R2dbcClient {
           try {
             return action.apply(connection);
           } catch (R2dbcException e) {
-            // FIXME 优化异常处理
             return Mono.error(e);
           }
         },
