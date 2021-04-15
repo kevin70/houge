@@ -50,15 +50,19 @@
 
 ## 演示
 
-### 私人聊天
+### 私人消息
 
 ![私人聊天](docs/dev/images/328994a573dc.gif)
 
-### HTTP 接口发送消息
+### 群组聊天
+
+![群组消息](docs/dev/images/ce88baa135ab.gif)
+
+### HTTP 发送消息
 
 ![HTTP 接口发送消息](docs/dev/images/a21fa82f2da7.gif)
 
-### gRPC 接口发送消息
+### gRPC 发送消息
 
 ![gRPC 接口发送消息](docs/dev/images/4c04babfe553.gif)
 
