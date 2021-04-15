@@ -15,6 +15,7 @@
  */
 package top.yein.tethys.im.message;
 
+import io.netty.util.IllegalReferenceCountException;
 import java.util.function.Predicate;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
@@ -63,13 +64,10 @@ public class PowerMessageRouter implements MessageRouter {
 
     // Netty ByteBuf 提供者
     var byteBufProvider = new PacketByteBufProvider(packet);
-    Runnable releaseByteBufFunc = releaseByteBuf(byteBufProvider);
-
     return sessionFlux
         .filter(p)
-        .flatMap(session -> session.send(Mono.just(byteBufProvider.retainedByteBuf())))
-        .doOnCancel(releaseByteBufFunc)
-        .doOnTerminate(releaseByteBufFunc)
+        .flatMap(session -> session.send(byteBufProvider.retainedByteBufMono()))
+        .doOnTerminate(() -> releaseByteBuf(byteBufProvider))
         .then();
   }
 
@@ -80,7 +78,15 @@ public class PowerMessageRouter implements MessageRouter {
       if (byteBuf == null) {
         return;
       }
-      if (!byteBuf.release()) {
+      try {
+        if (!byteBuf.release()) {
+          log.error(
+              "释放 ByteBuf 失败[packet={}, refCnt={}] {}",
+              byteBufProvider.getPacket(),
+              byteBuf.refCnt(),
+              byteBuf.touch());
+        }
+      } catch (IllegalReferenceCountException e) {
         log.error(
             "释放 ByteBuf 失败[packet={}, refCnt={}] {}",
             byteBufProvider.getPacket(),
