@@ -74,4 +74,12 @@ class DefaultFetchSpec<R> implements FetchSpec<R> {
             Flux.from(statementFunction.apply(connection).execute())
                 .flatMap(resultMappingFunction));
   }
+
+  @Override
+  public Mono<Integer> rowsUpdated() {
+    return this.connectionAccessor.inConnection(
+        connection ->
+            Mono.from(statementFunction.apply(connection).execute())
+                .flatMap(result -> Mono.from(result.getRowsUpdated())));
+  }
 }

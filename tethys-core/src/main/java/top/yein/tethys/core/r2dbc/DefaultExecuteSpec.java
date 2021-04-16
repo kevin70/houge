@@ -16,7 +16,6 @@
 package top.yein.tethys.core.r2dbc;
 
 import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.Result;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import io.r2dbc.spi.Statement;
@@ -119,10 +118,18 @@ class DefaultExecuteSpec implements ExecuteSpec {
 
   @Override
   public Mono<Integer> rowsUpdated() {
-    return new DefaultFetchSpec<>(
-            this.sql, this.connectionAccessor, this::statementFunction, Result::getRowsUpdated)
-        .all()
-        .last();
+    //    return new DefaultFetchSpec<>(
+    //            this.sql, this.connectionAccessor, this::statementFunction,
+    // Result::getRowsUpdated)
+    //        .all()
+    //        .last();
+    return new DefaultFetchSpec<>(this.sql, this.connectionAccessor, this::statementFunction, null)
+        .rowsUpdated();
+  }
+
+  private void rowsUpdatedFunction(Connection connection) {
+    Mono.from(connection.createStatement("").execute())
+        .flatMap(result -> Mono.from(result.getRowsUpdated()));
   }
 
   private Statement statementFunction(Connection connection) {
