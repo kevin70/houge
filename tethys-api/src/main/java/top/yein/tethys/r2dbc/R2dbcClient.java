@@ -163,5 +163,11 @@ public interface R2dbcClient extends ConnectionAccessor {
      * @return 数据
      */
     Flux<T> all();
+
+    /**
+     *
+     * @return
+     */
+    Mono<Integer> rowsUpdated();
   }
 }
