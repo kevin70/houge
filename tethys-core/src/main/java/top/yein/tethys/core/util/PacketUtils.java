@@ -19,8 +19,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufOutputStream;
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.OutputStream;
 import top.yein.tethys.packet.Packet;
 import top.yein.tethys.util.JsonUtils;
 
@@ -58,9 +58,10 @@ public class PacketUtils {
    * @throws IOException 序列化失败
    */
   public static ByteBuf toByteBuf(ByteBufAllocator allocator, Packet packet) throws IOException {
-    var buf = allocator.directBuffer();
-    OutputStream out = new ByteBufOutputStream(buf);
-    OBJECT_WRITER.writeValue(out, packet);
-    return buf;
+    ByteBufOutputStream out = new ByteBufOutputStream(allocator.directBuffer());
+    OBJECT_WRITER.writeValue((DataOutput) out, packet);
+    out.flush();
+    out.close();
+    return out.buffer();
   }
 }
