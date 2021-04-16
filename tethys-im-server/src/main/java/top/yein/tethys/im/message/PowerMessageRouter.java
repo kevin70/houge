@@ -15,13 +15,17 @@
  */
 package top.yein.tethys.im.message;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.util.IllegalReferenceCountException;
+import java.io.IOException;
 import java.util.function.Predicate;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.constants.MessageKind;
+import top.yein.tethys.core.BizCodes;
+import top.yein.tethys.core.util.PacketUtils;
 import top.yein.tethys.message.MessageRouter;
 import top.yein.tethys.packet.MessagePacket;
 import top.yein.tethys.session.Session;
@@ -55,44 +59,52 @@ public class PowerMessageRouter implements MessageRouter {
   @Override
   public Mono<Void> route(MessagePacket packet, Predicate<Session> p) {
     var kind = MessageKind.forCode(packet.getKind());
-    Flux<Session> sessionFlux;
     if (kind.isGroup()) {
-      sessionFlux = sessionGroupManager.findByGroupId(packet.getTo());
+      return groupPacket(packet, p);
     } else {
-      sessionFlux = sessionManager.findByUid(packet.getTo());
+      return singlePacket(packet);
     }
+  }
 
-    // Netty ByteBuf 提供者
-    var byteBufProvider = new PacketByteBufProvider(packet);
-    return sessionFlux
-        .filter(p)
-        .flatMap(session -> session.send(byteBufProvider.retainedByteBufMono()))
-        .doOnTerminate(() -> releaseByteBuf(byteBufProvider))
+  private Mono<Void> singlePacket(MessagePacket packet) {
+    return sessionManager
+        .findByUid(packet.getTo())
+        .flatMap(session -> session.sendPacket(packet))
         .then();
   }
 
-  // 释放 Netty ByteBuf 回调函数
-  private Runnable releaseByteBuf(PacketByteBufProvider byteBufProvider) {
-    return () -> {
-      var byteBuf = byteBufProvider.obtainByteBuf();
-      if (byteBuf == null) {
-        return;
-      }
-      try {
-        if (!byteBuf.release()) {
-          log.error(
-              "释放 ByteBuf 失败[packet={}, refCnt={}] {}",
-              byteBufProvider.getPacket(),
-              byteBuf.refCnt(),
-              byteBuf.touch());
-        }
-      } catch (IllegalReferenceCountException e) {
-        log.error(
-            "释放 ByteBuf 失败[packet={}, refCnt={}] {}",
-            byteBufProvider.getPacket(),
-            byteBuf.refCnt(),
-            byteBuf.touch());
-      }
-    };
+  private Mono<Void> groupPacket(MessagePacket packet, Predicate<Session> filter) {
+    var byteBuf = toByteBuf(packet);
+    return sessionGroupManager
+        .findByGroupId(packet.getTo())
+        .filter(filter)
+        .flatMap(session -> session.send(Mono.just(byteBuf.retainedDuplicate())))
+        .doFinally(
+            signalType -> {
+              try {
+                if (!byteBuf.release()) {
+                  log.error(
+                      "释放ByteBuf失败 signalType={} packet={} refCnt={}",
+                      signalType,
+                      packet,
+                      byteBuf.refCnt());
+                }
+              } catch (IllegalReferenceCountException e) {
+                log.error(
+                    "释放ByteBuf异常 signalType={} packet={} refCnt={}",
+                    signalType,
+                    packet,
+                    byteBuf.refCnt());
+              }
+            })
+        .then();
+  }
+
+  private ByteBuf toByteBuf(MessagePacket packet) {
+    try {
+      return PacketUtils.toByteBuf(packet);
+    } catch (IOException e) {
+      throw new BizCodeException(BizCodes.C3601);
+    }
   }
 }
