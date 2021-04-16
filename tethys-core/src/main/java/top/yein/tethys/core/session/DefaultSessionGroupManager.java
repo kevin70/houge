@@ -17,9 +17,9 @@ package top.yein.tethys.core.session;
 
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,7 +39,8 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
 
   private final Set<SessionGroupListener> sessionGroupListeners = new LinkedHashSet<>();
   // 缓存组 Session
-  private final AsyncCache<Long, Set<Session>> groupSessions = Caffeine.newBuilder().buildAsync();
+  private final AsyncCache<Long, CopyOnWriteArrayList<Session>> groupSessions =
+      Caffeine.newBuilder().buildAsync();
 
   @Override
   public boolean registerListener(SessionGroupListener sessionGroupListener) {
@@ -61,12 +62,12 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
         .flatMapSequential(
             groupId -> {
               var p =
-                  Mono.fromFuture(groupSessions.get(groupId, key -> new HashSet<>()))
+                  Mono.fromFuture(groupSessions.get(groupId, key -> new CopyOnWriteArrayList<>()))
                       .map(
-                          set -> {
+                          sessions -> {
                             // 添加进会话订阅组中
                             session.subGroupIds().add(groupId);
-                            return set.add(session);
+                            return sessions.addIfAbsent(session);
                           })
                       // 将所有 subGroups/unsubGroups 操作放置在同一个线程中执行，避免使用额外的 Lock
                       .subscribeOn(Schedulers.single())
@@ -124,7 +125,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
           if (cf == null) {
             return Flux.empty();
           }
-          return Mono.fromFuture(cf).flatMapMany(Flux::fromIterable);
+          return Mono.fromFuture(cf).flatMapMany(sessions -> Flux.fromIterable(sessions));
         });
   }
 
