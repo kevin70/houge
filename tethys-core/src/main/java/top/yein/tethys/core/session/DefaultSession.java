@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.log4j.Log4j2;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
 import reactor.core.publisher.Sinks;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.websocket.WebsocketInbound;
@@ -147,7 +148,14 @@ public final class DefaultSession implements Session {
   @Override
   public Mono<Void> send(Publisher<ByteBuf> source) {
     return Mono.from(source)
-        .flatMap(buf -> outbound.sendObject(new TextWebSocketFrame(buf)).then());
+        .map(TextWebSocketFrame::new)
+        .transform(p -> outbound.sendObject(p).then())
+        .doFinally(
+            signalType -> {
+              if (signalType != SignalType.ON_COMPLETE) {
+                log.info("Not complete signalType={}", signalType);
+              }
+            });
   }
 
   @Override
