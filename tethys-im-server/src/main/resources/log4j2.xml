@@ -42,13 +42,27 @@
     <Logger name="io.netty" level="info"/>
     <Logger name="io.netty.buffer.PooledByteBufAllocator" level="debug"/>
     <Logger name="io.r2dbc.postgresql" level="info"/>
+
+    <!--    <Logger name="reactor.netty.channel.FluxReceive" level="debug"/>-->
+
     <!-- 应用程序度量日志配置 -->
     <Logger name="io.micrometer.core.instrument.logging.LoggingMeterRegistry" additivity="false">
       <AppenderRef ref="AppMetricsAsync"/>
     </Logger>
+
+    <!-- 控制台日志 -->
+    <Logger name="top.yein.tethys.im.main.ImMain" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="top.yein.tethys.im.server.ImServer" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="top.yein.tethys.im.server.GrpcServer" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+
     <Root level="info">
-<!--      <AppenderRef ref="Console"/>-->
-      <AppenderRef ref="FileAsync"/>
+      <AppenderRef ref="File"/>
     </Root>
   </Loggers>
 </Configuration>

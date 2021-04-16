@@ -2,7 +2,7 @@ config:
   target: "ws://127.0.0.1:11010/im"
   processor: "./functions.js"
   phases:
-    - duration: 60
+    - duration: 30
       arrivalRate: 1
   ws:
     headers:
