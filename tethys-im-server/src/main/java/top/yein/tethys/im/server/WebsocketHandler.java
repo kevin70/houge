@@ -142,7 +142,8 @@ public class WebsocketHandler {
     return Mono.defer(s)
         .onErrorResume(
             e -> {
-              if (isConnectionReset(e)) {
+              if (ignoreException(e)) {
+                log.warn("[{}] 出现异常 handle", channel.id());
                 return Mono.empty();
               }
               return Mono.error(e);
@@ -156,7 +157,7 @@ public class WebsocketHandler {
         .onErrorResume(
             e -> {
               // 异常处理
-              if (isConnectionReset(e)) {
+              if (ignoreException(e)) {
                 return Mono.empty();
               }
               return Mono.error(e);
@@ -172,16 +173,16 @@ public class WebsocketHandler {
             () -> {
               // 连接终止、清理
               if (!session.isClosed()) {
-                log.debug("会话终止 session={}", session);
+                log.info("会话终止 session={} channel=", session);
 
                 session
                     .close()
                     .onErrorResume(
                         e -> {
-                          if (isConnectionReset(e)) {
+                          if (ignoreException(e)) {
                             return Mono.empty();
                           }
-                          log.error("关闭会话异常 {} ", session, e);
+                          log.error("服务端主动关闭会话异常 {} ", session, e);
                           return Mono.error(e);
                         })
                     .subscribe();
@@ -240,6 +241,9 @@ public class WebsocketHandler {
     return Mono.defer(() -> packetDispatcher.dispatch(session, packet))
         .onErrorResume(
             t -> {
+              if (ignoreException(t)) {
+                return Mono.empty();
+              }
               // 业务逻辑异常处理
               if (t instanceof BizCodeException) {
                 log.debug("业务异常 session={}", session, t);
@@ -275,12 +279,22 @@ public class WebsocketHandler {
     return params.get(0);
   }
 
+  private boolean ignoreException(Throwable err) {
+    return isConnectionReset(err)
+        || (err instanceof AbortedException
+            && ((err.getCause() != null
+                    && "io.netty.channel.StacklessClosedChannelException"
+                        .equals(err.getCause().getClass().getName()))
+                || "Connection has been closed".equals(err.getMessage())));
+  }
+
   private boolean isConnectionReset(Throwable err) {
     return (err instanceof IOException
-                && (err.getMessage() == null
-                    || err.getMessage().contains("Broken pipe")
-                    || err.getMessage().contains("Connection reset by peer"))
-            || err.getMessage().contains("远程主机强迫关闭了一个现有的连接"))
+            && (err.getMessage() == null
+                || err.getMessage().contains("Broken pipe")
+                || err.getMessage().contains("Connection reset by peer")
+                || err.getMessage().contains("远程主机强迫关闭了一个现有的连接")
+                || err.getMessage().contains("你的主机中的软件中止了一个已建立的连接")))
         || (err instanceof SocketException
             && err.getMessage() != null
             && err.getMessage().contains("Connection reset by peer"))
