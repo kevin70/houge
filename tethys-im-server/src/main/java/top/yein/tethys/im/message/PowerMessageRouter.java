@@ -16,12 +16,12 @@
 package top.yein.tethys.im.message;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.IllegalReferenceCountException;
 import java.io.IOException;
 import java.util.function.Predicate;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.constants.MessageKind;
 import top.yein.tethys.core.BizCodes;
@@ -31,6 +31,7 @@ import top.yein.tethys.packet.MessagePacket;
 import top.yein.tethys.session.Session;
 import top.yein.tethys.session.SessionGroupManager;
 import top.yein.tethys.session.SessionManager;
+import top.yein.tethys.util.SocketExceptionUtils;
 
 /**
  * 消息路由器实现.
@@ -69,7 +70,7 @@ public class PowerMessageRouter implements MessageRouter {
   private Mono<Void> singlePacket(MessagePacket packet) {
     return sessionManager
         .findByUid(packet.getTo())
-        .flatMap(session -> session.sendPacket(packet))
+        .doOnNext(session -> send0(session, toByteBuf(packet), packet))
         .then();
   }
 
@@ -78,26 +79,25 @@ public class PowerMessageRouter implements MessageRouter {
     return sessionGroupManager
         .findByGroupId(packet.getTo())
         .filter(filter)
-        .flatMap(session -> session.send(Mono.just(byteBuf.retainedDuplicate())))
+        .doOnNext(session -> send0(session, byteBuf.retainedDuplicate(), packet))
         .doFinally(
             signalType -> {
-              try {
-                if (!byteBuf.release()) {
-                  log.error(
-                      "释放ByteBuf失败 signalType={} packet={} refCnt={}",
-                      signalType,
-                      packet,
-                      byteBuf.refCnt());
-                }
-              } catch (IllegalReferenceCountException e) {
-                log.error(
-                    "释放ByteBuf异常 signalType={} packet={} refCnt={}",
-                    signalType,
-                    packet,
-                    byteBuf.refCnt());
-              }
+              byteBuf.release();
             })
         .then();
+  }
+
+  private void send0(Session session, ByteBuf byteBuf, MessagePacket packet) {
+    session
+        .send(Mono.just(byteBuf.retainedDuplicate()))
+        .subscribeOn(Schedulers.parallel())
+        .subscribe(
+            unused -> {},
+            ex -> {
+              if (!SocketExceptionUtils.ignoreLogException(ex)) {
+                log.error("发送消息失败 {}", packet, ex);
+              }
+            });
   }
 
   private ByteBuf toByteBuf(MessagePacket packet) {
