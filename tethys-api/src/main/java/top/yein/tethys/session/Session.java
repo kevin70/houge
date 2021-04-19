@@ -86,7 +86,7 @@ public interface Session {
    * @return RS
    */
   default Mono<Void> sendPacket(Packet packet) {
-    return sendPacket(Mono.just(packet));
+    return Mono.just(packet).transform(this::sendPacket);
   }
 
   /**
