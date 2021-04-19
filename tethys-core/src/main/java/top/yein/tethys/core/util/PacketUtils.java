@@ -58,7 +58,7 @@ public class PacketUtils {
    * @throws IOException 序列化失败
    */
   public static ByteBuf toByteBuf(ByteBufAllocator allocator, Packet packet) throws IOException {
-    ByteBufOutputStream out = new ByteBufOutputStream(allocator.directBuffer());
+    ByteBufOutputStream out = new ByteBufOutputStream(allocator.buffer());
     OBJECT_WRITER.writeValue((DataOutput) out, packet);
     out.flush();
     out.close();
