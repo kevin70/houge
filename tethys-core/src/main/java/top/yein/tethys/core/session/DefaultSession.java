@@ -20,7 +20,6 @@ import static java.util.Objects.requireNonNull;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -147,8 +146,7 @@ public final class DefaultSession implements Session {
   @Override
   public Mono<Void> send(Publisher<ByteBuf> source) {
     return Mono.from(source)
-        .map(TextWebSocketFrame::new)
-        .transform(p -> outbound.sendObject(p).then());
+        .transform(p -> outbound.send(p).then());
   }
 
   @Override
