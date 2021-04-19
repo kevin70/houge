@@ -21,7 +21,6 @@ import java.util.function.Predicate;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.constants.MessageKind;
 import top.yein.tethys.core.BizCodes;
@@ -70,34 +69,27 @@ public class PowerMessageRouter implements MessageRouter {
   private Mono<Void> singlePacket(MessagePacket packet) {
     return sessionManager
         .findByUid(packet.getTo())
-        .doOnNext(session -> send0(session, toByteBuf(packet), packet))
+        .flatMap(session -> session.sendPacket(packet))
         .then();
   }
 
   private Mono<Void> groupPacket(MessagePacket packet, Predicate<Session> filter) {
-    var byteBuf = toByteBuf(packet);
     return sessionGroupManager
         .findByGroupId(packet.getTo())
         .filter(filter)
-        .doOnNext(session -> send0(session, byteBuf.retainedDuplicate(), packet))
-        .doFinally(
-            signalType -> {
-              byteBuf.release();
+        // 待完善
+        // 这里最好使用 Netty ByteBuf 进行优化，减少 JSON 序列化次数
+        // 前期有做过尝试，但是 ByteBuf.release() 存在问题，在高并发情况下存在内存泄露，暂时使用 N 次序列化 JSON 的方式解决
+        .flatMap(session -> session.sendPacket(packet))
+        .onErrorResume(
+            ex -> {
+              if (SocketExceptionUtils.ignoreLogException(ex)) {
+                return Mono.empty();
+              }
+              log.error("发送消息失败 {}", packet, ex);
+              return Mono.error(ex);
             })
         .then();
-  }
-
-  private void send0(Session session, ByteBuf byteBuf, MessagePacket packet) {
-    session
-        .send(Mono.just(byteBuf.retainedDuplicate()))
-        .subscribeOn(Schedulers.parallel())
-        .subscribe(
-            unused -> {},
-            ex -> {
-              if (!SocketExceptionUtils.ignoreLogException(ex)) {
-                log.error("发送消息失败 {}", packet, ex);
-              }
-            });
   }
 
   private ByteBuf toByteBuf(MessagePacket packet) {
