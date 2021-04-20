@@ -66,7 +66,7 @@ public class AutoSubscriptionGroup implements SessionListener {
           .collect(Collectors.toSet())
           .doOnNext(groupIds -> log.debug("用户订阅群组{}消息{}", groupIds, session))
           .flatMap(groupIds -> sessionGroupManager.subGroups(session, groupIds));
-    } else if (event == SessionEvent.SM_REMOVE_AFTER) {
+    } else if (event == SessionEvent.SM_REMOVE_BEFORE) {
       return sessionGroupManager.unsubGroups(session, session.subGroupIds());
     }
     return Mono.empty();

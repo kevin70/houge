@@ -50,7 +50,7 @@ class AutoSubscriptionGroupTest {
         new AutoSubscriptionGroup(sessionManager, sessionGroupManager, groupQueryDao);
 
     for (SessionEvent e : SessionEvent.values()) {
-      if (e == SessionEvent.SM_ADD_AFTER) {
+      if (e == SessionEvent.SM_ADD_AFTER || e == SessionEvent.SM_REMOVE_BEFORE) {
         continue;
       }
 
