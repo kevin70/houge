@@ -38,6 +38,7 @@ public final class SocketExceptionUtils {
    * @see AbortedException
    * @see ClosedChannelException
    */
+  @SuppressWarnings("java:S1872")
   public static boolean ignoreLogException(Throwable err) {
     if (err instanceof IOException) {
       var m = err.getMessage();
@@ -56,10 +57,8 @@ public final class SocketExceptionUtils {
         }
       }
     }
-    if (err instanceof SocketException) {
-      if ("Connection reset by peer".equals(err.getMessage())) {
-        return true;
-      }
+    if (err instanceof SocketException && "Connection reset by peer".equals(err.getMessage())) {
+      return true;
     }
     if (err instanceof AbortedException) {
       if (err.getCause() != null
