@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class DefaultSessionGroupManagerTest {
     StepVerifier.create(p).verifyComplete();
 
     // 校验 session 已经添加保存了
-    AsyncCache<Long, Set<Session>> groupSessions = Whitebox.getInternalState(dsgm, "groupSessions");
+    AsyncCache<Long, CopyOnWriteArrayList<Session>> groupSessions = Whitebox.getInternalState(dsgm, "groupSessions");
     for (Long groupId : groupIds) {
       var sessions = groupSessions.synchronous().getIfPresent(groupId);
       assertThat(sessions).contains(session);
@@ -65,7 +66,7 @@ class DefaultSessionGroupManagerTest {
     StepVerifier.create(p).verifyComplete();
 
     // 校验 session 已经添加保存了
-    AsyncCache<Long, Set<Session>> groupSessions = Whitebox.getInternalState(dsgm, "groupSessions");
+    AsyncCache<Long, CopyOnWriteArrayList<Session>> groupSessions = Whitebox.getInternalState(dsgm, "groupSessions");
     for (Long groupId : groupIds) {
       var sessions = groupSessions.synchronous().getIfPresent(groupId);
       assertThat(sessions).contains(session).hasSize(1);
