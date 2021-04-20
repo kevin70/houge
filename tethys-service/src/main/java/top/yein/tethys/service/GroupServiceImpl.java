@@ -19,10 +19,12 @@ import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import top.yein.chaos.biz.BizCode;
+import top.yein.chaos.biz.StacklessBizCodeException;
 import top.yein.tethys.Nil;
 import top.yein.tethys.dto.GroupCreateDto;
-import top.yein.tethys.storage.entity.Group;
 import top.yein.tethys.storage.GroupDao;
+import top.yein.tethys.storage.entity.Group;
 import top.yein.tethys.storage.query.GroupQueryDao;
 import top.yein.tethys.vo.GroupCreateVo;
 import top.yein.tethys.vo.GroupJoinMemberVo;
@@ -83,12 +85,18 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   public Mono<Void> joinMember(long gid, GroupJoinMemberVo vo) {
-    return groupDao.joinMember(gid, vo.getUid());
+    return existsById(gid)
+        .switchIfEmpty(
+            Mono.error(() -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + gid + "]")))
+        .flatMap(unused -> groupDao.joinMember(gid, vo.getUid()));
   }
 
   @Override
   public Mono<Void> removeMember(long gid, GroupJoinMemberVo vo) {
-    return groupDao.removeMember(gid, vo.getUid());
+    return existsById(gid)
+        .switchIfEmpty(
+            Mono.error(() -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + gid + "]")))
+        .flatMap(unused -> groupDao.removeMember(gid, vo.getUid()));
   }
 
   private void updateGidBits(long gid, boolean v) {
