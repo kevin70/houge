@@ -63,9 +63,8 @@ public final class SocketExceptionUtils {
     }
     if (err instanceof AbortedException) {
       if (err.getCause() != null
-          // NOSONAR
           && "io.netty.channel.StacklessClosedChannelException"
-              .equals(err.getCause().getClass().getName())) {
+              .equals(err.getCause().getClass().getName())) { // NOSONAR
         return true;
       }
       if ("Connection has been closed BEFORE send operation".equals(err.getMessage())) {
