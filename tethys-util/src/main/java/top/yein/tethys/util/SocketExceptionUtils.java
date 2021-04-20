@@ -38,7 +38,7 @@ public final class SocketExceptionUtils {
    * @see AbortedException
    * @see ClosedChannelException
    */
-  @SuppressWarnings("java:S1872")
+  @SuppressWarnings({"java:S1872", "java:S3776"})
   public static boolean ignoreLogException(Throwable err) {
     if (err instanceof IOException) {
       var m = err.getMessage();
