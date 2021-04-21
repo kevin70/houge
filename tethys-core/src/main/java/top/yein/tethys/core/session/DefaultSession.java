@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -30,7 +31,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.extern.log4j.Log4j2;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.netty.http.server.HttpServerRequest;
@@ -116,14 +116,16 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public Mono<Void> sendPacket(Publisher<Packet> source) {
+  public Mono<Void> sendPacket(Mono<Packet> source) {
     return Mono.from(source)
         .map(
             packet -> {
               try {
-                var buf = outbound.alloc().directBuffer();
+                var buf = outbound.alloc().buffer();
                 OutputStream out = new ByteBufOutputStream(buf);
                 OBJECT_WRITER.writeValue(out, packet);
+                out.flush();
+                out.close();
                 return buf;
               } catch (IOException e) {
                 var message =
@@ -144,9 +146,8 @@ public final class DefaultSession implements Session {
   }
 
   @Override
-  public Mono<Void> send(Publisher<ByteBuf> source) {
-    return Mono.from(source)
-        .transform(p -> outbound.send(p).then());
+  public Mono<Void> send(Mono<ByteBuf> source) {
+    return outbound.sendObject(source.map(TextWebSocketFrame::new)).then();
   }
 
   @Override
