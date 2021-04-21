@@ -15,16 +15,11 @@
  */
 package top.yein.tethys.im.message;
 
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import java.util.function.Predicate;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import top.yein.chaos.biz.BizCodeException;
 import top.yein.tethys.constants.MessageKind;
-import top.yein.tethys.core.BizCodes;
-import top.yein.tethys.core.util.PacketUtils;
 import top.yein.tethys.message.MessageRouter;
 import top.yein.tethys.packet.MessagePacket;
 import top.yein.tethys.session.Session;
@@ -77,26 +72,17 @@ public class PowerMessageRouter implements MessageRouter {
     return sessionGroupManager
         .findByGroupId(packet.getTo())
         .filter(filter)
-        // 待完善
-        // 这里最好使用 Netty ByteBuf 进行优化，减少 JSON 序列化次数
-        // 前期有做过尝试，但是 ByteBuf.release() 存在问题，在高并发情况下存在内存泄露，暂时使用 N 次序列化 JSON 的方式解决
-        .flatMap(session -> session.sendPacket(packet))
-        .onErrorResume(
-            ex -> {
-              if (SocketExceptionUtils.ignoreLogException(ex)) {
-                return Mono.empty();
-              }
-              log.error("发送消息失败 {}", packet, ex);
-              return Mono.error(ex);
-            })
+        .flatMap(
+            session ->
+                session
+                    .sendPacket(packet)
+                    .onErrorResume(
+                        ex -> {
+                          if (!SocketExceptionUtils.ignoreLogException(ex)) {
+                            log.error("发送消息失败 {}", packet, ex);
+                          }
+                          return Mono.empty();
+                        }))
         .then();
-  }
-
-  private ByteBuf toByteBuf(MessagePacket packet) {
-    try {
-      return PacketUtils.toByteBuf(packet);
-    } catch (IOException e) {
-      throw new BizCodeException(BizCodes.C3601);
-    }
   }
 }
