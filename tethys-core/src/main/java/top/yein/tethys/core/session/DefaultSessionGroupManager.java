@@ -125,7 +125,7 @@ public class DefaultSessionGroupManager implements SessionGroupManager {
           if (cf == null) {
             return Flux.empty();
           }
-          return Mono.fromFuture(cf).flatMapMany(sessions -> Flux.fromIterable(sessions));
+          return Mono.fromFuture(cf).flatMapMany(Flux::fromIterable);
         });
   }
 

@@ -15,7 +15,7 @@
  */
 package top.yein.tethys.core.system.info;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.ApplicationIdentifier;
@@ -38,7 +38,7 @@ public class AppInfoContributor implements InfoContributor {
         () -> {
           builder.withDetail(
               "app",
-              ImmutableMap.of(
+              Map.of(
                   "name",
                   applicationIdentifier.applicationName(),
                   "version",

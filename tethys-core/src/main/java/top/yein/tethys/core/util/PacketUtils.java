@@ -29,10 +29,12 @@ import top.yein.tethys.util.JsonUtils;
  *
  * @author KK (kzou227@qq.com)
  */
-public class PacketUtils {
+public final class PacketUtils {
 
   private static final ObjectWriter OBJECT_WRITER =
       JsonUtils.objectMapper().writerFor(Packet.class);
+
+  private PacketUtils() {}
 
   /**
    * 将 Packet 做 JSON 序列化操作, 使用指定的 {@link ByteBufAllocator#DEFAULT} 分配直接的 buffer 写入 JSON 字节数据.
@@ -58,7 +60,7 @@ public class PacketUtils {
    * @throws IOException 序列化失败
    */
   public static ByteBuf toByteBuf(ByteBufAllocator allocator, Packet packet) throws IOException {
-    ByteBufOutputStream out = new ByteBufOutputStream(allocator.buffer());
+    var out = new ByteBufOutputStream(allocator.buffer());
     OBJECT_WRITER.writeValue((DataOutput) out, packet);
     out.flush();
     out.close();

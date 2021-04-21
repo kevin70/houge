@@ -63,7 +63,7 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
     return Mono.<MessageResponse>create(
             sink -> {
               log.debug("发送gRPC消息 vo={}", vo);
-              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver(sink));
+              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver<>(sink));
             })
         .map(
             response -> {

@@ -61,7 +61,7 @@ public final class MessageServiceGrpcImpl extends MessageServiceGrpc.MessageServ
   @Override
   public void send(MessageRequest request, StreamObserver<MessageResponse> observer) {
     Mono.defer(() -> send0(request))
-        .doOnError((ex) -> log.error("处理 gRPC 发送的消息异常 {}", request, ex))
+        .doOnError(ex -> log.error("处理 gRPC 发送的消息异常 {}", request, ex))
         .subscribeOn(Schedulers.parallel())
         .subscribe(observer::onNext, observer::onError, observer::onCompleted);
   }

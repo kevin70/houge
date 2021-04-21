@@ -15,7 +15,7 @@
  */
 package top.yein.tethys.core.system.info;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.system.info.Info.Builder;
 import top.yein.tethys.system.info.InfoContributor;
@@ -29,7 +29,7 @@ public class JavaInfoContributor implements InfoContributor {
         () -> {
           builder.withDetail(
               "java",
-              ImmutableMap.of(
+              Map.of(
                   "version",
                   System.getProperty("java.version"),
                   "vendor",

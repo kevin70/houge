@@ -89,7 +89,7 @@ public class PacketDispatcher {
     var bindings = injector.findBindingsByType(TypeLiteral.get(PacketHandler.class));
     for (Binding<? extends PacketHandler> b : bindings) {
       var k = b.getKey();
-      Named named = (Named) k.getAnnotation();
+      var named = (Named) k.getAnnotation();
       var v = b.getProvider().get();
       map.put(named.value(), v);
     }

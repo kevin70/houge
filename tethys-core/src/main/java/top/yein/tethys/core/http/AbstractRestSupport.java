@@ -74,7 +74,7 @@ public abstract class AbstractRestSupport {
    * @return 路径参数值
    */
   protected long pathLong(HttpServerRequest request, String name) {
-    String value = pathString(request, name);
+    var value = pathString(request, name);
     try {
       return Long.parseLong(value);
     } catch (NumberFormatException e) {
@@ -91,7 +91,7 @@ public abstract class AbstractRestSupport {
    * @return 路径参数值
    */
   protected int pathInt(HttpServerRequest request, String name) {
-    String value = pathString(request, name);
+    var value = pathString(request, name);
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
