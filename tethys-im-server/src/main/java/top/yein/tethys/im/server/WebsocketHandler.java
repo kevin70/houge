@@ -258,7 +258,6 @@ public class WebsocketHandler {
               log.error("未处理的异常 session={}, packet={}", session, packet, t);
               return Mono.error(t);
             })
-        .subscribeOn(Schedulers.parallel())
         .subscribe();
     return Mono.empty();
   }
