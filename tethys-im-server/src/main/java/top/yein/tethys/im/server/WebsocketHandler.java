@@ -206,7 +206,9 @@ public class WebsocketHandler {
     // 解析包内容
     final Packet packet;
     try {
-      packet = objectReader.readValue((DataInput) new ByteBufInputStream(frame.content()));
+      var input = new ByteBufInputStream(frame.content());
+      packet = objectReader.readValue((DataInput) input);
+      input.close();
     } catch (UnrecognizedPropertyException e) {
       var ep =
           ErrorPacket.builder()
@@ -238,12 +240,9 @@ public class WebsocketHandler {
     }
 
     // 包处理
-    return Mono.defer(() -> packetDispatcher.dispatch(session, packet))
+    Mono.defer(() -> packetDispatcher.dispatch(session, packet))
         .onErrorResume(
             t -> {
-              if (ignoreException(t)) {
-                return Mono.empty();
-              }
               // 业务逻辑异常处理
               if (t instanceof BizCodeException) {
                 log.debug("业务异常 session={}", session, t);
@@ -258,7 +257,10 @@ public class WebsocketHandler {
               }
               log.error("未处理的异常 session={}, packet={}", session, packet, t);
               return Mono.error(t);
-            });
+            })
+        .subscribeOn(Schedulers.parallel())
+        .subscribe();
+    return Mono.empty();
   }
 
   private String getAuthorization(WebsocketInbound in) throws IllegalArgumentException {
