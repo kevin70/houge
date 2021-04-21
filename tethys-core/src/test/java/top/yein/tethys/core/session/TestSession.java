@@ -19,7 +19,6 @@ import io.netty.buffer.ByteBuf;
 import java.security.SecureRandom;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.core.auth.NoneAuthContext;
@@ -64,7 +63,7 @@ public class TestSession implements Session {
   }
 
   @Override
-  public Mono<Void> send(Publisher<ByteBuf> source) {
+  public Mono<Void> send(Mono<ByteBuf> source) {
     return null;
   }
 

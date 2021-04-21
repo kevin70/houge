@@ -17,7 +17,6 @@ package top.yein.tethys.session;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Set;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.auth.AuthContext;
 import top.yein.tethys.packet.Packet;
@@ -95,7 +94,7 @@ public interface Session {
    * @param source 数据包
    * @return Mono
    */
-  default Mono<Void> sendPacket(Publisher<Packet> source) {
+  default Mono<Void> sendPacket(Mono<Packet> source) {
     return Mono.empty();
   }
 
@@ -105,7 +104,7 @@ public interface Session {
    * @param source 数据
    * @return Mono
    */
-  Mono<Void> send(Publisher<ByteBuf> source);
+  Mono<Void> send(Mono<ByteBuf> source);
 
   /** 关闭会话. */
   Mono<Void> close();
