@@ -151,4 +151,15 @@ allprojects {
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
     mavenCentral()
   }
+
+  jar {
+    manifest {
+      attributes(
+        "Created-By": "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})",
+        "Implementation-Title": project.name,
+        "Implementation-Version": project.version,
+        "Built-Date": java.time.OffsetDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
+      )
+    }
+  }
 }
