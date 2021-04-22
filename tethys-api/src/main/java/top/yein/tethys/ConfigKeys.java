@@ -92,4 +92,19 @@ public final class ConfigKeys {
 
   /** 自动填充消息 ID 的配置开关. */
   public static final String MESSAGE_AUTOFILL_ID = "message.autofill.id";
+
+  /**
+   * 集群开关.
+   *
+   * <p>默认开启集群.
+   */
+  public static final String CLUSTER_ENABLED = "cluster.enabled";
+  /**
+   * gRPC 集群目标地址端口配置.
+   *
+   * <p>示例：
+   *
+   * <p>{@code 192.168.1.97:11010,192.168.1.98:11010,192.168.1.99:11010}
+   */
+  public static final String CLUSTER_GRPC_TARGETS = "cluster.grpc.targets";
 }
