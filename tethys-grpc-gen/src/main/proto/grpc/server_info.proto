@@ -1,0 +1,21 @@
+syntax = "proto3";
+option java_package = "top.yein.tethys.grpc";
+option java_multiple_files = true;
+
+message ServerInfoRequest {
+  // 发起请求的FID全局唯一
+  int32 fid = 1;
+}
+
+message ServerInfoResponse {
+  // 服务的FID在整个集群中唯一
+  int32 fid = 1;
+  // 服务的名称
+  string name = 2;
+}
+
+service ServerInfo {
+
+  // 获取集群服务信息
+  rpc GetServerInfo(ServerInfoRequest) returns(ServerInfoResponse) {}
+}
