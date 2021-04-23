@@ -19,8 +19,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 import io.grpc.BindableService;
+import top.yein.tethys.grpc.HealthGrpc;
 import top.yein.tethys.grpc.MessageServiceGrpc;
+import top.yein.tethys.grpc.ServerInfoGrpc;
+import top.yein.tethys.grpc.service.HealthGrpcImpl;
 import top.yein.tethys.grpc.service.MessageServiceGrpcImpl;
+import top.yein.tethys.grpc.service.ServerInfoGrpcImpl;
 
 /**
  * Tethys gRPC 服务模块.
@@ -31,6 +35,19 @@ public class GrpcServiceModule extends AbstractModule {
 
   @Override
   protected void configure() {
+    // 健康检查
+    bind(BindableService.class)
+        .annotatedWith(Names.named(HealthGrpc.SERVICE_NAME))
+        .to(HealthGrpcImpl.class)
+        .in(Scopes.SINGLETON);
+
+    // 服务信息
+    bind(BindableService.class)
+        .annotatedWith(Names.named(ServerInfoGrpc.SERVICE_NAME))
+        .to(ServerInfoGrpcImpl.class)
+        .in(Scopes.SINGLETON);
+
+    // 消息服务
     bind(BindableService.class)
         .annotatedWith(Names.named(MessageServiceGrpc.SERVICE_NAME))
         .to(MessageServiceGrpcImpl.class)
