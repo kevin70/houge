@@ -16,6 +16,7 @@
 package top.yein.tethys.im.main;
 
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -30,6 +31,7 @@ import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.module.CoreModule;
 import top.yein.tethys.grpc.service.module.GrpcServiceModule;
+import top.yein.tethys.im.cluster.SimpleClusterManager;
 import top.yein.tethys.im.module.ImModule;
 import top.yein.tethys.im.server.GrpcServer;
 import top.yein.tethys.im.server.ImServer;
@@ -46,6 +48,8 @@ import top.yein.tethys.util.AppShutdownHelper;
 @Log4j2
 public class ImMain implements Runnable {
 
+  private final AppShutdownHelper shutdownHelper = new AppShutdownHelper();
+
   /**
    * 程序入口.
    *
@@ -59,6 +63,7 @@ public class ImMain implements Runnable {
   public void run() {
     // 初始化配置
     final var config = loadConfig();
+
     // 初始化 Guice
     final var injector =
         Guice.createInjector(
@@ -67,11 +72,37 @@ public class ImMain implements Runnable {
             new GrpcServiceModule(),
             new CoreModule(config),
             new ImModule(config));
-    // 应用程序监控
+    // 初始化应用程序监控
+    this.initMetrics(injector);
+    // 初始化IM服务
+    this.initImServer(injector, config);
+    // 初始化 gRPC 服务
+    this.initGrpcServer(injector, config);
+    // 初始化集群
+    this.initCluster(injector, config);
+
+    // 初始化应用基础信息
+    var applicationIdentifier = injector.getInstance(ApplicationIdentifier.class);
+    log.info(
+        "{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
+
+    // 应用停止
+    shutdownHelper.addCallback(
+        () -> {
+          log.info("清理应用程序标识");
+          applicationIdentifier.clean();
+        });
+    shutdownHelper.run();
+    log.info("IM 优雅停止完成...");
+  }
+
+  private void initMetrics(Injector injector) {
     var prometheusMeterRegistry = injector.getInstance(PrometheusMeterRegistry.class);
     Metrics.addRegistry(prometheusMeterRegistry);
+  }
+
+  private void initImServer(Injector injector, Config config) {
     // 启动 IM 服务
-    var applicationIdentifier = injector.getInstance(ApplicationIdentifier.class);
     var imServer =
         new ImServer(
             config.getString(ConfigKeys.IM_SERVER_ADDR),
@@ -82,9 +113,15 @@ public class ImMain implements Runnable {
                 .collect(Collectors.toList()));
     imServer.start();
 
-    log.info(
-        "{} 服务启动成功 fid={}", applicationIdentifier.applicationName(), applicationIdentifier.fid());
+    this.shutdownHelper.addCallback(
+        () -> {
+          log.info("停止 IM Server");
+          imServer.stop();
+          log.info("停止 IM Server 完成");
+        });
+  }
 
+  private void initGrpcServer(Injector injector, Config config) {
     var grpcServer =
         new GrpcServer(
             config.getString(ConfigKeys.GRPC_SERVER_ADDR),
@@ -93,27 +130,28 @@ public class ImMain implements Runnable {
                 .collect(Collectors.toList()));
     grpcServer.start();
 
-    // 应用停止
-    new AppShutdownHelper()
-        .addCallback(
-            () -> {
-              log.info("停止 gRPC Server");
-              grpcServer.stop();
-              log.info("停止 gRPC Server 完成");
-            })
-        .addCallback(
-            () -> {
-              log.info("停止 IM Server");
-              imServer.stop();
-              log.info("停止 IM Server 完成");
-            })
-        .addCallback(
-            () -> {
-              log.info("清理应用程序标识");
-              applicationIdentifier.clean();
-            })
-        .run();
-    log.info("IM 优雅停止完成...");
+    this.shutdownHelper.addCallback(
+        () -> {
+          log.info("停止 gRPC Server");
+          grpcServer.stop();
+          log.info("停止 gRPC Server 完成");
+        });
+  }
+
+  private void initCluster(Injector injector, Config config) {
+    var enabled =
+        config.hasPath(ConfigKeys.CLUSTER_ENABLED) && config.getBoolean(ConfigKeys.CLUSTER_ENABLED);
+    if (!enabled) {
+      log.debug("IM未开启集群开关");
+      return;
+    }
+    var clusterManager = injector.getInstance(SimpleClusterManager.class);
+    log.info("IM集群初始化成功");
+    shutdownHelper.addCallback(
+        () -> {
+          clusterManager.close();
+          log.info("集群清理完成");
+        });
   }
 
   private Config loadConfig() {

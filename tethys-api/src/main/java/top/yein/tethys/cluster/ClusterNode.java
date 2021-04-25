@@ -4,9 +4,6 @@ package top.yein.tethys.cluster;
 public interface ClusterNode {
 
   /** @return */
-  int fid();
-
-  /** @return */
   String target();
 
   /** @return */

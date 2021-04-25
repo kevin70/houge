@@ -98,6 +98,9 @@ public class ImModule extends AbstractModule {
 
     // Support =========================================<<<
     bind(AutoSubscriptionGroup.class).asEagerSingleton();
+
+    // 安装集群模块
+    install(new ClusterModule(config));
   }
 
   @Provides
