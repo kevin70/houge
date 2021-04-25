@@ -16,3 +16,4 @@ logs
 tethys.conf
 tethys-dev.properties
 flyway.conf
+test-tokens.txt
