@@ -44,7 +44,7 @@ message MessageResponse {
 }
 
 // 消息服务
-service MessageService {
+service Message {
 
   // 发送消息并返回消息 ID
   rpc Send(MessageRequest) returns(MessageResponse) {}

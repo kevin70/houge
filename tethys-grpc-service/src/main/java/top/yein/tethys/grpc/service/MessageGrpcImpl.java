@@ -22,9 +22,9 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import top.yein.tethys.grpc.MessageGrpc;
 import top.yein.tethys.grpc.MessageRequest;
 import top.yein.tethys.grpc.MessageResponse;
-import top.yein.tethys.grpc.MessageServiceGrpc;
 import top.yein.tethys.id.MessageIdGenerator;
 import top.yein.tethys.message.MessageRouter;
 import top.yein.tethys.service.MessageStorageService;
@@ -35,7 +35,7 @@ import top.yein.tethys.service.MessageStorageService;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public final class MessageServiceGrpcImpl extends MessageServiceGrpc.MessageServiceImplBase {
+public final class MessageGrpcImpl extends MessageGrpc.MessageImplBase {
 
   private final MessageIdGenerator messageIdGenerator;
   private final MessageStorageService messageStorageService;
@@ -49,7 +49,7 @@ public final class MessageServiceGrpcImpl extends MessageServiceGrpc.MessageServ
    * @param messageRouter 消息路由器
    */
   @Inject
-  public MessageServiceGrpcImpl(
+  public MessageGrpcImpl(
       MessageIdGenerator messageIdGenerator,
       MessageStorageService messageStorageService,
       MessageRouter messageRouter) {

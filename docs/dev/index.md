@@ -126,7 +126,7 @@ Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCO
 
 13:53:13.179 [main] INFO  top.yein.tethys.im.server.ImServer 90 - IM Server 启动完成 - 0.0.0.0:11010
 13:53:13.180 [main] INFO  top.yein.tethys.im.main.ImMain 85 - tethys-im 服务启动成功 fid=93106
-13:53:13.353 [main] INFO  top.yein.tethys.im.server.GrpcServer 54 - gRPC 添加服务 top.yein.tethys.grpc.service.MessageServiceGrpcImpl@44114b9f
+13:53:13.353 [main] INFO  top.yein.tethys.im.server.GrpcServer 54 - gRPC 添加服务 top.yein.tethys.grpc.service.MessageGrpcImpl@44114b9f
 13:53:13.406 [main] INFO  top.yein.tethys.im.server.GrpcServer 63 - gRPC 服务 0.0.0.0:11012 启动成功
 ```
 
