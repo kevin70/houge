@@ -31,7 +31,7 @@ import top.yein.tethys.core.http.Interceptors;
 import top.yein.tethys.core.http.RoutingService;
 import top.yein.tethys.core.module.CoreModule;
 import top.yein.tethys.grpc.service.module.GrpcServiceModule;
-import top.yein.tethys.im.cluster.SimpleClusterManager;
+import top.yein.tethys.im.cluster.PlainClusterManager;
 import top.yein.tethys.im.module.ImModule;
 import top.yein.tethys.im.server.GrpcServer;
 import top.yein.tethys.im.server.ImServer;
@@ -145,7 +145,7 @@ public class ImMain implements Runnable {
       log.debug("IM未开启集群开关");
       return;
     }
-    var clusterManager = injector.getInstance(SimpleClusterManager.class);
+    var clusterManager = injector.getInstance(PlainClusterManager.class);
     log.info("IM集群初始化成功");
     shutdownHelper.addCallback(
         () -> {

@@ -26,7 +26,7 @@ import top.yein.tethys.grpc.HealthGrpc;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class SimpleClusterManager implements ClusterNodesQuery, AutoCloseable {
+public class PlainClusterManager implements ClusterNodesQuery, AutoCloseable {
 
   private final Duration CHECK_HEALTH_DURATION = Duration.ofSeconds(30);
   private AtomicBoolean RUNNING = new AtomicBoolean(true);
@@ -34,7 +34,7 @@ public class SimpleClusterManager implements ClusterNodesQuery, AutoCloseable {
   private List<SimpleClusterNode> clusterNodes;
 
   /** @param grpcTargets */
-  public SimpleClusterManager(String grpcTargets) {
+  public PlainClusterManager(String grpcTargets) {
     if (Strings.isNullOrEmpty(grpcTargets)) {
       throw new IllegalArgumentException("集群[grpc.targets]配置不能为空");
     }

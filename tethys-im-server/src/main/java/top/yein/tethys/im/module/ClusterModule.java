@@ -5,7 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.typesafe.config.Config;
 import top.yein.tethys.ConfigKeys;
-import top.yein.tethys.im.cluster.SimpleClusterManager;
+import top.yein.tethys.im.cluster.PlainClusterManager;
 
 /**
  * 集群模块.
@@ -22,8 +22,8 @@ public class ClusterModule extends AbstractModule {
 
   @Singleton
   @Provides
-  public SimpleClusterManager clusterManager() {
+  public PlainClusterManager clusterManager() {
     var grpcTargets = config.getString(ConfigKeys.CLUSTER_GRPC_TARGETS);
-    return new SimpleClusterManager(grpcTargets);
+    return new PlainClusterManager(grpcTargets);
   }
 }
