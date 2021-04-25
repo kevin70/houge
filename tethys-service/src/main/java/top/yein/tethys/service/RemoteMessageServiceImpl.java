@@ -20,10 +20,9 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.core.util.MonoSinkStreamObserver;
+import top.yein.tethys.grpc.MessageGrpc;
 import top.yein.tethys.grpc.MessageRequest;
 import top.yein.tethys.grpc.MessageResponse;
-import top.yein.tethys.grpc.MessageServiceGrpc;
-import top.yein.tethys.grpc.MessageServiceGrpc.MessageServiceStub;
 import top.yein.tethys.service.result.MessageSendResult;
 import top.yein.tethys.vo.MessageSendVo;
 
@@ -35,16 +34,16 @@ import top.yein.tethys.vo.MessageSendVo;
 @Log4j2
 public class RemoteMessageServiceImpl implements RemoteMessageService {
 
-  private final MessageServiceGrpc.MessageServiceStub messageServiceStub;
+  private final MessageGrpc.MessageStub messageStub;
 
   /**
    * 可被 IoC 容器管理的构造函数.
    *
-   * @param messageServiceStub gRPC 消息服务存根
+   * @param messageStub gRPC 消息服务存根
    */
   @Inject
-  public RemoteMessageServiceImpl(MessageServiceStub messageServiceStub) {
-    this.messageServiceStub = messageServiceStub;
+  public RemoteMessageServiceImpl(MessageGrpc.MessageStub messageStub) {
+    this.messageStub = messageStub;
   }
 
   @Override
@@ -63,7 +62,7 @@ public class RemoteMessageServiceImpl implements RemoteMessageService {
     return Mono.<MessageResponse>create(
             sink -> {
               log.debug("发送gRPC消息 vo={}", vo);
-              messageServiceStub.send(builder.build(), new MonoSinkStreamObserver<>(sink));
+              messageStub.send(builder.build(), new MonoSinkStreamObserver<>(sink));
             })
         .map(
             response -> {

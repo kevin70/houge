@@ -22,7 +22,7 @@ import com.typesafe.config.Config;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import top.yein.tethys.ConfigKeys;
-import top.yein.tethys.grpc.MessageServiceGrpc;
+import top.yein.tethys.grpc.MessageGrpc;
 import top.yein.tethys.service.RemoteMessageService;
 import top.yein.tethys.service.RemoteMessageServiceImpl;
 
@@ -53,7 +53,7 @@ class GrpcStubModule extends AbstractModule {
   }
 
   @Provides
-  public MessageServiceGrpc.MessageServiceStub messageServiceStub(ManagedChannel channel) {
-    return MessageServiceGrpc.newStub(channel);
+  public MessageGrpc.MessageStub messageServiceStub(ManagedChannel channel) {
+    return MessageGrpc.newStub(channel);
   }
 }
