@@ -48,13 +48,16 @@ public class PlainClusterManager implements ClusterNodesQuery, AutoCloseable {
   }
 
   @Override
-  public List<? extends ClusterNode> queryNodes() {
-    return clusterNodes;
+  public Flux<? extends ClusterNode> queryNodes() {
+    if (this.clusterNodes == null || this.clusterNodes.isEmpty()) {
+      return Flux.empty();
+    }
+    return Flux.fromIterable(this.clusterNodes);
   }
 
   @Override
   public Flux<? extends ClusterNode> queryAvailableNodes() {
-    return Flux.fromIterable(queryNodes()).filter(ClusterNode::isAvailable);
+    return queryNodes().filter(ClusterNode::isAvailable);
   }
 
   @Override

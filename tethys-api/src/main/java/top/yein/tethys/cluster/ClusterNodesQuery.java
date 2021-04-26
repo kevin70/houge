@@ -1,6 +1,5 @@
 package top.yein.tethys.cluster;
 
-import java.util.List;
 import reactor.core.publisher.Flux;
 
 /**
@@ -15,7 +14,7 @@ public interface ClusterNodesQuery {
    *
    * @return 集群节点列表
    */
-  List<? extends ClusterNode> queryNodes();
+  Flux<? extends ClusterNode> queryNodes();
 
   /**
    * 返回可用的集群节点列表.
