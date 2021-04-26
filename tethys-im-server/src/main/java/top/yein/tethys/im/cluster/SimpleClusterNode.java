@@ -1,6 +1,7 @@
 package top.yein.tethys.im.cluster;
 
 import io.grpc.ManagedChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Setter;
 import top.yein.tethys.cluster.ClusterNode;
@@ -19,7 +20,9 @@ public class SimpleClusterNode implements ClusterNode, GrpcStubProvider {
   @Setter private MessageStub messageStub;
 
   /** */
-  private AtomicInteger checkFailedCount = new AtomicInteger(0);
+  private final AtomicBoolean available = new AtomicBoolean();
+
+  private final AtomicInteger checkFailedCount = new AtomicInteger(0);
 
   /**
    * @param target
@@ -37,7 +40,7 @@ public class SimpleClusterNode implements ClusterNode, GrpcStubProvider {
 
   @Override
   public boolean isAvailable() {
-    return checkFailedCount.get() == 0;
+    return available.get();
   }
 
   @Override
@@ -55,11 +58,14 @@ public class SimpleClusterNode implements ClusterNode, GrpcStubProvider {
     return messageStub;
   }
 
+  // ================================================
   void incrementCheckFailedCount() {
+    available.compareAndSet(true, false);
     checkFailedCount.incrementAndGet();
   }
 
   void resetCheckFailedCount() {
+    available.compareAndSet(false, true);
     checkFailedCount.set(0);
   }
 }
