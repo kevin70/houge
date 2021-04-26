@@ -33,18 +33,18 @@ public class PlainClusterManager implements ClusterNodesQuery, AutoCloseable {
 
   private List<SimpleClusterNode> clusterNodes;
 
-  /** @param grpcTargets */
+  /**
+   * 使用集群节点<b>gRPC</b>配置构造对象.
+   *
+   * @param grpcTargets 集群<b>gRPC</b>节点配置
+   */
   public PlainClusterManager(String grpcTargets) {
     if (Strings.isNullOrEmpty(grpcTargets)) {
       throw new IllegalArgumentException("集群[grpc.targets]配置不能为空");
     }
 
     this.clusterNodes = this.initClusterNodes(grpcTargets);
-    if (this.clusterNodes.isEmpty()) {
-      log.warn("集群正在启用中但并没有可用的集群节点 grpcTargets={}", grpcTargets);
-    } else {
-      this.initCheckHealth();
-    }
+    this.initCheckHealth();
   }
 
   @Override
