@@ -1,11 +1,23 @@
 package top.yein.tethys.cluster;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * 集群节点接口.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public interface ClusterNode {
 
-  /** @return */
+  /**
+   * 节点目标地址.
+   *
+   * @return
+   */
   String target();
 
-  /** @return */
+  /**
+   * 节点是否可用.
+   *
+   * @return 节点是否可用
+   */
   boolean isAvailable();
 }
