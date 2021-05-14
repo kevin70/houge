@@ -3,6 +3,38 @@ apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.login.main.LogicMain"
 
+File dockerInputDir() {
+  def f = file("${buildDir}/docker/")
+  if (!f.exists()) {
+    f.mkdirs()
+  }
+  return f
+}
+
+task copyDockerResource {
+  group "docker"
+  doLast {
+    copy {
+      from("${buildDir}/libs")
+      into(dockerInputDir())
+      include("*-all.jar")
+      rename(".*-all.jar", "app.jar")
+    }
+    copy {
+      from(projectDir)
+      into(dockerInputDir())
+      include("Dockerfile")
+    }
+  }
+}
+
+task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+  group "docker"
+  dependsOn("shadowJar", "copyDockerResource")
+  inputDir = dockerInputDir()
+  images.addAll("kevin70/${project.name}:latest", "kevin70/${project.name}:${version}".toString())
+}
+
 dependencies {
   implementation(project(":tethys-auth"))
   implementation(project(":tethys-service"))
