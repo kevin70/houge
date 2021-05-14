@@ -1,12 +1,13 @@
 dependencies {
-  api(project(":tethys-api"))
-  api(project(":tethys-util"))
-  api(project(":tethys-grpc-gen"))
   api("top.yein.chaos:chaos-core")
+  api("com.google.inject:guice")
+  api("com.typesafe:config")
   api("io.lettuce:lettuce-core")
   api("io.projectreactor.netty:reactor-netty")
   api("com.github.ben-manes.caffeine:caffeine")
   api("io.micrometer:micrometer-registry-prometheus")
+  api("io.r2dbc:r2dbc-spi")
+  compileOnly("com.fasterxml.jackson.core:jackson-databind")
 
   testImplementation("org.apache.commons:commons-lang3")
   testImplementation("io.r2dbc:r2dbc-postgresql")

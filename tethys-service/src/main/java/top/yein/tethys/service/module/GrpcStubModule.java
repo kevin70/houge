@@ -24,7 +24,7 @@ import io.grpc.ManagedChannelBuilder;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.grpc.MessageGrpc;
 import top.yein.tethys.service.RemoteMessageService;
-import top.yein.tethys.service.RemoteMessageServiceImpl;
+import top.yein.tethys.service.impl.RemoteMessageServiceImpl;
 
 /**
  * gRPC 存根模块.

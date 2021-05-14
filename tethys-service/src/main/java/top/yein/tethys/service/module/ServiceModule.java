@@ -22,14 +22,14 @@ import com.typesafe.config.Config;
 import javax.inject.Singleton;
 import top.yein.tethys.ConfigKeys;
 import top.yein.tethys.service.GroupService;
-import top.yein.tethys.service.GroupServiceImpl;
+import top.yein.tethys.service.impl.GroupServiceImpl;
 import top.yein.tethys.service.MessageProps;
 import top.yein.tethys.service.MessageService;
-import top.yein.tethys.service.MessageServiceImpl;
+import top.yein.tethys.service.impl.MessageServiceImpl;
 import top.yein.tethys.service.MessageStorageService;
-import top.yein.tethys.service.MessageStorageServiceImpl;
+import top.yein.tethys.service.impl.MessageStorageServiceImpl;
 import top.yein.tethys.service.UserService;
-import top.yein.tethys.service.UserServiceImpl;
+import top.yein.tethys.service.impl.UserServiceImpl;
 import top.yein.tethys.storage.MessageDao;
 import top.yein.tethys.storage.query.MessageQueryDao;
 

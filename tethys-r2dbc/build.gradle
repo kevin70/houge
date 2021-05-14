@@ -1,0 +1,6 @@
+dependencies {
+  api("io.projectreactor:reactor-core")
+  api("io.r2dbc:r2dbc-spi")
+
+  testImplementation("io.r2dbc:r2dbc-postgresql")
+}

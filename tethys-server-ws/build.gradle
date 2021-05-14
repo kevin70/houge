@@ -1,0 +1,29 @@
+apply plugin: "application"
+apply plugin: "com.bmuschko.docker-remote-api"
+
+mainClassName = "top.yein.tethys.ws.main.WsMain"
+
+dependencies {
+  implementation(project(":tethys-core"))
+  implementation("com.typesafe:config")
+  implementation("com.google.guava:guava")
+  implementation("com.google.inject:guice")
+  implementation("org.roaringbitmap:RoaringBitmap")
+  implementation("io.projectreactor.netty:reactor-netty")
+  implementation("com.fasterxml.jackson.core:jackson-databind")
+  implementation("io.micrometer:micrometer-registry-prometheus")
+  implementation("com.github.ben-manes.caffeine:caffeine")
+
+  // gRPC
+  implementation(project(":tethys-grpc"))
+  implementation("io.grpc:grpc-netty")
+  implementation("io.grpc:grpc-protobuf")
+  implementation("io.grpc:grpc-stub")
+
+  // 日志
+  implementation("org.apache.logging.log4j:log4j-core")
+  implementation("org.apache.logging.log4j:log4j-slf4j-impl")
+
+  // 工具
+  implementation("io.projectreactor:reactor-tools")
+}

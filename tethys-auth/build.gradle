@@ -1,0 +1,5 @@
+dependencies {
+  api(project(":tethys-storage"))
+  api("com.auth0:java-jwt")
+  api("io.projectreactor:reactor-core")
+}

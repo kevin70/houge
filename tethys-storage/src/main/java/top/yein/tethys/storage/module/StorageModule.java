@@ -22,24 +22,25 @@ import com.typesafe.config.Config;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import top.yein.tethys.ConfigKeys;
-import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
+import top.yein.tethys.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
 import top.yein.tethys.storage.GroupDao;
-import top.yein.tethys.storage.GroupDaoImpl;
 import top.yein.tethys.storage.JwtSecretDao;
-import top.yein.tethys.storage.JwtSecretDaoImpl;
 import top.yein.tethys.storage.MessageDao;
-import top.yein.tethys.storage.MessageDaoImpl;
 import top.yein.tethys.storage.ServerInstanceDao;
-import top.yein.tethys.storage.ServerInstanceDaoImpl;
 import top.yein.tethys.storage.UserDao;
-import top.yein.tethys.storage.UserDaoImpl;
+import top.yein.tethys.storage.impl.GroupDaoImpl;
+import top.yein.tethys.storage.impl.JwtSecretDaoImpl;
+import top.yein.tethys.storage.impl.MessageDaoImpl;
+import top.yein.tethys.storage.impl.ServerInstanceDaoImpl;
+import top.yein.tethys.storage.impl.UserDaoImpl;
+import top.yein.tethys.storage.impl.UserQueryDaoImpl;
+import top.yein.tethys.storage.impl.query.GroupQueryDaoImpl;
+import top.yein.tethys.storage.impl.query.MessageQueryDaoImpl;
 import top.yein.tethys.storage.query.GroupQueryDao;
-import top.yein.tethys.storage.query.GroupQueryDaoImpl;
 import top.yein.tethys.storage.query.MessageQueryDao;
-import top.yein.tethys.storage.query.MessageQueryDaoImpl;
 import top.yein.tethys.storage.query.UserQueryDao;
-import top.yein.tethys.storage.query.UserQueryDaoImpl;
+import top.yein.tethys.system.identifier.ServerInstanceRepository;
 
 /**
  * 消息数据存储模块定义.
@@ -61,7 +62,10 @@ public class StorageModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(ServerInstanceDao.class).to(ServerInstanceDaoImpl.class).in(Scopes.SINGLETON);
+    bind(ServerInstanceDaoImpl.class).in(Scopes.SINGLETON);
+    bind(ServerInstanceDao.class).to(ServerInstanceDaoImpl.class);
+    bind(ServerInstanceRepository.class).to(ServerInstanceDaoImpl.class);
+
     bind(JwtSecretDao.class).to(JwtSecretDaoImpl.class).in(Scopes.SINGLETON);
 
     // 消息

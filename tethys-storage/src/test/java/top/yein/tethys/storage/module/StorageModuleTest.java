@@ -21,7 +21,7 @@ import com.google.inject.Guice;
 import com.typesafe.config.ConfigFactory;
 import org.junit.jupiter.api.Test;
 import top.yein.tethys.storage.ServerInstanceDao;
-import top.yein.tethys.storage.ServerInstanceDaoImpl;
+import top.yein.tethys.storage.impl.ServerInstanceDaoImpl;
 
 /**
  * {@link StorageModule} 单元测试.

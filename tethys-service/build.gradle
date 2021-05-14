@@ -1,8 +1,10 @@
 dependencies {
   api(project(":tethys-storage"))
+  api(project(":tethys-grpc"))
   api("org.roaringbitmap:RoaringBitmap")
+  compileOnly("com.fasterxml.jackson.core:jackson-databind")
 
-  testImplementation(project(":tethys-util"))
+  testImplementation(project(":tethys-core"))
   testImplementation("com.typesafe:config")
   testImplementation("org.apache.logging.log4j:log4j-core")
   testImplementation("org.apache.logging.log4j:log4j-slf4j-impl")

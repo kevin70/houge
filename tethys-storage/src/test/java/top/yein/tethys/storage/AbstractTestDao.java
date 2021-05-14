@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeAll;
 import top.yein.tethys.ConfigKeys;
-import top.yein.tethys.core.r2dbc.DefaultR2dbcClient;
+import top.yein.tethys.r2dbc.DefaultR2dbcClient;
 import top.yein.tethys.r2dbc.R2dbcClient;
 
 /**

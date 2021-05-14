@@ -1,0 +1,40 @@
+sourceSets {
+  main {
+    java {
+      srcDir "${buildDir}/generated/source/proto/main/grpc"
+      srcDir "${buildDir}/generated/source/proto/main/java"
+    }
+    resources {
+      srcDir "src/main/proto"
+    }
+  }
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:3.12.0"
+  }
+  plugins {
+    grpc {
+      artifact = "io.grpc:protoc-gen-grpc-java:1.36.1"
+    }
+  }
+
+  generateProtoTasks {
+    all()*.plugins {
+      grpc {}
+    }
+  }
+}
+
+license {
+  exclude "**/grpc/*.java"
+}
+
+dependencies {
+  compileOnly("org.apache.tomcat:annotations-api:6.0.53")
+  api("io.grpc:grpc-protobuf")
+  api("io.grpc:grpc-netty")
+  api("io.grpc:grpc-stub")
+  api("io.projectreactor:reactor-core")
+}
