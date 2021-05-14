@@ -9,12 +9,12 @@ import reactor.core.publisher.Sinks;
  *
  * @author KK (kzou227@qq.com)
  */
-public class SinkOneStreamObserver<Resp> implements StreamObserver<Resp> {
+public class SinkOneStreamObserver<RESP> implements StreamObserver<RESP> {
 
-  private final Sinks.One<Resp> sink = Sinks.one();
+  private final Sinks.One<RESP> sink = Sinks.one();
 
   @Override
-  public void onNext(Resp value) {
+  public void onNext(RESP value) {
     sink.tryEmitValue(value).orThrow();
   }
 
@@ -28,8 +28,12 @@ public class SinkOneStreamObserver<Resp> implements StreamObserver<Resp> {
     // ignore
   }
 
-  /** @return */
-  public Mono<Resp> asMono() {
+  /**
+   * 返回观察者的 Mono 实例每次调用都返回相同的实例.
+   *
+   * @return 观察者的 Mono 实例
+   */
+  public Mono<RESP> asMono() {
     return sink.asMono();
   }
 }
