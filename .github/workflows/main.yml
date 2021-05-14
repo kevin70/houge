@@ -61,18 +61,25 @@ jobs:
       - run: ./gradlew jacocoTestReport
         ###------------ 构造 Docker 镜像
       - run: ./gradlew :db:buildImage
-      - run: ./gradlew :tethys-im-server:buildImage
-      - run: ./gradlew :tethys-rest-server:buildImage
+      - run: ./gradlew :tethys-server-logic:buildImage
+      - run: ./gradlew :tethys-server-rest:buildImage
+      - run: ./gradlew :tethys-server-ws:buildImage
       - name: Docker push
         run: |
           PROJECT_VERSION=$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
           docker push kevin70/tethys-db-migration:latest
           docker push kevin70/tethys-db-migration:$PROJECT_VERSION
-          docker push kevin70/tethys-im:latest
-          docker push kevin70/tethys-im:$PROJECT_VERSION
-          docker push kevin70/tethys-rest:latest
-          docker push kevin70/tethys-rest:$PROJECT_VERSION
+
+          docker push kevin70/tethys-server-logic:latest
+          docker push kevin70/tethys-server-logic:$PROJECT_VERSION
+
+          docker push kevin70/tethys-server-rest:latest
+          docker push kevin70/tethys-server-rest:$PROJECT_VERSION
+
+          docker push kevin70/tethys-server-ws:latest
+          docker push kevin70/tethys-server-ws:$PROJECT_VERSION
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -82,9 +89,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonarqube --info
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Package
-          path: |
-            tethys-im-server/build/libs
-            tethys-rest-server/build/libs
