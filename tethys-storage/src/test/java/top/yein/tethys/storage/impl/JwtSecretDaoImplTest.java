@@ -18,18 +18,13 @@ package top.yein.tethys.storage.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.javafaker.Faker;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
-import org.powermock.reflect.Whitebox;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import top.yein.tethys.domain.CachedJwtAlgorithm;
 import top.yein.tethys.storage.AbstractTestDao;
 import top.yein.tethys.storage.entity.JwtSecret;
 
@@ -157,106 +152,5 @@ class JwtSecretDaoImplTest extends AbstractTestDao {
     clean(
         "delete from jwt_secrets where id in ($1,$2)",
         new Object[] {entity1.getId(), entity2.getId()});
-  }
-
-  @Test
-  void refreshAll() {
-    var dao = newJwtSecretDao();
-    AsyncCache<String, CachedJwtAlgorithm> jwtSecretCache =
-        Whitebox.getInternalState(dao, "jwtAlgorithmCache");
-
-    var entity1 = new JwtSecret();
-    entity1.setId(faker.random().hex());
-    entity1.setAlgorithm("HS512");
-    entity1.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
-
-    var entity2 = new JwtSecret();
-    entity2.setId(faker.random().hex());
-    entity2.setAlgorithm("HS512");
-    entity2.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
-
-    var p = dao.insert(entity1).then(dao.insert(entity2)).thenMany(dao.refreshAll());
-    var cachedJwtSecrets = new ArrayList<CachedJwtAlgorithm>();
-    StepVerifier.create(p)
-        .recordWith(() -> cachedJwtSecrets)
-        .thenConsumeWhile(unused -> true)
-        .expectComplete()
-        .verify();
-
-    // 校验缓存中的对象
-    var syncCache = jwtSecretCache.synchronous();
-    for (CachedJwtAlgorithm cachedJwtAlgorithm : cachedJwtSecrets) {
-      assertThat(cachedJwtAlgorithm).isEqualTo(syncCache.getIfPresent(cachedJwtAlgorithm.getId()));
-    }
-
-    // 清理数据
-    clean(
-        "delete from jwt_secrets where id in ($1,$2)",
-        new Object[] {entity1.getId(), entity2.getId()});
-  }
-
-  @Test
-  void loadById() {
-    var dao = newJwtSecretDao();
-    var entity = new JwtSecret();
-    entity.setId(faker.random().hex());
-    entity.setAlgorithm("HS512");
-    entity.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
-
-    var loadByIdPublishers = new ArrayList<Publisher<CachedJwtAlgorithm>>();
-    for (int i = 0; i < 10; i++) {
-      loadByIdPublishers.add(dao.loadById(entity.getId()));
-    }
-
-    var p = dao.insert(entity).then(Flux.concat(loadByIdPublishers).collectList());
-    StepVerifier.create(p)
-        .consumeNextWith(
-            cachedJwtSecrets -> {
-              System.out.println(cachedJwtSecrets);
-              assertThat(cachedJwtSecrets)
-                  .allMatch(
-                      cachedJwtAlgorithm ->
-                          cachedJwtAlgorithm == cachedJwtSecrets.stream().findAny().get());
-            })
-        .expectComplete()
-        .verify();
-
-    // 清理数据
-    clean("delete from jwt_secrets where id in ($1)", new Object[] {entity.getId()});
-  }
-
-  @Test
-  void loadNoDeleted() {
-    var dao = newJwtSecretDao();
-
-    var entity1 = new JwtSecret();
-    entity1.setId(faker.random().hex());
-    entity1.setAlgorithm("HS512");
-    entity1.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
-
-    var entity2 = new JwtSecret();
-    entity2.setId(faker.random().hex());
-    entity2.setAlgorithm("HS512");
-    entity2.setSecretKey(ByteBuffer.wrap(faker.random().hex(256).getBytes(StandardCharsets.UTF_8)));
-    var p = dao.insert(entity1).then(dao.insert(entity2)).thenMany(dao.loadNoDeleted());
-    StepVerifier.create(p)
-        .recordWith(ArrayList::new)
-        .thenConsumeWhile(unused -> true)
-        .consumeRecordedWith(
-            cachedJwtSecrets -> {
-              assertThat(cachedJwtSecrets)
-                  .extracting("id")
-                  .contains(entity1.getId(), entity2.getId());
-            })
-        .expectComplete()
-        .verify();
-
-    // 清理数据
-    clean(
-        "delete from jwt_secrets where id in ($1,$2)",
-        new Object[] {entity1.getId(), entity2.getId()});
-    //    clean(
-    //        "delete from jwt_secrets where id in ($1)",
-    //        new Object[] {new String[] {entity1.getId(), entity2.getId()}});
   }
 }
