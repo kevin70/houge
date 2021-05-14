@@ -130,76 +130,78 @@ public class ClientAgentManager {
       var request =
           AgentPb.LinkRequest.newBuilder().setName(name).setHostName(getHostName()).build();
       log.info("请求监听消息响应 name={} retryCount={} channel={}", name, retryCount.get(), channel);
-      this.agentStub.link(
-          request,
-          new ClientResponseObserver<AgentPb.LinkRequest, AgentPb.LinkResponse>() {
-
-            ClientCallStreamObserver<AgentPb.LinkRequest> requestStream;
-
-            @Override
-            public void beforeStart(ClientCallStreamObserver<AgentPb.LinkRequest> requestStream) {
-              this.requestStream = requestStream;
-            }
-
-            @Override
-            public void onNext(AgentPb.LinkResponse response) {
-              if (retryCount.get() > 0) {
-                retryCount.set(0);
-                lastStatusCodeRef.set(Code.OK);
-              }
-
-              if (response.hasPacketMixin()) {
-                packetProcessor.process(response.getPacketMixin());
-              } else if (response.hasCommand()) {
-                commandProcessor.process(response.getCommand());
-              } else {
-                log.error("不支持的 WatchResponse 响应 channel={} response={}", channel, response);
-              }
-            }
-
-            @Override
-            public void onError(Throwable t) {
-              requestStream.cancel("watch-error", t);
-
-              Status status = null;
-              if (t instanceof StatusRuntimeException) {
-                status = ((StatusRuntimeException) t).getStatus();
-              } else if (t instanceof StatusException) {
-                status = ((StatusException) t).getStatus();
-              }
-              if (status != null) {
-                // 如果最新的响应状态码与上次的一致，则根据错误次数判断是否需要打印日志，减少重复的错误日志打印
-                if (status.getCode() != WatchHelper.this.lastStatusCodeRef.get()
-                    || retryCount.getAndIncrement() == 0) {
-                  log.error("消息响应监听错误", t);
-                }
-                WatchHelper.this.lastStatusCodeRef.set(status.getCode());
-              } else {
-                log.error("未知的消息响应监听异常", t);
-              }
-
-              // 最长等待的时长
-              var waitSecs = Math.min(retryCount.get() * 10, 60);
-              LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(waitSecs));
-
-              // 重试
-              watch();
-              retryCount.compareAndSet(SKIP_REPEAT_ERROR_LOG_LIMIT, 0);
-            }
-
-            @Override
-            public void onCompleted() {
-              log.info("消息响应监听完成 channel={}", channel);
-            }
-          });
+      this.agentStub.link(request, response());
     }
-  }
 
-  private String getHostName() {
-    try {
-      return InetAddress.getLocalHost().getHostName();
-    } catch (UnknownHostException e) {
-      return "UnknownHost";
+    private ClientResponseObserver<AgentPb.LinkRequest, AgentPb.LinkResponse> response() {
+      return new ClientResponseObserver<>() {
+
+        ClientCallStreamObserver<AgentPb.LinkRequest> requestStream;
+
+        @Override
+        public void beforeStart(ClientCallStreamObserver<AgentPb.LinkRequest> requestStream) {
+          this.requestStream = requestStream;
+        }
+
+        @Override
+        public void onNext(AgentPb.LinkResponse response) {
+          if (retryCount.get() > 0) {
+            retryCount.set(0);
+            lastStatusCodeRef.set(Code.OK);
+          }
+
+          if (response.hasPacketMixin()) {
+            packetProcessor.process(response.getPacketMixin());
+          } else if (response.hasCommand()) {
+            commandProcessor.process(response.getCommand());
+          } else {
+            log.error("不支持的 WatchResponse 响应 channel={} response={}", channel, response);
+          }
+        }
+
+        @Override
+        public void onError(Throwable t) {
+          requestStream.cancel("watch-error", t);
+
+          Status status = null;
+          if (t instanceof StatusRuntimeException) {
+            status = ((StatusRuntimeException) t).getStatus();
+          } else if (t instanceof StatusException) {
+            status = ((StatusException) t).getStatus();
+          }
+          if (status != null) {
+            // 如果最新的响应状态码与上次的一致，则根据错误次数判断是否需要打印日志，减少重复的错误日志打印
+            if (status.getCode() != WatchHelper.this.lastStatusCodeRef.get()
+                || retryCount.getAndIncrement() == 0) {
+              log.error("消息响应监听错误", t);
+            }
+            WatchHelper.this.lastStatusCodeRef.set(status.getCode());
+          } else {
+            log.error("未知的消息响应监听异常", t);
+          }
+
+          // 最长等待的时长
+          var waitSecs = Math.min(retryCount.get() * 10, 60);
+          LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(waitSecs));
+
+          // 重试
+          watch();
+          retryCount.compareAndSet(SKIP_REPEAT_ERROR_LOG_LIMIT, 0);
+        }
+
+        @Override
+        public void onCompleted() {
+          log.info("消息响应监听完成 channel={}", channel);
+        }
+      };
+    }
+
+    private String getHostName() {
+      try {
+        return InetAddress.getLocalHost().getHostName();
+      } catch (UnknownHostException e) {
+        return "UnknownHost";
+      }
     }
   }
 }
