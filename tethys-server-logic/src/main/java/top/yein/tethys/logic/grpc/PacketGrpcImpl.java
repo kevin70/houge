@@ -87,12 +87,14 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
       log.info("JSON解析格式错误 requestUid={}", request.getRequestUid(), e);
       var builder = PacketResponse.newBuilder().setSuccess(false);
       responseObserver.onNext(builder.build());
+      responseObserver.onCompleted();
       return;
     } catch (IOException e) {
       log.error("解析Packet请求出现IO错误 requestUid={}", request.getRequestUid(), e);
       // FIXME 这里需要向客户端响应错误提示
       var builder = PacketResponse.newBuilder().setSuccess(false);
       responseObserver.onNext(builder.build());
+      responseObserver.onCompleted();
       return;
     }
 
@@ -164,6 +166,7 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
   private void handleFailedData(StreamObserver<PacketResponse> responseObserver, ByteString data) {
     var response = PacketResponse.newBuilder().setSuccess(false).setDataBytes(data).build();
     responseObserver.onNext(response);
+    responseObserver.onCompleted();
   }
 
   // 在 Guice Inject 查询符合要求的消息处理器
