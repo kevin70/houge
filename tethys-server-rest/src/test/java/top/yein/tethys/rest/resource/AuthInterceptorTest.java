@@ -26,9 +26,9 @@ import reactor.netty.http.server.HttpServerResponse;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCode;
 import top.yein.tethys.auth.AuthService;
-import top.yein.tethys.core.TestUtils;
+import top.yein.tethys.rest.MockHttpServerRequest;
+import top.yein.tethys.rest.TestUtils;
 import top.yein.tethys.rest.http.AbstractRestSupport;
-import top.yein.tethys.test.MockHttpServerRequest;
 
 /**
  * {@link AuthInterceptor} 单元测试.
