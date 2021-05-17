@@ -25,9 +25,9 @@ import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
 import top.yein.tethys.BizCodes;
 import top.yein.tethys.id.MessageIdGenerator;
+import top.yein.tethys.logic.agent.PacketSender;
 import top.yein.tethys.logic.handler.internal.MessagePacketHelper;
 import top.yein.tethys.logic.packet.GroupMessagePacket;
-import top.yein.tethys.logic.agent.PacketSender;
 import top.yein.tethys.service.MessageStorageService;
 import top.yein.tethys.storage.query.GroupQueryDao;
 import top.yein.tethys.util.YeinGid;
@@ -94,6 +94,10 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
         .collectList()
         .flatMap(
             uids -> {
+              if (uids.isEmpty()) {
+                return Mono.empty();
+              }
+
               // 存储消息
               var entity = MessagePacketHelper.toMessageEntity(packet);
               return messageStorageService.store(entity, uids).thenReturn(Result.ok());
