@@ -66,7 +66,7 @@ public class JwsAuthService implements AuthService, TokenService {
    * 可以被 IoC 容器使用的构造函数.
    *
    * @param jwtSecretDao JWT 密钥存储对象
-   * @param userQueryDao
+   * @param userQueryDao 用户查询数据访问对象
    */
   @Inject
   public JwsAuthService(JwtSecretDao jwtSecretDao, UserQueryDao userQueryDao) {
