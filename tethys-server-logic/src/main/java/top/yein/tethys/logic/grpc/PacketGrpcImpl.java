@@ -83,18 +83,16 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
       return;
     } catch (JsonParseException e) {
       // JSON格式错误
-      // FIXME 这里需要向客户端响应错误提示
       log.info("JSON解析格式错误 requestUid={}", request.getRequestUid(), e);
-      var builder = PacketResponse.newBuilder().setSuccess(false);
-      responseObserver.onNext(builder.build());
-      responseObserver.onCompleted();
+      handleFailedData(
+          responseObserver,
+          Strings.lenientFormat("{\"@ns\":\"error\",\"message\":\"%s\"}", e.getMessage()));
       return;
     } catch (IOException e) {
       log.error("解析Packet请求出现IO错误 requestUid={}", request.getRequestUid(), e);
-      // FIXME 这里需要向客户端响应错误提示
-      var builder = PacketResponse.newBuilder().setSuccess(false);
-      responseObserver.onNext(builder.build());
-      responseObserver.onCompleted();
+      handleFailedData(
+          responseObserver,
+          Strings.lenientFormat("{\"@ns\":\"error\",\"message\":\"%s\"}", e.getMessage()));
       return;
     }
 
@@ -137,7 +135,6 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
     if (t instanceof BizCodeException) {
       var ex = (BizCodeException) t;
       result = Result.error(ex.getBizCode().getCode(), ex.getMessage(), ex.getContextEntries());
-
       // FIXME 处理异常
       log.debug("", t);
     } else {
