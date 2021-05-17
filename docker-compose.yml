@@ -9,7 +9,6 @@ services:
     environment:
       POSTGRES_USER: "tethys"
       POSTGRES_PASSWORD: "123456"
-
   # 数据库 schema 更新
   db-migration:
     image: kevin70/tethys-db-migration
@@ -24,11 +23,10 @@ services:
     command: -c "wait-for db:5432 && flyway migrate"
     depends_on:
       - db
-
-  #  IM 推送服务
-  im:
-    image: kevin70/tethys-im
-    container_name: tethys-im
+  # 逻辑服务
+  logic:
+    image: kevin70/tethys-server-logic
+    container_name: tethys-server-logic
     networks:
       - backend
     ports:
@@ -37,11 +35,10 @@ services:
       TETHYS_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
     depends_on:
       - db-migration
-
-  # IM REST 服务
+  # REST 服务
   rest:
-    image: kevin70/tethys-rest
-    container_name: tethys-rest
+    image: kevin70/tethys-server-rest
+    container_name: tethys-server-rest
     networks:
       - backend
     ports:
@@ -50,5 +47,13 @@ services:
       TETHYS_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
     depends_on:
       - db-migration
+  # WebSocket 服务
+  ws:
+    image: kevin70/tethys-server-ws
+    container_name: tethys-server-ws
+    networks:
+      - backend
+    ports:
+      - 11012:11012
 networks:
   backend:
