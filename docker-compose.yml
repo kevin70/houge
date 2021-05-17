@@ -55,5 +55,8 @@ services:
       - backend
     ports:
       - 11012:11012
+    environment:
+      TETHYS_LOGIC_SERVICE_GRPC_TARGET: "logic:11010"
+      TETHYS_AGENT_SERVICE_MULTI_GRPC_TARGET: "logic:11010"
 networks:
   backend:
