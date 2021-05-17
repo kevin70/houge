@@ -58,7 +58,7 @@ public class WsMain implements Runnable {
   }
 
   private Config loadConfig() {
-    var config = ConfigFactory.parseResources(CONFIG_FILE);
+    var config = ConfigFactory.parseResources(CONFIG_FILE).resolve();
     log.info(
         "已加载的应用配置 \n=========================================================>>>\n{}<<<=========================================================",
         config.root().render());
