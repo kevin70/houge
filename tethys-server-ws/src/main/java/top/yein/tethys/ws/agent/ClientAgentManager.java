@@ -182,11 +182,11 @@ public class ClientAgentManager {
             // 如果最新的响应状态码与上次的一致，则根据错误次数判断是否需要打印日志，减少重复的错误日志打印
             if (status.getCode() != WatchHelper.this.lastStatusCodeRef.get()
                 || retryCount.getAndIncrement() == 0) {
-              log.error("消息响应监听错误", t);
+              log.error("消息响应监听错误 channel={}", channel, t);
             }
             WatchHelper.this.lastStatusCodeRef.set(status.getCode());
           } else {
-            log.error("未知的消息响应监听异常", t);
+            log.error("未知的消息响应监听异常 channel={}", channel, t);
           }
 
           // 最长等待的时长
