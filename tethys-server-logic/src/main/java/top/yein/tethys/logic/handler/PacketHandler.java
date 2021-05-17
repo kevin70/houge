@@ -26,9 +26,8 @@ import top.yein.tethys.logic.packet.Packet;
 public interface PacketHandler<T extends Packet> {
 
   /**
-   * @param requestUid
    * @param packet
    * @return
    */
-  Mono<Result> handle(long requestUid, T packet);
+  Mono<Result> handle(T packet);
 }

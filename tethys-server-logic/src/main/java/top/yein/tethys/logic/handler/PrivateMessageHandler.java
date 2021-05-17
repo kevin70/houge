@@ -18,17 +18,16 @@ package top.yein.tethys.logic.handler;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
-import top.yein.tethys.constants.MessageContentType;
 import top.yein.tethys.BizCodes;
+import top.yein.tethys.constants.MessageContentType;
 import top.yein.tethys.id.MessageIdGenerator;
+import top.yein.tethys.logic.agent.PacketSender;
 import top.yein.tethys.logic.handler.internal.MessagePacketHelper;
 import top.yein.tethys.logic.packet.PrivateMessagePacket;
-import top.yein.tethys.logic.agent.PacketSender;
 import top.yein.tethys.service.MessageStorageService;
 import top.yein.tethys.util.YeinGid;
 
@@ -61,11 +60,11 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
   }
 
   @Override
-  public Mono<Result> handle(long requestUid, PrivateMessagePacket packet) {
+  public Mono<Result> handle(PrivateMessagePacket packet) {
     if (packet.getMessageId() == null) {
       // 自动填充消息 ID
       packet.setMessageId(messageIdGenerator.nextId());
-      log.debug("自动填充私聊消息 ID, packet={}, requestUid={}", packet, requestUid);
+      log.debug("自动填充私聊消息 ID, packet={}", packet);
     }
     // 校验 message_id
     if (packet.getMessageId().length() != YeinGid.YEIN_GID_LENGTH) {
@@ -77,20 +76,9 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
     if (packet.getTo() <= 0) {
       return Mono.just(Result.error(BizCodes.C3600.getCode(), "[to]值不合法"));
     }
-
-    // 校验私聊消息与当前会话是否匹配
-    if (packet.getFrom() != null && !Objects.equals(packet.getFrom(), requestUid)) {
-      return Mono.just(Result.error(BizCodes.C3501.getCode(), BizCodes.C3501.getMessage()));
-    }
-    // 当 from 为空时自动填充为当前认证用户的 ID
-    if (packet.getFrom() == null) {
-      packet.setFrom(requestUid);
-    }
-
     if (Strings.isNullOrEmpty(packet.getContent())) {
       return Mono.just(Result.error(BizCodes.C3600.getCode(), "[content]值不能为空"));
     }
-
     if (MessageContentType.forCode(packet.getContentType()) == MessageContentType.UNRECOGNIZED) {
       return Mono.just(Result.error(BizCodes.C3600.getCode(), "[content_type]值不能为空"));
     }

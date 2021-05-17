@@ -42,6 +42,7 @@ import top.yein.tethys.grpc.PacketPb.PacketRequest;
 import top.yein.tethys.grpc.PacketPb.PacketResponse;
 import top.yein.tethys.logic.handler.PacketHandler;
 import top.yein.tethys.logic.handler.Result;
+import top.yein.tethys.logic.packet.MessagePacketBase;
 import top.yein.tethys.logic.packet.Packet;
 import top.yein.tethys.util.JsonUtils;
 
@@ -107,8 +108,16 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
       return;
     }
 
+    if (packet instanceof MessagePacketBase) {
+      var mp = (MessagePacketBase) packet;
+      // 消息包的 from 值为空时默认设置为发送用户 ID
+      if (mp.getFrom() == null) {
+        mp.setFrom(request.getRequestUid());
+      }
+    }
+
     // 处理消息Packet
-    Mono.defer(() -> handler.handle(request.getRequestUid(), packet))
+    Mono.defer(() -> handler.handle(packet))
         .subscribeOn(Schedulers.parallel())
         .subscribe(
             r -> handleResult(responseObserver, r), t -> handleThrowable(responseObserver, t));

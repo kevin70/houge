@@ -18,7 +18,6 @@ package top.yein.tethys.logic.handler;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,11 +64,11 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
   }
 
   @Override
-  public Mono<Result> handle(long requestUid, GroupMessagePacket packet) {
+  public Mono<Result> handle(GroupMessagePacket packet) {
     if (packet.getMessageId() == null) {
       // 自动填充消息 ID
       packet.setMessageId(messageIdGenerator.nextId());
-      log.debug("自动填充群聊消息 ID, packet={}, requestUid={}", packet, requestUid);
+      log.debug("自动填充群聊消息 ID, packet={}", packet);
     }
     // 校验 message_id
     if (packet.getMessageId().length() != YeinGid.YEIN_GID_LENGTH) {
@@ -77,14 +76,6 @@ public class GroupMessageHandler implements PacketHandler<GroupMessagePacket> {
     }
     if (CharMatcher.whitespace().matchesAnyOf(packet.getMessageId())) {
       return Mono.just(Result.error(BizCodes.C3600.getCode(), "[message_id]不能包含空白字符"));
-    }
-    // 校验私聊消息与当前会话是否匹配
-    if (packet.getFrom() != null && !Objects.equals(packet.getFrom(), requestUid)) {
-      return Mono.just(Result.error(BizCodes.C3501.getCode(), BizCodes.C3501.getMessage()));
-    }
-    // 当 from 为空时自动填充为当前认证用户的 ID
-    if (packet.getFrom() == null) {
-      packet.setFrom(requestUid);
     }
 
     return groupQueryDao
