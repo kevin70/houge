@@ -235,10 +235,10 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 - 创建链接
 
   ```
-  $ websocat websocat -E ws://127.0.0.1:11010/im?access_token=[access_token]
+  $ websocat websocat -E ws://127.0.0.1:11010/ws?access_token=[access_token]
   ```
 
-  - **127.0.0.1:11010** 为 Tethys IM 服务的主机与端口
+  - **127.0.0.1:11010** 为 Tethys WebSocket 服务的主机与端口
   - **[access_token]** 替换为访问用户的令牌
 
 - 演示
