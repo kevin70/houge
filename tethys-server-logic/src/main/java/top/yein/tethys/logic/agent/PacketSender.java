@@ -26,17 +26,25 @@ import top.yein.tethys.logic.packet.Packet;
 public interface PacketSender {
 
   /**
-   * @param uids
-   * @param packet
+   * 将消息包发送给指定的用户.
+   *
+   * @param uids 用户 IDs
+   * @param packet 消息包
    */
   void sendToUser(List<Long> uids, Packet packet);
 
   /**
-   * @param gids
-   * @param packet
+   * 将消息包发送给指定的群组.
+   *
+   * @param gids 群组 IDs
+   * @param packet 消息包
    */
   void sendToGroup(List<Long> gids, Packet packet);
 
-  /** @param packet */
+  /**
+   * 将消息包发送给所有用户.
+   *
+   * @param packet 消息包
+   */
   void sendToAll(Packet packet);
 }
