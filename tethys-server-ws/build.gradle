@@ -3,6 +3,12 @@ apply plugin: "com.bmuschko.docker-remote-api"
 
 mainClassName = "top.yein.tethys.ws.main.WsMain"
 
+jar {
+  manifest {
+    attributes "Multi-Release": "true"
+  }
+}
+
 File dockerInputDir() {
   def f = file("${buildDir}/docker/")
   if (!f.exists()) {

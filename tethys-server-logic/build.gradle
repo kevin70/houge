@@ -1,7 +1,13 @@
 apply plugin: "application"
 apply plugin: "com.bmuschko.docker-remote-api"
 
-mainClassName = "top.yein.tethys.login.main.LogicMain"
+mainClassName = "top.yein.tethys.logic.main.LogicMain"
+
+jar {
+  manifest {
+    attributes "Multi-Release": "true"
+  }
+}
 
 File dockerInputDir() {
   def f = file("${buildDir}/docker/")
