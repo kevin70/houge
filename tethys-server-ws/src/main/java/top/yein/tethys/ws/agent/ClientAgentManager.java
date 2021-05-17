@@ -16,6 +16,7 @@
 package top.yein.tethys.ws.agent;
 
 import com.google.common.base.Strings;
+import com.typesafe.config.ConfigException;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
@@ -87,7 +88,15 @@ public class ClientAgentManager {
       throw new IllegalStateException("已启动的 WatchManager");
     }
 
-    for (String target : agentServiceConfig.getTargets()) {
+    if (Strings.isNullOrEmpty(agentServiceConfig.getMultiGrpcTarget())) {
+      throw new ConfigException.BadValue("agent-service.multi-grpc-target", "不能为空");
+    }
+    var targets = agentServiceConfig.getMultiGrpcTarget().split(",");
+    if (targets.length <= 0) {
+      throw new ConfigException.BadValue("agent-service.multi-grpc-target", "至少需要配置一个 agent 服务");
+    }
+
+    for (String target : targets) {
       var channel =
           ManagedChannelBuilder.forTarget(target)
               .disableServiceConfigLookUp()

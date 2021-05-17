@@ -15,7 +15,6 @@
  */
 package top.yein.tethys.ws;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,5 +29,17 @@ import lombok.ToString;
 @ToString
 public class AgentServiceConfig {
 
-  private List<String> targets;
+  /**
+   * 监视消息响应 gRPC 服务的目标地址, 多个采用英文逗号分隔，WS服务会与每个 agent 单独保持链接.
+   *
+   * <p>默认引用环境变量 {@code TETHYS_AGENT_SERVICE_MULTI_GRPC_TARGET} 的值.
+   *
+   * <p>配置示例：
+   *
+   * <ul>
+   *   <li>127.0.0.1:11012
+   *   <li>dns:///foo.googleapis.com
+   * </ul>
+   */
+  private String multiGrpcTarget;
 }
