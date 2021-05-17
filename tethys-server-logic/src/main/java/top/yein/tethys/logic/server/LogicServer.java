@@ -36,14 +36,20 @@ public class LogicServer {
 
   private final LogicServerConfig serverConfig;
   private final List<BindableService> bindableServices;
-
   private Server server;
 
+  /**
+   * 使用服务配置与 gRPC服务列表构造对象.
+   *
+   * @param serverConfig 服务配置
+   * @param bindableServices 绑定的 gRPC 服务
+   */
   public LogicServer(LogicServerConfig serverConfig, List<BindableService> bindableServices) {
     this.serverConfig = serverConfig;
     this.bindableServices = bindableServices;
   }
 
+  /** 启动逻辑服务. */
   public void start() {
     var hap = HostAndPort.fromString(serverConfig.getAddr());
     var address = new InetSocketAddress(hap.getHost(), hap.getPort());
@@ -61,6 +67,7 @@ public class LogicServer {
     }
   }
 
+  /** 停止逻辑服务. */
   public void stop() {
     if (this.server != null) {
       if (this.server.isShutdown()) {
