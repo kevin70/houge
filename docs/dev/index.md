@@ -39,15 +39,15 @@ tethys                    项目根目录
   |- config               Tethys 项目所使用的配置
   |- db                   数据库 Schema 脚本
   |- docs                 Tethys 文档存放目录
-  |- tethys-api           Tethys 基础 API 模块
   |- tethys-core          Tethys 公共的核心逻辑模块
-  |- tethys-util          公共的工具类模块
-  |- tethys-grpc-gen      Tethys gRPC 生成代码及 proto 文件管理模块
-  |- tethys-grpc-service  Tethys gRPC Stub 服务逻辑实现模块
+  |- tethys-r2dbc         R2DBC 公共接口及实现模块
+  |- tethys-grpc          Tethys gRPC 生成代码及 proto 文件管理模块
+  |- tethys-auth          Tethys 认证逻辑实现模块
   |- tethys-storage       Tethys 数据存储逻辑实现模块
   |- tethys-service       Tethys 服务逻辑实现模块
-  |- tethys-im-server     IM 服务端逻辑实现及服务入口
-  |- tethys-rest-server   REST 服务逻辑实现及服务入口
+  |- tethys-server-logic  Tethys 业务逻辑实现 gRPC 服务
+  |- tethys-server-rest   Tethys 开放的 HTTP 实现服务
+  |- tethys-server-ws     Tethys 开放的 WebSocket 服务
 ```
 
 ### Google Java Format 配置
