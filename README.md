@@ -1,7 +1,7 @@
 ![](docs/images/logo128x128.png)
 
-[![CI/CD](https://github.com/kevin70/tethys/workflows/Tethys%20CI/CD/badge.svg)](https://github.com/kevin70/tethys/actions)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kevin70_tethys&metric=coverage)](https://sonarcloud.io/dashboard?id=kevin70_tethys)
+[![CI/CD](https://github.com/kevin70/houge/workflows/Tethys%20CI/CD/badge.svg)](https://github.com/kevin70/houge/actions)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kevin70_houge&metric=coverage)](https://sonarcloud.io/dashboard?id=kevin70_houge)
 [![Tethys IM](https://pub.idqqimg.com/wpa/images/group.png)](https://qm.qq.com/cgi-bin/qm/qr?k=W8UiTh5rmq4O0SZJFnnWfh3SegzTGIWo&jump_from=webapi)
 
 # Tethys
@@ -16,7 +16,7 @@
 
 ## 架构
 
-![](docs/images/tethys-arch-20210514.png)
+![](docs/images/houge-arch-20210514.png)
 
 ## 特点
 
@@ -26,7 +26,7 @@
 
 ## 技术栈
 
-![](docs/images/tethys-tech-stack.png)
+![](docs/images/houge-tech-stack.png)
 
 ## 交互流程图
 
@@ -52,7 +52,7 @@
 - [消息协议](docs/design/message_protocol.md)
 - [安装部署](docs/deployment/install.md)
 - [分布式消息 ID 设计](docs/design/message_id.md)
-- [REST 接口文档](https://kk70.gitee.io/tethys/tethys-rest.html)
+- [REST 接口文档](https://kk70.gitee.io/houge/houge-rest.html)
 
 ## 演示
 
