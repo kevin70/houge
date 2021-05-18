@@ -5,4 +5,5 @@
 *.bat           text eol=crlf
 
 .gitee/* linguist-vendored
+.gitee/pages/* linguist-vendored
 .github/* linguist-vendored
