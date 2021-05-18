@@ -95,7 +95,7 @@ allprojects {
 
   sonarqube {
     properties {
-      property "sonar.projectKey", "kevin70_tethys"
+      property "sonar.projectKey", "houge"
       property "sonar.organization", "kevin70"
       property "sonar.host.url", "https://sonarcloud.io"
     }
