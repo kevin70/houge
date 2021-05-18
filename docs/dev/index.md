@@ -2,9 +2,9 @@
 
 ## 开发准备
 
-Tethys 是采用 reactor 基于 AdoptOpenJDK 11 的版本开发，消息存储默认采用 PostgreSQL 13 的版本。这里仅提供需要安装的软件的版本、名称与链接详细的安装步骤请参考各个官网的安装资料。
+Houge 是采用 reactor 基于 AdoptOpenJDK 11 的版本开发，消息存储默认采用 PostgreSQL 13 的版本。这里仅提供需要安装的软件的版本、名称与链接详细的安装步骤请参考各个官网的安装资料。
 
-- [AdoptOpenJDK 11](https://adoptopenjdk.net/) Tethys 开发默认使用的 JDK 版本
+- [AdoptOpenJDK 11](https://adoptopenjdk.net/) Houge 开发默认使用的 JDK 版本
 - [PostgreSQL 13](https://www.postgresql.org/) 消息存储数据库
 - [Firecamp](https://firecamp.io/) WebSocket GUI 测试工具
 - [websocat](https://github.com/vi/websocat) WebSocket 命令行工具
@@ -21,33 +21,33 @@ Tethys 是采用 reactor 基于 AdoptOpenJDK 11 的版本开发，消息存储�
 
 ```sql
 create
-database tethys;
+database houge;
 ```
 
-获取 Tethys 源码：
+获取 Houge 源码：
 
 ```
-$ git clone https://gitee.com/kk70/tethys.git
+$ git clone https://gitee.com/kk70/houge.git
 ```
 
-### Tethys 目录介绍
+### Houge 目录介绍
 
 ```
-tethys                    项目根目录
+houge                    项目根目录
   |- .gitee               存放 gitee 源码托管的配置
   |- .github              存放 github 源码托管的配置
-  |- config               Tethys 项目所使用的配置
+  |- config               Houge 项目所使用的配置
   |- db                   数据库 Schema 脚本
-  |- docs                 Tethys 文档存放目录
-  |- tethys-core          Tethys 公共的核心逻辑模块
-  |- tethys-r2dbc         R2DBC 公共接口及实现模块
-  |- tethys-grpc          Tethys gRPC 生成代码及 proto 文件管理模块
-  |- tethys-auth          Tethys 认证逻辑实现模块
-  |- tethys-storage       Tethys 数据存储逻辑实现模块
-  |- tethys-service       Tethys 服务逻辑实现模块
-  |- tethys-server-logic  Tethys 业务逻辑实现 gRPC 服务
-  |- tethys-server-rest   Tethys 开放的 HTTP 实现服务
-  |- tethys-server-ws     Tethys 开放的 WebSocket 服务
+  |- docs                 Houge 文档存放目录
+  |- houge-core          Houge 公共的核心逻辑模块
+  |- houge-r2dbc         R2DBC 公共接口及实现模块
+  |- houge-grpc          Houge gRPC 生成代码及 proto 文件管理模块
+  |- houge-auth          Houge 认证逻辑实现模块
+  |- houge-storage       Houge 数据存储逻辑实现模块
+  |- houge-service       Houge 服务逻辑实现模块
+  |- houge-server-logic  Houge 业务逻辑实现 gRPC 服务
+  |- houge-server-rest   Houge 开放的 HTTP 实现服务
+  |- houge-server-ws     Houge 开放的 WebSocket 服务
 ```
 
 ### Google Java Format 配置
@@ -62,8 +62,8 @@ tethys                    项目根目录
 
 ### FlywayDB 配置
 
-Tethys 默认采用 [FlywayDB](https://flywaydb.org/) 管理数据库 Schema 脚本，默认已经与 Gradle 集成，我们仅需要配置一次 flyway 数据库连接信息。 在 tethys
-项目根目录中有一个 `flyway.conf.template` 文件。我们将文件复制并命名为 `flyway.conf` 放置在 tethys 根目录中（参考下图）。
+Houge 默认采用 [FlywayDB](https://flywaydb.org/) 管理数据库 Schema 脚本，默认已经与 Gradle 集成，我们仅需要配置一次 flyway 数据库连接信息。 在 houge
+项目根目录中有一个 `flyway.conf.template` 文件。我们将文件复制并命名为 `flyway.conf` 放置在 houge 根目录中（参考下图）。
 
 ![](images/20210412184533.png)
 
@@ -92,17 +92,17 @@ $ ./gradlew :flywayMigrate
 
 ![](images/20210413094314.png)
 
-### Tethys 项目配置
+### Houge 项目配置
 
-Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 格式文件作为项目配置文件格式。
+Houge 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 格式文件作为项目配置文件格式。
 
 > :information_source: [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) 全称 Human-Optimized Config Object Notation（人性化配置对象表示法）是一种人类可读的数据格式，并是 [JSON](https://www.json.org/json-zh.html) 和 [.properties](https://zh.wikipedia.org/wiki/.properties) 的一个超集。
 
-在 tethys 项目**根目录**中手动创建 `tethys.conf` 配置文件。
+在 houge 项目**根目录**中手动创建 `houge.conf` 配置文件。
 
 ![](images/20210413132434.png)
 
-**Tethys 配置**
+**Houge 配置**
 
 - `message-storage` 消息存储配置
   - `r2dbc.url` 存储数据库连接配置
@@ -113,41 +113,41 @@ Tethys 项目采用 [HOCON](https://github.com/lightbend/config/blob/master/HOCO
 
 ## 运行服务
 
-在所有基本配置准备工作结束之后，现在我们来启动 Tethys 服务吧。
+在所有基本配置准备工作结束之后，现在我们来启动 Houge 服务吧。
 
 ### IM 服务
 
 ![](images/20210413134827.png)
 
-`top.yein.tethys.im.main.ImMain` 是 IM 服务的主程序入口，可直接使用 IDE 运行服务。打印出如下的日志表示 IM 服务已经启动成功。
+`top.yein.houge.im.main.ImMain` 是 IM 服务的主程序入口，可直接使用 IDE 运行服务。打印出如下的日志表示 IM 服务已经启动成功。
 
 ```
 ... 省略的日志
 
-13:53:13.179 [main] INFO  top.yein.tethys.im.server.ImServer 90 - IM Server 启动完成 - 0.0.0.0:11010
-13:53:13.180 [main] INFO  top.yein.tethys.im.main.ImMain 85 - tethys-im 服务启动成功 fid=93106
-13:53:13.353 [main] INFO  top.yein.tethys.im.server.GrpcServer 54 - gRPC 添加服务 top.yein.tethys.grpc.service.MessageGrpcImpl@44114b9f
-13:53:13.406 [main] INFO  top.yein.tethys.im.server.GrpcServer 63 - gRPC 服务 0.0.0.0:11012 启动成功
+13:53:13.179 [main] INFO  top.yein.houge.im.server.ImServer 90 - IM Server 启动完成 - 0.0.0.0:11010
+13:53:13.180 [main] INFO  top.yein.houge.im.main.ImMain 85 - houge-im 服务启动成功 fid=93106
+13:53:13.353 [main] INFO  top.yein.houge.im.server.GrpcServer 54 - gRPC 添加服务 top.yein.houge.grpc.service.MessageGrpcImpl@44114b9f
+13:53:13.406 [main] INFO  top.yein.houge.im.server.GrpcServer 63 - gRPC 服务 0.0.0.0:11012 启动成功
 ```
 
 ### REST 服务
 
 ![](images/20210413134901.png)
 
-`top.yein.tethys.rest.main.RestMain` 是 REST 服务的主程序入口，可直接使用 IDE 运行服务。打印出如下的日志表示 REST 服务已经启动成功。
+`top.yein.houge.rest.main.RestMain` 是 REST 服务的主程序入口，可直接使用 IDE 运行服务。打印出如下的日志表示 REST 服务已经启动成功。
 
 ```
 ... 省略的日志
 
-13:55:54.653 [main] INFO  top.yein.tethys.rest.server.RestServer 77 - REST Server 启动完成 - 0.0.0.0:11019
-13:55:54.653 [main] INFO  top.yein.tethys.rest.main.RestMain 79 - tethys-rest 服务启动成功 fid=99494
+13:55:54.653 [main] INFO  top.yein.houge.rest.server.RestServer 77 - REST Server 启动完成 - 0.0.0.0:11019
+13:55:54.653 [main] INFO  top.yein.houge.rest.main.RestMain 79 - houge-rest 服务启动成功 fid=99494
 ```
 
 ## 创建用户 - *S*
 
-Tethys 自身并没有独立的用户系统，业务需要在使用之前需要将用户 ID 同步到 Tethys 中，在用户同步完成之后才可以收发信息。
+Houge 自身并没有独立的用户系统，业务需要在使用之前需要将用户 ID 同步到 Houge 中，在用户同步完成之后才可以收发信息。
 
-**[创建用户 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1users/post)**
+**[创建用户 API：](https://kk70.gitee.io/houge/houge-rest.html#tag/SUPPORT/paths/~1i~1users/post)**
 
 **Request：**
 
@@ -166,9 +166,9 @@ Content-Type: application/json
 
 ## 创建群组 - *S*
 
-如果需要使用群组会话公司，业务方也需要将群组同步到 Tethys 中，并绑定群组与用户的关系。
+如果需要使用群组会话公司，业务方也需要将群组同步到 Houge 中，并绑定群组与用户的关系。
 
-**[创建群组 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1groups/post)**
+**[创建群组 API：](https://kk70.gitee.io/houge/houge-rest.html#tag/SUPPORT/paths/~1i~1groups/post)**
 
 **Request：**
 
@@ -185,9 +185,9 @@ Content-Type: application/json
 }
 ```
 
-使用 `/i/groups` 接口同步创建群组，其中的 `creator_id` 为创建者的**用户-ID**，`creator_id`的值必须是在 Tethys 系统中已经创建并且存在的用户。
+使用 `/i/groups` 接口同步创建群组，其中的 `creator_id` 为创建者的**用户-ID**，`creator_id`的值必须是在 Houge 系统中已经创建并且存在的用户。
 
-**[群组绑定用户 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1groups-member~1{group_id}~1join/put)**
+**[群组绑定用户 API：](https://kk70.gitee.io/houge/houge-rest.html#tag/SUPPORT/paths/~1i~1groups-member~1{group_id}~1join/put)**
 
 **Request：**
 
@@ -206,9 +206,9 @@ Content-Type: application/json
 
 ## 生成令牌 - *S*
 
-要与 Tethys 创建接口通讯，首先需要访问令牌。
+要与 Houge 创建接口通讯，首先需要访问令牌。
 
-**[生成令牌 API：](https://kk70.gitee.io/tethys/tethys-rest.html#tag/SUPPORT/paths/~1i~1token~1{uid}/post)**
+**[生成令牌 API：](https://kk70.gitee.io/houge/houge-rest.html#tag/SUPPORT/paths/~1i~1token~1{uid}/post)**
 
 **Request：**
 
@@ -226,7 +226,7 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
 }
 ```
 
-该接口必须由业务服务端调用，获取到 `access_token` 之后响应给终端，终端通过 `access_token` 才可访问 Tethys 对外的接口。
+该接口必须由业务服务端调用，获取到 `access_token` 之后响应给终端，终端通过 `access_token` 才可访问 Houge 对外的接口。
 
 ## 收发消息
 
@@ -238,7 +238,7 @@ Authorization: Basic YWRtaW46YWRtaW4xMjM=
   $ websocat websocat -E ws://127.0.0.1:11010/ws?access_token=[access_token]
   ```
 
-  - **127.0.0.1:11010** 为 Tethys WebSocket 服务的主机与端口
+  - **127.0.0.1:11010** 为 Houge WebSocket 服务的主机与端口
   - **[access_token]** 替换为访问用户的令牌
 
 - 演示

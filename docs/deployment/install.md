@@ -1,6 +1,6 @@
-# Tethys 安装部署
+# Houge 安装部署
 
-默认已提供 Docker 镜像构建发布，推荐使用 Docker 部署 Tethys 相关服务。在阅读文档之前请先确保已安装 Docker
+默认已提供 Docker 镜像构建发布，推荐使用 Docker 部署 Houge 相关服务。在阅读文档之前请先确保已安装 Docker
 相关环境 [Get Docker](https://docs.docker.com/get-docker/) 。
 
 ## 先决条件
@@ -16,7 +16,7 @@ Docker version 20.10.2, build 2291f61
 
 如果未安装 Docker Compose 请参考 [Install Docker Compose](https://docs.docker.com/compose/install/) 文档安装。
 
-Tethys 已编写 [docker-compose.yml](https://gitee.com/kk70/tethys/blob/main/docker-compose.yml) 配置可快速帮助部署 Tethys 相关服务。
+Houge 已编写 [docker-compose.yml](https://gitee.com/kk70/tethys/blob/main/docker-compose.yml) 配置可快速帮助部署 Tethys 相关服务。
 
 ### 获取 docker-compose.yml
 
@@ -60,4 +60,4 @@ exec java -XX:+ExitOnOutOfMemoryError -cp . -jar /app/app.jar
 ```
 
 
-使用 `docker logs` 命令查看 Tethys 服务日志，当有上面的日志打印时代表 Tethys 服务已启动成功。
+使用 `docker logs` 命令查看 Houge 服务日志，当有上面的日志打印时代表 Houge 服务已启动成功。
