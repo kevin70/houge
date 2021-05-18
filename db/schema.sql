@@ -1,1 +1,1 @@
-create database tethys;
+create database houge;
