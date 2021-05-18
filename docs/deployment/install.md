@@ -37,8 +37,8 @@ exec java -XX:+ExitOnOutOfMemoryError -cp . -jar /app/app.jar
 
 ... 省略的日志
 
-07:01:07.769 [reactor-tcp-epoll-1] INFO  top.yein.tethys.system.identifier.AbstractApplicationIdentifier 117 - 新增 ServerInstance: ServerInstance(id=10133, appName=tethys-logic, hostName=f66eb00b96ef, hostAddress=172.28.0.6, osName=Linux, osVersion=4.19.128-microsoft-standard, osArch=amd64, osUser=root, javaVmName=OpenJDK 64-Bit Server VM, javaVmVersion=11.0.11+9, javaVmVendor=Oracle Corporation, workDir=/app, pid=7, ver=0, createTime=null, checkTime=null)
-07:01:07.950 [main] INFO  top.yein.tethys.logic.server.LogicServer 64 - Logic gRPC服务启动成功 [/0.0.0.0:11012]
+07:01:07.769 [reactor-tcp-epoll-1] INFO  AbstractApplicationIdentifier 117 - 新增 ServerInstance: ServerInstance(id=10133, appName=tethys-logic, hostName=f66eb00b96ef, hostAddress=172.28.0.6, osName=Linux, osVersion=4.19.128-microsoft-standard, osArch=amd64, osUser=root, javaVmName=OpenJDK 64-Bit Server VM, javaVmVersion=11.0.11+9, javaVmVendor=Oracle Corporation, workDir=/app, pid=7, ver=0, createTime=null, checkTime=null)
+07:01:07.950 [main] INFO  LogicServer 64 - Logic gRPC服务启动成功 [/0.0.0.0:11012]
 ```
 
 ```
@@ -47,7 +47,7 @@ exec java -XX:+ExitOnOutOfMemoryError -cp . -jar /app/app.jar
 
 ... 省略的日志
 
-07:01:07.768 [main] INFO  top.yein.tethys.rest.server.RestServer 77 - REST Server 启动完成 - 0.0.0.0:11019
+07:01:07.768 [main] INFO  RestServer 77 - REST Server 启动完成 - 0.0.0.0:11019
 ```
 
 ```
@@ -56,7 +56,7 @@ exec java -XX:+ExitOnOutOfMemoryError -cp . -jar /app/app.jar
 
 ... 省略的日志
 
-07:01:05.520 [main] INFO  top.yein.tethys.ws.server.WsServer 70 - WS服务启动成功 [/0.0.0.0:11010]
+07:01:05.520 [main] INFO  WsServer 70 - WS服务启动成功 [/0.0.0.0:11010]
 ```
 
 

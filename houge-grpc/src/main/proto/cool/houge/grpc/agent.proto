@@ -1,0 +1,51 @@
+syntax = "proto3";
+option java_package = "cool.houge.grpc";
+option java_outer_classname = "AgentPb";
+
+message LinkRequest {
+  // 终端的标识名
+  string name = 1;
+  // 终端的主机名
+  string host_name = 2;
+}
+
+message LinkResponse {
+  oneof kind {
+    Command command = 1;
+    PacketMixin packet_mixin = 2;
+  }
+}
+
+enum PacketMixinType {
+  USER = 0;
+  GROUP = 1;
+  ALL = 9;
+}
+
+message PacketMixin {
+  PacketMixinType type = 1;
+  repeated int64 to = 2;
+  bytes data_bytes = 9;
+}
+
+message Command {
+
+  message SubGroup {
+    int64 uid = 1;
+    repeated int64 gids = 2;
+  }
+
+  message UnsubGroup {
+    int64 uid = 1;
+    repeated int64 gids = 2;
+  }
+
+  oneof kind {
+    SubGroup sub_group = 6;
+    UnsubGroup unsub_group = 7;
+  }
+}
+
+service Agent {
+  rpc Link(LinkRequest) returns(stream LinkResponse) {}
+}
