@@ -50,7 +50,7 @@ jobs:
           sudo apt-get install --yes --no-install-recommends postgresql-client
         ###------------ 创建数据库
       - run: |
-          psql -h localhost -U postgres -c 'create database tethys;'
+          psql -h localhost -U postgres -c 'create database houge;'
         env:
           PGPASSWORD: 123456
         ###------------ FlywayDB 配置文件
@@ -61,25 +61,25 @@ jobs:
       - run: ./gradlew jacocoTestReport
         ###------------ 构造 Docker 镜像
       - run: ./gradlew :db:buildImage
-      - run: ./gradlew :tethys-server-logic:buildImage
-      - run: ./gradlew :tethys-server-rest:buildImage
-      - run: ./gradlew :tethys-server-ws:buildImage
+      - run: ./gradlew :houge-server-logic:buildImage
+      - run: ./gradlew :houge-server-rest:buildImage
+      - run: ./gradlew :houge-server-ws:buildImage
       - name: Docker push
         run: |
           PROJECT_VERSION=$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-          docker push kevin70/tethys-db-migration:latest
-          docker push kevin70/tethys-db-migration:$PROJECT_VERSION
+          docker push kevin70/houge-db-migration:latest
+          docker push kevin70/houge-db-migration:$PROJECT_VERSION
 
-          docker push kevin70/tethys-server-logic:latest
-          docker push kevin70/tethys-server-logic:$PROJECT_VERSION
+          docker push kevin70/houge-server-logic:latest
+          docker push kevin70/houge-server-logic:$PROJECT_VERSION
 
-          docker push kevin70/tethys-server-rest:latest
-          docker push kevin70/tethys-server-rest:$PROJECT_VERSION
+          docker push kevin70/houge-server-rest:latest
+          docker push kevin70/houge-server-rest:$PROJECT_VERSION
 
-          docker push kevin70/tethys-server-ws:latest
-          docker push kevin70/tethys-server-ws:$PROJECT_VERSION
+          docker push kevin70/houge-server-ws:latest
+          docker push kevin70/houge-server-ws:$PROJECT_VERSION
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
