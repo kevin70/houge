@@ -1,7 +1,7 @@
 ![](docs/images/logo128x128.png)
 
 [![CI/CD](https://github.com/kevin70/houge/workflows/Tethys%20CI/CD/badge.svg)](https://github.com/kevin70/houge/actions)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kevin70_houge&metric=coverage)](https://sonarcloud.io/dashboard?id=kevin70_houge)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=coverage)](https://sonarcloud.io/dashboard?id=houge)
 [![Tethys IM](https://pub.idqqimg.com/wpa/images/group.png)](https://qm.qq.com/cgi-bin/qm/qr?k=W8UiTh5rmq4O0SZJFnnWfh3SegzTGIWo&jump_from=webapi)
 
 # Tethys
