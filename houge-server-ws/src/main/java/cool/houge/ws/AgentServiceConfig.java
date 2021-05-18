@@ -32,7 +32,7 @@ public class AgentServiceConfig {
   /**
    * 监视消息响应 gRPC 服务的目标地址, 多个采用英文逗号分隔，WS服务会与每个 agent 单独保持链接.
    *
-   * <p>默认引用环境变量 {@code TETHYS_AGENT_SERVICE_MULTI_GRPC_TARGET} 的值.
+   * <p>默认引用环境变量 {@code HOUGE_AGENT_SERVICE_MULTI_GRPC_TARGET} 的值.
    *
    * <p>配置示例：
    *

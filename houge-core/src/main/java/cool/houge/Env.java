@@ -36,7 +36,7 @@ public enum Env {
   private static final Env C = getEnv();
 
   /** 系统环境变量名称. */
-  public static final String SYSTEM_ENV_VAR_NAME = "TETHYS_ENV";
+  public static final String SYSTEM_ENV_VAR_NAME = "HOUGE_ENV";
 
   /** Java 系统属性名称. */
   public static final String SYSTEM_PROP_VAR_NAME = "tethys.env";
@@ -47,7 +47,7 @@ public enum Env {
    * <p>可通过下列方式设置 xim 的运行环境. <b>按顺序查找，忽略大小写</b>.
    *
    * <ul>
-   *   <li>设置系统环境变量 {@code TETHYS_ENV}
+   *   <li>设置系统环境变量 {@code HOUGE_ENV}
    *   <li>设置 java 启动时命令行参数 {@code -Dtethys.env=test} 设置
    * </ul>
    */

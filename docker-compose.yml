@@ -32,7 +32,7 @@ services:
     ports:
       - 11012:11012
     environment:
-      TETHYS_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
+      HOUGE_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
     depends_on:
       - db-migration
   # REST 服务
@@ -44,7 +44,7 @@ services:
     ports:
       - 11019:11019
     environment:
-      TETHYS_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
+      HOUGE_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
     depends_on:
       - db-migration
   # WebSocket 服务
@@ -56,7 +56,7 @@ services:
     ports:
       - 11010:11010
     environment:
-      TETHYS_LOGIC_SERVICE_GRPC_TARGET: "logic:11012"
-      TETHYS_AGENT_SERVICE_MULTI_GRPC_TARGET: "logic:11012"
+      HOUGE_LOGIC_SERVICE_GRPC_TARGET: "logic:11012"
+      HOUGE_AGENT_SERVICE_MULTI_GRPC_TARGET: "logic:11012"
 networks:
   backend:

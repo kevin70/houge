@@ -93,7 +93,7 @@ IM 镜像名称是 `kevin70/houge-im`，通过下面的命令可快速安装启�
 
 ```
 $ docker run -d --name houge-im \
-    -e TETHYS_MESSAGE_STORAGE_R2DBC_URL=[R2DBC_URL] \
+    -e HOUGE_MESSAGE_STORAGE_R2DBC_URL=[R2DBC_URL] \
     -p 11010:11010 \
     kevin70/houge-im
 ```
@@ -130,7 +130,7 @@ REST 镜像名称是 `kevin70/houge-REST`，通过下面的命令可快速安装
 
 ```
 $ docker run -d --name houge-im \
-    -e TETHYS_MESSAGE_STORAGE_R2DBC_URL=[R2DBC_URL] \
+    -e HOUGE_MESSAGE_STORAGE_R2DBC_URL=[R2DBC_URL] \
     -p 11019:11019 \
     kevin70/houge-im
 ```
