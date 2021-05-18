@@ -5,10 +5,10 @@ WORKDIR /app
 COPY app.jar /app/app.jar
 
 # `/opt/run-java-options` 挂载 JVM 配置参数文件可动态修改容器的 JVM 参数
-# `/etc/tethys/tethys.conf` 挂载 tethys 项目配置参数
-VOLUME ["/opt", "/etc/tethys"]
+# `/etc/houge/houge.conf` 挂载 Houge 项目配置参数
+VOLUME ["/opt", "/etc/houge"]
 
-# Tethys Logic 服务访问的端口
+# Houge Logic 服务访问的端口
 EXPOSE 11012
 
 # Java 应用程序的通用启动脚本，特别是为从容器中运行而精心编制的。

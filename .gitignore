@@ -12,8 +12,7 @@ out
 # 忽略日志
 logs
 
-# Tethys 开发配置
-tethys.conf
-tethys-dev.properties
+# Houge 开发配置
+houge.conf
 flyway.conf
 test-tokens.txt

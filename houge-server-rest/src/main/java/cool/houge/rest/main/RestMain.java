@@ -40,7 +40,7 @@ import cool.houge.util.AppShutdownHelper;
 public class RestMain implements Runnable {
 
   private static final Logger log = LogManager.getLogger();
-  private static final String CONFIG_FILE = "tethys-rest.conf";
+  private static final String CONFIG_FILE = "houge-rest.conf";
   private final AppShutdownHelper shutdownHelper = new AppShutdownHelper();
 
   /**

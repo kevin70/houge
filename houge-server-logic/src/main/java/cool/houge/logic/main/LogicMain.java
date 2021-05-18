@@ -44,7 +44,7 @@ import cool.houge.util.AppShutdownHelper;
 public class LogicMain implements Runnable {
 
   private static final Logger log = LogManager.getLogger();
-  private static final String CONFIG_FILE = "tethys-logic.conf";
+  private static final String CONFIG_FILE = "houge-logic.conf";
   private final AppShutdownHelper shutdownHelper = new AppShutdownHelper();
 
   public static void main(String[] args) {

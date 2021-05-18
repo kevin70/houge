@@ -33,7 +33,7 @@ import cool.houge.ws.agent.ClientAgentManager;
 public class WsMain implements Runnable {
 
   private static final Logger log = LogManager.getLogger();
-  private static final String CONFIG_FILE = "tethys-ws.conf";
+  private static final String CONFIG_FILE = "houge-ws.conf";
   private final AppShutdownHelper shutdownHelper = new AppShutdownHelper();
 
   public static void main(String[] args) {

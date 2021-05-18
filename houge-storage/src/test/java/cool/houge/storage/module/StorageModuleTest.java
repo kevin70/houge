@@ -32,7 +32,7 @@ class StorageModuleTest {
 
   @Test
   void execute() {
-    var config = ConfigFactory.parseResources("tethys-test.conf");
+    var config = ConfigFactory.parseResources("houge-test.conf");
     var injector = Guice.createInjector(new StorageModule(config));
 
     assertThat(injector.getInstance(ServerInstanceDao.class))

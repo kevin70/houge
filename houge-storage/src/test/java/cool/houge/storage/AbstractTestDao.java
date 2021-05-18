@@ -37,7 +37,7 @@ public abstract class AbstractTestDao {
 
   @BeforeAll
   static void setUp() {
-    var config = ConfigFactory.parseResources("tethys-test.conf");
+    var config = ConfigFactory.parseResources("houge-test.conf");
     log.debug("单元测试配置\n{}", config.root().render());
     var connectionFactory =
         ConnectionFactories.get(config.getString(ConfigKeys.MESSAGE_STORAGE_R2DBC_URL));
