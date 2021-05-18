@@ -1,10 +1,10 @@
 ![](docs/images/logo128x128.png)
 
-[![CI/CD](https://github.com/kevin70/houge/workflows/Tethys%20CI/CD/badge.svg)](https://github.com/kevin70/houge/actions)
+[![CI/CD](https://github.com/kevin70/houge/workflows/Houge%20CI/CD/badge.svg)](https://github.com/kevin70/houge/actions)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=coverage)](https://sonarcloud.io/dashboard?id=houge)
-[![Tethys IM](https://pub.idqqimg.com/wpa/images/group.png)](https://qm.qq.com/cgi-bin/qm/qr?k=W8UiTh5rmq4O0SZJFnnWfh3SegzTGIWo&jump_from=webapi)
+[![Houge IM](https://pub.idqqimg.com/wpa/images/group.png)](https://qm.qq.com/cgi-bin/qm/qr?k=W8UiTh5rmq4O0SZJFnnWfh3SegzTGIWo&jump_from=webapi)
 
-# Tethys
+# Houge
 
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
@@ -12,7 +12,7 @@
 
 内置完整的 IM 通讯协议，使用 WebSocket + HTTP 方式实现整个 IM 系统相关业务。
 
-**能够完全独立于业务系统之外运行，且能够方便快速的与现有系统整合，并提供了 HTTP、gRPC 服务接口能方便的与 Tethys 进行通讯，你可用于它快速搭建搭建私域 IM 服务，或用于替代公有云 IM 服务。**
+**能够完全独立于业务系统之外运行，且能够方便快速的与现有系统整合，并提供了 HTTP、gRPC 服务接口能方便的与 Houge 进行通讯，你可用于它快速搭建搭建私域 IM 服务，或用于替代公有云 IM 服务。**
 
 ## 架构
 
@@ -74,11 +74,11 @@
 
 ## 感谢
 
-Tethys 的实现离不开源社区的支持，感恩为开源做出贡献的人。
+Houge 的实现离不开源社区的支持，感恩为开源做出贡献的人。
 
 ## 捐赠
 
-如果您觉得 Tethys 做得不错，对您有实际的帮助，请支持我们更好的维护项目。
+如果您觉得 Houge 做得不错，对您有实际的帮助，请支持我们更好的维护项目。
 
 ![Alipay](docs/images/alipay_qrcode.png)
 ![Wechat](docs/images/wechat_qrcode.png)
