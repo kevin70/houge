@@ -31,10 +31,10 @@ import reactor.test.StepVerifier;
  */
 class PostgresHealthIndicatorTest {
 
-  String defaultR2dbcUrl = "r2dbc:postgresql://postgres:123456@127.0.0.1:5432/tethys";
+  String defaultR2dbcUrl = "r2dbc:postgresql://postgres:123456@127.0.0.1:5432/houge";
 
   String r2dbcUrl() {
-    return Optional.ofNullable(System.getenv("TETHYS_R2DBC_URL")).orElse(defaultR2dbcUrl);
+    return Optional.ofNullable(System.getenv("HOUGE_R2DBC_URL")).orElse(defaultR2dbcUrl);
   }
 
   @Test
@@ -51,7 +51,7 @@ class PostgresHealthIndicatorTest {
   @ValueSource(
       strings = {
         // IP 地址错误
-        "r2dbc:postgresql://postgres:123456@199.199.199.199:5432/tethys",
+        "r2dbc:postgresql://postgres:123456@199.199.199.199:5432/houge",
       })
   @ParameterizedTest
   void healthDown(String url) {
