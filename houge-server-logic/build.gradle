@@ -1,7 +1,7 @@
 apply plugin: "application"
 apply plugin: "com.bmuschko.docker-remote-api"
 
-mainClassName = "top.yein.tethys.ws.main.WsMain"
+mainClassName = "top.yein.tethys.logic.main.LogicMain"
 
 jar {
   manifest {
@@ -42,18 +42,17 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 }
 
 dependencies {
-  implementation(project(":tethys-core"))
+  implementation(project(":houge-auth"))
+  implementation(project(":houge-service"))
   implementation("com.typesafe:config")
   implementation("com.google.guava:guava")
   implementation("com.google.inject:guice")
   implementation("org.roaringbitmap:RoaringBitmap")
   implementation("io.projectreactor.netty:reactor-netty")
   implementation("com.fasterxml.jackson.core:jackson-databind")
-  implementation("io.micrometer:micrometer-registry-prometheus")
-  implementation("com.github.ben-manes.caffeine:caffeine")
 
   // gRPC
-  implementation(project(":tethys-grpc"))
+  implementation(project(":houge-grpc"))
   implementation("io.grpc:grpc-netty")
   implementation("io.grpc:grpc-protobuf")
   implementation("io.grpc:grpc-stub")

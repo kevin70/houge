@@ -42,8 +42,8 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 }
 
 dependencies {
-  implementation(project(":tethys-auth"))
-  implementation(project(":tethys-service"))
+  implementation(project(":houge-auth"))
+  implementation(project(":houge-service"))
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
   implementation("com.fasterxml.jackson.core:jackson-databind")

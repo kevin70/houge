@@ -1,5 +1,5 @@
 dependencies {
-  api(project(":tethys-storage"))
+  api(project(":houge-storage"))
   api("com.auth0:java-jwt")
   api("io.projectreactor:reactor-core")
 }
