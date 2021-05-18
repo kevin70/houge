@@ -1,4 +1,4 @@
-name: Tethys CI/CD
+name: Houge CI/CD
 
 on:
   push:
