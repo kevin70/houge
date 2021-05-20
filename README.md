@@ -2,6 +2,9 @@
 
 [![CI/CD](https://github.com/kevin70/houge/workflows/Houge%20CI/CD/badge.svg)](https://github.com/kevin70/houge/actions)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=coverage)](https://sonarcloud.io/dashboard?id=houge)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=houge)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=houge)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=security_rating)](https://sonarcloud.io/dashboard?id=houge)
 [![Houge IM](https://pub.idqqimg.com/wpa/images/group.png)](https://qm.qq.com/cgi-bin/qm/qr?k=W8UiTh5rmq4O0SZJFnnWfh3SegzTGIWo&jump_from=webapi)
 
 # Houge
