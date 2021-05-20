@@ -56,7 +56,7 @@ jobs:
       - run: mv flyway.conf.template flyway.conf
       - run: ./gradlew :flywayMigrate
         ###------------ 项目构建
-      - run: ./gradlew build
+      - run: ./gradlew clean build
       - run: ./gradlew jacocoTestReport
         ###------------ 构造 Docker 镜像
       - run: ./gradlew :db:buildImage
