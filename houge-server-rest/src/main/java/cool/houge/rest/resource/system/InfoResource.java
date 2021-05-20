@@ -15,15 +15,15 @@
  */
 package cool.houge.rest.resource.system;
 
+import cool.houge.rest.http.AbstractRestSupport;
+import cool.houge.rest.http.Interceptors;
+import cool.houge.rest.http.RoutingService;
+import cool.houge.system.info.InfoService;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
-import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
-import cool.houge.system.info.InfoService;
 
 /**
  * 系统信息 REST 接口.
@@ -34,7 +34,11 @@ public class InfoResource extends AbstractRestSupport implements RoutingService 
 
   private final InfoService infoService;
 
-  /** @param infoService */
+  /**
+   * 使用应用信息服务构造对象.
+   *
+   * @param infoService 信息服务对象
+   */
   @Inject
   public InfoResource(InfoService infoService) {
     this.infoService = infoService;
@@ -46,9 +50,11 @@ public class InfoResource extends AbstractRestSupport implements RoutingService 
   }
 
   /**
-   * @param request
-   * @param response
-   * @return
+   * 返回应用信息.
+   *
+   * @param request 请求对象
+   * @param response 响应对象
+   * @return RS
    */
   Mono<Void> info(HttpServerRequest request, HttpServerResponse response) {
     return infoService.info().flatMap(info -> json(response, info.getDetails()));
