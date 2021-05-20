@@ -15,9 +15,9 @@
  */
 package cool.houge.rest;
 
-import javax.inject.Inject;
 import cool.houge.system.identifier.AbstractApplicationIdentifier;
 import cool.houge.system.identifier.ServerInstanceRepository;
+import javax.inject.Inject;
 
 /**
  * REST 应用程序标识接口的实现.
@@ -38,6 +38,6 @@ public class RestApplicationIdentifier extends AbstractApplicationIdentifier {
 
   @Override
   public String applicationName() {
-    return "tethys-rest";
+    return "houge-server-rest";
   }
 }
