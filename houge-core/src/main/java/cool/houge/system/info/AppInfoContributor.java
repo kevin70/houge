@@ -15,7 +15,8 @@
  */
 package cool.houge.system.info;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Map.entry;
+
 import cool.houge.system.identifier.ApplicationIdentifier;
 import cool.houge.system.info.Info.Builder;
 import java.util.Map;
@@ -48,14 +49,13 @@ public class AppInfoContributor implements InfoContributor {
 
   private Map<String, Object> info0() {
     var processInfo = ProcessHandle.current().info();
-    return ImmutableMap.of(
-        "name",
-        applicationIdentifier.applicationName(),
-        "version",
-        applicationIdentifier.version(),
-        "fid",
-        applicationIdentifier.fid(),
-        "start_time",
-        processInfo.startInstant().orElse(null));
+    return Map.ofEntries(
+        entry("name", applicationIdentifier.applicationName()),
+        entry("version", applicationIdentifier.version()),
+        entry("fid", applicationIdentifier.fid()),
+        entry("work_dir", System.getProperty("user.dir")),
+        entry("command", processInfo.command()),
+        entry("command_line", processInfo.commandLine()),
+        entry("start_time", processInfo.startInstant()));
   }
 }

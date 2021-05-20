@@ -55,6 +55,6 @@ class AppInfoContributorTest {
         .containsEntry("name", appName)
         .containsEntry("version", version)
         .containsEntry("fid", fid)
-        .containsKey("start_time");
+        .containsKeys("work_dir", "command", "command_line", "start_time");
   }
 }
