@@ -15,28 +15,26 @@
  */
 package cool.houge.system.info;
 
-import static java.util.Map.entry;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import cool.houge.system.info.Info.Builder;
 import java.util.Map;
-import reactor.core.publisher.Mono;
+import org.junit.jupiter.api.Test;
+import reactor.test.StepVerifier;
 
 /**
- * 启动应用的 Java 信息贡献者实现类.
+ * {@link JavaInfoContributor} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-public class JavaInfoContributor implements InfoContributor {
+class JavaInfoContributorTest {
 
-  @Override
-  public Mono<Void> contribute(Builder builder) {
-    return Mono.fromRunnable(() -> builder.withDetail("java", info0()));
-  }
+  @Test
+  void contribute() {
+    var contributor = new JavaInfoContributor();
+    var builder = new Info.Builder();
+    StepVerifier.create(contributor.contribute(builder)).expectComplete().verify();
 
-  private Map<String, Object> info0() {
-    return Map.ofEntries(
-        entry("vm_name", System.getProperty("java.vm.name")),
-        entry("version", System.getProperty("java.version")),
-        entry("vendor", System.getProperty("java.specification.vendor")));
+    Map<String, Object> javaInfo = (Map<String, Object>) builder.build().getDetails().get("java");
+    assertThat(javaInfo).containsKeys("vm_name", "version", "vendor");
   }
 }
