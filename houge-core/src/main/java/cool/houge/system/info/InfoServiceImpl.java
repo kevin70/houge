@@ -15,19 +15,29 @@
  */
 package cool.houge.system.info;
 
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * 信息服务实现类.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public class InfoServiceImpl implements InfoService {
 
   private final Set<InfoContributor> infoContributors;
 
-  /** @param contributors */
+  /**
+   * 使用信息贡献对象列表构造对象.
+   *
+   * @param contributors 贡献信息的对象列表
+   */
   @Inject
   public InfoServiceImpl(Set<InfoContributor> contributors) {
+    Objects.requireNonNull(contributors, "contributors 不能为空");
     this.infoContributors = contributors;
   }
 
