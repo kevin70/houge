@@ -75,7 +75,7 @@ public class ClientAgentManager {
       PacketProcessor packetProcessor,
       CommandProcessor commandProcessor) {
     var pid = ProcessHandle.current().pid();
-    var ran = (short) Math.abs(new SecureRandom().nextInt());
+    var ran = (short) new SecureRandom().nextInt(Short.MAX_VALUE);
     this.name = Strings.lenientFormat("tethys-ws-%s.%s", pid, ran);
     this.agentServiceConfig = agentServiceConfig;
     this.packetProcessor = packetProcessor;
