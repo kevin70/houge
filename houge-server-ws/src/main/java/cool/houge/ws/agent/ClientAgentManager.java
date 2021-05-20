@@ -17,6 +17,10 @@ package cool.houge.ws.agent;
 
 import com.google.common.base.Strings;
 import com.typesafe.config.ConfigException;
+import cool.houge.grpc.AgentGrpc;
+import cool.houge.grpc.AgentGrpc.AgentStub;
+import cool.houge.grpc.AgentPb;
+import cool.houge.ws.AgentServiceConfig;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
@@ -27,9 +31,9 @@ import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,10 +42,6 @@ import java.util.concurrent.locks.LockSupport;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import cool.houge.grpc.AgentGrpc;
-import cool.houge.grpc.AgentGrpc.AgentStub;
-import cool.houge.grpc.AgentPb;
-import cool.houge.ws.AgentServiceConfig;
 
 /**
  * 消息监控管理器.
@@ -75,7 +75,7 @@ public class ClientAgentManager {
       PacketProcessor packetProcessor,
       CommandProcessor commandProcessor) {
     var pid = ProcessHandle.current().pid();
-    var ran = ThreadLocalRandom.current().nextInt(1, Short.MAX_VALUE);
+    var ran = (short) Math.abs(new SecureRandom().nextInt());
     this.name = Strings.lenientFormat("tethys-ws-%s.%s", pid, ran);
     this.agentServiceConfig = agentServiceConfig;
     this.packetProcessor = packetProcessor;
