@@ -3,21 +3,21 @@ services:
   # PostgreSQL 数据库
   db:
     image: "postgres:13"
-    container_name: tethys-db
+    container_name: houge-db
     networks:
       - backend
     environment:
-      POSTGRES_USER: "tethys"
+      POSTGRES_USER: "houge"
       POSTGRES_PASSWORD: "123456"
   # 数据库 schema 更新
   db-migration:
-    image: kevin70/tethys-db-migration
-    container_name: tethys-db-migration
+    image: kevin70/houge-db-migration
+    container_name: houge-db-migration
     networks:
       - backend
     environment:
-      FLYWAY_URL: "jdbc:postgresql://db/tethys"
-      FLYWAY_USER: "tethys"
+      FLYWAY_URL: "jdbc:postgresql://db/houge"
+      FLYWAY_USER: "houge"
       FLYWAY_PASSWORD: "123456"
     entrypoint: sh
     command: -c "wait-for db:5432 && flyway migrate"
@@ -25,32 +25,32 @@ services:
       - db
   # 逻辑服务
   logic:
-    image: kevin70/tethys-server-logic
-    container_name: tethys-server-logic
+    image: kevin70/houge-server-logic
+    container_name: houge-server-logic
     networks:
       - backend
     ports:
       - 11012:11012
     environment:
-      HOUGE_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
+      HOUGE_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://houge:123456@db/houge"
     depends_on:
       - db-migration
   # REST 服务
   rest:
-    image: kevin70/tethys-server-rest
-    container_name: tethys-server-rest
+    image: kevin70/houge-server-rest
+    container_name: houge-server-rest
     networks:
       - backend
     ports:
       - 11019:11019
     environment:
-      HOUGE_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://tethys:123456@db/tethys"
+      HOUGE_MESSAGE_STORAGE_R2DBC_URL: "r2dbc:postgresql://houge:123456@db/houge"
     depends_on:
       - db-migration
   # WebSocket 服务
   ws:
-    image: kevin70/tethys-server-ws
-    container_name: tethys-server-ws
+    image: kevin70/houge-server-ws
+    container_name: houge-server-ws
     networks:
       - backend
     ports:
