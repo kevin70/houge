@@ -1,7 +1,7 @@
 apply plugin: "application"
 apply plugin: "com.bmuschko.docker-remote-api"
 
-mainClassName = "top.yein.tethys.logic.main.LogicMain"
+mainClassName = "cool.houge.logic.main.LogicMain"
 
 jar {
   manifest {
