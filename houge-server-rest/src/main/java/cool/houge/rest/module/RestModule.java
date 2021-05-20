@@ -22,16 +22,6 @@ import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
-import cool.houge.rest.http.RoutingService;
-import cool.houge.rest.resource.AuthInterceptor;
-import cool.houge.rest.resource.ServiceAuthInterceptor;
-import cool.houge.rest.resource.i.GroupResource;
-import cool.houge.rest.resource.i.TokenResource;
-import cool.houge.rest.resource.i.UserResource;
-import cool.houge.rest.resource.p.MessageIdResource;
-import cool.houge.rest.resource.p.MessageResource;
-import java.util.Map.Entry;
-import javax.inject.Singleton;
 import cool.houge.ConfigKeys;
 import cool.houge.auth.AuthService;
 import cool.houge.auth.TokenService;
@@ -40,7 +30,23 @@ import cool.houge.id.MessageIdGenerator;
 import cool.houge.id.YeinGidMessageIdGenerator;
 import cool.houge.rest.RestApplicationIdentifier;
 import cool.houge.rest.http.Interceptors;
+import cool.houge.rest.http.RoutingService;
+import cool.houge.rest.resource.AuthInterceptor;
+import cool.houge.rest.resource.ServiceAuthInterceptor;
+import cool.houge.rest.resource.i.GroupResource;
+import cool.houge.rest.resource.i.TokenResource;
+import cool.houge.rest.resource.i.UserResource;
+import cool.houge.rest.resource.p.MessageIdResource;
+import cool.houge.rest.resource.p.MessageResource;
+import cool.houge.rest.resource.system.InfoResource;
 import cool.houge.system.identifier.ApplicationIdentifier;
+import cool.houge.system.info.AppInfoContributor;
+import cool.houge.system.info.InfoContributor;
+import cool.houge.system.info.InfoService;
+import cool.houge.system.info.InfoServiceImpl;
+import cool.houge.system.info.JavaInfoContributor;
+import java.util.Map.Entry;
+import javax.inject.Singleton;
 
 /**
  * REST Guice 模块.
@@ -75,6 +81,8 @@ public class RestModule extends AbstractModule {
     // 绑定 Web 访问资源对象
     bind(AuthInterceptor.class).in(Scopes.SINGLETON);
     this.bindResources();
+
+    this.bindInfoService();
   }
 
   @Provides
@@ -83,8 +91,17 @@ public class RestModule extends AbstractModule {
     return new Interceptors(authInterceptor::handle, serviceAuthInterceptor()::handle);
   }
 
+  private void bindInfoService() {
+    var binder = Multibinder.newSetBinder(binder(), InfoContributor.class);
+    binder.addBinding().to(JavaInfoContributor.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(AppInfoContributor.class).in(Scopes.SINGLETON);
+
+    bind(InfoService.class).to(InfoServiceImpl.class).in(Scopes.SINGLETON);
+  }
+
   private void bindResources() {
     var binder = Multibinder.newSetBinder(binder(), RoutingService.class);
+    binder.addBinding().to(InfoResource.class).in(Scopes.SINGLETON);
     binder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
     binder.addBinding().to(MessageResource.class).in(Scopes.SINGLETON);
     binder.addBinding().to(GroupResource.class).in(Scopes.SINGLETON);
