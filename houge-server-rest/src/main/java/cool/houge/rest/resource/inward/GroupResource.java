@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.i;
+package cool.houge.rest.resource.inward;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 
@@ -26,8 +26,8 @@ import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
 import cool.houge.service.GroupService;
-import cool.houge.service.vo.CreateGroupVo;
-import cool.houge.service.vo.JoinGroupVo;
+import cool.houge.service.vo.CreateGroupVO;
+import cool.houge.service.vo.JoinGroupVO;
 
 /**
  * 群组 REST 接口.
@@ -68,7 +68,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> createGroup(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, CreateGroupVo.class)
+    return json(request, CreateGroupVO.class)
         .flatMap(vo -> groupService.createGroup(vo).flatMap(dto -> json(response, dto)));
   }
 
@@ -94,7 +94,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> joinMember(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, JoinGroupVo.class)
+    return json(request, JoinGroupVO.class)
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);
@@ -112,7 +112,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> removeMember(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, JoinGroupVo.class)
+    return json(request, JoinGroupVO.class)
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);

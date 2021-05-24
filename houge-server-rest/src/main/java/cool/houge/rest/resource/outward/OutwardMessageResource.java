@@ -13,46 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.p;
+package cool.houge.rest.resource.outward;
 
+import cool.houge.domain.Paging;
+import cool.houge.rest.http.AbstractRestSupport;
+import cool.houge.rest.http.Interceptors;
+import cool.houge.rest.http.RoutingService;
+import cool.houge.service.MessageService;
+import cool.houge.service.vo.ReadMessageVO;
+import cool.houge.service.vo.SendMessageVO;
+import cool.houge.storage.query.UserMessageQuery;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
-import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
-import cool.houge.domain.Paging;
-import cool.houge.service.MessageService;
-import cool.houge.service.RemoteMessageService;
-import cool.houge.storage.query.UserMessageQuery;
-import cool.houge.service.vo.ReadMessageVo;
-import cool.houge.service.vo.SendMessageVo;
 
 /**
- * 消息 REST 接口.
+ * 向用户开放的消息 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-@Log4j2
-public class MessageResource extends AbstractRestSupport implements RoutingService {
+public class OutwardMessageResource extends AbstractRestSupport implements RoutingService {
 
+  private static final Logger log = LogManager.getLogger();
   private final MessageService messageService;
-  private final RemoteMessageService remoteMessageService;
 
   /**
    * 可以被 IoC 容器使用的构造函数.
    *
    * @param messageService 消息服务
-   * @param remoteMessageService 远程消息服务
    */
   @Inject
-  public MessageResource(MessageService messageService, RemoteMessageService remoteMessageService) {
+  public OutwardMessageResource(MessageService messageService) {
     this.messageService = messageService;
-    this.remoteMessageService = remoteMessageService;
   }
 
   @Override
@@ -93,7 +90,7 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
    */
   Mono<Void> readMessages(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
-        .zipWith(json(request, ReadMessageVo.class))
+        .zipWith(json(request, ReadMessageVO.class))
         .flatMap(
             t -> {
               var ac = t.getT1();
@@ -113,15 +110,16 @@ public class MessageResource extends AbstractRestSupport implements RoutingServi
    */
   Mono<Void> sendMessage(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
-        .zipWith(json(request, SendMessageVo.class))
+        .zipWith(json(request, SendMessageVO.class))
         .flatMap(
             t -> {
               var ac = t.getT1();
               var vo = t.getT2();
               log.debug("发送聊天消息 uid={} vo={}", ac.uid(), vo);
-              return remoteMessageService
-                  .sendMessage(ac.uid(), vo)
-                  .flatMap(result -> json(response, result));
+              //              return remoteMessageService
+              //                  .sendMessage(ac.uid(), vo)
+              //                  .flatMap(result -> json(response, result));
+              return Mono.empty();
             });
   }
 }

@@ -15,13 +15,13 @@
  */
 package cool.houge.logic.agent;
 
+import cool.houge.grpc.AgentPb;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Flux;
-import cool.houge.grpc.AgentPb;
 
 /**
  * gRPC消息观察者管理器实现.
@@ -39,12 +39,12 @@ public abstract class AbstractServerAgentManager implements ServerAgentManager {
       AgentPb.LinkRequest request, ServerCallStreamObserver<AgentPb.LinkResponse> observer) {
     var bean = new LinkResponseHolder(request.getName(), request.getHostName(), observer);
     observerQueue.add(bean);
-    log.info("注册消息观察者 name={} hostName={}", bean.name, bean.hostName);
+    log.info("注册Agent name={} hostName={}", bean.name, bean.hostName);
 
     observer.setOnCancelHandler(
         () -> {
           removeObserver(bean);
-          log.info("消息观察者由发起方手动取消 observerName={} hostName={}", bean.name, bean.hostName);
+          log.info("Agent由发起方手动取消 name={} hostName={}", bean.name, bean.hostName);
         });
   }
 

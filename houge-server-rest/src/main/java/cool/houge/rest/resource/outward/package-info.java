@@ -13,37 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.vo;
-
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import cool.houge.constants.MessageContentType;
-import cool.houge.constants.MessageKind;
-import lombok.Data;
-
 /**
- * 消息发送 VO.
+ * 能全局访问的 REST 类.
  *
  * @author KK (kzou227@qq.com)
  */
-@Data
-public class SendMessageVo {
-
-  /**
-   * 消息类型.
-   *
-   * @see MessageKind
-   */
-  private int kind;
-  /** 消息接收者. */
-  private long to;
-  /** 消息内容. */
-  private String content;
-  /**
-   * 消息内容类型.
-   *
-   * @see MessageContentType
-   */
-  private int contentType;
-  /** 扩展参数. */
-  private @JsonUnwrapped String extraArgs;
-}
+package cool.houge.rest.resource.outward;

@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.vo;
-
-import java.util.List;
-import lombok.Data;
+package cool.houge.rest.resource.inward;
 
 /**
- * 消息读取 VO.
+ * 向内部服务开放的消息 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-@Data
-public class ReadMessageVo {
-
-  /** 消息 IDs. */
-  private List<String> messageIds;
-}
+public class InwardMessageResource {}

@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package cool.houge.service.vo;
+
+import lombok.Data;
+
 /**
- * 受限的应该被可信任的环境访问的 REST 类.
+ * 群组群员关系建议 VO.
  *
  * @author KK (kzou227@qq.com)
  */
-package cool.houge.rest.resource.i;
+@Data
+public class JoinGroupVO {
+
+  /** 用户 ID */
+  private long uid;
+}

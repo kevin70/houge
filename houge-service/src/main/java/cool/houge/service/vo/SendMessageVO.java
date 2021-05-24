@@ -13,25 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service;
+package cool.houge.service.vo;
 
-import cool.houge.service.result.MessageSendResult;
-import cool.houge.service.vo.SendMessageVo;
-import reactor.core.publisher.Mono;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import cool.houge.constants.MessageContentType;
+import cool.houge.constants.MessageKind;
+import lombok.Data;
 
 /**
- * 远程消息服务接口.
+ * 消息发送 VO.
  *
  * @author KK (kzou227@qq.com)
  */
-public interface RemoteMessageService {
+@Data
+public class SendMessageVO {
 
   /**
-   * 发送消息至远程服务.
+   * 消息类型.
    *
-   * @param senderId 发送者
-   * @param vo VO
-   * @return 发送消息响应
+   * @see MessageKind
    */
-  Mono<MessageSendResult> sendMessage(long senderId, SendMessageVo vo);
+  private int kind;
+  /** 消息接收者. */
+  private long to;
+  /** 消息内容. */
+  private String content;
+  /**
+   * 消息内容类型.
+   *
+   * @see MessageContentType
+   */
+  private int contentType;
+  /** 扩展参数. */
+  private @JsonUnwrapped String extraArgs;
 }

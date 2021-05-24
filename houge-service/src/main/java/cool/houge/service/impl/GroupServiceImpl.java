@@ -16,9 +16,9 @@
 package cool.houge.service.impl;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateGroupDto;
-import cool.houge.service.vo.CreateGroupVo;
-import cool.houge.service.vo.JoinGroupVo;
+import cool.houge.service.dto.CreateGroupDTO;
+import cool.houge.service.vo.CreateGroupVO;
+import cool.houge.service.vo.JoinGroupVO;
 import cool.houge.storage.GroupDao;
 import cool.houge.storage.entity.Group;
 import cool.houge.storage.query.GroupQueryDao;
@@ -56,7 +56,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<CreateGroupDto> createGroup(CreateGroupVo vo) {
+  public Mono<CreateGroupDTO> createGroup(CreateGroupVO vo) {
     var entity =
         Group.builder()
             .id(vo.getId())
@@ -67,7 +67,7 @@ public class GroupServiceImpl implements GroupService {
     return groupDao
         .insert(entity)
         .doOnSuccess(id -> this.updateGidBits(id, true))
-        .map(id -> CreateGroupDto.builder().id(id).build());
+        .map(id -> CreateGroupDTO.builder().id(id).build());
   }
 
   @Override
@@ -85,7 +85,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<Void> joinMember(long gid, JoinGroupVo vo) {
+  public Mono<Void> joinMember(long gid, JoinGroupVO vo) {
     return existsById(gid)
         .switchIfEmpty(
             Mono.error(() -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + gid + "]")))
@@ -93,7 +93,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<Void> removeMember(long gid, JoinGroupVo vo) {
+  public Mono<Void> removeMember(long gid, JoinGroupVO vo) {
     return existsById(gid)
         .switchIfEmpty(
             Mono.error(() -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + gid + "]")))

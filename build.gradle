@@ -74,6 +74,7 @@ allprojects {
     mapping {
       java = "SLASHSTAR_STYLE"
       conf = "SCRIPT_STYLE"
+      proto = "DOUBLESLASH_STYLE"
     }
     ext {
       year = "2019-${Calendar.instance.get(Calendar.YEAR)}"

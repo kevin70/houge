@@ -18,13 +18,17 @@ package cool.houge.service.vo;
 import lombok.Data;
 
 /**
- * 群组群员关系建议 VO.
+ * 创建群组 VO.
  *
  * @author KK (kzou227@qq.com)
  */
 @Data
-public class JoinGroupVo {
+public class CreateGroupVO {
 
-  /** 用户 ID */
-  private long uid;
+  /** 群组 ID. */
+  private Long id;
+  /** 创建者用户 ID. */
+  private long creatorId;
+  /** 群组名称. */
+  private String name;
 }

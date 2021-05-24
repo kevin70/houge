@@ -16,8 +16,8 @@
 package cool.houge.service.impl;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateUserDto;
-import cool.houge.service.vo.CreateUserVo;
+import cool.houge.service.dto.CreateUserDTO;
+import cool.houge.service.vo.CreateUserVO;
 import cool.houge.storage.UserDao;
 import cool.houge.storage.entity.User;
 import cool.houge.storage.query.UserQueryDao;
@@ -53,11 +53,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Mono<CreateUserDto> createUser(CreateUserVo vo) {
+  public Mono<CreateUserDTO> create(CreateUserVO vo) {
     return userDao
         .insert(User.builder().id(vo.getId()).originUid(vo.getOriginUid()).build())
         .doOnSuccess(id -> updateUidBits(id, true))
-        .map(id -> CreateUserDto.builder().id(id).build());
+        .map(id -> CreateUserDTO.builder().id(id).build());
   }
 
   @Override

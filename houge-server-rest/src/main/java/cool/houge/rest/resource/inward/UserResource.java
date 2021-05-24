@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.i;
+package cool.houge.rest.resource.inward;
 
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
@@ -24,7 +24,7 @@ import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
 import cool.houge.service.UserService;
-import cool.houge.service.vo.CreateUserVo;
+import cool.houge.service.vo.CreateUserVO;
 
 /**
  * 用户 REST 接口.
@@ -58,7 +58,7 @@ public class UserResource extends AbstractRestSupport implements RoutingService 
    * @return RS
    */
   Mono<Void> createUser(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, CreateUserVo.class)
-        .flatMap(vo -> userService.createUser(vo).flatMap(dto -> json(response, dto)));
+    return json(request, CreateUserVO.class)
+        .flatMap(vo -> userService.create(vo).flatMap(dto -> json(response, dto)));
   }
 }

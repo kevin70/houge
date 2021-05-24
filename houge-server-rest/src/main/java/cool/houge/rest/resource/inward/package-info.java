@@ -13,20 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.vo;
-
-import lombok.Data;
-
 /**
- * 创建用户 VO.
+ * 受限的应该被可信任的环境访问的 REST 类.
  *
  * @author KK (kzou227@qq.com)
  */
-@Data
-public class CreateUserVo {
-
-  /** 用户 ID. */
-  private Long id;
-  /** 原系统用户 ID. */
-  private String originUid;
-}
+package cool.houge.rest.resource.inward;

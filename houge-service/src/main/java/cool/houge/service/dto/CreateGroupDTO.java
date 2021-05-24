@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.vo;
+package cool.houge.service.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * 创建群组 VO.
+ * 创建群组 DTO.
  *
  * @author KK (kzou227@qq.com)
  */
 @Data
-public class CreateGroupVo {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateGroupDTO {
 
   /** 群组 ID. */
   private Long id;
-  /** 创建者用户 ID. */
-  private long creatorId;
-  /** 群组名称. */
-  private String name;
 }

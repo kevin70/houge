@@ -17,26 +17,26 @@ package cool.houge.logic.handler;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
-import java.util.List;
-import javax.inject.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import reactor.core.publisher.Mono;
 import cool.houge.BizCodes;
 import cool.houge.constants.MessageContentType;
 import cool.houge.id.MessageIdGenerator;
 import cool.houge.logic.agent.PacketSender;
 import cool.houge.logic.handler.internal.MessagePacketHelper;
-import cool.houge.logic.packet.PrivateMessagePacket;
+import cool.houge.logic.packet.MessagePacketBase;
 import cool.houge.service.MessageStorageService;
 import cool.houge.util.YeinGid;
+import java.util.List;
+import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import reactor.core.publisher.Mono;
 
 /**
  * 私人消息处理器.
  *
  * @author KK (kzou227@qq.com)
  */
-public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket> {
+public class PrivateMessageHandler implements PacketHandler<MessagePacketBase> {
 
   private static final Logger log = LogManager.getLogger();
 
@@ -60,7 +60,7 @@ public class PrivateMessageHandler implements PacketHandler<PrivateMessagePacket
   }
 
   @Override
-  public Mono<Result> handle(PrivateMessagePacket packet) {
+  public Mono<Result> handle(MessagePacketBase packet) {
     if (packet.getMessageId() == null) {
       // 自动填充消息 ID
       packet.setMessageId(messageIdGenerator.nextId());

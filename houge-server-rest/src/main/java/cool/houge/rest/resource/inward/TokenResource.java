@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.i;
+package cool.houge.rest.resource.inward;
 
 import java.util.Map;
 import javax.inject.Inject;

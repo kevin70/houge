@@ -13,9 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package cool.houge.service.vo;
+
+import lombok.Data;
+
 /**
- * 能全局访问的 REST 类.
+ * 创建用户 VO.
  *
  * @author KK (kzou227@qq.com)
  */
-package cool.houge.rest.resource.p;
+@Data
+public class CreateUserVO {
+
+  /** 用户 ID. */
+  private Long id;
+  /** 原系统用户 ID. */
+  private String originUid;
+}

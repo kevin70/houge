@@ -32,8 +32,8 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.StacklessBizCodeException;
-import cool.houge.service.vo.CreateGroupVo;
-import cool.houge.service.vo.JoinGroupVo;
+import cool.houge.service.vo.CreateGroupVO;
+import cool.houge.service.vo.JoinGroupVO;
 
 /**
  * {@link GroupServiceImpl} 单元测试.
@@ -48,7 +48,7 @@ class GroupServiceImplTest {
     var groupQueryDao = mock(GroupQueryDao.class);
     var groupService = new GroupServiceImpl(groupDao, groupQueryDao);
 
-    var vo = new CreateGroupVo();
+    var vo = new CreateGroupVO();
     vo.setId(1L);
     when(groupDao.insert(any())).thenReturn(Mono.just(vo.getId()));
 
@@ -120,7 +120,7 @@ class GroupServiceImplTest {
 
     var gid = 1L;
     var uid = 1L;
-    var vo = new JoinGroupVo();
+    var vo = new JoinGroupVO();
     vo.setUid(uid);
 
     when(groupQueryDao.existsById(gid)).thenReturn(Nil.mono());
@@ -138,7 +138,7 @@ class GroupServiceImplTest {
 
     var gid = 1L;
     var uid = 1L;
-    var vo = new JoinGroupVo();
+    var vo = new JoinGroupVO();
     vo.setUid(uid);
 
     when(groupQueryDao.existsById(gid)).thenReturn(Mono.empty());
@@ -162,7 +162,7 @@ class GroupServiceImplTest {
 
     var gid = 1L;
     var uid = 1L;
-    var vo = new JoinGroupVo();
+    var vo = new JoinGroupVO();
     vo.setUid(uid);
 
     when(groupQueryDao.existsById(gid)).thenReturn(Nil.mono());
@@ -181,7 +181,7 @@ class GroupServiceImplTest {
 
     var gid = 1L;
     var uid = 1L;
-    var vo = new JoinGroupVo();
+    var vo = new JoinGroupVO();
     vo.setUid(uid);
 
     when(groupQueryDao.existsById(gid)).thenReturn(Mono.empty());

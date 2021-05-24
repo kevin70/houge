@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+option java_package = "cool.houge.grpc";
+option java_outer_classname = "GroupPb";
+
+message CreateGroupRequest {
+  // 群组ID.
+  int64 id = 1;
+  // 创建者用户ID.
+  int64 creator_id = 2;
+  // 群组名称.
+  string name = 3;
+}
+
+message CreateGroupResponse {
+  // 群组ID.
+  int64 id = 1;
+}
+
+message DeleteGroupRequest {
+  // 群组ID.
+  int64 id = 1;
+}
+
+service Group {
+
+  // 创建群组.
+  rpc Create(CreateGroupRequest) returns(CreateGroupResponse) {}
+
+  // 删除群组.
+  rpc Delete(DeleteGroupRequest) returns(google.protobuf.Empty) {}
+}

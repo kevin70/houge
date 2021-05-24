@@ -16,9 +16,9 @@
 package cool.houge.service;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateGroupDto;
-import cool.houge.service.vo.CreateGroupVo;
-import cool.houge.service.vo.JoinGroupVo;
+import cool.houge.service.dto.CreateGroupDTO;
+import cool.houge.service.vo.CreateGroupVO;
+import cool.houge.service.vo.JoinGroupVO;
 import reactor.core.publisher.Mono;
 
 /**
@@ -34,7 +34,7 @@ public interface GroupService {
    * @param vo VO
    * @return 群组 ID
    */
-  Mono<CreateGroupDto> createGroup(CreateGroupVo vo);
+  Mono<CreateGroupDTO> createGroup(CreateGroupVO vo);
 
   /**
    * 删除群组.
@@ -61,7 +61,7 @@ public interface GroupService {
    * @param vo VO
    * @return RS
    */
-  Mono<Void> joinMember(long gid, JoinGroupVo vo);
+  Mono<Void> joinMember(long gid, JoinGroupVO vo);
 
   /**
    * 将指定的用户与群组解除关系.
@@ -70,5 +70,5 @@ public interface GroupService {
    * @param vo VO
    * @return RS
    */
-  Mono<Void> removeMember(long gid, JoinGroupVo vo);
+  Mono<Void> removeMember(long gid, JoinGroupVO vo);
 }

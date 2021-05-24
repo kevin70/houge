@@ -16,8 +16,8 @@
 package cool.houge.service;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateUserDto;
-import cool.houge.service.vo.CreateUserVo;
+import cool.houge.service.dto.CreateUserDTO;
+import cool.houge.service.vo.CreateUserVO;
 import reactor.core.publisher.Mono;
 
 /**
@@ -33,7 +33,7 @@ public interface UserService {
    * @param vo VO
    * @return 用户 ID
    */
-  Mono<CreateUserDto> createUser(CreateUserVo vo);
+  Mono<CreateUserDTO> create(CreateUserVO vo);
 
   /**
    * 判断指定用户是否存在.

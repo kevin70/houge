@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 创建群组 DTO.
+ * 创建用户 DTO.
  *
  * @author KK (kzou227@qq.com)
  */
@@ -29,8 +29,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateGroupDto {
+public class CreateUserDTO {
 
-  /** 群组 ID. */
+  /** 用户 ID. */
   private Long id;
 }
