@@ -4,9 +4,11 @@ option java_outer_classname = "PacketPb";
 
 message PacketRequest {
   // 发起请求的用户ID
-  int64 requestUid = 1;
+  int64 request_uid = 1;
   // Packet数据
   bytes data_bytes = 2;
+  // 过滤终端的标识
+  string filter = 9;
 }
 
 message PacketResponse {

@@ -16,16 +16,26 @@ message LinkResponse {
   }
 }
 
+// Packet混合转发类型
 enum PacketMixinType {
+  // 将Packet发送给指定的用户
   USER = 0;
+  // 将Packet发送给指定的群组
   GROUP = 1;
+  // 将Packet发送给所有在线用户
   ALL = 9;
 }
 
+// Packet
 message PacketMixin {
+  // 转发的类型
   PacketMixinType type = 1;
+  // 接收者
   repeated int64 to = 2;
-  bytes data_bytes = 9;
+  // 转发的数据
+  bytes data_bytes = 3;
+  // 过滤终端的标识
+  string filter = 9;
 }
 
 message Command {
@@ -47,5 +57,6 @@ message Command {
 }
 
 service Agent {
+
   rpc Link(LinkRequest) returns(stream LinkResponse) {}
 }
