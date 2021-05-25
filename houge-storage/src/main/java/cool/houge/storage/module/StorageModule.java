@@ -32,7 +32,7 @@ import cool.houge.storage.impl.JwtSecretDaoImpl;
 import cool.houge.storage.impl.MessageDaoImpl;
 import cool.houge.storage.impl.ServerInstanceDaoImpl;
 import cool.houge.storage.impl.UserDaoImpl;
-import cool.houge.storage.impl.UserQueryDaoImpl;
+import cool.houge.storage.impl.query.UserQueryDaoImpl;
 import cool.houge.storage.impl.query.GroupQueryDaoImpl;
 import cool.houge.storage.impl.query.MessageQueryDaoImpl;
 import cool.houge.storage.query.GroupQueryDao;

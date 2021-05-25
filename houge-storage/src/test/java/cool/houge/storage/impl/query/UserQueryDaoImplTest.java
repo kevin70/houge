@@ -24,7 +24,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 import cool.houge.storage.impl.UserDaoImpl;
-import cool.houge.storage.impl.UserQueryDaoImpl;
 
 /**
  * {@link UserQueryDaoImpl} 单元测试.

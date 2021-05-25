@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.storage.impl;
+package cool.houge.storage.impl.query;
 
 import cool.houge.Nil;
 import cool.houge.r2dbc.R2dbcClient;
