@@ -17,7 +17,7 @@ package cool.houge.storage.impl;
 
 import cool.houge.r2dbc.Parameter;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.storage.entity.User;
+import cool.houge.entity.User;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import cool.houge.storage.UserDao;

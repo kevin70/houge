@@ -19,7 +19,7 @@ import cool.houge.constants.MessageReadStatus;
 import cool.houge.domain.Paging;
 import cool.houge.service.MessageProps;
 import cool.houge.storage.MessageDao;
-import cool.houge.storage.entity.Message;
+import cool.houge.entity.Message;
 import cool.houge.storage.query.MessageQueryDao;
 import cool.houge.storage.query.UserMessageQuery;
 import java.time.LocalDateTime;

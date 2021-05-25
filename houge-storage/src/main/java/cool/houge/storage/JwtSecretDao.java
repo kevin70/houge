@@ -15,7 +15,7 @@
  */
 package cool.houge.storage;
 
-import cool.houge.storage.entity.JwtSecret;
+import cool.houge.entity.JwtSecret;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

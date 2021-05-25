@@ -19,7 +19,7 @@ import cool.houge.Nil;
 import cool.houge.service.dto.CreateUserDTO;
 import cool.houge.service.vo.CreateUserVO;
 import cool.houge.storage.UserDao;
-import cool.houge.storage.entity.User;
+import cool.houge.entity.User;
 import cool.houge.storage.query.UserQueryDao;
 import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;

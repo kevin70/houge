@@ -15,7 +15,7 @@
  */
 package cool.houge.storage;
 
-import cool.houge.storage.entity.Message;
+import cool.houge.entity.Message;
 import java.util.List;
 import reactor.core.publisher.Mono;
 

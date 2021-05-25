@@ -18,7 +18,7 @@ package cool.houge.storage.impl;
 import com.google.common.base.Joiner;
 import cool.houge.r2dbc.Parameter;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.storage.entity.Message;
+import cool.houge.entity.Message;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;

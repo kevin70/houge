@@ -16,9 +16,9 @@
 package cool.houge.storage.data;
 
 import com.github.javafaker.Faker;
-import cool.houge.storage.entity.Group;
-import cool.houge.storage.entity.Message;
-import cool.houge.storage.entity.User;
+import cool.houge.entity.Group;
+import cool.houge.entity.Message;
+import cool.houge.entity.User;
 import cool.houge.storage.TestUtils;
 
 /**

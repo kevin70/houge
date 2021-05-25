@@ -17,7 +17,7 @@ package cool.houge.storage.impl.query;
 
 import cool.houge.Nil;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.storage.entity.User;
+import cool.houge.entity.User;
 import cool.houge.storage.query.UserQueryDao;
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;

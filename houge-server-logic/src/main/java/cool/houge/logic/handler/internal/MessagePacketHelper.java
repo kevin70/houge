@@ -17,7 +17,7 @@ package cool.houge.logic.handler.internal;
 
 import cool.houge.constants.MessageKind;
 import cool.houge.logic.packet.MessagePacket;
-import cool.houge.storage.entity.Message;
+import cool.houge.entity.Message;
 
 /** @author KK (kzou227@qq.com) */
 public class MessagePacketHelper {

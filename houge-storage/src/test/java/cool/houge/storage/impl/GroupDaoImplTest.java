@@ -26,7 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import cool.houge.storage.entity.Group;
+import cool.houge.entity.Group;
 
 /**
  * {@link GroupDaoImpl} 单元测试.

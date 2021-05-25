@@ -17,7 +17,7 @@ package cool.houge.storage.query;
 
 import cool.houge.Nil;
 import reactor.core.publisher.Mono;
-import cool.houge.storage.entity.User;
+import cool.houge.entity.User;
 
 /**
  * 用户查询数据访问接口.

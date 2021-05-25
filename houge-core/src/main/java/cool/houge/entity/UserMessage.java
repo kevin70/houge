@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.storage.entity;
+package cool.houge.entity;
 
 import java.time.LocalDateTime;
 import lombok.Data;

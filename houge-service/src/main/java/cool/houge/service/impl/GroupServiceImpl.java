@@ -20,7 +20,7 @@ import cool.houge.service.dto.CreateGroupDTO;
 import cool.houge.service.vo.CreateGroupVO;
 import cool.houge.service.vo.JoinGroupVO;
 import cool.houge.storage.GroupDao;
-import cool.houge.storage.entity.Group;
+import cool.houge.entity.Group;
 import cool.houge.storage.query.GroupQueryDao;
 import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;

@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import cool.houge.storage.impl.MessageDaoImpl;
-import cool.houge.storage.entity.Message;
+import cool.houge.entity.Message;
 import cool.houge.storage.query.UserMessageQuery;
 
 /**

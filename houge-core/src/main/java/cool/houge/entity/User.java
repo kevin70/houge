@@ -13,32 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.storage.entity;
+package cool.houge.entity;
 
-import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * t_jwt_secret JWT 密钥配置.
+ * IM 用户信息表.
  *
  * @author KK (kzou227@qq.com)
  */
 @Data
-public class JwtSecret {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
 
-  /** kid 标识仅支持2个字符. */
-  private String id;
-  /** 签名算法名称. */
-  private String algorithm;
-  /** HMAC 密钥. */
-  private ByteBuffer secretKey;
-  /**
-   * 删除数据的时间戳.
-   *
-   * <p>值不为 0 值表示行数据已被软删除.
-   */
-  private int deleted;
+  /** 用户 ID. */
+  private Long id;
+  /** 原用户 ID. */
+  private String originUid;
   /** 创建时间. */
   private LocalDateTime createTime;
   /** 更新时间. */
