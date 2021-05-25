@@ -37,7 +37,7 @@ import cool.houge.rest.resource.inward.GroupResource;
 import cool.houge.rest.resource.inward.TokenResource;
 import cool.houge.rest.resource.inward.UserResource;
 import cool.houge.rest.resource.outward.MessageIdResource;
-import cool.houge.rest.resource.outward.MessageResource;
+import cool.houge.rest.resource.outward.OutwardMessageResource;
 import cool.houge.rest.resource.system.InfoResource;
 import cool.houge.system.identifier.ApplicationIdentifier;
 import cool.houge.system.info.AppInfoContributor;
@@ -103,7 +103,8 @@ public class RestModule extends AbstractModule {
     var binder = Multibinder.newSetBinder(binder(), RoutingService.class);
     binder.addBinding().to(InfoResource.class).in(Scopes.SINGLETON);
     binder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(MessageResource.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(OutwardMessageResource.class).in(Scopes.SINGLETON);
+
     binder.addBinding().to(GroupResource.class).in(Scopes.SINGLETON);
     binder.addBinding().to(UserResource.class).in(Scopes.SINGLETON);
     binder.addBinding().to(TokenResource.class).in(Scopes.SINGLETON);

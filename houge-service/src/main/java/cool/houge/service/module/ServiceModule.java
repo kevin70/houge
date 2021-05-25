@@ -19,19 +19,19 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.typesafe.config.Config;
-import javax.inject.Singleton;
 import cool.houge.ConfigKeys;
 import cool.houge.service.GroupService;
-import cool.houge.service.impl.GroupServiceImpl;
 import cool.houge.service.MessageProps;
 import cool.houge.service.MessageService;
-import cool.houge.service.impl.MessageServiceImpl;
 import cool.houge.service.MessageStorageService;
-import cool.houge.service.impl.MessageStorageServiceImpl;
 import cool.houge.service.UserService;
+import cool.houge.service.impl.GroupServiceImpl;
+import cool.houge.service.impl.MessageServiceImpl;
+import cool.houge.service.impl.MessageStorageServiceImpl;
 import cool.houge.service.impl.UserServiceImpl;
 import cool.houge.storage.MessageDao;
 import cool.houge.storage.query.MessageQueryDao;
+import javax.inject.Singleton;
 
 /**
  * 服务模块定义.
@@ -56,9 +56,6 @@ public class ServiceModule extends AbstractModule {
     bind(UserService.class).to(UserServiceImpl.class).in(Scopes.SINGLETON);
     bind(GroupService.class).to(GroupServiceImpl.class).in(Scopes.SINGLETON);
     bind(MessageStorageService.class).to(MessageStorageServiceImpl.class).in(Scopes.SINGLETON);
-
-    // 安装 gRPC 存根模块
-    install(new GrpcStubModule(config));
   }
 
   @Provides
