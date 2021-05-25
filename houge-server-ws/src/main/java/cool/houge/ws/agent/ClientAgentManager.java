@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -95,8 +96,10 @@ public class ClientAgentManager {
     if (targets.length <= 0) {
       throw new ConfigException.BadValue("agent-service.multi-grpc-target", "至少需要配置一个 agent 服务");
     }
+    var targetList = List.of(targets).stream().distinct().collect(Collectors.toList());
+    log.info("agent-service.multi-grpc-target 列表 {}", targetList);
 
-    for (String target : targets) {
+    for (String target : targetList) {
       var channel =
           ManagedChannelBuilder.forTarget(target)
               .disableServiceConfigLookUp()
@@ -104,9 +107,9 @@ public class ClientAgentManager {
               .disableRetry()
               .build();
       channels.add(channel);
-      log.info("初始化监控通道完成 target={} channel={}", target, channel);
+      log.info("初始化Agent通道完成 target={}", target, channel);
 
-      new WatchHelper(channel).watch();
+      new LinkHelper(target, channel).run();
     }
   }
 
@@ -121,24 +124,30 @@ public class ClientAgentManager {
     }
   }
 
-  class WatchHelper {
+  class LinkHelper {
 
+    private final String target;
     private final ManagedChannel channel;
     private final AgentStub agentStub;
     private final AtomicInteger retryCount;
     private final AtomicReference<Status.Code> lastStatusCodeRef;
 
-    WatchHelper(ManagedChannel channel) {
+    LinkHelper(String target, ManagedChannel channel) {
+      this.target = target;
       this.channel = channel;
       this.agentStub = AgentGrpc.newStub(channel);
       this.retryCount = new AtomicInteger();
       this.lastStatusCodeRef = new AtomicReference<>();
     }
 
-    void watch() {
+    void run() {
       var request =
           AgentPb.LinkRequest.newBuilder().setName(name).setHostName(getHostName()).build();
-      log.info("请求监听消息响应 name={} retryCount={} channel={}", name, retryCount.get(), channel);
+      if (retryCount.get() > 0) {
+        log.info("请求连接Agent name={} target={} retryCount={}", name, target, retryCount.get());
+      } else {
+        log.info("请求连接Agent name={} target={}", name, target);
+      }
       this.agentStub.link(request, response());
     }
 
@@ -164,7 +173,7 @@ public class ClientAgentManager {
           } else if (response.hasCommand()) {
             commandProcessor.process(response.getCommand());
           } else {
-            log.error("不支持的 WatchResponse 响应 channel={} response={}", channel, response);
+            log.error("不支持的响应 channel={} response={}", channel, response);
           }
         }
 
@@ -180,11 +189,11 @@ public class ClientAgentManager {
           }
           if (status != null) {
             // 如果最新的响应状态码与上次的一致，则根据错误次数判断是否需要打印日志，减少重复的错误日志打印
-            if (status.getCode() != WatchHelper.this.lastStatusCodeRef.get()
+            if (status.getCode() != LinkHelper.this.lastStatusCodeRef.get()
                 || retryCount.getAndIncrement() == 0) {
-              log.error("Agent响应错误 channel={}", channel, t);
+              log.error("Agent响应错误 target={} status_code={}", target, status.getCode());
             }
-            WatchHelper.this.lastStatusCodeRef.set(status.getCode());
+            LinkHelper.this.lastStatusCodeRef.set(status.getCode());
           } else {
             log.error("Agent响应预期之外的错误 channel={}", channel, t);
           }
@@ -194,13 +203,13 @@ public class ClientAgentManager {
           LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(waitSecs));
 
           // 重试
-          watch();
+          run();
           retryCount.compareAndSet(SKIP_REPEAT_ERROR_LOG_LIMIT, 0);
         }
 
         @Override
         public void onCompleted() {
-          log.info("消息响应监听完成 channel={}", channel);
+          log.info("完成 target={}", target);
         }
       };
     }
