@@ -16,16 +16,14 @@
 package cool.houge.service.impl;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateUserDTO;
-import cool.houge.service.vo.CreateUserVO;
-import cool.houge.storage.UserDao;
 import cool.houge.entity.User;
+import cool.houge.service.UserService;
+import cool.houge.storage.UserDao;
 import cool.houge.storage.query.UserQueryDao;
 import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import cool.houge.service.UserService;
 
 /**
  * 用户服务实现.
@@ -53,11 +51,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Mono<CreateUserDTO> create(CreateUserVO vo) {
+  public Mono<CreateResult> create(Create p) {
     return userDao
-        .insert(User.builder().id(vo.getId()).originUid(vo.getOriginUid()).build())
+        .insert(User.builder().id(p.getUid()).originUid(p.getOriginUid()).build())
         .doOnSuccess(id -> updateUidBits(id, true))
-        .map(id -> CreateUserDTO.builder().id(id).build());
+        .map(id -> CreateResult.builder().uid(id).build());
   }
 
   @Override

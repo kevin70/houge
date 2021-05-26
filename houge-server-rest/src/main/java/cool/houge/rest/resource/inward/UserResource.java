@@ -24,7 +24,7 @@ import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
 import cool.houge.service.UserService;
-import cool.houge.service.vo.CreateUserVO;
+import cool.houge.service.UserService.Create;
 
 /**
  * 用户 REST 接口.
@@ -58,7 +58,7 @@ public class UserResource extends AbstractRestSupport implements RoutingService 
    * @return RS
    */
   Mono<Void> createUser(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, CreateUserVO.class)
+    return json(request, Create.class)
         .flatMap(vo -> userService.create(vo).flatMap(dto -> json(response, dto)));
   }
 }

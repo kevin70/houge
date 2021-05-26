@@ -4,14 +4,14 @@ option java_outer_classname = "UserPb";
 
 message CreateUserRequest {
   // 用户ID.
-  int64 id = 1;
+  int64 uid = 1;
   // 原系统用户ID.
   string origin_uid = 2;
 }
 
 message CreateUserResponse {
   // Houge系统中的用户ID.
-  int64 id = 1;
+  int64 uid = 1;
 }
 
 service User {

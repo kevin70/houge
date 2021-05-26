@@ -16,8 +16,8 @@
 package cool.houge.service;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateUserDTO;
-import cool.houge.service.vo.CreateUserVO;
+import lombok.Builder;
+import lombok.Value;
 import reactor.core.publisher.Mono;
 
 /**
@@ -30,10 +30,10 @@ public interface UserService {
   /**
    * 创建用户.
    *
-   * @param vo VO
-   * @return 用户 ID
+   * @param p 创建用户参数
+   * @return 用户ID
    */
-  Mono<CreateUserDTO> create(CreateUserVO vo);
+  Mono<CreateResult> create(Create p);
 
   /**
    * 判断指定用户是否存在.
@@ -44,4 +44,24 @@ public interface UserService {
    * @return true/false
    */
   Mono<Nil> existsById(long uid);
+
+  /** 创建用户. */
+  @Value
+  @Builder
+  class Create {
+
+    /** 用户ID. */
+    private Long uid;
+    /** 原系统用户 ID. */
+    private String originUid;
+  }
+
+  /** 创建用户. */
+  @Value
+  @Builder
+  class CreateResult {
+
+    /** 用户ID. */
+    private Long uid;
+  }
 }

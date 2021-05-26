@@ -15,13 +15,13 @@
  */
 package cool.houge.logic.grpc;
 
+import com.google.common.base.Strings;
 import cool.houge.grpc.UserGrpc;
 import cool.houge.grpc.UserPb.CreateUserRequest;
 import cool.houge.grpc.UserPb.CreateUserResponse;
 import cool.houge.service.UserService;
-import cool.houge.service.vo.CreateUserVO;
+import cool.houge.service.UserService.Create;
 import io.grpc.stub.StreamObserver;
-import java.util.Objects;
 import javax.inject.Inject;
 
 /**
@@ -46,25 +46,17 @@ public class UserGrpcImpl extends UserGrpc.UserImplBase {
   @Override
   public void create(
       CreateUserRequest request, StreamObserver<CreateUserResponse> responseObserver) {
-    var defaultInstance = request.getDefaultInstanceForType();
-    var vo = new CreateUserVO();
-    if (request.getId() != defaultInstance.getId()) {
-      vo.setId(request.getId());
+    var createBuilder = Create.builder();
+    if (request.getUid() > 0) {
+      createBuilder.uid(request.getUid());
     }
-    if (request.getOriginUid() != defaultInstance.getOriginUid()) {
-      vo.setOriginUid(request.getOriginUid());
+    if (!Strings.isNullOrEmpty(request.getOriginUid())) {
+      createBuilder.originUid(request.getOriginUid());
     }
 
     userService
-        .create(vo)
-        .map(
-            dto -> {
-              var builder = CreateUserResponse.newBuilder();
-              if (!Objects.equals(request.getId(), dto.getId())) {
-                builder.setId(dto.getId());
-              }
-              return builder.build();
-            })
+        .create(createBuilder.build())
+        .map(dto -> CreateUserResponse.newBuilder().setUid(dto.getUid()).build())
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 }
