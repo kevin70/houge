@@ -18,28 +18,34 @@ package cool.houge.logic.module;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
+import cool.houge.auth.AuthService;
+import cool.houge.auth.impl.JwsAuthService;
+import cool.houge.grpc.AgentGrpc;
+import cool.houge.grpc.AuthGrpc;
+import cool.houge.grpc.GroupGrpc;
+import cool.houge.grpc.MessageGrpc;
+import cool.houge.grpc.PacketGrpc;
+import cool.houge.grpc.UserGroupGrpc;
+import cool.houge.grpc.UserGrpc;
+import cool.houge.id.MessageIdGenerator;
+import cool.houge.id.YeinGidMessageIdGenerator;
+import cool.houge.logic.agent.PacketSender;
+import cool.houge.logic.agent.ServerAgentManager;
 import cool.houge.logic.agent.TediousServerAgentManager;
+import cool.houge.logic.grpc.AgentGrpcImpl;
+import cool.houge.logic.grpc.AuthGrpcImpl;
+import cool.houge.logic.grpc.GroupGrpcImpl;
+import cool.houge.logic.grpc.MessageGrpcImpl;
+import cool.houge.logic.grpc.PacketGrpcImpl;
+import cool.houge.logic.grpc.UserGroupGrpcImpl;
+import cool.houge.logic.grpc.UserGrpcImpl;
 import cool.houge.logic.handler.GroupMessageHandler;
 import cool.houge.logic.handler.PacketHandler;
 import cool.houge.logic.handler.PrivateMessageHandler;
 import cool.houge.logic.packet.Packet;
 import cool.houge.logic.support.LogicApplicationIdentifier;
-import io.grpc.BindableService;
-import cool.houge.auth.AuthService;
-import cool.houge.auth.impl.JwsAuthService;
-import cool.houge.grpc.AgentGrpc;
-import cool.houge.grpc.AuthGrpc;
-import cool.houge.grpc.PacketGrpc;
-import cool.houge.grpc.UserGroupGrpc;
-import cool.houge.id.MessageIdGenerator;
-import cool.houge.id.YeinGidMessageIdGenerator;
-import cool.houge.logic.agent.PacketSender;
-import cool.houge.logic.agent.ServerAgentManager;
-import cool.houge.logic.grpc.AgentGrpcImpl;
-import cool.houge.logic.grpc.AuthGrpcImpl;
-import cool.houge.logic.grpc.PacketGrpcImpl;
-import cool.houge.logic.grpc.UserGroupGrpcImpl;
 import cool.houge.system.identifier.ApplicationIdentifier;
+import io.grpc.BindableService;
 
 /**
  * LogicGuice模块.
@@ -70,7 +76,10 @@ public class LogicModule extends AbstractModule {
     bindGrpcImpl(AgentGrpcImpl.class, AgentGrpc.SERVICE_NAME);
     bindGrpcImpl(AuthGrpcImpl.class, AuthGrpc.SERVICE_NAME);
     bindGrpcImpl(PacketGrpcImpl.class, PacketGrpc.SERVICE_NAME);
+    bindGrpcImpl(UserGrpcImpl.class, UserGrpc.SERVICE_NAME);
+    bindGrpcImpl(GroupGrpcImpl.class, GroupGrpc.SERVICE_NAME);
     bindGrpcImpl(UserGroupGrpcImpl.class, UserGroupGrpc.SERVICE_NAME);
+    bindGrpcImpl(MessageGrpcImpl.class, MessageGrpc.SERVICE_NAME);
   }
 
   private void bindPacketHandler() {
