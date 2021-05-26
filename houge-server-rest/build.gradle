@@ -42,10 +42,9 @@ task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
 }
 
 dependencies {
-  implementation("org.mapstruct:mapstruct")
-
   implementation(project(":houge-auth"))
   implementation(project(":houge-service"))
+  implementation("org.mapstruct:mapstruct")
   implementation("org.apache.logging.log4j:log4j-core")
   implementation("org.apache.logging.log4j:log4j-slf4j-impl")
   implementation("com.fasterxml.jackson.core:jackson-databind")

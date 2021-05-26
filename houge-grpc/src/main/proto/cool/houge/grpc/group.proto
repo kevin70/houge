@@ -5,7 +5,7 @@ option java_outer_classname = "GroupPb";
 
 message CreateGroupRequest {
   // 群组ID.
-  int64 id = 1;
+  int64 gid = 1;
   // 创建者用户ID.
   int64 creator_id = 2;
   // 群组名称.
@@ -14,24 +14,24 @@ message CreateGroupRequest {
 
 message CreateGroupResponse {
   // 群组ID.
-  int64 id = 1;
+  int64 gid = 1;
 }
 
 message DeleteGroupRequest {
   // 群组ID.
-  int64 id = 1;
+  int64 gid = 1;
 }
 
 message JoinMemberGroupRequest {
   // 群组ID
-  int64 id = 1;
+  int64 gid = 1;
   // 用户ID
   int64 uid = 2;
 }
 
 message DeleteMemberGroupRequest {
   // 群组ID
-  int64 id = 1;
+  int64 gid = 1;
   // 用户ID
   int64 uid = 2;
 }

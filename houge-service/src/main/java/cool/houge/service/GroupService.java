@@ -16,9 +16,8 @@
 package cool.houge.service;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateGroupDTO;
-import cool.houge.service.vo.CreateGroupVO;
-import cool.houge.service.vo.JoinGroupVO;
+import lombok.Builder;
+import lombok.Value;
 import reactor.core.publisher.Mono;
 
 /**
@@ -34,7 +33,7 @@ public interface GroupService {
    * @param vo VO
    * @return 群组 ID
    */
-  Mono<CreateGroupDTO> createGroup(CreateGroupVO vo);
+  Mono<CreateResult> create(Create vo);
 
   /**
    * 删除群组.
@@ -42,7 +41,7 @@ public interface GroupService {
    * @param gid 群组 ID
    * @return RS
    */
-  Mono<Void> deleteGroup(long gid);
+  Mono<Void> delete(long gid);
 
   /**
    * 判断指定的群组是否存在.
@@ -57,18 +56,49 @@ public interface GroupService {
   /**
    * 将指定的用户与群组建立关系.
    *
-   * @param gid 群组 ID
-   * @param vo VO
+   * @param p VO
    * @return RS
    */
-  Mono<Void> joinMember(long gid, JoinGroupVO vo);
+  Mono<Void> joinMember(JoinMember p);
 
   /**
    * 将指定的用户与群组解除关系.
    *
-   * @param gid 群组 ID
-   * @param vo VO
+   * @param p VO
    * @return RS
    */
-  Mono<Void> removeMember(long gid, JoinGroupVO vo);
+  Mono<Void> deleteMember(JoinMember p);
+
+  /** 创建群组对象. */
+  @Value
+  @Builder
+  class Create {
+
+    /** 群组 ID. */
+    private Long gid;
+    /** 创建者用户 ID. */
+    private long creatorId;
+    /** 群组名称. */
+    private String name;
+  }
+
+  /** 创建群组返回对象. */
+  @Value
+  @Builder
+  class CreateResult {
+
+    /** 群组 ID. */
+    private Long gid;
+  }
+
+  /** 加入群组请求参数对象. */
+  @Value
+  @Builder
+  class JoinMember {
+
+    /** 群组ID. */
+    private long gid;
+    /** 用户ID. */
+    private long uid;
+  }
 }

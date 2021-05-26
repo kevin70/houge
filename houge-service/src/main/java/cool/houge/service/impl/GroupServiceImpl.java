@@ -16,11 +16,9 @@
 package cool.houge.service.impl;
 
 import cool.houge.Nil;
-import cool.houge.service.dto.CreateGroupDTO;
-import cool.houge.service.vo.CreateGroupVO;
-import cool.houge.service.vo.JoinGroupVO;
-import cool.houge.storage.GroupDao;
 import cool.houge.entity.Group;
+import cool.houge.service.GroupService;
+import cool.houge.storage.GroupDao;
 import cool.houge.storage.query.GroupQueryDao;
 import javax.inject.Inject;
 import org.roaringbitmap.longlong.Roaring64NavigableMap;
@@ -28,7 +26,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.StacklessBizCodeException;
-import cool.houge.service.GroupService;
 
 /**
  * 群组服务实现.
@@ -56,10 +53,10 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<CreateGroupDTO> createGroup(CreateGroupVO vo) {
+  public Mono<CreateResult> create(Create vo) {
     var entity =
         Group.builder()
-            .id(vo.getId())
+            .id(vo.getGid())
             .creatorId(vo.getCreatorId())
             .ownerId(vo.getCreatorId())
             .memberSize(1)
@@ -67,11 +64,11 @@ public class GroupServiceImpl implements GroupService {
     return groupDao
         .insert(entity)
         .doOnSuccess(id -> this.updateGidBits(id, true))
-        .map(id -> CreateGroupDTO.builder().id(id).build());
+        .map(id -> CreateResult.builder().gid(id).build());
   }
 
   @Override
-  public Mono<Void> deleteGroup(long gid) {
+  public Mono<Void> delete(long gid) {
     return groupDao.delete(gid).doOnSuccess(unused -> updateGidBits(gid, false));
   }
 
@@ -85,19 +82,21 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<Void> joinMember(long gid, JoinGroupVO vo) {
-    return existsById(gid)
+  public Mono<Void> joinMember(JoinMember p) {
+    return existsById(p.getGid())
         .switchIfEmpty(
-            Mono.error(() -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + gid + "]")))
-        .flatMap(unused -> groupDao.joinMember(gid, vo.getUid()));
+            Mono.error(
+                () -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + p.getGid() + "]")))
+        .flatMap(unused -> groupDao.joinMember(p.getGid(), p.getUid()));
   }
 
   @Override
-  public Mono<Void> removeMember(long gid, JoinGroupVO vo) {
-    return existsById(gid)
+  public Mono<Void> deleteMember(JoinMember p) {
+    return existsById(p.getGid())
         .switchIfEmpty(
-            Mono.error(() -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + gid + "]")))
-        .flatMap(unused -> groupDao.removeMember(gid, vo.getUid()));
+            Mono.error(
+                () -> new StacklessBizCodeException(BizCode.C404, "不存在的群组[" + p.getGid() + "]")))
+        .flatMap(unused -> groupDao.removeMember(p.getGid(), p.getUid()));
   }
 
   private void updateGidBits(long gid, boolean v) {
