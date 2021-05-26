@@ -20,7 +20,16 @@ import cool.houge.grpc.GroupGrpc;
 import cool.houge.grpc.GroupPb.CreateGroupRequest;
 import cool.houge.grpc.GroupPb.CreateGroupResponse;
 import cool.houge.grpc.GroupPb.DeleteGroupRequest;
+import cool.houge.grpc.GroupPb.DeleteMemberGroupRequest;
+import cool.houge.grpc.GroupPb.JoinMemberGroupRequest;
+import cool.houge.service.GroupService;
+import cool.houge.service.vo.CreateGroupVO;
+import cool.houge.service.vo.JoinGroupVO;
 import io.grpc.stub.StreamObserver;
+import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import reactor.core.publisher.Mono;
 
 /**
  * 群组 gRPC 服务实现类.
@@ -29,14 +38,76 @@ import io.grpc.stub.StreamObserver;
  */
 public class GroupGrpcImpl extends GroupGrpc.GroupImplBase {
 
+  private static final Logger log = LogManager.getLogger();
+  private final GroupService groupService;
+
+  /**
+   * 使用群组服务对象构造对象.
+   *
+   * @param groupService 群组服务对象
+   */
+  @Inject
+  public GroupGrpcImpl(GroupService groupService) {
+    this.groupService = groupService;
+  }
+
   @Override
   public void create(
       CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {
-    super.create(request, responseObserver);
+    Mono.defer(
+            () -> {
+              log.debug("创建群组 {}", request);
+              var vo = new CreateGroupVO();
+              if (request.getId() > 0) {
+                vo.setId(request.getId());
+              }
+              vo.setCreatorId(request.getCreatorId());
+              vo.setName(request.getName());
+              return groupService
+                  .createGroup(vo)
+                  .map(dto -> CreateGroupResponse.newBuilder().setId(dto.getId()).build());
+            })
+        .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 
   @Override
   public void delete(DeleteGroupRequest request, StreamObserver<Empty> responseObserver) {
-    super.delete(request, responseObserver);
+    Mono.defer(
+            () -> {
+              log.debug("删除群组 {}", request);
+              return groupService
+                  .deleteGroup(request.getId())
+                  .map(unused -> Empty.getDefaultInstance());
+            })
+        .subscribe(new SingleGrpcSubscriber<>(responseObserver));
+  }
+
+  @Override
+  public void joinMember(JoinMemberGroupRequest request, StreamObserver<Empty> responseObserver) {
+    Mono.defer(
+            () -> {
+              log.debug("群组加入成员 {}", request);
+              var vo = new JoinGroupVO();
+              vo.setUid(request.getUid());
+              return groupService
+                  .joinMember(request.getId(), vo)
+                  .map(unused -> Empty.getDefaultInstance());
+            })
+        .subscribe(new SingleGrpcSubscriber<>(responseObserver));
+  }
+
+  @Override
+  public void deleteMember(
+      DeleteMemberGroupRequest request, StreamObserver<Empty> responseObserver) {
+    Mono.defer(
+            () -> {
+              log.debug("群组删除成员 {}", request);
+              var vo = new JoinGroupVO();
+              vo.setUid(request.getUid());
+              return groupService
+                  .removeMember(request.getId(), vo)
+                  .map(unused -> Empty.getDefaultInstance());
+            })
+        .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 }

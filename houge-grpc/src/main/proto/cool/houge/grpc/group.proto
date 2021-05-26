@@ -22,6 +22,20 @@ message DeleteGroupRequest {
   int64 id = 1;
 }
 
+message JoinMemberGroupRequest {
+  // 群组ID
+  int64 id = 1;
+  // 用户ID
+  int64 uid = 2;
+}
+
+message DeleteMemberGroupRequest {
+  // 群组ID
+  int64 id = 1;
+  // 用户ID
+  int64 uid = 2;
+}
+
 service Group {
 
   // 创建群组.
@@ -29,4 +43,10 @@ service Group {
 
   // 删除群组.
   rpc Delete(DeleteGroupRequest) returns(google.protobuf.Empty) {}
+
+  // 将用户加入到指定的群组
+  rpc JoinMember(JoinMemberGroupRequest) returns(google.protobuf.Empty) {}
+
+  // 将用户从指定的群组中删除
+  rpc DeleteMember(DeleteMemberGroupRequest) returns(google.protobuf.Empty) {}
 }
