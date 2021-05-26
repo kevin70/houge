@@ -111,9 +111,11 @@ allprojects {
   dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.mapstruct:mapstruct-processor")
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+
     compileOnly("com.google.code.findbugs:jsr305")
     compileOnly("org.apache.logging.log4j:log4j-api")
-    annotationProcessor("org.mapstruct:mapstruct-processor")
 
     // Test
     testCompileOnly("org.projectlombok:lombok")
