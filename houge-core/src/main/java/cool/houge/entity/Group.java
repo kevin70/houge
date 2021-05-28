@@ -44,19 +44,4 @@ public class Group {
   private LocalDateTime createTime;
   /** 更新时间. */
   private LocalDateTime updateTime;
-
-  /** 群组成员关系. */
-  @Data
-  @lombok.Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class Member {
-
-    /** 群组 ID. */
-    private Long gid;
-    /** 用户 ID. */
-    private Long uid;
-    /** 创建时间. */
-    private LocalDateTime createTime;
-  }
 }

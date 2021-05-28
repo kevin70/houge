@@ -15,18 +15,23 @@
  */
 package cool.houge.entity;
 
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * {@code t_user_message} 用户消息关联表.
- *
- * @author KK (kzou227@qq.com)
- */
+/** 群组成员关系. */
 @Data
-public class UserMessage {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class GroupMember {
 
+  /** 群组 ID. */
+  private Long gid;
   /** 用户 ID. */
   private Long uid;
-  /** 消息 ID. */
-  private String messageId;
+  /** 创建时间. */
+  private LocalDateTime createTime;
 }
