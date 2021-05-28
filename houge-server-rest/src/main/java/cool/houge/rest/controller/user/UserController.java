@@ -47,7 +47,7 @@ public class UserController extends AbstractRestSupport implements RoutingServic
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/users", interceptors.serviceAuth(this::createUser));
+    routes.post("/i/users", interceptors.serverAuth(this::createUser));
   }
 
   /**

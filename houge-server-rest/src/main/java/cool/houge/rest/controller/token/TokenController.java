@@ -47,7 +47,7 @@ public class TokenController extends AbstractRestSupport implements RoutingServi
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/token/{uid}", interceptors.serviceAuth(this::generateToken));
+    routes.post("/i/token/{uid}", interceptors.serverAuth(this::generateToken));
   }
 
   /**

@@ -58,7 +58,7 @@ public class Interceptors {
    * @param next 执行成功后的下一个函数
    * @return 认证拦截器
    */
-  public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> auth(
+  public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> userAuth(
       BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> next) {
     return authFunc.apply(next);
   }
@@ -69,7 +69,7 @@ public class Interceptors {
    * @param next 执行成功后的下一个函数
    * @return 服务认证拦截器
    */
-  public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serviceAuth(
+  public BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serverAuth(
       BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> next) {
     return serviceAuthFunc.apply(next);
   }

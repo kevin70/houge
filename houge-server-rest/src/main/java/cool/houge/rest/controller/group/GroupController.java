@@ -52,11 +52,11 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/groups", interceptors.serviceAuth(this::create));
-    routes.delete("/i/groups/{groupId}", interceptors.serviceAuth(this::delete));
+    routes.post("/i/groups", interceptors.serverAuth(this::create));
+    routes.delete("/i/groups/{groupId}", interceptors.serverAuth(this::delete));
 
-    routes.put("/i/group-members/{groupId}/join", interceptors.serviceAuth(this::joinMember));
-    routes.delete("/i/group-members/{groupId}/join", interceptors.serviceAuth(this::deleteMember));
+    routes.put("/i/group-members/{groupId}/join", interceptors.serverAuth(this::joinMember));
+    routes.delete("/i/group-members/{groupId}/join", interceptors.serverAuth(this::deleteMember));
   }
 
   /**

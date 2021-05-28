@@ -49,7 +49,7 @@ public class LooseMessageIdController extends AbstractRestSupport implements Rou
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/p/message-ids", interceptors.auth(this::getMessageIds));
+    routes.get("/p/message-ids", interceptors.userAuth(this::getMessageIds));
   }
 
   /**

@@ -54,9 +54,9 @@ public class LooseMessageController extends AbstractRestSupport implements Routi
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/p/messages", interceptors.auth(this::queryByUser));
-    routes.get("/p/messages/read", interceptors.auth(this::readMessages));
-    routes.post("/p/messages/send", interceptors.auth(this::sendMessage));
+    routes.get("/p/messages", interceptors.userAuth(this::queryByUser));
+    routes.get("/p/messages/read", interceptors.userAuth(this::readMessages));
+    routes.post("/p/messages/send", interceptors.userAuth(this::sendMessage));
   }
 
   /**
