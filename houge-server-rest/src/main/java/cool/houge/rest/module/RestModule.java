@@ -31,8 +31,8 @@ import cool.houge.id.YeinGidMessageIdGenerator;
 import cool.houge.rest.RestApplicationIdentifier;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.rest.controller.AuthInterceptor;
-import cool.houge.rest.controller.ServiceAuthInterceptor;
+import cool.houge.rest.controller.UserAuthInterceptor;
+import cool.houge.rest.controller.ServerAuthInterceptor;
 import cool.houge.rest.controller.group.GroupController;
 import cool.houge.rest.controller.token.TokenController;
 import cool.houge.rest.controller.user.UserController;
@@ -79,7 +79,7 @@ public class RestModule extends AbstractModule {
     bind(TokenService.class).to(JwsAuthService.class);
 
     // 绑定 Web 访问资源对象
-    bind(AuthInterceptor.class).in(Scopes.SINGLETON);
+    bind(UserAuthInterceptor.class).in(Scopes.SINGLETON);
     this.bindResources();
 
     this.bindInfoService();
@@ -87,8 +87,8 @@ public class RestModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public Interceptors interceptors(AuthInterceptor authInterceptor) {
-    return new Interceptors(authInterceptor::handle, serviceAuthInterceptor()::handle);
+  public Interceptors interceptors(UserAuthInterceptor userAuthInterceptor) {
+    return new Interceptors(userAuthInterceptor::handle, serviceAuthInterceptor()::handle);
   }
 
   private void bindInfoService() {
@@ -110,7 +110,7 @@ public class RestModule extends AbstractModule {
     binder.addBinding().to(TokenController.class).in(Scopes.SINGLETON);
   }
 
-  private ServiceAuthInterceptor serviceAuthInterceptor() {
+  private ServerAuthInterceptor serviceAuthInterceptor() {
     var basicUsersBuilder = ImmutableMap.<String, String>builder();
     if (config.hasPath(ConfigKeys.SERVICE_AUTH_BASIC)) {
       for (Entry<String, ConfigValue> entry :
@@ -118,6 +118,6 @@ public class RestModule extends AbstractModule {
         basicUsersBuilder.put(entry.getKey(), entry.getValue().unwrapped().toString());
       }
     }
-    return new ServiceAuthInterceptor(basicUsersBuilder.build());
+    return new ServerAuthInterceptor(basicUsersBuilder.build());
   }
 }

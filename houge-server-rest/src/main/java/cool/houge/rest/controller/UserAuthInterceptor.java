@@ -34,7 +34,7 @@ import cool.houge.rest.http.AbstractRestSupport;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class AuthInterceptor extends AbstractRestSupport {
+public class UserAuthInterceptor extends AbstractRestSupport {
 
   private static final String ACCESS_TOKEN_QUERY_NAME = "access_token";
 
@@ -46,7 +46,7 @@ public class AuthInterceptor extends AbstractRestSupport {
    * @param authService 认证服务
    */
   @Inject
-  public AuthInterceptor(AuthService authService) {
+  public UserAuthInterceptor(AuthService authService) {
     this.authService = authService;
   }
 

@@ -15,6 +15,7 @@
  */
 package cool.houge.rest.controller;
 
+import cool.houge.rest.http.AbstractRestSupport;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -27,7 +28,6 @@ import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
-import cool.houge.rest.http.AbstractRestSupport;
 
 /**
  * 服务认证拦截器.
@@ -35,7 +35,7 @@ import cool.houge.rest.http.AbstractRestSupport;
  * @author KK (kzou227@qq.com)
  */
 @Log4j2
-public class ServiceAuthInterceptor extends AbstractRestSupport {
+public class ServerAuthInterceptor extends AbstractRestSupport {
 
   private static final String AUTH_BASIC_SCHEME = "Basic";
 
@@ -46,7 +46,7 @@ public class ServiceAuthInterceptor extends AbstractRestSupport {
    *
    * @param basicUsers BASIC 认证用户信息及密码
    */
-  public ServiceAuthInterceptor(Map<String, String> basicUsers) {
+  public ServerAuthInterceptor(Map<String, String> basicUsers) {
     Objects.requireNonNull(basicUsers, "[basicUsers]不能为空");
     this.basicUsers = basicUsers;
   }
@@ -85,13 +85,11 @@ public class ServiceAuthInterceptor extends AbstractRestSupport {
       var password = basicUsers.get(pass[0]);
       if (password == null) {
         log.debug("服务认证用户不存在 [user={}]", pass[0]);
-        throw new BizCodeException(BizCode.C401, "认证失败")
-            .addContextValue("user", pass[0]);
+        throw new BizCodeException(BizCode.C401, "认证失败").addContextValue("user", pass[0]);
       }
       if (!password.equals(pass[1])) {
         log.debug("服务认证密码不匹配 [user={}]", pass[0]);
-        throw new BizCodeException(BizCode.C401, "认证失败")
-            .addContextValue("user", pass[0]);
+        throw new BizCodeException(BizCode.C401, "认证失败").addContextValue("user", pass[0]);
       }
       return next.apply(request, response);
     };

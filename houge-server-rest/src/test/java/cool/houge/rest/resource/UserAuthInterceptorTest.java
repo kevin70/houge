@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import cool.houge.rest.MockHttpServerRequest;
-import cool.houge.rest.controller.AuthInterceptor;
+import cool.houge.rest.controller.UserAuthInterceptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -32,11 +32,11 @@ import cool.houge.rest.TestUtils;
 import cool.houge.rest.http.AbstractRestSupport;
 
 /**
- * {@link AuthInterceptor} 单元测试.
+ * {@link UserAuthInterceptor} 单元测试.
  *
  * @author KK (kzou227@qq.com)
  */
-class AuthInterceptorTest {
+class UserAuthInterceptorTest {
 
   @Test
   void handle() {
@@ -44,7 +44,7 @@ class AuthInterceptorTest {
     var authContext = new TestAuthContext();
     when(authService.authenticate(anyString())).thenReturn(Mono.just(authContext));
 
-    var interceptor = new AuthInterceptor(authService);
+    var interceptor = new UserAuthInterceptor(authService);
     var fun = interceptor.handle((request, response) -> Mono.empty());
 
     var request =
@@ -67,7 +67,7 @@ class AuthInterceptorTest {
     var authService = mock(AuthService.class);
     when(authService.authenticate(anyString())).thenReturn(Mono.just(new TestAuthContext()));
 
-    var interceptor = new AuthInterceptor(authService);
+    var interceptor = new UserAuthInterceptor(authService);
     var fun = interceptor.handle((request, response) -> Mono.empty());
 
     var request = MockHttpServerRequest.builder().uri("/test").build();
@@ -82,7 +82,7 @@ class AuthInterceptorTest {
     var authService = mock(AuthService.class);
     when(authService.authenticate(anyString())).thenReturn(Mono.just(new TestAuthContext()));
 
-    var interceptor = new AuthInterceptor(authService);
+    var interceptor = new UserAuthInterceptor(authService);
     var fun = interceptor.handle((request, response) -> Mono.empty());
 
     var request = MockHttpServerRequest.builder().uri("/test?access_token").build();
