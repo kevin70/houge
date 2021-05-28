@@ -19,8 +19,8 @@ import com.google.common.base.Strings;
 import cool.houge.grpc.UserGrpc;
 import cool.houge.grpc.UserPb.CreateUserRequest;
 import cool.houge.grpc.UserPb.CreateUserResponse;
-import cool.houge.service.UserService;
-import cool.houge.service.UserService.Create;
+import cool.houge.service.user.UserService;
+import cool.houge.service.user.CreateUserInput;
 import io.grpc.stub.StreamObserver;
 import javax.inject.Inject;
 
@@ -46,7 +46,7 @@ public class UserGrpcImpl extends UserGrpc.UserImplBase {
   @Override
   public void create(
       CreateUserRequest request, StreamObserver<CreateUserResponse> responseObserver) {
-    var createBuilder = Create.builder();
+    var createBuilder = CreateUserInput.builder();
     if (request.getUid() > 0) {
       createBuilder.uid(request.getUid());
     }

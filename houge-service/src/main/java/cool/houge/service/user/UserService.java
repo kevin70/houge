@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service;
+package cool.houge.service.user;
 
 import cool.houge.Nil;
-import lombok.Builder;
-import lombok.Value;
 import reactor.core.publisher.Mono;
 
 /**
@@ -30,10 +28,10 @@ public interface UserService {
   /**
    * 创建用户.
    *
-   * @param p 创建用户参数
+   * @param in 创建用户参数
    * @return 用户ID
    */
-  Mono<CreateResult> create(Create p);
+  Mono<CreateUserResult> create(CreateUserInput in);
 
   /**
    * 判断指定用户是否存在.
@@ -44,24 +42,4 @@ public interface UserService {
    * @return true/false
    */
   Mono<Nil> existsById(long uid);
-
-  /** 创建用户. */
-  @Value
-  @Builder
-  class Create {
-
-    /** 用户ID. */
-    private Long uid;
-    /** 原系统用户 ID. */
-    private String originUid;
-  }
-
-  /** 创建用户. */
-  @Value
-  @Builder
-  class CreateResult {
-
-    /** 用户ID. */
-    private Long uid;
-  }
 }

@@ -23,8 +23,8 @@ import reactor.netty.http.server.HttpServerRoutes;
 import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.service.UserService;
-import cool.houge.service.UserService.Create;
+import cool.houge.service.user.UserService;
+import cool.houge.service.user.CreateUserInput;
 
 /**
  * 用户 REST 接口.
@@ -58,7 +58,7 @@ public class UserResource extends AbstractRestSupport implements RoutingService 
    * @return RS
    */
   Mono<Void> createUser(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, Create.class)
+    return json(request, CreateUserInput.class)
         .flatMap(vo -> userService.create(vo).flatMap(dto -> json(response, dto)));
   }
 }

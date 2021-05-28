@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.impl;
+package cool.houge.service.user;
 
 import cool.houge.Nil;
 import cool.houge.model.User;
-import cool.houge.service.UserService;
+import cool.houge.service.user.CreateUserInput;
+import cool.houge.service.user.CreateUserResult;
+import cool.houge.service.user.UserService;
 import cool.houge.storage.UserDao;
 import cool.houge.storage.query.UserQueryDao;
 import javax.inject.Inject;
@@ -51,11 +53,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Mono<CreateResult> create(Create p) {
+  public Mono<CreateUserResult> create(CreateUserInput in) {
     return userDao
-        .insert(User.builder().id(p.getUid()).originUid(p.getOriginUid()).build())
+        .insert(User.builder().id(in.getUid()).originUid(in.getOriginUid()).build())
         .doOnSuccess(id -> updateUidBits(id, true))
-        .map(id -> CreateResult.builder().uid(id).build());
+        .map(id -> CreateUserResult.builder().uid(id).build());
   }
 
   @Override
