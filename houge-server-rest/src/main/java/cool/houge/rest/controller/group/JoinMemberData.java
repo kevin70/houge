@@ -1,4 +1,4 @@
-package cool.houge.rest.resource.inward.vo;
+package cool.houge.rest.controller.group;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * @author KK (kzou227@qq.com)
  */
 @Data
-public class JoinMemberGroupVo {
+public class JoinMemberData {
 
   /** 用户ID. */
   private long uid;

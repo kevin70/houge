@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.system;
+package cool.houge.rest.controller.health;
 
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
+import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
+import cool.houge.system.health.HealthService;
 
-/** @author KK (kzou227@qq.com) */
-public class PrometheusResource implements RoutingService {
+/**
+ * 系统健康状况 REST 接口.
+ *
+ * @author KK (kzou227@qq.com)
+ */
+public class HealthController extends AbstractRestSupport implements RoutingService {
 
-  private final PrometheusMeterRegistry prometheusMeterRegistry;
+  private final HealthService healthService;
 
-  /** @param prometheusMeterRegistry */
+  /** @param healthService */
   @Inject
-  public PrometheusResource(PrometheusMeterRegistry prometheusMeterRegistry) {
-    this.prometheusMeterRegistry = prometheusMeterRegistry;
+  public HealthController(HealthService healthService) {
+    this.healthService = healthService;
   }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/-/prometheus", this::prometheus);
+    routes.get("/-/health", this::health);
   }
 
   /**
@@ -45,7 +50,9 @@ public class PrometheusResource implements RoutingService {
    * @param response
    * @return
    */
-  Mono<Void> prometheus(HttpServerRequest request, HttpServerResponse response) {
-    return response.sendString(Mono.just(prometheusMeterRegistry.scrape())).then();
+  Mono<Void> health(HttpServerRequest request, HttpServerResponse response) {
+    return healthService
+        .health(queryParam(request, "debug") != null)
+        .flatMap(healthComposite -> json(response, healthComposite));
   }
 }

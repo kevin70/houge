@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.outward;
+package cool.houge.rest.controller.message;
 
+import cool.houge.id.MessageIdGenerator;
+import cool.houge.rest.http.AbstractRestSupport;
+import cool.houge.rest.http.Interceptors;
+import cool.houge.rest.http.RoutingService;
 import java.util.Optional;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
@@ -23,17 +27,13 @@ import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
-import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
-import cool.houge.id.MessageIdGenerator;
 
 /**
  * 消息 ID REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-public class MessageIdResource extends AbstractRestSupport implements RoutingService {
+public class PublicMessageIdController extends AbstractRestSupport implements RoutingService {
 
   private final MessageIdGenerator messageIdGenerator;
 
@@ -43,7 +43,7 @@ public class MessageIdResource extends AbstractRestSupport implements RoutingSer
    * @param messageIdGenerator 消息 ID 生成器
    */
   @Inject
-  public MessageIdResource(MessageIdGenerator messageIdGenerator) {
+  public PublicMessageIdController(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
   }
 

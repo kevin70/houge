@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.outward;
+package cool.houge.rest.controller.message;
 
 import cool.houge.domain.Paging;
 import cool.houge.rest.http.AbstractRestSupport;
@@ -37,7 +37,7 @@ import reactor.netty.http.server.HttpServerRoutes;
  *
  * @author KK (kzou227@qq.com)
  */
-public class OutwardMessageResource extends AbstractRestSupport implements RoutingService {
+public class PublicMessageController extends AbstractRestSupport implements RoutingService {
 
   private static final Logger log = LogManager.getLogger();
   private final MessageService messageService;
@@ -48,7 +48,7 @@ public class OutwardMessageResource extends AbstractRestSupport implements Routi
    * @param messageService 消息服务
    */
   @Inject
-  public OutwardMessageResource(MessageService messageService) {
+  public PublicMessageController(MessageService messageService) {
     this.messageService = messageService;
   }
 

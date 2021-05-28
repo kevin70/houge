@@ -31,14 +31,14 @@ import cool.houge.id.YeinGidMessageIdGenerator;
 import cool.houge.rest.RestApplicationIdentifier;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.rest.resource.AuthInterceptor;
-import cool.houge.rest.resource.ServiceAuthInterceptor;
-import cool.houge.rest.resource.inward.GroupResource;
-import cool.houge.rest.resource.inward.TokenResource;
-import cool.houge.rest.resource.inward.UserResource;
-import cool.houge.rest.resource.outward.MessageIdResource;
-import cool.houge.rest.resource.outward.OutwardMessageResource;
-import cool.houge.rest.resource.system.InfoResource;
+import cool.houge.rest.controller.AuthInterceptor;
+import cool.houge.rest.controller.ServiceAuthInterceptor;
+import cool.houge.rest.controller.group.GroupController;
+import cool.houge.rest.controller.token.TokenController;
+import cool.houge.rest.controller.user.UserController;
+import cool.houge.rest.controller.message.PublicMessageIdController;
+import cool.houge.rest.controller.message.PublicMessageController;
+import cool.houge.rest.controller.info.InfoController;
 import cool.houge.system.identifier.ApplicationIdentifier;
 import cool.houge.system.info.AppInfoContributor;
 import cool.houge.system.info.InfoContributor;
@@ -101,13 +101,13 @@ public class RestModule extends AbstractModule {
 
   private void bindResources() {
     var binder = Multibinder.newSetBinder(binder(), RoutingService.class);
-    binder.addBinding().to(InfoResource.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(MessageIdResource.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(OutwardMessageResource.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(InfoController.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(PublicMessageIdController.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(PublicMessageController.class).in(Scopes.SINGLETON);
 
-    binder.addBinding().to(GroupResource.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(UserResource.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(TokenResource.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(GroupController.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(UserController.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(TokenController.class).in(Scopes.SINGLETON);
   }
 
   private ServiceAuthInterceptor serviceAuthInterceptor() {

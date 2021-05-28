@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.system;
+package cool.houge.rest.controller.token;
 
+import cool.houge.auth.TokenService;
 import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.system.info.InfoService;
+import java.util.Map;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -26,37 +27,40 @@ import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
 
 /**
- * 系统信息 REST 接口.
+ * 访问令牌 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-public class InfoResource extends AbstractRestSupport implements RoutingService {
+public class TokenController extends AbstractRestSupport implements RoutingService {
 
-  private final InfoService infoService;
+  private final TokenService tokenService;
 
   /**
-   * 使用应用信息服务构造对象.
+   * 可以被 IoC 容器使用的构造函数.
    *
-   * @param infoService 信息服务对象
+   * @param tokenService 令牌服务
    */
   @Inject
-  public InfoResource(InfoService infoService) {
-    this.infoService = infoService;
+  public TokenController(TokenService tokenService) {
+    this.tokenService = tokenService;
   }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/-/info", this::info);
+    routes.post("/i/token/{uid}", interceptors.serviceAuth(this::generateToken));
   }
 
   /**
-   * 返回应用信息.
+   * 为指定用户生成访问令牌.
    *
    * @param request 请求对象
    * @param response 响应对象
    * @return RS
    */
-  Mono<Void> info(HttpServerRequest request, HttpServerResponse response) {
-    return infoService.info().flatMap(info -> json(response, info.getDetails()));
+  Mono<Void> generateToken(HttpServerRequest request, HttpServerResponse response) {
+    var uid = pathLong(request, "uid");
+    return tokenService
+        .generateToken(uid)
+        .flatMap(accessToken -> json(response, Map.of("access_token", accessToken)));
   }
 }

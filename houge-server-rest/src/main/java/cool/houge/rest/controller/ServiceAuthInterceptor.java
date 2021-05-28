@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource;
+package cool.houge.rest.controller;
 
 import io.netty.handler.codec.http.HttpHeaderNames;
 import java.nio.charset.StandardCharsets;

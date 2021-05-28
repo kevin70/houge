@@ -13,54 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.inward;
+package cool.houge.rest.controller.user;
 
-import java.util.Map;
+import cool.houge.rest.http.AbstractRestSupport;
+import cool.houge.rest.http.Interceptors;
+import cool.houge.rest.http.RoutingService;
+import cool.houge.service.user.CreateUserInput;
+import cool.houge.service.user.UserService;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
-import cool.houge.auth.TokenService;
-import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
 
 /**
- * 访问令牌 REST 接口.
+ * 用户 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-public class TokenResource extends AbstractRestSupport implements RoutingService {
+public class UserController extends AbstractRestSupport implements RoutingService {
 
-  private final TokenService tokenService;
+  private final UserService userService;
 
   /**
    * 可以被 IoC 容器使用的构造函数.
    *
-   * @param tokenService 令牌服务
+   * @param userService 用户服务对象
    */
   @Inject
-  public TokenResource(TokenService tokenService) {
-    this.tokenService = tokenService;
+  public UserController(UserService userService) {
+    this.userService = userService;
   }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/token/{uid}", interceptors.serviceAuth(this::generateToken));
+    routes.post("/i/users", interceptors.serviceAuth(this::createUser));
   }
 
   /**
-   * 为指定用户生成访问令牌.
+   * 创建用户.
    *
    * @param request 请求对象
    * @param response 响应对象
    * @return RS
    */
-  Mono<Void> generateToken(HttpServerRequest request, HttpServerResponse response) {
-    var uid = pathLong(request, "uid");
-    return tokenService
-        .generateToken(uid)
-        .flatMap(accessToken -> json(response, Map.of("access_token", accessToken)));
+  Mono<Void> createUser(HttpServerRequest request, HttpServerResponse response) {
+    return json(request, CreateUserInput.class)
+        .flatMap(vo -> userService.create(vo).flatMap(dto -> json(response, dto)));
   }
 }

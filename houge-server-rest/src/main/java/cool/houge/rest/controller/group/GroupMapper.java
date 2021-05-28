@@ -1,4 +1,4 @@
-package cool.houge.rest.resource.inward.vo;
+package cool.houge.rest.controller.group;
 
 import cool.houge.service.group.JoinMemberInput;
 import org.mapstruct.Mapper;
@@ -18,5 +18,5 @@ public interface GroupMapper {
    * @param vo
    * @return
    */
-  JoinMemberInput mapToJoinGroup(JoinMemberGroupVo vo, long gid);
+  JoinMemberInput mapToJoinGroup(JoinMemberData vo, long gid);
 }

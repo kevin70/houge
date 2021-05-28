@@ -13,36 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.system;
+package cool.houge.rest.controller.prometheus;
 
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
-import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.system.health.HealthService;
 
-/**
- * 系统健康状况 REST 接口.
- *
- * @author KK (kzou227@qq.com)
- */
-public class HealthResource extends AbstractRestSupport implements RoutingService {
+/** @author KK (kzou227@qq.com) */
+public class PrometheusResource implements RoutingService {
 
-  private final HealthService healthService;
+  private final PrometheusMeterRegistry prometheusMeterRegistry;
 
-  /** @param healthService */
+  /** @param prometheusMeterRegistry */
   @Inject
-  public HealthResource(HealthService healthService) {
-    this.healthService = healthService;
+  public PrometheusResource(PrometheusMeterRegistry prometheusMeterRegistry) {
+    this.prometheusMeterRegistry = prometheusMeterRegistry;
   }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.get("/-/health", this::health);
+    routes.get("/-/prometheus", this::prometheus);
   }
 
   /**
@@ -50,9 +45,7 @@ public class HealthResource extends AbstractRestSupport implements RoutingServic
    * @param response
    * @return
    */
-  Mono<Void> health(HttpServerRequest request, HttpServerResponse response) {
-    return healthService
-        .health(queryParam(request, "debug") != null)
-        .flatMap(healthComposite -> json(response, healthComposite));
+  Mono<Void> prometheus(HttpServerRequest request, HttpServerResponse response) {
+    return response.sendString(Mono.just(prometheusMeterRegistry.scrape())).then();
   }
 }

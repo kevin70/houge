@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.inward;
+package cool.houge.rest.controller.group;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 
 import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.rest.resource.inward.vo.GroupMapper;
-import cool.houge.rest.resource.inward.vo.JoinMemberGroupVo;
 import cool.houge.service.group.GroupService;
 import cool.houge.service.group.CreateGroupInput;
 import javax.inject.Inject;
@@ -35,7 +33,7 @@ import reactor.netty.http.server.HttpServerRoutes;
  *
  * @author KK (kzou227@qq.com)
  */
-public class GroupResource extends AbstractRestSupport implements RoutingService {
+public class GroupController extends AbstractRestSupport implements RoutingService {
 
   /** Path 参数名称. */
   private static final String GROUP_ID_PN = "groupId";
@@ -48,7 +46,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @param groupService 群组服务
    */
   @Inject
-  public GroupResource(GroupService groupService) {
+  public GroupController(GroupService groupService) {
     this.groupService = groupService;
   }
 
@@ -95,7 +93,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> joinMember(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, JoinMemberGroupVo.class)
+    return json(request, JoinMemberData.class)
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);
@@ -114,7 +112,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> deleteMember(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, JoinMemberGroupVo.class)
+    return json(request, JoinMemberData.class)
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);

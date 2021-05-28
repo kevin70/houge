@@ -13,52 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.resource.inward;
+package cool.houge.rest.controller.info;
 
+import cool.houge.rest.http.AbstractRestSupport;
+import cool.houge.rest.http.Interceptors;
+import cool.houge.rest.http.RoutingService;
+import cool.houge.system.info.InfoService;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
-import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
-import cool.houge.service.user.UserService;
-import cool.houge.service.user.CreateUserInput;
 
 /**
- * 用户 REST 接口.
+ * 系统信息 REST 接口.
  *
  * @author KK (kzou227@qq.com)
  */
-public class UserResource extends AbstractRestSupport implements RoutingService {
+public class InfoController extends AbstractRestSupport implements RoutingService {
 
-  private final UserService userService;
+  private final InfoService infoService;
 
   /**
-   * 可以被 IoC 容器使用的构造函数.
+   * 使用应用信息服务构造对象.
    *
-   * @param userService 用户服务对象
+   * @param infoService 信息服务对象
    */
   @Inject
-  public UserResource(UserService userService) {
-    this.userService = userService;
+  public InfoController(InfoService infoService) {
+    this.infoService = infoService;
   }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/users", interceptors.serviceAuth(this::createUser));
+    routes.get("/-/info", this::info);
   }
 
   /**
-   * 创建用户.
+   * 返回应用信息.
    *
    * @param request 请求对象
    * @param response 响应对象
    * @return RS
    */
-  Mono<Void> createUser(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, CreateUserInput.class)
-        .flatMap(vo -> userService.create(vo).flatMap(dto -> json(response, dto)));
+  Mono<Void> info(HttpServerRequest request, HttpServerResponse response) {
+    return infoService.info().flatMap(info -> json(response, info.getDetails()));
   }
 }
