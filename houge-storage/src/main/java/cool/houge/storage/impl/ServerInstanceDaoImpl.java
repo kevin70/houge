@@ -15,7 +15,7 @@
  */
 package cool.houge.storage.impl;
 
-import cool.houge.domain.ServerInstance;
+import cool.houge.model.ServerInstance;
 import cool.houge.r2dbc.R2dbcClient;
 import io.r2dbc.spi.Row;
 import java.time.LocalDateTime;

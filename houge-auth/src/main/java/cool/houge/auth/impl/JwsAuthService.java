@@ -44,7 +44,7 @@ import cool.houge.BizCodes;
 import cool.houge.auth.AuthService;
 import cool.houge.auth.TokenService;
 import cool.houge.storage.JwtSecretDao;
-import cool.houge.entity.JwtSecret;
+import cool.houge.model.JwtSecret;
 import cool.houge.storage.query.UserQueryDao;
 
 /**

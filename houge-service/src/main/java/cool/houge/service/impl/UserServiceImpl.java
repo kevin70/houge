@@ -16,7 +16,7 @@
 package cool.houge.service.impl;
 
 import cool.houge.Nil;
-import cool.houge.entity.User;
+import cool.houge.model.User;
 import cool.houge.service.UserService;
 import cool.houge.storage.UserDao;
 import cool.houge.storage.query.UserQueryDao;

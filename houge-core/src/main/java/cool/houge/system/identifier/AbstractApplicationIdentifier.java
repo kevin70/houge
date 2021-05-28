@@ -15,7 +15,7 @@
  */
 package cool.houge.system.identifier;
 
-import cool.houge.domain.ServerInstance;
+import cool.houge.model.ServerInstance;
 import cool.houge.util.HostNameUtils;
 import cool.houge.util.YeinGid;
 import io.r2dbc.spi.R2dbcDataIntegrityViolationException;

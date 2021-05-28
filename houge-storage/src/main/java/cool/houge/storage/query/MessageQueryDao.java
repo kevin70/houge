@@ -18,7 +18,7 @@ package cool.houge.storage.query;
 import cool.houge.domain.Paging;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import cool.houge.entity.Message;
+import cool.houge.model.Message;
 
 /**
  * 消息查询数据访问接口.

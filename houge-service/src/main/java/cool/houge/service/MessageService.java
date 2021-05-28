@@ -16,7 +16,7 @@
 package cool.houge.service;
 
 import cool.houge.domain.Paging;
-import cool.houge.entity.Message;
+import cool.houge.model.Message;
 import cool.houge.storage.query.UserMessageQuery;
 import java.util.List;
 import reactor.core.publisher.Flux;

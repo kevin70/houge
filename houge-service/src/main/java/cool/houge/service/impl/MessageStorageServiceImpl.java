@@ -16,7 +16,7 @@
 package cool.houge.service.impl;
 
 import cool.houge.storage.MessageDao;
-import cool.houge.entity.Message;
+import cool.houge.model.Message;
 import java.util.List;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;

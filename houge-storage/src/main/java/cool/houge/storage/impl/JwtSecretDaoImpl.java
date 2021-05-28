@@ -16,7 +16,7 @@
 package cool.houge.storage.impl;
 
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.entity.JwtSecret;
+import cool.houge.model.JwtSecret;
 import io.r2dbc.spi.Row;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;

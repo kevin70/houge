@@ -40,7 +40,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import top.yein.chaos.biz.BizCodeException;
 import cool.houge.storage.JwtSecretDao;
-import cool.houge.entity.JwtSecret;
+import cool.houge.model.JwtSecret;
 import cool.houge.storage.query.UserQueryDao;
 
 /**

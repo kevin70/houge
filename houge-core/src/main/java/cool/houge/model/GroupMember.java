@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.entity;
+package cool.houge.model;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -21,23 +21,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * IM 用户信息表.
- *
- * @author KK (kzou227@qq.com)
- */
+/** 群组成员关系. */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class GroupMember {
 
+  /** 群组 ID. */
+  private Long gid;
   /** 用户 ID. */
-  private Long id;
-  /** 原用户 ID. */
-  private String originUid;
+  private Long uid;
   /** 创建时间. */
   private LocalDateTime createTime;
-  /** 更新时间. */
-  private LocalDateTime updateTime;
 }

@@ -15,7 +15,7 @@
  */
 package cool.houge.storage;
 
-import cool.houge.entity.Group;
+import cool.houge.model.Group;
 import reactor.core.publisher.Mono;
 
 /**

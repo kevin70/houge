@@ -17,7 +17,7 @@ package cool.houge.storage.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.entity.Group;
+import cool.houge.model.Group;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCode;

@@ -15,7 +15,7 @@
  */
 package cool.houge.system.identifier;
 
-import cool.houge.domain.ServerInstance;
+import cool.houge.model.ServerInstance;
 import reactor.core.publisher.Mono;
 
 /** @author KK (kzou227@qq.com) */

@@ -18,7 +18,7 @@ package cool.houge.storage.query;
 import cool.houge.Nil;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import cool.houge.entity.Group;
+import cool.houge.model.Group;
 
 /**
  * 群组查询数据访问接口.

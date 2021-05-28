@@ -29,7 +29,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import cool.houge.entity.Message;
+import cool.houge.model.Message;
 
 /**
  * {@link MessageDaoImpl} 单元测试.

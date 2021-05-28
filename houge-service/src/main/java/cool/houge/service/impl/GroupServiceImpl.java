@@ -16,7 +16,7 @@
 package cool.houge.service.impl;
 
 import cool.houge.Nil;
-import cool.houge.entity.Group;
+import cool.houge.model.Group;
 import cool.houge.service.GroupService;
 import cool.houge.storage.GroupDao;
 import cool.houge.storage.query.GroupQueryDao;

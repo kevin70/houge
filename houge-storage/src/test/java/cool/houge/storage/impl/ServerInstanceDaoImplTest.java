@@ -18,7 +18,7 @@ package cool.houge.storage.impl;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.github.javafaker.Faker;
-import cool.houge.domain.ServerInstance;
+import cool.houge.model.ServerInstance;
 import cool.houge.storage.AbstractTestDao;
 import cool.houge.util.HostNameUtils;
 import java.net.UnknownHostException;

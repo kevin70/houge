@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import cool.houge.entity.JwtSecret;
+import cool.houge.model.JwtSecret;
 
 /**
  * {@link JwtSecretDaoImpl} 单元测试.

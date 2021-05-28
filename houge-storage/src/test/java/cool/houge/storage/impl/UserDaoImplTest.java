@@ -20,7 +20,7 @@ import cool.houge.storage.AbstractTestDao;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import cool.houge.entity.User;
+import cool.houge.model.User;
 
 /**
  * {@link UserDaoImpl} 单元测试.

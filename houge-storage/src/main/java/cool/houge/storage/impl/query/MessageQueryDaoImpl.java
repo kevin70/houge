@@ -17,7 +17,7 @@ package cool.houge.storage.impl.query;
 
 import cool.houge.domain.Paging;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.entity.Message;
+import cool.houge.model.Message;
 import cool.houge.storage.query.MessageQueryDao;
 import cool.houge.storage.query.UserMessageQuery;
 import io.r2dbc.spi.Row;
