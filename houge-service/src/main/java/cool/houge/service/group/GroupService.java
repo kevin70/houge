@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service;
+package cool.houge.service.group;
 
 import cool.houge.Nil;
-import lombok.Builder;
-import lombok.Value;
 import reactor.core.publisher.Mono;
 
 /**
@@ -30,10 +28,10 @@ public interface GroupService {
   /**
    * 创建群组.
    *
-   * @param vo VO
+   * @param in VO
    * @return 群组 ID
    */
-  Mono<CreateResult> create(Create vo);
+  Mono<CreateGroupResult> create(CreateGroupInput in);
 
   /**
    * 删除群组.
@@ -59,7 +57,7 @@ public interface GroupService {
    * @param p VO
    * @return RS
    */
-  Mono<Void> joinMember(JoinMember p);
+  Mono<Void> joinMember(JoinMemberInput p);
 
   /**
    * 将指定的用户与群组解除关系.
@@ -67,38 +65,5 @@ public interface GroupService {
    * @param p VO
    * @return RS
    */
-  Mono<Void> deleteMember(JoinMember p);
-
-  /** 创建群组对象. */
-  @Value
-  @Builder
-  class Create {
-
-    /** 群组 ID. */
-    private Long gid;
-    /** 创建者用户 ID. */
-    private long creatorId;
-    /** 群组名称. */
-    private String name;
-  }
-
-  /** 创建群组返回对象. */
-  @Value
-  @Builder
-  class CreateResult {
-
-    /** 群组 ID. */
-    private Long gid;
-  }
-
-  /** 加入群组请求参数对象. */
-  @Value
-  @Builder
-  class JoinMember {
-
-    /** 群组ID. */
-    private long gid;
-    /** 用户ID. */
-    private long uid;
-  }
+  Mono<Void> deleteMember(JoinMemberInput p);
 }

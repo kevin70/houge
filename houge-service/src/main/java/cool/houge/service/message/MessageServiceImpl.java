@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.impl;
+package cool.houge.service.message;
 
 import cool.houge.constants.MessageReadStatus;
 import cool.houge.domain.Paging;
-import cool.houge.service.MessageProps;
+import cool.houge.service.message.MessageProps;
 import cool.houge.storage.MessageDao;
 import cool.houge.model.Message;
 import cool.houge.storage.query.MessageQueryDao;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import cool.houge.service.MessageService;
+import cool.houge.service.message.MessageService;
 
 /**
  * 消息服务实现.

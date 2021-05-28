@@ -23,7 +23,7 @@ import cool.houge.id.MessageIdGenerator;
 import cool.houge.logic.agent.PacketSender;
 import cool.houge.logic.handler.internal.MessagePacketHelper;
 import cool.houge.logic.packet.MessagePacketBase;
-import cool.houge.service.MessageStorageService;
+import cool.houge.service.message.MessageStorageService;
 import cool.houge.util.YeinGid;
 import java.util.List;
 import javax.inject.Inject;

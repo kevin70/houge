@@ -17,20 +17,10 @@ package cool.houge.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import cool.houge.Nil;
-import cool.houge.service.GroupService.Create;
-import cool.houge.storage.GroupDao;
-import cool.houge.storage.query.GroupQueryDao;
-import org.junit.jupiter.api.Test;
-import org.powermock.reflect.Whitebox;
-import org.roaringbitmap.longlong.Roaring64NavigableMap;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import cool.houge.service.group.GroupServiceImpl;
 
 /**
  * {@link GroupServiceImpl} 单元测试.

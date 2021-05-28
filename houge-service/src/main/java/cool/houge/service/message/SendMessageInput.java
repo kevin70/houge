@@ -13,20 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.result;
+package cool.houge.service.message;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import cool.houge.constants.MessageContentType;
+import cool.houge.constants.MessageKind;
 import lombok.Data;
 
 /**
- * 发送消息响应数据类.
+ * 消息发送 VO.
  *
  * @author KK (kzou227@qq.com)
  */
 @Data
-@Builder
-public class MessageSendResult {
+public class SendMessageInput {
 
-  /** 消息 ID. */
-  String messageId;
+  /**
+   * 消息类型.
+   *
+   * @see MessageKind
+   */
+  private int kind;
+  /** 消息接收者. */
+  private long to;
+  /** 消息内容. */
+  private String content;
+  /**
+   * 消息内容类型.
+   *
+   * @see MessageContentType
+   */
+  private int contentType;
+  /** 扩展参数. */
+  private @JsonUnwrapped String extraArgs;
 }

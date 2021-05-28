@@ -19,9 +19,9 @@ import cool.houge.domain.Paging;
 import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.service.MessageService;
-import cool.houge.service.vo.ReadMessageVO;
-import cool.houge.service.vo.SendMessageVO;
+import cool.houge.service.message.MessageService;
+import cool.houge.service.message.ReadMessageInput;
+import cool.houge.service.message.SendMessageInput;
 import cool.houge.storage.query.UserMessageQuery;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
@@ -90,7 +90,7 @@ public class OutwardMessageResource extends AbstractRestSupport implements Routi
    */
   Mono<Void> readMessages(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
-        .zipWith(json(request, ReadMessageVO.class))
+        .zipWith(json(request, ReadMessageInput.class))
         .flatMap(
             t -> {
               var ac = t.getT1();
@@ -110,7 +110,7 @@ public class OutwardMessageResource extends AbstractRestSupport implements Routi
    */
   Mono<Void> sendMessage(HttpServerRequest request, HttpServerResponse response) {
     return authContext()
-        .zipWith(json(request, SendMessageVO.class))
+        .zipWith(json(request, SendMessageInput.class))
         .flatMap(
             t -> {
               var ac = t.getT1();

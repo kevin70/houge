@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.impl;
+package cool.houge.service.group;
 
 import cool.houge.Nil;
 import cool.houge.model.Group;
-import cool.houge.service.GroupService;
 import cool.houge.storage.GroupDao;
 import cool.houge.storage.query.GroupQueryDao;
 import javax.inject.Inject;
@@ -53,18 +52,18 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<CreateResult> create(Create vo) {
+  public Mono<CreateGroupResult> create(CreateGroupInput in) {
     var entity =
         Group.builder()
-            .id(vo.getGid())
-            .creatorId(vo.getCreatorId())
-            .ownerId(vo.getCreatorId())
+            .id(in.getGid())
+            .creatorId(in.getCreatorId())
+            .ownerId(in.getCreatorId())
             .memberSize(1)
             .build();
     return groupDao
         .insert(entity)
         .doOnSuccess(id -> this.updateGidBits(id, true))
-        .map(id -> CreateResult.builder().gid(id).build());
+        .map(id -> CreateGroupResult.builder().gid(id).build());
   }
 
   @Override
@@ -82,7 +81,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<Void> joinMember(JoinMember p) {
+  public Mono<Void> joinMember(JoinMemberInput p) {
     return existsById(p.getGid())
         .switchIfEmpty(
             Mono.error(
@@ -91,7 +90,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Mono<Void> deleteMember(JoinMember p) {
+  public Mono<Void> deleteMember(JoinMemberInput p) {
     return existsById(p.getGid())
         .switchIfEmpty(
             Mono.error(

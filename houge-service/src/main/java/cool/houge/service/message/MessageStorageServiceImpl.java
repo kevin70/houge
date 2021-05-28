@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.impl;
+package cool.houge.service.message;
 
 import cool.houge.storage.MessageDao;
 import cool.houge.model.Message;
@@ -21,7 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import cool.houge.service.MessageStorageService;
+import cool.houge.service.message.MessageStorageService;
 
 /**
  * 消息存储服务实现.

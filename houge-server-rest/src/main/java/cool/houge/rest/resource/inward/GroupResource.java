@@ -22,8 +22,8 @@ import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
 import cool.houge.rest.resource.inward.vo.GroupMapper;
 import cool.houge.rest.resource.inward.vo.JoinMemberGroupVo;
-import cool.houge.service.GroupService;
-import cool.houge.service.GroupService.Create;
+import cool.houge.service.group.GroupService;
+import cool.houge.service.group.CreateGroupInput;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -69,7 +69,7 @@ public class GroupResource extends AbstractRestSupport implements RoutingService
    * @return RS
    */
   Mono<Void> createGroup(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, Create.class)
+    return json(request, CreateGroupInput.class)
         .flatMap(vo -> groupService.create(vo).flatMap(dto -> json(response, dto)));
   }
 

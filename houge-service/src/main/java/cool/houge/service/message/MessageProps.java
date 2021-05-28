@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service;
+package cool.houge.service.message;
 
-import cool.houge.model.Message;
-import java.util.List;
-import reactor.core.publisher.Mono;
+import java.time.Duration;
+import lombok.Builder;
+import lombok.Value;
 
 /**
- * 消息存储服务接口.
+ * 消息配置.
  *
  * @author KK (kzou227@qq.com)
  */
-public interface MessageStorageService {
+@Value
+@Builder
+public class MessageProps {
 
-  /**
-   * 存储消息包.
-   *
-   * @param entity 消息实体
-   * @param uids 用户ID列表
-   * @return RS
-   */
-  Mono<Void> store(Message entity, List<Long> uids);
+  /** 消息可拉取的最早时间限制. */
+  private Duration pullBeginTimeLimit;
 }

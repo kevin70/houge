@@ -13,37 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.vo;
+package cool.houge.service.message;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import cool.houge.constants.MessageContentType;
-import cool.houge.constants.MessageKind;
-import lombok.Data;
+import cool.houge.model.Message;
+import java.util.List;
+import reactor.core.publisher.Mono;
 
 /**
- * 消息发送 VO.
+ * 消息存储服务接口.
  *
  * @author KK (kzou227@qq.com)
  */
-@Data
-public class SendMessageVO {
+public interface MessageStorageService {
 
   /**
-   * 消息类型.
+   * 存储消息包.
    *
-   * @see MessageKind
+   * @param entity 消息实体
+   * @param uids 用户ID列表
+   * @return RS
    */
-  private int kind;
-  /** 消息接收者. */
-  private long to;
-  /** 消息内容. */
-  private String content;
-  /**
-   * 消息内容类型.
-   *
-   * @see MessageContentType
-   */
-  private int contentType;
-  /** 扩展参数. */
-  private @JsonUnwrapped String extraArgs;
+  Mono<Void> store(Message entity, List<Long> uids);
 }

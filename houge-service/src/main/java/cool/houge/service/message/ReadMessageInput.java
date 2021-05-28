@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service;
+package cool.houge.service.message;
 
-import java.time.Duration;
-import lombok.Builder;
-import lombok.Value;
+import java.util.List;
+import lombok.Data;
 
 /**
- * 消息配置.
+ * 消息读取 VO.
  *
  * @author KK (kzou227@qq.com)
  */
-@Value
-@Builder
-public class MessageProps {
+@Data
+public class ReadMessageInput {
 
-  /** 消息可拉取的最早时间限制. */
-  private Duration pullBeginTimeLimit;
+  /** 消息 IDs. */
+  private List<String> messageIds;
 }

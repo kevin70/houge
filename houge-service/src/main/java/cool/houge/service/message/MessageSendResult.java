@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.vo;
+package cool.houge.service.message;
 
-import java.util.List;
+import lombok.Builder;
 import lombok.Data;
 
 /**
- * 消息读取 VO.
+ * 发送消息响应数据类.
  *
  * @author KK (kzou227@qq.com)
  */
 @Data
-public class ReadMessageVO {
+@Builder
+public class MessageSendResult {
 
-  /** 消息 IDs. */
-  private List<String> messageIds;
+  /** 消息 ID. */
+  String messageId;
 }

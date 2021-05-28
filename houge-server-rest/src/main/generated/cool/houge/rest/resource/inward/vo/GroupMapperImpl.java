@@ -1,7 +1,7 @@
 package cool.houge.rest.resource.inward.vo;
 
-import cool.houge.service.GroupService.JoinMember;
-import cool.houge.service.GroupService.JoinMember.JoinMemberBuilder;
+import cool.houge.service.group.JoinMemberInput;
+import cool.houge.service.group.JoinMemberInput.JoinMemberBuilder;
 import javax.annotation.processing.Generated;
 
 @Generated(
@@ -12,12 +12,12 @@ import javax.annotation.processing.Generated;
 public class GroupMapperImpl implements GroupMapper {
 
     @Override
-    public JoinMember mapToJoinGroup(JoinMemberGroupVo vo, long gid) {
+    public JoinMemberInput mapToJoinGroup(JoinMemberGroupVo vo, long gid) {
         if ( vo == null ) {
             return null;
         }
 
-        JoinMemberBuilder joinMember = JoinMember.builder();
+        JoinMemberBuilder joinMember = JoinMemberInput.builder();
 
         if ( vo != null ) {
             joinMember.uid( vo.getUid() );
