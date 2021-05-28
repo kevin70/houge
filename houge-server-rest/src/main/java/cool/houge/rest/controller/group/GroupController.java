@@ -20,8 +20,8 @@ import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.http.Interceptors;
 import cool.houge.rest.http.RoutingService;
-import cool.houge.service.group.GroupService;
 import cool.houge.service.group.CreateGroupInput;
+import cool.houge.service.group.GroupService;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -52,8 +52,8 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/i/groups", interceptors.serviceAuth(this::createGroup));
-    routes.delete("/i/groups/{groupId}", interceptors.serviceAuth(this::deleteGroup));
+    routes.post("/i/groups", interceptors.serviceAuth(this::create));
+    routes.delete("/i/groups/{groupId}", interceptors.serviceAuth(this::delete));
 
     routes.put("/i/group-members/{groupId}/join", interceptors.serviceAuth(this::joinMember));
     routes.delete("/i/group-members/{groupId}/join", interceptors.serviceAuth(this::deleteMember));
@@ -66,7 +66,7 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
    * @param response 响应对象
    * @return RS
    */
-  Mono<Void> createGroup(HttpServerRequest request, HttpServerResponse response) {
+  Mono<Void> create(HttpServerRequest request, HttpServerResponse response) {
     return json(request, CreateGroupInput.class)
         .flatMap(vo -> groupService.create(vo).flatMap(dto -> json(response, dto)));
   }
@@ -78,11 +78,9 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
    * @param response 响应对象
    * @return RS
    */
-  Mono<Void> deleteGroup(HttpServerRequest request, HttpServerResponse response) {
+  Mono<Void> delete(HttpServerRequest request, HttpServerResponse response) {
     var groupId = pathLong(request, GROUP_ID_PN);
-    return groupService
-        .delete(groupId)
-        .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
+    return groupService.delete(groupId).then(Mono.defer(() -> response.status(NO_CONTENT).send()));
   }
 
   /**
@@ -97,7 +95,7 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);
-              var bean = GroupMapper.INSTANCE.mapToJoinGroup(vo, groupId);
+              var bean = GroupBeanMapper.INSTANCE.map(vo, groupId);
               return groupService
                   .joinMember(bean)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
@@ -116,7 +114,7 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);
-              var bean = GroupMapper.INSTANCE.mapToJoinGroup(vo, groupId);
+              var bean = GroupBeanMapper.INSTANCE.map(vo, groupId);
               return groupService
                   .deleteMember(bean)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
