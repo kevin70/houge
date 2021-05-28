@@ -18,8 +18,8 @@ package cool.houge.rest.controller.group;
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 
 import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
+import cool.houge.rest.controller.Interceptors;
+import cool.houge.rest.controller.RoutingService;
 import cool.houge.service.group.CreateGroupInput;
 import cool.houge.service.group.GroupService;
 import javax.inject.Inject;

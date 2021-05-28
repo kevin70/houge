@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.rest.http;
+package cool.houge.rest.controller;
 
+import cool.houge.rest.controller.Interceptors;
 import reactor.netty.http.server.HttpServerRoutes;
 
 /**

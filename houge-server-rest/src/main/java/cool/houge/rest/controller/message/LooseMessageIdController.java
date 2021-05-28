@@ -17,8 +17,8 @@ package cool.houge.rest.controller.message;
 
 import cool.houge.id.MessageIdGenerator;
 import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
+import cool.houge.rest.controller.Interceptors;
+import cool.houge.rest.controller.RoutingService;
 import java.util.Optional;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;

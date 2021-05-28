@@ -17,8 +17,8 @@ package cool.houge.rest.controller.message;
 
 import cool.houge.domain.Paging;
 import cool.houge.rest.http.AbstractRestSupport;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
+import cool.houge.rest.controller.Interceptors;
+import cool.houge.rest.controller.RoutingService;
 import cool.houge.service.message.MessageService;
 import cool.houge.service.message.ReadMessageInput;
 import cool.houge.service.message.SendMessageInput;

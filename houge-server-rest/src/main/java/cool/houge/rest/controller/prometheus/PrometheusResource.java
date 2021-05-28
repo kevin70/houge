@@ -21,8 +21,8 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import reactor.netty.http.server.HttpServerRoutes;
-import cool.houge.rest.http.Interceptors;
-import cool.houge.rest.http.RoutingService;
+import cool.houge.rest.controller.Interceptors;
+import cool.houge.rest.controller.RoutingService;
 
 /** @author KK (kzou227@qq.com) */
 public class PrometheusResource implements RoutingService {
