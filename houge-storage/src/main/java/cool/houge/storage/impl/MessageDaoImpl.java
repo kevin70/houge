@@ -16,14 +16,14 @@
 package cool.houge.storage.impl;
 
 import com.google.common.base.Joiner;
+import cool.houge.model.Message;
 import cool.houge.r2dbc.Parameter;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.model.Message;
+import cool.houge.storage.MessageDao;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
-import cool.houge.storage.MessageDao;
 
 /**
  * 消息数据仓库实现.
@@ -64,12 +64,12 @@ public class MessageDaoImpl implements MessageDao {
             "正将消息[id:" + entity.getId() + "]与NULL关联 - uids: " + Arrays.toString(uids.toArray()));
       }
 
-      sql.append("INSERT INTO user_messages(uid,message_id,create_time) VALUES(")
+      sql.append("INSERT INTO user_messages(uid,message_id) VALUES(")
           .append(uid)
           .append(",'")
           .append(entity.getId())
           .append("'")
-          .append(",now());");
+          .append(");");
     }
     return Mono.when(insert0(entity), rc.batchSql(sql.toString()).rowsUpdated());
   }
