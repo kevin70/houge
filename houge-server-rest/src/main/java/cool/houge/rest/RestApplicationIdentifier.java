@@ -38,6 +38,6 @@ public class RestApplicationIdentifier extends AbstractApplicationIdentifier {
 
   @Override
   public String applicationName() {
-    return "houge-server-rest";
+    return "houge-rest";
   }
 }

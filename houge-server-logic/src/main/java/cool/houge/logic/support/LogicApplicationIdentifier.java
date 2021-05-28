@@ -15,10 +15,10 @@
  */
 package cool.houge.logic.support;
 
-import javax.inject.Inject;
-import lombok.extern.log4j.Log4j2;
 import cool.houge.system.identifier.AbstractApplicationIdentifier;
 import cool.houge.system.identifier.ServerInstanceRepository;
+import javax.inject.Inject;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 应用程序标识符接口.
@@ -40,6 +40,6 @@ public class LogicApplicationIdentifier extends AbstractApplicationIdentifier {
 
   @Override
   public String applicationName() {
-    return "tethys-logic";
+    return "houge-logic";
   }
 }
