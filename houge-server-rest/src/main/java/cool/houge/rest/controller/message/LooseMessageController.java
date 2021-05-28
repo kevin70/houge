@@ -37,7 +37,7 @@ import reactor.netty.http.server.HttpServerRoutes;
  *
  * @author KK (kzou227@qq.com)
  */
-public class PublicMessageController extends AbstractRestSupport implements RoutingService {
+public class LooseMessageController extends AbstractRestSupport implements RoutingService {
 
   private static final Logger log = LogManager.getLogger();
   private final MessageService messageService;
@@ -48,7 +48,7 @@ public class PublicMessageController extends AbstractRestSupport implements Rout
    * @param messageService 消息服务
    */
   @Inject
-  public PublicMessageController(MessageService messageService) {
+  public LooseMessageController(MessageService messageService) {
     this.messageService = messageService;
   }
 

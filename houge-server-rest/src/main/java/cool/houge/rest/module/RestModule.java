@@ -36,8 +36,8 @@ import cool.houge.rest.controller.ServiceAuthInterceptor;
 import cool.houge.rest.controller.group.GroupController;
 import cool.houge.rest.controller.token.TokenController;
 import cool.houge.rest.controller.user.UserController;
-import cool.houge.rest.controller.message.PublicMessageIdController;
-import cool.houge.rest.controller.message.PublicMessageController;
+import cool.houge.rest.controller.message.LooseMessageIdController;
+import cool.houge.rest.controller.message.LooseMessageController;
 import cool.houge.rest.controller.info.InfoController;
 import cool.houge.system.identifier.ApplicationIdentifier;
 import cool.houge.system.info.AppInfoContributor;
@@ -102,8 +102,8 @@ public class RestModule extends AbstractModule {
   private void bindResources() {
     var binder = Multibinder.newSetBinder(binder(), RoutingService.class);
     binder.addBinding().to(InfoController.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(PublicMessageIdController.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(PublicMessageController.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(LooseMessageIdController.class).in(Scopes.SINGLETON);
+    binder.addBinding().to(LooseMessageController.class).in(Scopes.SINGLETON);
 
     binder.addBinding().to(GroupController.class).in(Scopes.SINGLETON);
     binder.addBinding().to(UserController.class).in(Scopes.SINGLETON);

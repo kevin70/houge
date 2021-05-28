@@ -33,7 +33,7 @@ import top.yein.chaos.biz.BizCodeException;
  *
  * @author KK (kzou227@qq.com)
  */
-public class PublicMessageIdController extends AbstractRestSupport implements RoutingService {
+public class LooseMessageIdController extends AbstractRestSupport implements RoutingService {
 
   private final MessageIdGenerator messageIdGenerator;
 
@@ -43,7 +43,7 @@ public class PublicMessageIdController extends AbstractRestSupport implements Ro
    * @param messageIdGenerator 消息 ID 生成器
    */
   @Inject
-  public PublicMessageIdController(MessageIdGenerator messageIdGenerator) {
+  public LooseMessageIdController(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
   }
 
