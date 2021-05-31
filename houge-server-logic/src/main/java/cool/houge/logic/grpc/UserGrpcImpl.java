@@ -19,10 +19,11 @@ import com.google.common.base.Strings;
 import cool.houge.grpc.UserGrpc;
 import cool.houge.grpc.UserPb.CreateUserRequest;
 import cool.houge.grpc.UserPb.CreateUserResponse;
-import cool.houge.service.user.UserService;
 import cool.houge.service.user.CreateUserInput;
+import cool.houge.service.user.UserService;
 import io.grpc.stub.StreamObserver;
 import javax.inject.Inject;
+import reactor.core.publisher.Mono;
 
 /**
  * 用户 gRPC 服务实现类.
@@ -54,9 +55,11 @@ public class UserGrpcImpl extends UserGrpc.UserImplBase {
       createBuilder.originUid(request.getOriginUid());
     }
 
-    userService
-        .create(createBuilder.build())
-        .map(dto -> CreateUserResponse.newBuilder().setUid(dto.getUid()).build())
+    Mono.defer(
+            () ->
+                userService
+                    .create(createBuilder.build())
+                    .map(dto -> CreateUserResponse.newBuilder().setUid(dto.getUid()).build()))
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 }

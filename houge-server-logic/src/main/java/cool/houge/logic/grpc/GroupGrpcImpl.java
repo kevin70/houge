@@ -22,8 +22,8 @@ import cool.houge.grpc.GroupPb.CreateGroupResponse;
 import cool.houge.grpc.GroupPb.DeleteGroupRequest;
 import cool.houge.grpc.GroupPb.DeleteMemberGroupRequest;
 import cool.houge.grpc.GroupPb.JoinMemberGroupRequest;
-import cool.houge.service.group.GroupService;
 import cool.houge.service.group.CreateGroupInput;
+import cool.houge.service.group.GroupService;
 import cool.houge.service.group.JoinMemberInput;
 import io.grpc.stub.StreamObserver;
 import javax.inject.Inject;
@@ -86,7 +86,8 @@ public class GroupGrpcImpl extends GroupGrpc.GroupImplBase {
     Mono.defer(
             () -> {
               log.debug("群组加入成员 {}", request);
-              var bean = JoinMemberInput.builder().gid(request.getGid()).uid(request.getUid()).build();
+              var bean =
+                  JoinMemberInput.builder().gid(request.getGid()).uid(request.getUid()).build();
               return groupService.joinMember(bean).map(unused -> Empty.getDefaultInstance());
             })
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
@@ -98,7 +99,8 @@ public class GroupGrpcImpl extends GroupGrpc.GroupImplBase {
     Mono.defer(
             () -> {
               log.debug("群组删除成员 {}", request);
-              var bean = JoinMemberInput.builder().gid(request.getGid()).uid(request.getUid()).build();
+              var bean =
+                  JoinMemberInput.builder().gid(request.getGid()).uid(request.getUid()).build();
               return groupService.deleteMember(bean).map(unused -> Empty.getDefaultInstance());
             })
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
