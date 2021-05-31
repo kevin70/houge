@@ -18,6 +18,17 @@ package cool.houge.ws.server;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.UnsafeByteOperations;
+import cool.houge.grpc.AuthGrpc.AuthStub;
+import cool.houge.grpc.AuthPb.AuthRequest;
+import cool.houge.grpc.AuthPb.AuthResponse;
+import cool.houge.grpc.PacketGrpc.PacketStub;
+import cool.houge.grpc.PacketPb.PacketRequest;
+import cool.houge.grpc.PacketPb.PacketResponse;
+import cool.houge.grpc.SinkOneStreamObserver;
+import cool.houge.grpc.UserGroupGrpc.UserGroupStub;
+import cool.houge.grpc.UserGroupPb.ListGidsRequest;
+import cool.houge.grpc.UserGroupPb.ListGidsResponse;
+import cool.houge.util.SocketExceptionUtils;
 import cool.houge.ws.session.DefaultSession;
 import cool.houge.ws.session.Session;
 import cool.houge.ws.session.SessionGroupManager;
@@ -38,17 +49,6 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.HttpInfos;
 import reactor.netty.http.websocket.WebsocketInbound;
 import reactor.netty.http.websocket.WebsocketOutbound;
-import cool.houge.grpc.AuthGrpc.AuthStub;
-import cool.houge.grpc.AuthPb.AuthRequest;
-import cool.houge.grpc.AuthPb.AuthResponse;
-import cool.houge.grpc.PacketGrpc.PacketStub;
-import cool.houge.grpc.PacketPb.PacketRequest;
-import cool.houge.grpc.PacketPb.PacketResponse;
-import cool.houge.grpc.SinkOneStreamObserver;
-import cool.houge.grpc.UserGroupGrpc.UserGroupStub;
-import cool.houge.grpc.UserGroupPb.ListGidsRequest;
-import cool.houge.grpc.UserGroupPb.ListGidsResponse;
-import cool.houge.util.SocketExceptionUtils;
 
 /**
  * WebSocket消息处理器.
@@ -149,28 +149,29 @@ public class WebSocketHandler {
 
           @Override
           public void onNext(PacketResponse response) {
-            if (response.getDataBytes() != ByteString.EMPTY) {
-              Supplier<ByteBuf> s =
-                  () -> Unpooled.wrappedBuffer(response.getDataBytes().asReadOnlyByteBuffer());
-              session
-                  .send(Mono.fromSupplier(s))
-                  .doOnError(
-                      ex -> {
-                        if (!session.isClosed()) {
-                          session.close().subscribe();
-                        }
-                        if (SocketExceptionUtils.ignoreLogException(ex)) {
-                          log.debug("已忽略的网络异常", ex);
-                          return;
-                        }
-                        log.error(
-                            "向用户发送消息异常 session={} data(base64)={}",
-                            session,
-                            Base64.getEncoder().encodeToString(response.getDataBytes().toByteArray()),
-                            ex);
-                      })
-                  .subscribe();
+            if (response.getDataBytes() == ByteString.EMPTY) {
+              return;
             }
+            Supplier<ByteBuf> s =
+                () -> Unpooled.wrappedBuffer(response.getDataBytes().asReadOnlyByteBuffer());
+            session
+                .send(Mono.fromSupplier(s))
+                .doOnError(
+                    ex -> {
+                      if (!session.isClosed()) {
+                        session.close().subscribe();
+                      }
+                      if (SocketExceptionUtils.ignoreLogException(ex)) {
+                        log.debug("已忽略的网络异常", ex);
+                        return;
+                      }
+                      log.error(
+                          "向用户发送消息异常 session={} data(base64)={}",
+                          session,
+                          Base64.getEncoder().encodeToString(response.getDataBytes().toByteArray()),
+                          ex);
+                    })
+                .subscribe();
           }
 
           @Override
