@@ -35,6 +35,8 @@ public interface Packet {
   /** {@code @ns} JSON 属性名称. */
   String NS_JSON_PROPERTY_NAME = "@ns";
 
+  /** 错误命名空间. */
+  String NS_ERROR = "error";
   /** 私人聊天消息命名空间. */
   String NS_PRIVATE_MESSAGE = "p.message";
   /** 群组聊天消息命名空间. */

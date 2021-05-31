@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.StacklessBizCodeException;
 
 /**
  * 群组消息处理器.
@@ -64,7 +65,7 @@ public class GroupMessageHandler implements PacketHandler<MessagePacketBase> {
   }
 
   @Override
-  public Mono<Result> handle(MessagePacketBase packet) {
+  public Mono<Void> handle(MessagePacketBase packet) {
     if (packet.getMessageId() == null) {
       // 自动填充消息 ID
       packet.setMessageId(messageIdGenerator.nextId());
@@ -72,10 +73,10 @@ public class GroupMessageHandler implements PacketHandler<MessagePacketBase> {
     }
     // 校验 message_id
     if (packet.getMessageId().length() != YeinGid.YEIN_GID_LENGTH) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[message_id]不能为空且必须是一个长度为 15 的字符串"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[message_id]不能为空且必须是一个长度为 15 的字符串");
     }
     if (CharMatcher.whitespace().matchesAnyOf(packet.getMessageId())) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[message_id]不能包含空白字符"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[message_id]不能包含空白字符");
     }
 
     return groupQueryDao
@@ -91,13 +92,13 @@ public class GroupMessageHandler implements PacketHandler<MessagePacketBase> {
 
               // 存储消息
               var entity = MessagePacketHelper.toMessageEntity(packet);
-              return messageStorageService.store(entity, uids).thenReturn(Result.ok());
+              return messageStorageService.store(entity, uids);
             })
         .switchIfEmpty(
-            Mono.fromSupplier(
+            Mono.error(
                 () ->
-                    Result.error(
-                        BizCodes.C3630.getCode(),
-                        Strings.lenientFormat("群组不存在[gid=%s]", packet.getTo()))));
+                    new StacklessBizCodeException(
+                        BizCodes.C3630, Strings.lenientFormat("群组不存在[gid=%s]", packet.getTo()))))
+        .then();
   }
 }

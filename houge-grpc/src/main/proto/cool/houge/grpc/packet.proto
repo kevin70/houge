@@ -12,10 +12,8 @@ message PacketRequest {
 }
 
 message PacketResponse {
-  // 请求是否成功
-  bool success = 1;
   // 响应结果数据
-  bytes data_bytes = 2;
+  bytes data_bytes = 1;
 }
 
 service Packet {

@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.StacklessBizCodeException;
 
 /**
  * 私人消息处理器.
@@ -60,7 +61,7 @@ public class PrivateMessageHandler implements PacketHandler<MessagePacketBase> {
   }
 
   @Override
-  public Mono<Result> handle(MessagePacketBase packet) {
+  public Mono<Void> handle(MessagePacketBase packet) {
     if (packet.getMessageId() == null) {
       // 自动填充消息 ID
       packet.setMessageId(messageIdGenerator.nextId());
@@ -68,19 +69,19 @@ public class PrivateMessageHandler implements PacketHandler<MessagePacketBase> {
     }
     // 校验 message_id
     if (packet.getMessageId().length() != YeinGid.YEIN_GID_LENGTH) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[message_id]不能为空且必须是一个长度为 15 的字符串"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[message_id]不能为空且必须是一个长度为 15 的字符串");
     }
     if (CharMatcher.whitespace().matchesAnyOf(packet.getMessageId())) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[message_id]不能包含空白字符"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[message_id]不能包含空白字符");
     }
     if (packet.getTo() <= 0) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[to]值不合法"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[to]值不合法");
     }
     if (Strings.isNullOrEmpty(packet.getContent())) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[content]值不能为空"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[content]值不能为空");
     }
     if (MessageContentType.forCode(packet.getContentType()) == MessageContentType.UNRECOGNIZED) {
-      return Mono.just(Result.error(BizCodes.C3600.getCode(), "[content_type]值不能为空"));
+      throw new StacklessBizCodeException(BizCodes.C3600, "[content_type]值不能为空");
     }
 
     var entity = MessagePacketHelper.toMessageEntity(packet);
@@ -88,6 +89,6 @@ public class PrivateMessageHandler implements PacketHandler<MessagePacketBase> {
     return messageStorageService
         .store(entity, uids)
         .doFirst(() -> packetSender.sendToUser(List.of(packet.getTo()), packet))
-        .thenReturn(Result.ok());
+        .then();
   }
 }

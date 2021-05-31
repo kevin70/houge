@@ -15,8 +15,8 @@
  */
 package cool.houge.logic.handler;
 
-import reactor.core.publisher.Mono;
 import cool.houge.logic.packet.Packet;
+import reactor.core.publisher.Mono;
 
 /**
  * 消息处理器.
@@ -29,5 +29,5 @@ public interface PacketHandler<T extends Packet> {
    * @param packet
    * @return
    */
-  Mono<Result> handle(T packet);
+  Mono<Void> handle(T packet);
 }

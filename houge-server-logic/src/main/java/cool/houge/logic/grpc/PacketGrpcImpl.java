@@ -25,10 +25,15 @@ import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 import com.google.protobuf.ByteString;
+import cool.houge.grpc.PacketGrpc;
+import cool.houge.grpc.PacketPb.PacketRequest;
+import cool.houge.grpc.PacketPb.PacketResponse;
 import cool.houge.logic.handler.PacketHandler;
-import cool.houge.logic.handler.Result;
+import cool.houge.logic.packet.ErrorPacket;
 import cool.houge.logic.packet.MessagePacketBase;
 import cool.houge.logic.packet.Packet;
+import cool.houge.util.JsonUtils;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -41,10 +46,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
-import cool.houge.grpc.PacketGrpc;
-import cool.houge.grpc.PacketPb.PacketRequest;
-import cool.houge.grpc.PacketPb.PacketResponse;
-import cool.houge.util.JsonUtils;
 
 /**
  * 消息包 gRPC 实现类.
@@ -55,7 +56,7 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
 
   private static final Logger log = LogManager.getLogger();
   private final ObjectReader packetReader;
-  private final ObjectWriter resultWriter;
+  private final ObjectWriter packetWriter;
   private final Map<String, PacketHandler<Packet>> packetHandlers;
 
   /**
@@ -66,7 +67,7 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
   @Inject
   public PacketGrpcImpl(@Nonnull Injector injector) {
     this.packetReader = JsonUtils.objectMapper().readerFor(Packet.class);
-    this.resultWriter = JsonUtils.objectMapper().writerFor(Result.class);
+    this.packetWriter = JsonUtils.objectMapper().writerFor(Packet.class);
     this.packetHandlers = findPacketHandlers(injector);
   }
 
@@ -77,23 +78,23 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
     try {
       packet = packetReader.readValue(request.getDataBytes().newInput());
     } catch (InvalidTypeIdException e) {
-      handleFailedData(
-          responseObserver,
-          Strings.lenientFormat(
-              "{\"@ns\":\"error\",\"message\":\"未定义的消息类型[@ns=%s]\"}", e.getTypeId()));
+      var ep =
+          ErrorPacket.builder()
+              .code(BizCode.C0.getCode())
+              .message(Strings.lenientFormat("未定义的消息类型[@ns=%s]", e.getTypeId()))
+              .build();
+      handleErrorPacket(responseObserver, ep);
       return;
     } catch (JsonParseException e) {
       // JSON格式错误
       log.info("JSON解析格式错误 requestUid={}", request.getRequestUid(), e);
-      handleFailedData(
-          responseObserver,
-          Strings.lenientFormat("{\"@ns\":\"error\",\"message\":\"%s\"}", e.getMessage()));
+      var ep = ErrorPacket.builder().code(BizCode.C0.getCode()).message(e.getMessage()).build();
+      handleErrorPacket(responseObserver, ep);
       return;
     } catch (IOException e) {
       log.error("解析Packet请求出现IO错误 requestUid={}", request.getRequestUid(), e);
-      handleFailedData(
-          responseObserver,
-          Strings.lenientFormat("{\"@ns\":\"error\",\"message\":\"%s\"}", e.getMessage()));
+      var ep = ErrorPacket.builder().code(BizCode.C0.getCode()).message(e.getMessage()).build();
+      handleErrorPacket(responseObserver, ep);
       return;
     }
 
@@ -101,10 +102,12 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
     var handler = packetHandlers.get(packet.getNs());
     if (handler == null) {
       log.error("未找到PacketHandler requestUid={} ns={}", request.getRequestUid(), packet.getNs());
-      handleFailedData(
-          responseObserver,
-          Strings.lenientFormat(
-              "{\"@ns\":\"error\",\"message\":\"未找到消息类型[@ns=%s]的实现\"}", packet.getNs()));
+      var ep =
+          ErrorPacket.builder()
+              .code(BizCode.C0.getCode())
+              .message(Strings.lenientFormat("未找到消息类型[@ns=%s]的实现", packet.getNs()))
+              .build();
+      handleErrorPacket(responseObserver, ep);
       return;
     }
 
@@ -120,57 +123,42 @@ public class PacketGrpcImpl extends PacketGrpc.PacketImplBase {
     Mono.defer(() -> handler.handle(packet))
         .subscribeOn(Schedulers.parallel())
         .subscribe(
-            r -> handleResult(responseObserver, r), t -> handleThrowable(responseObserver, t));
-  }
-
-  private void handleResult(StreamObserver<PacketResponse> responseObserver, Result result) {
-    var builder = PacketResponse.newBuilder().setSuccess(result.isError());
-    if (result.getOk() != null || result.getError() != null) {
-      // TIPS: 后期需要研究确认是否可以使用 Direct ByteBuffer 进行优化
-      var out = ByteString.newOutput();
-      try {
-        resultWriter.writeValue(out, result);
-        builder.setDataBytes(out.toByteString());
-      } catch (IOException e) {
-        log.error("Result响应结果JSON序列化错误", result, e);
-      }
-    }
-    responseObserver.onNext(builder.build());
-    responseObserver.onCompleted();
+            unused -> {
+              responseObserver.onNext(PacketResponse.getDefaultInstance());
+              responseObserver.onCompleted();
+            },
+            t -> handleThrowable(responseObserver, t));
   }
 
   private void handleThrowable(StreamObserver<PacketResponse> responseObserver, Throwable t) {
-    Result result;
     if (t instanceof BizCodeException) {
       var ex = (BizCodeException) t;
-      result = Result.error(ex.getBizCode().getCode(), ex.getMessage(), ex.getContextEntries());
-      // FIXME 处理异常
-      log.debug("", t);
+      var bizCode = ex.getBizCode();
+      if (bizCode.getGrpcStatus() >= 0) {
+        log.error("{}", t);
+        var status = Status.fromCodeValue(bizCode.getGrpcStatus());
+        responseObserver.onError(status.asRuntimeException());
+      } else {
+        var ep = ErrorPacket.builder().code(bizCode.getCode()).message(ex.getRawMessage()).build();
+        handleErrorPacket(responseObserver, ep);
+      }
     } else {
-      log.error("未映射的异常", t);
-      result = Result.error(BizCode.C0.getCode(), t.getMessage());
+      log.error("{}", t);
+      responseObserver.onError(t);
     }
+  }
 
+  private void handleErrorPacket(
+      StreamObserver<PacketResponse> responseObserver, ErrorPacket packet) {
     var output = ByteString.newOutput();
     try {
-      resultWriter.writeValue(output, result);
+      packetWriter.writeValue(output, packet);
     } catch (IOException e) {
-      log.error("序列化RESULT JSON错误", e);
+      log.error("序列化 ErrorPacket JSON 错误", e);
       responseObserver.onError(e);
       return;
     }
-
-    var response =
-        PacketResponse.newBuilder().setSuccess(false).setDataBytes(output.toByteString()).build();
-    responseObserver.onNext(response);
-  }
-
-  private void handleFailedData(StreamObserver<PacketResponse> responseObserver, String data) {
-    handleFailedData(responseObserver, ByteString.copyFromUtf8(data));
-  }
-
-  private void handleFailedData(StreamObserver<PacketResponse> responseObserver, ByteString data) {
-    var response = PacketResponse.newBuilder().setSuccess(false).setDataBytes(data).build();
+    var response = PacketResponse.newBuilder().setDataBytes(output.toByteString()).build();
     responseObserver.onNext(response);
     responseObserver.onCompleted();
   }
