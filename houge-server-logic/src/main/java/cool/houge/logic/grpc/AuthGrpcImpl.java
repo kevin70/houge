@@ -15,16 +15,16 @@
  */
 package cool.houge.logic.grpc;
 
+import cool.houge.auth.AuthService;
+import cool.houge.grpc.AuthGrpc;
+import cool.houge.grpc.AuthPb.AuthRequest;
+import cool.houge.grpc.AuthPb.AuthResponse;
 import io.grpc.stub.StreamObserver;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import cool.houge.auth.AuthService;
-import cool.houge.grpc.AuthGrpc;
-import cool.houge.grpc.AuthPb.AuthRequest;
-import cool.houge.grpc.AuthPb.AuthResponse;
 
 /**
  * 用户认证gRPC服务实现.
@@ -50,14 +50,7 @@ public class AuthGrpcImpl extends AuthGrpc.AuthImplBase {
   public void auth(AuthRequest request, StreamObserver<AuthResponse> responseObserver) {
     Mono.defer(() -> authService.authenticate(request.getToken()))
         .subscribeOn(Schedulers.parallel())
-        .subscribe(
-            ac -> {
-              var resp = AuthResponse.newBuilder().setUid(ac.uid()).build();
-              responseObserver.onNext(resp);
-            },
-            ex -> {
-              log.error("认证错误 token={}", request.getToken(), ex);
-              responseObserver.onError(ex);
-            });
+        .map(ac -> AuthResponse.newBuilder().setUid(ac.uid()).build())
+        .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 }
