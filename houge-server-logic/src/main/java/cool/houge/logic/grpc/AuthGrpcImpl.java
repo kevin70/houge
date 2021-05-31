@@ -49,8 +49,8 @@ public class AuthGrpcImpl extends AuthGrpc.AuthImplBase {
   @Override
   public void auth(AuthRequest request, StreamObserver<AuthResponse> responseObserver) {
     Mono.defer(() -> authService.authenticate(request.getToken()))
-        .subscribeOn(Schedulers.parallel())
         .map(ac -> AuthResponse.newBuilder().setUid(ac.uid()).build())
+        .subscribeOn(Schedulers.parallel())
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 }
