@@ -16,8 +16,10 @@
 package cool.houge.logic.packet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
@@ -25,11 +27,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  *
  * @author KK (kzou227@qq.com)
  */
-@JsonTypeInfo(use = Id.NAME, property = Packet.NS_JSON_PROPERTY_NAME)
+@JsonTypeInfo(
+    use = Id.NAME,
+    property = Packet.NS_JSON_PROPERTY_NAME,
+    include = As.EXISTING_PROPERTY)
 @JsonSubTypes({
   @JsonSubTypes.Type(name = Packet.NS_PRIVATE_MESSAGE, value = PrivateMessagePacket.class),
   @JsonSubTypes.Type(name = Packet.NS_GROUP_MESSAGE, value = GroupMessagePacket.class),
 })
+@JsonPropertyOrder(Packet.NS_JSON_PROPERTY_NAME)
 public interface Packet {
 
   /** {@code @ns} JSON 属性名称. */

@@ -78,27 +78,25 @@ public class GroupMessageHandler implements PacketHandler<MessagePacketBase> {
     if (CharMatcher.whitespace().matchesAnyOf(packet.getMessageId())) {
       throw new StacklessBizCodeException(BizCodes.C3600, "[message_id]不能包含空白字符");
     }
+    var gid = packet.getTo();
 
     return groupQueryDao
-        .existsById(packet.getTo())
-        .doOnNext(uids -> packetSender.sendToGroup(List.of(packet.getTo()), packet))
-        .flatMapMany(unused -> groupQueryDao.queryUidByGid(packet.getTo()))
-        .collectList()
-        .flatMap(
-            uids -> {
-              if (uids.isEmpty()) {
-                return Mono.empty();
-              }
-
-              // 存储消息
-              var entity = MessagePacketHelper.toMessageEntity(packet);
-              return messageStorageService.store(entity, uids);
-            })
+        .existsById(gid)
         .switchIfEmpty(
             Mono.error(
                 () ->
                     new StacklessBizCodeException(
-                        BizCodes.C3630, Strings.lenientFormat("群组不存在[gid=%s]", packet.getTo()))))
+                        BizCodes.C3630, Strings.lenientFormat("群组不存在[gid=%s]", gid))))
+        .doOnNext(uids -> packetSender.sendToGroup(List.of(gid), packet))
+        .flatMapMany(unused -> groupQueryDao.queryUidByGid(gid))
+        .collectList()
+        .filter(uids -> !uids.isEmpty())
+        .flatMap(
+            uids -> {
+              // 存储消息
+              var entity = MessagePacketHelper.toMessageEntity(packet);
+              return messageStorageService.store(entity, uids);
+            })
         .then();
   }
 }

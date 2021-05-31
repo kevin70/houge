@@ -91,6 +91,7 @@ public class MessageGrpcImpl extends MessageGrpc.MessageImplBase {
   }
 
   private class GrpcMessagePacket extends MessagePacketBase {
+
     private final String ns;
     private final MessagePb.SendMessageRequest request;
     private final String messageId;
