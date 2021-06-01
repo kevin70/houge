@@ -10,13 +10,13 @@ import org.mapstruct.factory.Mappers;
  * @author KK (kzou227@qq.com)
  */
 @Mapper
-public interface GroupBeanMapper {
+public interface GroupMapper {
 
-  GroupBeanMapper INSTANCE = Mappers.getMapper(GroupBeanMapper.class);
+  GroupMapper INSTANCE = Mappers.getMapper(GroupMapper.class);
 
   /**
    * @param vo
    * @return
    */
-  JoinMemberInput map(JoinMemberData vo, long gid);
+  JoinMemberInput map(JoinMemberBody vo, long gid);
 }

@@ -8,7 +8,7 @@ import lombok.Data;
  * @author KK (kzou227@qq.com)
  */
 @Data
-public class JoinMemberData {
+public class JoinMemberBody {
 
   /** 用户ID. */
   private long uid;

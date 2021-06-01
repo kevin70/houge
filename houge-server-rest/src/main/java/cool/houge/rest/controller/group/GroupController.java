@@ -17,9 +17,9 @@ package cool.houge.rest.controller.group;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 
-import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.controller.Interceptors;
 import cool.houge.rest.controller.RoutingService;
+import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.service.group.CreateGroupInput;
 import cool.houge.service.group.GroupService;
 import javax.inject.Inject;
@@ -91,11 +91,11 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
    * @return RS
    */
   Mono<Void> joinMember(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, JoinMemberData.class)
+    return json(request, JoinMemberBody.class)
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);
-              var bean = GroupBeanMapper.INSTANCE.map(vo, groupId);
+              var bean = GroupMapper.INSTANCE.map(vo, groupId);
               return groupService
                   .joinMember(bean)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
@@ -110,11 +110,11 @@ public class GroupController extends AbstractRestSupport implements RoutingServi
    * @return RS
    */
   Mono<Void> deleteMember(HttpServerRequest request, HttpServerResponse response) {
-    return json(request, JoinMemberData.class)
+    return json(request, JoinMemberBody.class)
         .flatMap(
             vo -> {
               var groupId = pathLong(request, GROUP_ID_PN);
-              var bean = GroupBeanMapper.INSTANCE.map(vo, groupId);
+              var bean = GroupMapper.INSTANCE.map(vo, groupId);
               return groupService
                   .deleteMember(bean)
                   .then(Mono.defer(() -> response.status(NO_CONTENT).send()));
