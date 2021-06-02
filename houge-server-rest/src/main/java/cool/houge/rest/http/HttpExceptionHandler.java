@@ -16,16 +16,17 @@
 package cool.houge.rest.http;
 
 import com.google.common.collect.ImmutableMap;
+import cool.houge.Env;
+import cool.houge.domain.Problem;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import top.yein.chaos.biz.BizCodeException;
-import cool.houge.Env;
-import cool.houge.domain.Problem;
 
 /**
  * HTTP REST 异常处理器.
@@ -75,7 +76,10 @@ public class HttpExceptionHandler extends AbstractRestSupport {
           .status(bc.getHttpStatus())
           .code(bc.getCode())
           .title(ex.getRawMessage())
-          .detail(ex.getMessage());
+          .detail(
+              Optional.ofNullable(ex.getCause())
+                  .map(Throwable::getMessage)
+                  .orElseGet(() -> ex.getRawMessage()));
 
       var contextEntries = ex.getContextEntries();
       if (!contextEntries.isEmpty()) {
