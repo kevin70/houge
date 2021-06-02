@@ -57,9 +57,6 @@ public class LooseMessageController extends AbstractRestSupport implements Routi
     routes.get("/p/messages", interceptors.userAuth(this::queryByUser));
     routes.get("/p/messages/read", interceptors.userAuth(this::readMessages));
     routes.post("/p/messages/send", interceptors.userAuth(this::sendMessage));
-
-    routes.post("/p/messages/user/send", interceptors.userAuth(this::sendUserMessage));
-    routes.post("/p/messages/group/send", interceptors.userAuth(this::sendGroupMessage));
   }
 
   /**
@@ -124,25 +121,5 @@ public class LooseMessageController extends AbstractRestSupport implements Routi
               //                  .flatMap(result -> json(response, result));
               return Mono.empty();
             });
-  }
-
-  Mono<Void> sendUserMessage(HttpServerRequest request, HttpServerResponse response) {
-    return authContext()
-        .zipWith(json(request, SendMessageBody.class))
-        .flatMap(
-            t -> {
-              var ac = t.getT1();
-              var body = t.getT2();
-
-              log.debug("发送聊天消息 uid={} vo={}", ac.uid(), body);
-              //              return remoteMessageService
-              //                  .sendMessage(ac.uid(), vo)
-              //                  .flatMap(result -> json(response, result));
-              return Mono.empty();
-            });
-  }
-
-  Mono<Void> sendGroupMessage(HttpServerRequest request, HttpServerResponse response) {
-    return Mono.empty();
   }
 }
