@@ -43,8 +43,7 @@ import java.util.Objects;
 public final class Health {
 
   private final String componentName;
-  @JsonUnwrapped
-  private final HealthStatus status;
+  private final @JsonUnwrapped HealthStatus status;
   private final ImmutableMap<String, Object> details;
 
   private Health(String componentName, HealthStatus status, Map<String, Object> details) {
@@ -154,6 +153,7 @@ public final class Health {
       Objects.requireNonNull(componentName, "[componentName]不能为null");
       Objects.requireNonNull(status, "[status]不能为null");
       Objects.requireNonNull(details, "[details]不能为null");
+      this.componentName = componentName;
       this.status = status;
       this.details = new LinkedHashMap<>(details);
     }
