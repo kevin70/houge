@@ -37,7 +37,7 @@ public class MessageQueryDaoImpl implements MessageQueryDao {
   private static final String QUERY_BY_USER_SQL =
       "SELECT b.* FROM"
           + " user_messages a LEFT JOIN messages b ON a.message_id = b.id"
-          + " WHERE a.uid=$1 AND a.create_time>=$2"
+          + " WHERE a.uid=$1 AND b.create_time>=$2"
           + " OFFSET $3 LIMIT $4";
 
   private final R2dbcClient rc;
