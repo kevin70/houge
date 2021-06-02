@@ -112,6 +112,17 @@ public class GroupDaoImpl implements GroupDao {
         rc.sql(INSERT_MEMBER_SQL)
             .bind(new Object[] {gid, uid})
             .rowsUpdated()
+            .onErrorMap(
+                R2dbcDataIntegrityViolationException.class,
+                ex -> {
+                  log.debug("已是群成员 gid={} uid={} ~ {}", gid, uid, ex.getMessage());
+                  if (SqlStates.S23505.equals(ex.getSqlState())) {
+                    return new StacklessBizCodeException(BizCode.C810, "已是群成员", ex)
+                        .addContextValue("gid", gid)
+                        .addContextValue("uid", uid);
+                  }
+                  return ex;
+                })
             .doOnNext(
                 n -> {
                   if (n != 1) {
