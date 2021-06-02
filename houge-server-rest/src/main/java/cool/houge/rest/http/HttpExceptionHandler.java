@@ -19,9 +19,10 @@ import com.google.common.collect.ImmutableMap;
 import cool.houge.Env;
 import cool.houge.domain.Problem;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import java.util.Arrays;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
@@ -103,9 +104,7 @@ public class HttpExceptionHandler extends AbstractRestSupport {
 
     if (debugEnabled) {
       // debug 模式下将异常堆栈输出至客户端
-      var stacktrace =
-          Arrays.stream(t.getStackTrace()).map(String::valueOf).collect(Collectors.toList());
-      propertiesBuilder.put("stacktrace", stacktrace);
+      propertiesBuilder.put("stacktrace", getStackTrace(t));
     }
 
     var properties = propertiesBuilder.build();
@@ -117,5 +116,20 @@ public class HttpExceptionHandler extends AbstractRestSupport {
     // 设置 HTTP 错误状态码
     response.status(problem.getStatus());
     return json(response, problem);
+  }
+
+  private Stream<String> getStackTrace(Throwable t) {
+    var sw = new StringWriter();
+    t.printStackTrace(new PrintWriter(sw));
+    return sw.toString()
+        .lines()
+        .map(
+            s -> {
+              String rs = s;
+              while (rs.indexOf("\t") != -1) {
+                rs = rs.replaceFirst("\t", "  ");
+              }
+              return rs;
+            });
   }
 }
