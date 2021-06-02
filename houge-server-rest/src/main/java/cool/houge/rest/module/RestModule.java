@@ -31,14 +31,19 @@ import cool.houge.id.YeinGidMessageIdGenerator;
 import cool.houge.rest.RestApplicationIdentifier;
 import cool.houge.rest.controller.Interceptors;
 import cool.houge.rest.controller.RoutingService;
-import cool.houge.rest.controller.UserAuthInterceptor;
 import cool.houge.rest.controller.ServerAuthInterceptor;
+import cool.houge.rest.controller.UserAuthInterceptor;
 import cool.houge.rest.controller.group.GroupController;
+import cool.houge.rest.controller.health.HealthController;
+import cool.houge.rest.controller.info.InfoController;
+import cool.houge.rest.controller.message.LooseMessageController;
+import cool.houge.rest.controller.message.LooseMessageIdController;
 import cool.houge.rest.controller.token.TokenController;
 import cool.houge.rest.controller.user.UserController;
-import cool.houge.rest.controller.message.LooseMessageIdController;
-import cool.houge.rest.controller.message.LooseMessageController;
-import cool.houge.rest.controller.info.InfoController;
+import cool.houge.system.health.HealthIndicator;
+import cool.houge.system.health.HealthService;
+import cool.houge.system.health.HealthServiceImpl;
+import cool.houge.system.health.PostgresHealthIndicator;
 import cool.houge.system.identifier.ApplicationIdentifier;
 import cool.houge.system.info.AppInfoContributor;
 import cool.houge.system.info.InfoContributor;
@@ -46,6 +51,7 @@ import cool.houge.system.info.InfoService;
 import cool.houge.system.info.InfoServiceImpl;
 import cool.houge.system.info.JavaInfoContributor;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import javax.inject.Singleton;
 
 /**
@@ -83,6 +89,7 @@ public class RestModule extends AbstractModule {
     this.bindResources();
 
     this.bindInfoService();
+    this.bindHealthService();
   }
 
   @Provides
@@ -99,15 +106,29 @@ public class RestModule extends AbstractModule {
     bind(InfoService.class).to(InfoServiceImpl.class).in(Scopes.SINGLETON);
   }
 
+  private void bindHealthService() {
+    var binder = Multibinder.newSetBinder(binder(), HealthIndicator.class);
+    Consumer<Class<? extends HealthIndicator>> co =
+        clazz -> binder.addBinding().to(clazz).in(Scopes.SINGLETON);
+    co.accept(PostgresHealthIndicator.class);
+
+    bind(HealthService.class).to(HealthServiceImpl.class).in(Scopes.SINGLETON);
+  }
+
   private void bindResources() {
     var binder = Multibinder.newSetBinder(binder(), RoutingService.class);
-    binder.addBinding().to(InfoController.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(LooseMessageIdController.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(LooseMessageController.class).in(Scopes.SINGLETON);
+    Consumer<Class<? extends RoutingService>> co =
+        clazz -> binder.addBinding().to(clazz).in(Scopes.SINGLETON);
 
-    binder.addBinding().to(GroupController.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(UserController.class).in(Scopes.SINGLETON);
-    binder.addBinding().to(TokenController.class).in(Scopes.SINGLETON);
+    co.accept(InfoController.class);
+    co.accept(HealthController.class);
+
+    co.accept(LooseMessageIdController.class);
+    co.accept(LooseMessageController.class);
+
+    co.accept(GroupController.class);
+    co.accept(UserController.class);
+    co.accept(TokenController.class);
   }
 
   private ServerAuthInterceptor serviceAuthInterceptor() {
