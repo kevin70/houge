@@ -16,13 +16,18 @@
 package cool.houge.storage.impl;
 
 import com.google.common.annotations.VisibleForTesting;
-import cool.houge.r2dbc.R2dbcClient;
 import cool.houge.model.Group;
+import cool.houge.r2dbc.R2dbcClient;
+import cool.houge.storage.GroupDao;
+import cool.houge.storage.SqlStates;
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import reactor.core.publisher.Mono;
 import top.yein.chaos.biz.BizCode;
 import top.yein.chaos.biz.BizCodeException;
-import cool.houge.storage.GroupDao;
+import top.yein.chaos.biz.StacklessBizCodeException;
 
 /**
  * 群组数据访问实现.
@@ -30,6 +35,8 @@ import cool.houge.storage.GroupDao;
  * @author KK (kzou227@qq.com)
  */
 public class GroupDaoImpl implements GroupDao {
+
+  private static final Logger log = LogManager.getLogger();
 
   private static final String NEXT_GID_SQL = "select nextval('groups_id_seq')";
   private static final String INSERT_GROUP_SQL =
@@ -69,10 +76,7 @@ public class GroupDaoImpl implements GroupDao {
                   rc.sql(INSERT_GROUP_SQL)
                       .bind(
                           new Object[] {
-                            id,
-                            entity.getCreatorId(),
-                            entity.getOwnerId(),
-                            entity.getMemberSize()
+                            id, entity.getCreatorId(), entity.getOwnerId(), entity.getMemberSize()
                           })
                       .rowsUpdated();
 
@@ -82,6 +86,15 @@ public class GroupDaoImpl implements GroupDao {
                       .bind(new Object[] {id, entity.getCreatorId()})
                       .rowsUpdated();
               return Mono.zip(m1, m2).thenReturn(id);
+            })
+        .onErrorMap(
+            R2dbcDataIntegrityViolationException.class,
+            ex -> {
+              log.debug("群组已存在 {} ~ {}", entity, ex.getMessage());
+              if (SqlStates.S23505.equals(ex.getSqlState())) {
+                return new StacklessBizCodeException(BizCode.C810, "群组已存在", ex);
+              }
+              return ex;
             });
   }
 
@@ -162,6 +175,6 @@ public class GroupDaoImpl implements GroupDao {
   }
 
   private Mono<Long> nextGroupId() {
-    return rc.sql(NEXT_GID_SQL).map(row -> row.get(0, Long.class)).one();
+    return Mono.defer(() -> rc.sql(NEXT_GID_SQL).map(row -> row.get(0, Long.class)).one());
   }
 }

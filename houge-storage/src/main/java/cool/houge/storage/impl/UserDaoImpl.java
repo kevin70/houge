@@ -15,12 +15,18 @@
  */
 package cool.houge.storage.impl;
 
+import cool.houge.model.User;
 import cool.houge.r2dbc.Parameter;
 import cool.houge.r2dbc.R2dbcClient;
-import cool.houge.model.User;
-import javax.inject.Inject;
-import reactor.core.publisher.Mono;
+import cool.houge.storage.SqlStates;
 import cool.houge.storage.UserDao;
+import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
+import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import reactor.core.publisher.Mono;
+import top.yein.chaos.biz.BizCode;
+import top.yein.chaos.biz.StacklessBizCodeException;
 
 /**
  * 用户数据访问接口实现.
@@ -28,6 +34,8 @@ import cool.houge.storage.UserDao;
  * @author KK (kzou227@qq.com)
  */
 public class UserDaoImpl implements UserDao {
+
+  private static final Logger log = LogManager.getLogger();
 
   private static final String NEXT_ID_SQL = "SELECT NEXTVAL('users_id_seq')";
   private static final String INSERT_SQL =
@@ -57,10 +65,19 @@ public class UserDaoImpl implements UserDao {
                           id, Parameter.fromOrNull(entity.getOriginUid(), String.class)
                         })
                     .rowsUpdated()
-                    .thenReturn(id));
+                    .thenReturn(id))
+        .onErrorMap(
+            R2dbcDataIntegrityViolationException.class,
+            ex -> {
+              log.debug("用户已存在 {} ~ {}", entity, ex.getMessage());
+              if (SqlStates.S23505.equals(ex.getSqlState())) {
+                return new StacklessBizCodeException(BizCode.C810, "用户已存在", ex);
+              }
+              return ex;
+            });
   }
 
   private Mono<Long> nextUserId() {
-    return rc.sql(NEXT_ID_SQL).map(row -> row.get(0, Long.class)).one();
+    return Mono.defer(() -> rc.sql(NEXT_ID_SQL).map(row -> row.get(0, Long.class)).one());
   }
 }
