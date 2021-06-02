@@ -15,8 +15,7 @@
  */
 package cool.houge.system.info;
 
-import static java.util.Map.entry;
-
+import com.google.common.collect.ImmutableMap;
 import cool.houge.system.info.Info.Builder;
 import java.util.Map;
 import reactor.core.publisher.Mono;
@@ -34,9 +33,10 @@ public class JavaInfoContributor implements InfoContributor {
   }
 
   private Map<String, Object> info0() {
-    return Map.ofEntries(
-        entry("vm_name", System.getProperty("java.vm.name")),
-        entry("version", System.getProperty("java.version")),
-        entry("vendor", System.getProperty("java.specification.vendor")));
+    return ImmutableMap.<String, Object>builder()
+        .put("vm_name", System.getProperty("java.vm.name"))
+        .put("version", System.getProperty("java.version"))
+        .put("vendor", System.getProperty("java.specification.vendor"))
+        .build();
   }
 }

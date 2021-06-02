@@ -15,10 +15,11 @@
  */
 package cool.houge.system.info;
 
-import static java.util.Map.entry;
-
+import com.google.common.collect.ImmutableMap;
 import cool.houge.system.identifier.ApplicationIdentifier;
 import cool.houge.system.info.Info.Builder;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
@@ -49,13 +50,18 @@ public class AppInfoContributor implements InfoContributor {
 
   private Map<String, Object> info0() {
     var processInfo = ProcessHandle.current().info();
-    return Map.ofEntries(
-        entry("name", applicationIdentifier.applicationName()),
-        entry("version", applicationIdentifier.version()),
-        entry("fid", applicationIdentifier.fid()),
-        entry("work_dir", System.getProperty("user.dir")),
-        entry("command", processInfo.command()),
-        entry("command_line", processInfo.commandLine()),
-        entry("start_time", processInfo.startInstant()));
+    var startTime =
+        processInfo
+            .startInstant()
+            .map(instant -> ZonedDateTime.ofInstant(instant, ZoneId.systemDefault()));
+    return ImmutableMap.<String, Object>builder()
+        .put("name", applicationIdentifier.applicationName())
+        .put("version", applicationIdentifier.version())
+        .put("fid", applicationIdentifier.fid())
+        .put("work_dir", System.getProperty("user.dir"))
+        .put("command", processInfo.command())
+        .put("command_line", processInfo.commandLine())
+        .put("start_time", startTime)
+        .build();
   }
 }
