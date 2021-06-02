@@ -18,11 +18,17 @@ package cool.houge.rest.controller.message;
 import cool.houge.service.message.SendMessageInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValueMappingStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 /** @author KK (kzou227@qq.com) */
-@Mapper
+@Mapper(
+  nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT
+)
 public interface MessageMapper {
 
   MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
