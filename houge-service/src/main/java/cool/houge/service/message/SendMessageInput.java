@@ -17,24 +17,21 @@ package cool.houge.service.message;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import cool.houge.constants.MessageContentType;
-import cool.houge.constants.MessageKind;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
 /**
  * 消息发送 VO.
  *
  * @author KK (kzou227@qq.com)
  */
-@Data
+@Value
+@Builder
 public class SendMessageInput {
 
-  /**
-   * 消息类型.
-   *
-   * @see MessageKind
-   */
-  private int kind;
-  /** 消息接收者. */
+  /** 发送者. */
+  private long from;
+  /** 接收者. */
   private long to;
   /** 消息内容. */
   private String content;
