@@ -74,12 +74,12 @@ paths:
       security: [Basic:[]]
       summary: 创建用户
       description: |
-        在 IM 系统中创建可用于聊天的用户。
+        在 Houge 系统中创建可用于聊天的用户。
       requestBody:
         description: |
-          请求体中的 `id` 与 `origin_uid` 字段二选一, 如果传入的 `id` 值则会直接映射到 IM 系统中用户的 ID，
-          该方式可以保证业务系统中的用户 ID 与 IM 系统中的用户 ID 相同。如果传入 `origin_uid` 值 IM 系统
-          会在内部映射一个数字类型的 `id` 值并返回。
+          请求体中的 `uid` 与 `origin_uid` 字段二选一, 如果传入的 `uid` 值则会直接映射到 Houge 系统中用户的 ID，
+          该方式可以保证业务系统中的用户 ID 与 Houge 系统中的用户 ID 相同。如果传入 `origin_uid` 值 IM 系统
+          会在内部映射一个数字类型的 `uid` 值并返回。
         content:
           application/json:
             schema:
@@ -95,8 +95,8 @@ paths:
       responses:
         "200":
           description: |
-            如果在请求体中设置了 `id` 参数，则响应的 `id` 属性与其相同。如果请求体中是传入的 `origin_uid` 值则
-            响应的 `id` 值为 IM 系统中生成的用户 ID。
+            如果在请求体中设置了 `uid` 参数，则响应的 `uid` 属性与其相同。如果请求体中是传入的 `origin_uid` 值则
+            响应的 `uid` 值为 Houge 系统中生成的用户 ID。
           content:
             application/json:
               schema:
@@ -114,10 +114,10 @@ paths:
       security: [Basic:[]]
       summary: 创建群组
       description: |
-        在 IM 系统中创建可用于多人聊天的群组，群组创建成功后创建者（`creator_id`）将自动加入为该群的成员。
+        在 Houge 系统中创建可用于多人聊天的群组，群组创建成功后创建者（`creator_id`）将自动加入为该群的成员。
       requestBody:
         description: |
-          请求体中的 `id` 是非必须字段。如果业务方传入了 `id` 值，IM 将会使用其作为 IM 系统内部群组ID，反之 IM
+          请求体中的 `gid` 是非必须字段。如果业务方传入了 `gid` 值，IM 将会使用其作为 Houge 系统内部群组ID，反之 Houge
           系统会自动生成一个全局唯一的群组 ID。
         content:
           application/json:
@@ -137,7 +137,7 @@ paths:
       responses:
         "200":
           description: |
-            如果在请求体中设置了 `id` 参数，则响应的 `id` 属性与其相同，反之响应的 `id` 值为 IM 系统中生成的群组 ID。
+            如果在请求体中设置了 `gid` 参数，则响应的 `gid` 属性与其相同，反之响应的 `gid` 值为 Houge 系统中生成的群组 ID。
           content:
             application/json:
               schema:
