@@ -279,33 +279,24 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Message"
-  /p/messages/send:
+  /p/messages/send/user:
     post:
       tags: [MESSAGE]
       security: [AccessToken:[]]
-      summary: 发送消息
+      summary: 发送用户消息
       requestBody:
         content:
           application/json:
             schema:
               type: object
+              required:
+                - uid
+                - content
               properties:
-                kind:
-                  type: integer
-                  format: int32
-                  enum: [0, 1]
-                  default: 0
-                  description: |
-                    消息类型
-                    - `0` 私人消息
-                    - `1` 群组消息
-                to:
+                uid:
                   type: integer
                   format: int64
-                  description: |
-                    消息接收者
-
-                    如果是**私人消息**将 `to` 设置为接收消息用户的 ID，如果是**群组消息**将 `to` 设置为接收消息的群组 ID。
+                  description: 消息接收的**用户 ID**
                 content:
                   type: string
                   description: 消息内容
@@ -321,9 +312,57 @@ paths:
                     - `1` 图片消息
                     - `2` 语音消息
                     - `3` 视频消息
-                url:
+                extra_args:
                   type: string
-                  description: 统一资源定位器
+                  description: 扩展参数将原样转发至客户端
+                  maxLength: 2048
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message_id
+                properties:
+                  message_id:
+                    type: string
+                    description: 消息 ID
+                    example: 7K7KJKK56K23OMY
+  /p/messages/send/group:
+    post:
+      tags: [MESSAGE]
+      security: [AccessToken:[]]
+      summary: 发送群组消息
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - gid
+                - content
+              properties:
+                gid:
+                  type: integer
+                  format: int64
+                  description: 消息接收的**群组 ID**
+                content:
+                  type: string
+                  description: 消息内容
+                  maxLength: 4096
+                content_type:
+                  type: integer
+                  format: int32
+                  default: 0
+                  enum: [0, 1, 2, 3]
+                  description: |
+                    消息内容类型
+                    - `0` 普通文本消息
+                    - `1` 图片消息
+                    - `2` 语音消息
+                    - `3` 视频消息
                 extra_args:
                   type: string
                   description: 扩展参数将原样转发至客户端
