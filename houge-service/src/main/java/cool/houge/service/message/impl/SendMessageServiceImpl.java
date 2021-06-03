@@ -17,27 +17,70 @@ package cool.houge.service.message.impl;
 
 import cool.houge.grpc.MessageGrpc.MessageStub;
 import cool.houge.grpc.MessagePb.SendMessageRequest;
+import cool.houge.grpc.MessagePb.SendMessageRequest.ContentType;
+import cool.houge.grpc.MessagePb.SendMessageResponse;
+import cool.houge.grpc.SinkOneStreamObserver;
 import cool.houge.service.message.SendMessageInput;
+import cool.houge.service.message.SendMessageOutput;
 import cool.houge.service.message.SendMessageService;
+import javax.inject.Inject;
 import reactor.core.publisher.Mono;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * 发送消息服务实现.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public class SendMessageServiceImpl implements SendMessageService {
 
   private final MessageStub messageStub;
 
-  public SendMessageServiceImpl(MessageStub messageStub) {
+  /**
+   * 使用消息 gRPC 存根构造对象.
+   *
+   * @param messageStub 消息 gRPC 存根
+   */
+  public @Inject SendMessageServiceImpl(MessageStub messageStub) {
     this.messageStub = messageStub;
   }
 
   @Override
-  public Mono<Void> sendToUser(SendMessageInput input) {
-    var request = SendMessageRequest.newBuilder();
-    return null;
+  public Mono<SendMessageOutput> sendToUser(SendMessageInput input) {
+    return Mono.defer(
+            () -> {
+              var sink = new SinkOneStreamObserver<SendMessageResponse>();
+              messageStub.sendToUser(mapInput(input), sink);
+              return sink.asMono();
+            })
+        .map(this::mapResponse);
   }
 
   @Override
-  public Mono<Void> sendToGroup(SendMessageInput input) {
-    return null;
+  public Mono<SendMessageOutput> sendToGroup(SendMessageInput input) {
+    return Mono.defer(
+            () -> {
+              var sink = new SinkOneStreamObserver<SendMessageResponse>();
+              messageStub.sendToGroup(mapInput(input), sink);
+              return sink.asMono();
+            })
+        .map(this::mapResponse);
+  }
+
+  private SendMessageRequest mapInput(SendMessageInput input) {
+    var contentType = ContentType.forNumber(input.getContentType());
+    var builder =
+        SendMessageRequest.newBuilder()
+            .setFrom(input.getFrom())
+            .setTo(input.getTo())
+            .setContent(input.getContent())
+            .setContentType(contentType);
+    if (input.getExtraArgs() != null) {
+      builder.setExtraArgs(input.getExtraArgs());
+    }
+    return builder.build();
+  }
+
+  private SendMessageOutput mapResponse(SendMessageResponse response) {
+    return SendMessageOutput.builder().messageId(response.getMessageId()).build();
   }
 }

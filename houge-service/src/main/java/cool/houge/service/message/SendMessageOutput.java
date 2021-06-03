@@ -16,17 +16,17 @@
 package cool.houge.service.message;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 /**
- * 发送消息响应数据类.
+ * 发送消息返回类型.
  *
  * @author KK (kzou227@qq.com)
  */
-@Data
+@Value
 @Builder
-public class MessageSendResult {
+public class SendMessageOutput {
 
-  /** 消息 ID. */
-  String messageId;
+  /** 消息ID. */
+  private String messageId;
 }

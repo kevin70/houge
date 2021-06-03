@@ -18,6 +18,7 @@ package cool.houge.rest.http;
 import com.google.common.collect.ImmutableMap;
 import cool.houge.Env;
 import cool.houge.domain.Problem;
+import io.grpc.StatusRuntimeException;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -87,6 +88,14 @@ public class HttpExceptionHandler extends AbstractRestSupport {
         propertiesBuilder.put("context_values", ex.getContextEntries());
       }
       errorLog = bc.getHttpStatus() >= HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+    } else if (t instanceof StatusRuntimeException) {
+      var ex = (StatusRuntimeException) t;
+      problemBuilder
+          .status(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
+          .title("gRPC 服务调用错误")
+          .detail(ex.getMessage());
+      propertiesBuilder.put("grpc_status_code", ex.getStatus().getCode());
+      errorLog = true;
     } else {
       problemBuilder.status(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).title(t.getMessage());
       errorLog = true;

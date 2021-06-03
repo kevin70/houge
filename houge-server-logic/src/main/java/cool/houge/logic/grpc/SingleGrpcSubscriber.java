@@ -42,9 +42,10 @@ public class SingleGrpcSubscriber<T> implements Subscriber<T> {
   @Override
   public void onError(Throwable t) {
     responseObserver.onError(t);
-    responseObserver.onCompleted();
   }
 
   @Override
-  public void onComplete() {}
+  public void onComplete() {
+    // noop
+  }
 }

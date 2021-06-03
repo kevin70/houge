@@ -36,8 +36,9 @@ import cool.houge.rest.controller.UserAuthInterceptor;
 import cool.houge.rest.controller.group.GroupController;
 import cool.houge.rest.controller.health.HealthController;
 import cool.houge.rest.controller.info.InfoController;
-import cool.houge.rest.controller.message.LooseMessageController;
-import cool.houge.rest.controller.message.LooseMessageIdController;
+import cool.houge.rest.controller.message.MessageController;
+import cool.houge.rest.controller.message.MessageIdController;
+import cool.houge.rest.controller.message.SendMessageController;
 import cool.houge.rest.controller.token.TokenController;
 import cool.houge.rest.controller.user.UserController;
 import cool.houge.system.health.HealthIndicator;
@@ -81,8 +82,8 @@ public class RestModule extends AbstractModule {
 
     // 访问认证及访问令牌
     bind(JwsAuthService.class).in(Scopes.SINGLETON);
-    bind(AuthService.class).to(JwsAuthService.class);
-    bind(TokenService.class).to(JwsAuthService.class);
+    bind(AuthService.class).to(JwsAuthService.class).in(Scopes.SINGLETON);
+    bind(TokenService.class).to(JwsAuthService.class).in(Scopes.SINGLETON);
 
     // 绑定 Web 访问资源对象
     bind(UserAuthInterceptor.class).in(Scopes.SINGLETON);
@@ -117,18 +118,19 @@ public class RestModule extends AbstractModule {
 
   private void bindResources() {
     var binder = Multibinder.newSetBinder(binder(), RoutingService.class);
-    Consumer<Class<? extends RoutingService>> co =
+    Consumer<Class<? extends RoutingService>> b =
         clazz -> binder.addBinding().to(clazz).in(Scopes.SINGLETON);
 
-    co.accept(InfoController.class);
-    co.accept(HealthController.class);
+    b.accept(InfoController.class);
+    b.accept(HealthController.class);
 
-    co.accept(LooseMessageIdController.class);
-    co.accept(LooseMessageController.class);
+    b.accept(MessageIdController.class);
+    b.accept(MessageController.class);
+    b.accept(SendMessageController.class);
 
-    co.accept(GroupController.class);
-    co.accept(UserController.class);
-    co.accept(TokenController.class);
+    b.accept(GroupController.class);
+    b.accept(UserController.class);
+    b.accept(TokenController.class);
   }
 
   private ServerAuthInterceptor serviceAuthInterceptor() {

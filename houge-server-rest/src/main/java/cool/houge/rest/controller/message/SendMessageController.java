@@ -38,15 +38,19 @@ public class SendMessageController extends AbstractRestSupport implements Routin
 
   private final SendMessageService sendMessageService;
 
-  /** @param sendMessageService */
+  /**
+   * 使用发送消息服务构造对象.
+   *
+   * @param sendMessageService 发送消息服务
+   */
   public @Inject SendMessageController(SendMessageService sendMessageService) {
     this.sendMessageService = sendMessageService;
   }
 
   @Override
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
-    routes.post("/p/messages/user/send", interceptors.userAuth(this::sendUserMessage));
-    routes.post("/p/messages/group/send", interceptors.userAuth(this::sendGroupMessage));
+    routes.post("/p/messages/send/user", interceptors.userAuth(this::sendUserMessage));
+    routes.post("/p/messages/send/group", interceptors.userAuth(this::sendGroupMessage));
   }
 
   /**
@@ -62,9 +66,10 @@ public class SendMessageController extends AbstractRestSupport implements Routin
               var ac = t.getT1();
               var body = t.getT2();
 
-              log.debug("发送聊天消息 uid={} vo={}", ac.uid(), body);
-              sendMessageService.sendToUser(MessageMapper.INSTANCE.mapToUser(body, ac.uid()));
-              return Mono.empty();
+              log.debug("发送用户消息 uid={} body={}", ac.uid(), body);
+              return sendMessageService
+                  .sendToUser(MessageMapper.INSTANCE.mapToUser(body, ac.uid()))
+                  .flatMap(output -> json(response, output));
             });
   }
 
@@ -80,9 +85,10 @@ public class SendMessageController extends AbstractRestSupport implements Routin
             t -> {
               var ac = t.getT1();
               var body = t.getT2();
-              log.debug("发送聊天消息 uid={} vo={}", ac.uid(), body);
-              sendMessageService.sendToUser(MessageMapper.INSTANCE.mapToGroup(body, ac.uid()));
-              return Mono.empty();
+              log.debug("发送群组消息 uid={} body={}", ac.uid(), body);
+              return sendMessageService
+                  .sendToGroup(MessageMapper.INSTANCE.mapToGroup(body, ac.uid()))
+                  .flatMap(output -> json(response, output));
             });
   }
 }

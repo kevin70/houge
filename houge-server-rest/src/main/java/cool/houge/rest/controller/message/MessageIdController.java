@@ -16,9 +16,9 @@
 package cool.houge.rest.controller.message;
 
 import cool.houge.id.MessageIdGenerator;
-import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.rest.controller.Interceptors;
 import cool.houge.rest.controller.RoutingService;
+import cool.houge.rest.http.AbstractRestSupport;
 import java.util.Optional;
 import javax.inject.Inject;
 import reactor.core.publisher.Mono;
@@ -33,7 +33,7 @@ import top.yein.chaos.biz.BizCodeException;
  *
  * @author KK (kzou227@qq.com)
  */
-public class LooseMessageIdController extends AbstractRestSupport implements RoutingService {
+public class MessageIdController extends AbstractRestSupport implements RoutingService {
 
   private final MessageIdGenerator messageIdGenerator;
 
@@ -42,8 +42,7 @@ public class LooseMessageIdController extends AbstractRestSupport implements Rou
    *
    * @param messageIdGenerator 消息 ID 生成器
    */
-  @Inject
-  public LooseMessageIdController(MessageIdGenerator messageIdGenerator) {
+  public @Inject MessageIdController(MessageIdGenerator messageIdGenerator) {
     this.messageIdGenerator = messageIdGenerator;
   }
 

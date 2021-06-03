@@ -28,6 +28,7 @@ import io.grpc.stub.StreamObserver;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import reactor.core.publisher.Mono;
 
 /**
  * 发送消息 gRPC 实现类.
@@ -64,14 +65,17 @@ public class MessageGrpcImpl extends MessageGrpc.MessageImplBase {
       MessagePb.SendMessageRequest request,
       StreamObserver<MessagePb.SendMessageResponse> responseObserver) {
     var packet = new GrpcMessagePacket(Packet.NS_PRIVATE_MESSAGE, request);
-    privateMessageHandler
-        .handle(packet)
-        .map(
-            rs -> {
-              var response =
-                  MessagePb.SendMessageResponse.newBuilder().setMessageId(packet.messageId).build();
-              return response;
-            })
+    Mono.just(packet)
+        .flatMap(privateMessageHandler::handle)
+        .then(
+            Mono.fromSupplier(
+                () -> {
+                  var response =
+                      MessagePb.SendMessageResponse.newBuilder()
+                          .setMessageId(packet.messageId)
+                          .build();
+                  return response;
+                }))
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 
@@ -79,14 +83,17 @@ public class MessageGrpcImpl extends MessageGrpc.MessageImplBase {
   public void sendToGroup(
       SendMessageRequest request, StreamObserver<SendMessageResponse> responseObserver) {
     var packet = new GrpcMessagePacket(Packet.NS_GROUP_MESSAGE, request);
-    groupMessageHandler
-        .handle(packet)
-        .map(
-            rs -> {
-              var response =
-                  MessagePb.SendMessageResponse.newBuilder().setMessageId(packet.messageId).build();
-              return response;
-            })
+    Mono.just(packet)
+        .flatMap(groupMessageHandler::handle)
+        .then(
+            Mono.fromSupplier(
+                () -> {
+                  var response =
+                      MessagePb.SendMessageResponse.newBuilder()
+                          .setMessageId(packet.messageId)
+                          .build();
+                  return response;
+                }))
         .subscribe(new SingleGrpcSubscriber<>(responseObserver));
   }
 

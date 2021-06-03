@@ -17,18 +17,26 @@ package cool.houge.service.message;
 
 import reactor.core.publisher.Mono;
 
-/** @author KK (kzou227@qq.com) */
+/**
+ * 发送消息服务.
+ *
+ * @author KK (kzou227@qq.com)
+ */
 public interface SendMessageService {
 
   /**
-   * @param input
-   * @return
+   * 发送用户消息.
+   *
+   * @param input 输入
+   * @return 输出
    */
-  Mono<Void> sendToUser(SendMessageInput input);
+  Mono<SendMessageOutput> sendToUser(SendMessageInput input);
 
   /**
-   * @param input
-   * @return
+   * 发送群组消息.
+   *
+   * @param input 输入
+   * @return 输出
    */
-  Mono<Void> sendToGroup(SendMessageInput input);
+  Mono<SendMessageOutput> sendToGroup(SendMessageInput input);
 }

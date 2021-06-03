@@ -21,7 +21,6 @@ import cool.houge.rest.controller.RoutingService;
 import cool.houge.rest.http.AbstractRestSupport;
 import cool.houge.service.message.MessageService;
 import cool.houge.service.message.ReadMessageInput;
-import cool.houge.service.message.SendMessageInput;
 import cool.houge.storage.query.UserMessageQuery;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import javax.inject.Inject;
@@ -37,7 +36,7 @@ import reactor.netty.http.server.HttpServerRoutes;
  *
  * @author KK (kzou227@qq.com)
  */
-public class LooseMessageController extends AbstractRestSupport implements RoutingService {
+public class MessageController extends AbstractRestSupport implements RoutingService {
 
   private static final Logger log = LogManager.getLogger();
   private final MessageService messageService;
@@ -47,8 +46,7 @@ public class LooseMessageController extends AbstractRestSupport implements Routi
    *
    * @param messageService 消息服务
    */
-  @Inject
-  public LooseMessageController(MessageService messageService) {
+  public @Inject MessageController(MessageService messageService) {
     this.messageService = messageService;
   }
 
@@ -56,7 +54,6 @@ public class LooseMessageController extends AbstractRestSupport implements Routi
   public void update(HttpServerRoutes routes, Interceptors interceptors) {
     routes.get("/p/messages", interceptors.userAuth(this::queryByUser));
     routes.get("/p/messages/read", interceptors.userAuth(this::readMessages));
-    routes.post("/p/messages/send", interceptors.userAuth(this::sendMessage));
   }
 
   /**
@@ -98,28 +95,6 @@ public class LooseMessageController extends AbstractRestSupport implements Routi
               return messageService
                   .readMessages(ac.uid(), vo.getMessageIds())
                   .then(response.status(HttpResponseStatus.NO_CONTENT).send());
-            });
-  }
-
-  /**
-   * 发送聊天消息.
-   *
-   * @param request 请求对象
-   * @param response 响应对象
-   * @return RS
-   */
-  Mono<Void> sendMessage(HttpServerRequest request, HttpServerResponse response) {
-    return authContext()
-        .zipWith(json(request, SendMessageInput.class))
-        .flatMap(
-            t -> {
-              var ac = t.getT1();
-              var vo = t.getT2();
-              log.debug("发送聊天消息 uid={} vo={}", ac.uid(), vo);
-              //              return remoteMessageService
-              //                  .sendMessage(ac.uid(), vo)
-              //                  .flatMap(result -> json(response, result));
-              return Mono.empty();
             });
   }
 }

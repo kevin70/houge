@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cool.houge.service.message;
+package cool.houge.service.message.impl;
 
-import cool.houge.storage.MessageDao;
 import cool.houge.model.Message;
+import cool.houge.service.message.MessageStorageService;
+import cool.houge.storage.MessageDao;
 import java.util.List;
 import javax.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
-import cool.houge.service.message.MessageStorageService;
 
 /**
  * 消息存储服务实现.
@@ -38,8 +38,7 @@ public class MessageStorageServiceImpl implements MessageStorageService {
    *
    * @param messageDao 消息数据访问对象
    */
-  @Inject
-  public MessageStorageServiceImpl(MessageDao messageDao) {
+  public @Inject MessageStorageServiceImpl(MessageDao messageDao) {
     this.messageDao = messageDao;
   }
 
