@@ -85,7 +85,7 @@ paths:
             schema:
               type: object
               properties:
-                id:
+                uid:
                   type: integer
                   format: int64
                   description: 全局唯一的用户 ID，如果业务方手动传入则调用者必须保证其唯一性
@@ -102,9 +102,9 @@ paths:
               schema:
                 type: object
                 required:
-                  - id
+                  - uid
                 properties:
-                  id:
+                  uid:
                     type: integer
                     format: int64
                     description: 全局唯一的用户 ID
@@ -126,7 +126,7 @@ paths:
               required:
                 - creator_id
               properties:
-                id:
+                gid:
                   type: integer
                   format: int64
                   description: 全局唯一的群组 ID，如果业务方手动传入则调用者必须保证其唯一性
@@ -143,16 +143,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  id:
+                  gid:
                     type: integer
                     format: int64
                     description: 全局唯一的群组 ID
-  /i/groups/{group_id}:
+  /i/groups/{gid}:
     parameters:
-      - name: group_id
+      - name: gid
         in: path
         required: true
-        description: IM 系统中已经存在的群组 ID
+        description: 群组 ID
         schema:
           type: integer
           format: int64
@@ -165,12 +165,12 @@ paths:
       responses:
         "204":
           description: OK
-  /i/groups-member/{group_id}/join:
+  /i/groups-member/{gid}/join:
     parameters:
-      - name: group_id
+      - name: gid
         in: path
         required: true
-        description: IM 系统中已经存在的群组 ID
+        description: 群组 ID
         schema:
           type: integer
           format: int64
