@@ -1,5 +1,3 @@
-![](docs/images/logo128x128.png)
-
 [![CI/CD](https://github.com/kevin70/houge/workflows/Houge%20CI/CD/badge.svg)](https://github.com/kevin70/houge/actions)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=coverage)](https://sonarcloud.io/dashboard?id=houge)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=houge&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=houge)
@@ -9,9 +7,11 @@
 
 # Houge
 
+![](docs/images/houge-logo/logo.png)
+
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
-一个 IM 服务端项目，采用 [Spring Reactor](https://projectreactor.io/) 作为基础技术研发，全站响应式技术应用(Reactor/R2DBC/Netty)。
+消息推送服务，采用 [Spring Reactor](https://projectreactor.io/) 作为基础技术研发，全站响应式技术应用(Reactor/R2DBC/Netty)。
 
 内置完整的 IM 通讯协议，使用 WebSocket + HTTP 方式实现整个 IM 系统相关业务。
 
