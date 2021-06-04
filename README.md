@@ -11,21 +11,15 @@
 
 [We Are Reactive](https://www.reactivemanifesto.org/zh-CN)
 
-消息推送服务，采用 [Spring Reactor](https://projectreactor.io/) 作为基础技术研发，全站响应式技术应用(Reactor/R2DBC/Netty)。
+Houge 是一款开源免费的**实时消息推送服务**，采用 [Spring Reactor](https://projectreactor.io/) 作为基础技术研发，完全采用反应式（Reactive Programming）编程模式实现。
 
-内置完整的 IM 通讯协议，使用 WebSocket + HTTP 方式实现整个 IM 系统相关业务。
+服务端采用模块化设计，内置简洁通讯协议，扩展性强，可配置化，部署简单，集群等特点。
 
-**能够完全独立于业务系统之外运行，且能够方便快速的与现有系统整合，并提供了 HTTP、gRPC 服务接口能方便的与 Houge 进行通讯，你可用于它快速搭建搭建私域 IM 服务，或用于替代公有云 IM 服务。**
+架构将连接服务与逻辑服务分离，可动态扩展集群节点，单台WS服务支持同时保持**百万链接**，服务有高并发、超高吞吐量特性。
 
 ## 架构
 
 ![](docs/images/houge-arch-20210514.png)
-
-## 特点
-
-- 响应式
-- 免费的
-- 高性能
 
 ## 技术栈
 
